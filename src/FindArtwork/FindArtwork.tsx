@@ -5,8 +5,9 @@ import ArtworkCard from '../FindArtwork/ArtworkCard';
 import ClueHolder from './ClueHolder';
 import { ArtworkData } from '../artworks/artworkData';
 import { StageData } from '../artworks/stageData';
-import { NextPlan } from '@styled-icons/material-outlined/NextPlan';
 import Fader from '../components/Fader';
+import PointsPanel from './PointsPanel';
+import NextPanel from './NextCornerPanel';
 
 const Root = styled.div`
   margin-top: 1vh;
@@ -27,39 +28,17 @@ const ArtworkGrid = styled.div`
   justify-content: center;
 `;
 
-const NextCornerIcon = styled(NextPlan)`
-  color: black;
-  height: 5.5vh;
-  width: auto;
-`;
-
-const NextCornerText = styled.p`
-  font-size: 0.85em;
-  font-weight: 600;
-  letter-spacing: +1px;
-  font-family: 'EB Garamond';
-  align-self: center;
-  margin-top: 0.5vh;
-`;
-
-const NextCorner = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  position: absolute;
-  overflow: hidden;
-  top: 5%;
-  right: 3%;
-
-  transform: scale(0.9);
-  transition: transform linear 0.3s;
-
-  &:hover {
-    cursor: pointer;
-    transform: scale(1);
-    transition: transform linear 0.3s;
-  }
+const UpperRowContainer = styled.div`
+  width: 100%;
+  padding-top: 0.5%;
+  padding-bottom: 0.5%;
+  height: max-content;
+  display: inline-flex:
+  flex-direction: row;
+  align-content: center;
+  border-style: solid;
+  border-color: darkgrey;
+  border-width: 0px 0px 1px 0px;
 `;
 
 interface FindArtworkProps {
@@ -72,6 +51,7 @@ const FindArtwork: React.FC<FindArtworkProps> = ({ stageData, imagesData, onStag
 
   const [flippedCards, setFlippedCards] = useState<boolean[]>(Array(imagesData.length).fill(false));
   const [stageCompleted, setStageCompleted] = useState<boolean>(false);
+  const [score, setScore] = useState<number>(100);
 
   useEffect(() => {
     setFlippedCards(Array(imagesData.length).fill(false));
@@ -83,9 +63,11 @@ const FindArtwork: React.FC<FindArtworkProps> = ({ stageData, imagesData, onStag
       // correcta
       setFlippedCards(Array(imagesData.length).fill(true));
       setStageCompleted(true);
+      setScore(prev => prev + 100);
     }
     else {
       // incorrecta
+      setScore(prev => prev - 40);
       setFlippedCards(prev => {
         let aux = prev.slice();
         aux[index] = true;
@@ -94,11 +76,29 @@ const FindArtwork: React.FC<FindArtworkProps> = ({ stageData, imagesData, onStag
     }
   };
 
+  const handleClueOpened = (value: number) => {
+    setScore(prev => prev - value);
+  };
+
   return (
     <Root>
-      <ClueHolder
-        clues={stageData.clues}
-      />
+      <UpperRowContainer>
+        <PointsPanel
+          points={score}
+        />
+        <ClueHolder
+          onClueOpened={handleClueOpened}
+          clues={stageData.clues}
+        />
+        <Fader
+          show={stageCompleted}
+          transitionTime={2}
+        >
+          <NextPanel
+            onNextClicked={onStageCompleted}
+          />
+        </Fader>
+      </UpperRowContainer>
       <ArtworkGrid>
         {imagesData.map((im, i) => (
           <ArtworkCard
@@ -113,19 +113,6 @@ const FindArtwork: React.FC<FindArtworkProps> = ({ stageData, imagesData, onStag
           />
         ))}
       </ArtworkGrid>
-      <Fader
-        show={stageCompleted}
-        transitionTime={2}
-      >
-        <NextCorner
-          onClick={onStageCompleted}
-        >
-          <NextCornerIcon />
-          <NextCornerText>
-            CONTINUAR
-        </NextCornerText>
-        </NextCorner>
-      </Fader>
     </Root>
   );
 }

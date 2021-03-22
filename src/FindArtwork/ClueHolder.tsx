@@ -9,19 +9,16 @@ const Root = styled.div`
   align-content: center;
   display: flex;
   flex-direction: column;
-  top: 0;
-  margin-top: 1.5vh;
-  border-style: solid;
-  border-color: darkgrey;
-  border-width: 0px 0px 1px 0px;
-  width: 100%;
-  height: auto;
+  width: 50%;
+  height: 100%:
+  margin-left: 0;
+  margin-right: 0;
 `;
 
 const ClueWrapper = styled.div`
   align-self: center;
   text-align: center;
-  width: 70%;
+  width: 80%;
   height: auto;
 `;
 
@@ -73,10 +70,10 @@ interface ClueProps {
 
 const InfoIconOpened = styled(EnvelopeOpen) <ClueProps>`
   color: ${props => props.selected ? 'black' : 'lightgray'};
-  height: 3.5vh;
+  height: 3.75vh;
   width: auto;
-  margin-left: 0.1vw;
-  margin-right: 0.1vw;
+  margin-left: 0.2vw;
+  margin-right: 0.2vw;
   cursor: ${props => props.selected ? 'default' : 'pointer'};
   &:hover {
     color: ${props => props.selected ? 'black' : 'darkgray'};
@@ -85,21 +82,46 @@ const InfoIconOpened = styled(EnvelopeOpen) <ClueProps>`
 
 const InfoIconClosed = styled(Envelope)`
   color: lightgray;
-  cursor: pointer;
-  height: 3.75vh;
+  height: 4vh;
   width: auto;
-  margin-left: 0.1vw;
-  margin-right: 0.1vw;
+`;
+
+const InfoPoints = styled.span`
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  font-size: 0.7em;
+  font-weight: 700;
+  letter-spacing: +1px;
+  font-family: 'EB Garamond';
+  color: darkgray;
+`;
+
+const InfoIconWrapper = styled.div`
+  position: relative;
+  height: max-content;
+  width: max-content;
+  cursor: pointer;
+  margin-left: 0.2vw;
+  margin-right: 0.2vw;
+
   &:hover {
-    color: darkgray;
+    ${InfoIconClosed} {
+      color: darkgray;
+    }
+
+    ${InfoPoints} {
+      color: black;
+    }
   }
 `;
 
 interface ClueHolderProps {
   clues: string[];
+  onClueOpened: (points: number) => void;
 };
 
-const ClueHolder: React.FC<ClueHolderProps> = ({ clues }) => {
+const ClueHolder: React.FC<ClueHolderProps> = ({ clues, onClueOpened }) => {
 
   const [selectedClue, setSelectedClue] = useState<number>(0);
   const [openedClues, setOpenedClues] = useState<boolean[]>(() => {
@@ -107,6 +129,9 @@ const ClueHolder: React.FC<ClueHolderProps> = ({ clues }) => {
     init[0] = true;
     return init;
   });
+
+  // añade 15 puntos de penalización por cada pista abierta
+  const cluePrice = 15*(openedClues.filter(elem => elem).length);
 
   return (
     <Root>
@@ -129,7 +154,7 @@ const ClueHolder: React.FC<ClueHolderProps> = ({ clues }) => {
               setSelectedClue(i);
             }}
           /> :
-          <InfoIconClosed
+          <InfoIconWrapper
             key={'clo' + i}
             onClick={() => {
               setSelectedClue(i);
@@ -138,8 +163,12 @@ const ClueHolder: React.FC<ClueHolderProps> = ({ clues }) => {
                 aux[i] = true;
                 return aux;
               });
+              onClueOpened(cluePrice);
             }}
-          />
+          >
+            <InfoIconClosed/>
+            <InfoPoints>-{cluePrice}</InfoPoints>
+          </InfoIconWrapper>
         )}
       </DotsWrapper>
       <HintsText>
