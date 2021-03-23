@@ -70,7 +70,7 @@ interface ClueProps {
 
 const InfoIconOpened = styled(EnvelopeOpen) <ClueProps>`
   color: ${props => props.selected ? 'black' : 'lightgray'};
-  height: 3.75vh;
+  height: 4vh;
   width: auto;
   margin-left: 0.2vw;
   margin-right: 0.2vw;
@@ -82,7 +82,7 @@ const InfoIconOpened = styled(EnvelopeOpen) <ClueProps>`
 
 const InfoIconClosed = styled(Envelope)`
   color: lightgray;
-  height: 4vh;
+  height: 4.25vh;
   width: auto;
 `;
 

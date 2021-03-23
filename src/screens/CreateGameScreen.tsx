@@ -1,44 +1,64 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import FindArtwork from '../FindArtwork/FindArtwork';
 import { sampleArtworks } from '../artworks/artworkData';
-import { stage0, stage1 } from '../artworks/stageData';
-import Fader from '../components/Fader';
+import GameOverviewPanel from '../CreateGame/GameOverviewPanel';
+import SelectArtwork from '../CreateGame/SelectArtwork';
 
 const Root = styled.div`
   display: flex;
   flex-direction: column;
 `;
 
-const stages = [stage0, stage1];
+interface InProgressStage {
+  clues: string[] | undefined;
+  artworkId: string | undefined;
+  recordingSrc: string | undefined;
+};
+
+const isStageCompleted = (stage: InProgressStage): boolean => {
+  return stage.artworkId !== undefined &&
+  stage.clues !== undefined &&
+  stage.recordingSrc !== undefined;
+};
+
+const defaultStage: InProgressStage = {
+  clues: undefined,
+  artworkId: undefined,
+  recordingSrc: undefined
+};
 
 const CreateGameScreen: React.FC = () => {
 
   const [activeStage, setActiveStage] = useState<number>(0);
-  const [showPanel, setShowPanel] = useState<boolean>(true);
+  const [stageList, setStageList] = useState<InProgressStage[]>([defaultStage]);
 
-  const handleStageCompleted = () => {
-    setShowPanel(false);
+  const handleAddStage = () => {
+    setStageList(prev => [...prev, defaultStage]);
   };
 
-  const updateActiveStage = () => {
-    setActiveStage((activeStage + 1) % stages.length);
-    setShowPanel(true);
+  const handleSelectArtwork = (artworkId: string) => {
+    setStageList(prev => {
+      let aux = prev.slice();
+      aux[activeStage].artworkId = artworkId;
+      return aux;
+    });
   };
 
   return (
     <Root>
-      <Fader
-        transitionTime={3}
-        show={showPanel}
-        onAnimationCompleted={updateActiveStage}
-      >
-        <FindArtwork
-          stageData={stages[activeStage]}
-          imagesData={sampleArtworks}
-          onStageCompleted={handleStageCompleted}
-        />
-      </Fader>
+      <GameOverviewPanel
+        activeStage={activeStage}
+        stagesCompleted={stageList.map(isStageCompleted)}
+        onAddNewStage={handleAddStage}
+        onStageSelected={(index: number) => setActiveStage(index)}
+        onSubmitGame={() => {}}
+      />
+      <SelectArtwork
+        imagesData={sampleArtworks}
+        selectedArtwork={stageList[activeStage].artworkId}
+        onArtworkSelected={handleSelectArtwork}
+        onNextClicked={() => {}}
+      />
     </Root>
   );
 }

@@ -25,7 +25,7 @@ ReactDOM.render(
           <CreateGameScreen />
         </Route>
         <Route>
-          <Redirect to='/play'/>
+          <Redirect to='/create'/>
         </Route>
       </Switch>
     </Router>

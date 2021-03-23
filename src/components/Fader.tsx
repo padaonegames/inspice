@@ -45,7 +45,7 @@ const Fader: React.FC<FaderProps> = ({ show, transitionTime, onAnimationComplete
   }, [show]);
 
   const onAnimationEnd = (e: any) => {
-    if (e.elapsedTime < 3) return;
+    if (e.elapsedTime < transitionTime) return;
     console.log(e);
     if (!show) {
       setShouldRender(false);
