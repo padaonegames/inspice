@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
-
-import { Microphone } from '@styled-icons/fa-solid/Microphone';
+import React, { useEffect } from 'react';
+import styled, { keyframes } from 'styled-components';
 
 import NextCornerButton from './NextCornerButton';
 import useRecorder from './useRecorder';
+
+import { Microphone } from '@styled-icons/fa-solid/Microphone';
+import { StopCircle } from '@styled-icons/boxicons-regular/StopCircle';
 
 interface RootProps {
   backgroundImage: string;
@@ -40,7 +41,7 @@ const QuestionWrapper = styled.div`
   text-align: center;
   width: 70%;
   height: auto;
-  margin-bottom: 2.5vh;
+  margin-bottom: 5.5vh;
   margin-top: 5.5vh;
 `;
 
@@ -62,6 +63,65 @@ const ControlsWrapper = styled.div`
   width: 100%;
   height: auto;
   margin: auto;
+`;
+
+const AudioPanel = styled.audio`
+  margin-top: 5vh;
+  width: 65%;
+  align-self: center;
+`;
+
+const MicWrapper = styled.div`
+  border: solid 0.75vh white;
+  border-radius: 50%;
+
+  height: 12.5vh;
+  width: 12.5vh;
+  text-align: center;
+  padding: 1vh;
+
+  align-self: center;
+
+  transform: scale(0.9);
+  transition: transform linear 0.3s;
+
+  &:hover {
+    cursor: pointer;
+    transform: scale(1);
+    transition: transform linear 0.3s;
+  }
+`;
+
+const MicButton = styled(Microphone)`
+  color: white;
+  height: 9vh;
+  width: 9vh;
+`;
+
+const StopAnimation = keyframes`
+  0% {
+    transform: scale(0.9);
+  }
+  50% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0.9);
+  }
+`;
+
+const StopButton = styled(StopCircle)`
+  color: white;
+  height: 12.5vh;
+  width: auto;
+  transform: scale(0.9);
+  animation: ${StopAnimation} 2s ease infinite;
+
+  &:hover {
+    cursor: pointer;
+    transform: scale(1);
+    transition: transform linear 0.3s;
+  }
 `;
 
 interface RecordAudioProps {
@@ -101,16 +161,13 @@ const RecordAudio: React.FC<RecordAudioProps> = ({
         </Question>
         </QuestionWrapper>
 
-        <audio src={audioURL} controls />
-        <button onClick={startRecording} disabled={isRecording}>
-          start recording
-      </button>
-        <button
-          onClick={stopRecording}
-          disabled={!isRecording}
-        >
-          stop recording
-      </button>
+        {isRecording ?
+          <StopButton onClick={stopRecording} /> :
+          <MicWrapper>
+            <MicButton onClick={startRecording} />
+          </MicWrapper>
+        }
+        <AudioPanel src={audioURL} controls />
 
         <ControlsWrapper>
           <NextCornerButton

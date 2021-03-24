@@ -45,13 +45,20 @@ interface FindArtworkProps {
   stageData: StageData;
   imagesData: ArtworkData[];
   onStageCompleted: () => void;
+  onPointsUpdate: (value: number) => void;
+  score: number;
 };
 
-const FindArtwork: React.FC<FindArtworkProps> = ({ stageData, imagesData, onStageCompleted }) => {
+const FindArtwork: React.FC<FindArtworkProps> = ({
+  stageData,
+  imagesData,
+  onStageCompleted,
+  onPointsUpdate,
+  score
+}) => {
 
   const [flippedCards, setFlippedCards] = useState<boolean[]>(Array(imagesData.length).fill(false));
   const [stageCompleted, setStageCompleted] = useState<boolean>(false);
-  const [score, setScore] = useState<number>(100);
 
   useEffect(() => {
     setFlippedCards(Array(imagesData.length).fill(false));
@@ -63,11 +70,11 @@ const FindArtwork: React.FC<FindArtworkProps> = ({ stageData, imagesData, onStag
       // correcta
       setFlippedCards(Array(imagesData.length).fill(true));
       setStageCompleted(true);
-      setScore(prev => prev + 100);
+      onPointsUpdate(+100);
     }
     else {
       // incorrecta
-      setScore(prev => prev - 40);
+      onPointsUpdate(-40);
       setFlippedCards(prev => {
         let aux = prev.slice();
         aux[index] = true;
@@ -77,7 +84,7 @@ const FindArtwork: React.FC<FindArtworkProps> = ({ stageData, imagesData, onStag
   };
 
   const handleClueOpened = (value: number) => {
-    setScore(prev => prev - value);
+    onPointsUpdate(-value);
   };
 
   return (

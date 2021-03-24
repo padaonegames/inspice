@@ -19,6 +19,7 @@ const FindArtworkScreen: React.FC<FindArtworkScreenProps> = ({ stages, artworks 
 
   const [activeStage, setActiveStage] = useState<number>(0);
   const [showPanel, setShowPanel] = useState<boolean>(true);
+  const [currentScore, setCurrentScore] = useState<number>(100);
 
   const handleStageCompleted = () => {
     setShowPanel(false);
@@ -37,6 +38,8 @@ const FindArtworkScreen: React.FC<FindArtworkScreenProps> = ({ stages, artworks 
         onAnimationCompleted={updateActiveStage}
       >
         <FindArtwork
+          onPointsUpdate={(value: number) => setCurrentScore(prev => prev + value)}
+          score={currentScore}
           stageData={stages[activeStage]}
           imagesData={artworks}
           onStageCompleted={handleStageCompleted}
