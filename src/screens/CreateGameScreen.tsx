@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { ArtworkData, sampleArtworks } from '../artworks/artworkData';
 import Fader from '../components/Fader';
 import GameOverviewPanel from '../CreateGame/GameOverviewPanel';
+import RecordAudio from '../CreateGame/RecordAudio';
 import SelectArtwork from '../CreateGame/SelectArtwork';
 import WriteHints from '../CreateGame/WriteHints';
 
@@ -76,6 +77,20 @@ const CreateGameScreen: React.FC = () => {
     });
   };
 
+  const handleRecordingReady = (audioURL: string) => {
+    setStageList(prev => {
+      let aux: InProgressStage[] = JSON.parse(JSON.stringify(prev));
+      aux[activeStage].recordingSrc = audioURL;
+      return aux;
+    });
+  };
+
+  const handleSelectStage = (index: number) => {
+    setActiveStage(index);
+    setActiveStageStatus('select-artwork');
+    setDisplayedState('select-artwork');
+  };
+
   const retrieveArtworkById = (artworkId: string): ArtworkData | undefined => {
     return sampleArtworks.find(artw => artw.id === artworkId);
   };
@@ -86,8 +101,8 @@ const CreateGameScreen: React.FC = () => {
         activeStage={activeStage}
         stagesCompleted={stageList.map(isStageCompleted)}
         onAddNewStage={handleAddStage}
-        onStageSelected={(index: number) => setActiveStage(index)}
-        onSubmitGame={() => { }}
+        onStageSelected={handleSelectStage}
+        onSubmitGame={() => {}}
       />
       {activeStageStatus === 'select-artwork' &&
         <Fader
@@ -126,13 +141,19 @@ const CreateGameScreen: React.FC = () => {
         <Fader
           show={displayedState === 'record-audio'}
           transitionTime={1.25}
-          onAnimationCompleted={() => setActiveStageStatus(displayedState)}
+          onAnimationCompleted={() => {
+            if (displayedState === 'select-artwork') {
+              setActiveStage(prev => prev + 1);
+            }
+            setActiveStageStatus(displayedState);
+          }}
         >
-          <SelectArtwork
-            imagesData={sampleArtworks}
-            selectedArtwork={stageList[activeStage].artworkId}
-            onArtworkSelected={handleSelectArtwork}
-            onNextClicked={() => setDisplayedState('none')}
+          <RecordAudio
+            imageSrc={retrieveArtworkById(stageList[activeStage].artworkId!)!.src}
+            onRecordingReady={handleRecordingReady}
+            canClickNext={activeStage + 1 < stageList.length}
+            onNextClicked={() => setDisplayedState('select-artwork')}
+            onBackClicked={() => setDisplayedState('write-hints')}
           />
         </Fader>
       }

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import FindArtwork from '../FindArtwork/FindArtwork';
-import { sampleArtworks } from '../artworks/artworkData';
-import { stage0, stage1 } from '../artworks/stageData';
+import { ArtworkData } from '../artworks/artworkData';
+import { StageData } from '../artworks/stageData';
 import Fader from '../components/Fader';
 
 const Root = styled.div`
@@ -10,9 +10,12 @@ const Root = styled.div`
   flex-direction: column;
 `;
 
-const stages = [stage0, stage1];
+interface FindArtworkScreenProps {
+  stages: StageData[];
+  artworks: ArtworkData[];
+};
 
-const FindArtworkScreen: React.FC = () => {
+const FindArtworkScreen: React.FC<FindArtworkScreenProps> = ({ stages, artworks }) => {
 
   const [activeStage, setActiveStage] = useState<number>(0);
   const [showPanel, setShowPanel] = useState<boolean>(true);
@@ -35,7 +38,7 @@ const FindArtworkScreen: React.FC = () => {
       >
         <FindArtwork
           stageData={stages[activeStage]}
-          imagesData={sampleArtworks}
+          imagesData={artworks}
           onStageCompleted={handleStageCompleted}
         />
       </Fader>
