@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { sampleArtworks } from '../artworks/artworkData';
+import { ArtworkData, sampleArtworks } from '../artworks/artworkData';
+import Fader from '../components/Fader';
 import GameOverviewPanel from '../CreateGame/GameOverviewPanel';
 import SelectArtwork from '../CreateGame/SelectArtwork';
+import WriteHints from '../CreateGame/WriteHints';
 
 const Root = styled.div`
   display: flex;
@@ -10,27 +12,32 @@ const Root = styled.div`
 `;
 
 interface InProgressStage {
-  clues: string[] | undefined;
+  clues: string[];
   artworkId: string | undefined;
   recordingSrc: string | undefined;
 };
 
 const isStageCompleted = (stage: InProgressStage): boolean => {
   return stage.artworkId !== undefined &&
-  stage.clues !== undefined &&
-  stage.recordingSrc !== undefined;
+    stage.clues !== undefined && stage.clues.length > 0 &&
+    stage.recordingSrc !== undefined;
 };
 
 const defaultStage: InProgressStage = {
-  clues: undefined,
+  clues: [''],
   artworkId: undefined,
   recordingSrc: undefined
 };
+
+type StageStatus = 'select-artwork' | 'write-hints' | 'record-audio' | 'none';
 
 const CreateGameScreen: React.FC = () => {
 
   const [activeStage, setActiveStage] = useState<number>(0);
   const [stageList, setStageList] = useState<InProgressStage[]>([defaultStage]);
+
+  const [activeStageStatus, setActiveStageStatus] = useState<StageStatus>('select-artwork');
+  const [displayedState, setDisplayedState] = useState<StageStatus>('select-artwork');
 
   const handleAddStage = () => {
     setStageList(prev => [...prev, defaultStage]);
@@ -44,6 +51,35 @@ const CreateGameScreen: React.FC = () => {
     });
   };
 
+  const handleRemoveHint = (index: number) => {
+    setStageList(prev => {
+      let aux = prev.slice();
+      const filtClues = aux[activeStage].clues.filter((_, ind) => ind !== index);
+      aux[activeStage].clues = filtClues;
+      return aux;
+    });
+  };
+
+  const handleAddHint = () => {
+    setStageList(prev => {
+      let aux: InProgressStage[] = JSON.parse(JSON.stringify(prev));
+      aux[activeStage].clues.push('');
+      return aux;
+    });
+  };
+
+  const handleUpdateHint = (text: string, index: number) => {
+    setStageList(prev => {
+      let aux: InProgressStage[] = JSON.parse(JSON.stringify(prev));
+      aux[activeStage].clues[index] = text;
+      return aux;
+    });
+  };
+
+  const retrieveArtworkById = (artworkId: string): ArtworkData | undefined => {
+    return sampleArtworks.find(artw => artw.id === artworkId);
+  };
+
   return (
     <Root>
       <GameOverviewPanel
@@ -51,14 +87,55 @@ const CreateGameScreen: React.FC = () => {
         stagesCompleted={stageList.map(isStageCompleted)}
         onAddNewStage={handleAddStage}
         onStageSelected={(index: number) => setActiveStage(index)}
-        onSubmitGame={() => {}}
+        onSubmitGame={() => { }}
       />
-      <SelectArtwork
-        imagesData={sampleArtworks}
-        selectedArtwork={stageList[activeStage].artworkId}
-        onArtworkSelected={handleSelectArtwork}
-        onNextClicked={() => {}}
-      />
+      {activeStageStatus === 'select-artwork' &&
+        <Fader
+          show={displayedState === 'select-artwork'}
+          transitionTime={1.25}
+          onAnimationCompleted={() => setActiveStageStatus(displayedState)}
+        >
+          <SelectArtwork
+            imagesData={sampleArtworks}
+            selectedArtwork={stageList[activeStage].artworkId}
+            onArtworkSelected={handleSelectArtwork}
+            onNextClicked={() => setDisplayedState('write-hints')}
+          />
+        </Fader>
+      }
+
+      {activeStageStatus === 'write-hints' &&
+        <Fader
+          show={displayedState === 'write-hints'}
+          transitionTime={1.25}
+          onAnimationCompleted={() => setActiveStageStatus(displayedState)}
+        >
+          <WriteHints
+            hints={stageList[activeStage].clues}
+            imageSrc={retrieveArtworkById(stageList[activeStage].artworkId!)!.src}
+            onAddNewHint={handleAddHint}
+            onRemoveHint={(ind: number) => handleRemoveHint(ind)}
+            onUpdateHint={handleUpdateHint}
+            onNextClicked={() => setDisplayedState('record-audio')}
+            onBackClicked={() => setDisplayedState('select-artwork')}
+          />
+        </Fader>
+      }
+
+      {activeStageStatus === 'record-audio' &&
+        <Fader
+          show={displayedState === 'record-audio'}
+          transitionTime={1.25}
+          onAnimationCompleted={() => setActiveStageStatus(displayedState)}
+        >
+          <SelectArtwork
+            imagesData={sampleArtworks}
+            selectedArtwork={stageList[activeStage].artworkId}
+            onArtworkSelected={handleSelectArtwork}
+            onNextClicked={() => setDisplayedState('none')}
+          />
+        </Fader>
+      }
     </Root>
   );
 }
