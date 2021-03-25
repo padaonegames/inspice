@@ -9,6 +9,9 @@ import Fader from '../components/Fader';
 import PointsPanel from './PointsPanel';
 import NextPanel from './NextCornerPanel';
 
+import { NavigateNext } from '@styled-icons/material/NavigateNext';
+import { NavigateBefore } from '@styled-icons/material/NavigateBefore';
+
 const Root = styled.div`
   margin-top: 1vh;
   margin-bottom: 1vh;
@@ -41,6 +44,50 @@ const UpperRowContainer = styled.div`
   border-width: 0px 0px 1px 0px;
 `;
 
+const LowerPanelContainer = styled.div`
+  background-color: #F8F8F8;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+`;
+
+interface NavIconProps {
+  active: boolean;
+};
+
+const NavigateNextIcon = styled(NavigateNext) <NavIconProps>`
+  color: ${props => props.active ? 'darkgray' : 'lightgray'};
+  cursor: ${props => props.active ? 'pointer' : 'default'};
+  height: 7.5vh;
+  align-self: center;
+  margin-bottom: 1vh;
+  transform: scale(0.9);
+  transition: transform 0.5s ease;
+
+  &:hover {
+    transform: ${props => props.active ? 'scale(1.1)' : 'scale(0.9)'};
+    transition: transform 0.5s ease;
+  }
+`;
+
+const NavigateBeforeIcon = styled(NavigateBefore) <NavIconProps>`
+  color: ${props => props.active ? 'darkgray' : 'lightgray'};
+  cursor: ${props => props.active ? 'pointer' : 'default'};
+  height: 7.5vh;
+  align-self: center;
+  margin-bottom: 1vh;
+  transform: scale(0.9);
+  transition: transform 0.5s ease;
+
+  &:hover {
+    transform: ${props => props.active ? 'scale(1.1)' : 'scale(0.9)'};
+    transition: transform 0.5s ease;
+  }
+`;
+
 interface FindArtworkProps {
   stageData: StageData;
   imagesData: ArtworkData[];
@@ -59,6 +106,7 @@ const FindArtwork: React.FC<FindArtworkProps> = ({
 
   const [flippedCards, setFlippedCards] = useState<boolean[]>(Array(imagesData.length).fill(false));
   const [stageCompleted, setStageCompleted] = useState<boolean>(false);
+  const [displayIndex, setDisplayIndex] = useState<number>(0);
 
   useEffect(() => {
     setFlippedCards(Array(imagesData.length).fill(false));
@@ -87,6 +135,8 @@ const FindArtwork: React.FC<FindArtworkProps> = ({
     onPointsUpdate(-value);
   };
 
+  const displayedArtworks = imagesData.slice(displayIndex, displayIndex + 6);
+
   return (
     <Root>
       <UpperRowContainer>
@@ -99,27 +149,45 @@ const FindArtwork: React.FC<FindArtworkProps> = ({
         />
         <Fader
           show={stageCompleted}
-          transitionTime={2}
+          transitionTime={1.5}
         >
           <NextPanel
             onNextClicked={onStageCompleted}
           />
         </Fader>
       </UpperRowContainer>
-      <ArtworkGrid>
-        {imagesData.map((im, i) => (
-          <ArtworkCard
-            key={im.id}
-            artworkData={im}
-            flipped={flippedCards[i]}
-            status={im.id === stageData.artworkId ?
-              { status: 'right', recording: stageData.recordingPath } :
-              { status: 'wrong' }
+      <LowerPanelContainer>
+        <NavigateBeforeIcon
+          active={displayIndex > 0}
+          onClick={() => {
+            if (displayIndex > 0) {
+              setDisplayIndex(prev => prev - 1);
             }
-            onCardSelected={() => handleCardSelected(im.id, i)}
-          />
-        ))}
-      </ArtworkGrid>
+          }}
+        />
+        <ArtworkGrid>
+          {displayedArtworks.map((im, i) => (
+            <ArtworkCard
+              key={im.id}
+              artworkData={im}
+              flipped={flippedCards[i + displayIndex]}
+              status={im.id === stageData.artworkId ?
+                { status: 'right', recording: stageData.recordingPath } :
+                { status: 'wrong' }
+              }
+              onCardSelected={() => handleCardSelected(im.id, i + displayIndex)}
+            />
+          ))}
+        </ArtworkGrid>
+        <NavigateNextIcon
+          active={displayIndex + 6 < imagesData.length}
+          onClick={() => {
+            if (displayIndex + 6 < imagesData.length) {
+              setDisplayIndex(prev => prev + 1);
+            }
+          }}
+        />
+      </LowerPanelContainer>
     </Root>
   );
 }

@@ -4,6 +4,12 @@ import diana_src from "./diana_calisto.jpg";
 import judit_src from "./judit_banquete.jpg";
 import hipodamia_src from "./rapto_hipodamia.jpg";
 import proserpina_src from "./rapto_proserpina.jpg";
+import hipomenes_atalanta_src from "./hipomenes_atalanta.jpg";
+import venus_adonis_src from "./venus_adonis.jpg";
+import venus_adonis_cupido_src from "./venus_adonis_cupido.jpg";
+import susana_src from "./susana.jpg";
+import ofrenda_venus_src from "./ofrenda_venus.jpg";
+import bacanal_adrios_src from "./bacanal_adrios.jpg";
 
 export interface ArtworkData {
   src: string; // path de la imagen a usar
@@ -75,6 +81,66 @@ const diana: ArtworkData = {
   date: 'Hacia 1635'
 };
 
+const hipomenes_atalanta: ArtworkData = {
+  src: hipomenes_atalanta_src,
+  id: 'hipomenes_atalanta',
+  title: 'Hipómenes y Atalanta',
+  author: 'Reni, Guido',
+  info: 'Óleo sobre lienzo, 206 x 297 cm',
+  location: 'Museo del Prado, No expuesto',
+  date: '1618 - 1619'
+};
+
+const venus_adonis: ArtworkData = {
+  src: venus_adonis_src,
+  id: 'venus_adonis',
+  title: 'Venus y Adonis',
+  author: 'Veronés, Paolo',
+  info: 'Óleo sobre lienzo, 162 x 191 cm',
+  location: 'Museo del Prado, Sala C',
+  date: 'Hacia 1580'
+};
+
+const venus_adonis_cupido: ArtworkData = {
+  src: venus_adonis_cupido_src,
+  id: 'venus_adonis_cupido',
+  title: 'Venus, Adonis y Cupido',
+  author: 'Carracci, Annibale',
+  info: 'Óleo sobre lienzo, 212 x 268 cm',
+  location: 'Museo del Prado, Sala 026',
+  date: 'Hacia 1590'
+};
+
+const susana: ArtworkData = {
+  src: susana_src,
+  id: 'susana',
+  title: 'Susana y los viejos',
+  author: 'Guercino',
+  info: 'Óleo sobre lienzo, 176 x 208 cm',
+  location: 'Museo del Prado, Sala 005',
+  date: '1617'
+};
+
+const ofrenda_venus: ArtworkData = {
+  src: ofrenda_venus_src,
+  id: 'ofrenda_venus',
+  title: 'Ofrenda a Venus',
+  author: 'Tiziano, Vecellio di Gregorio',
+  info: 'Óleo sobre lienzo, 172 x 175 cm',
+  location: 'Museo del Prado, Sala C',
+  date: '1518'
+};
+
+const bacanal_adrios: ArtworkData = {
+  src: bacanal_adrios_src,
+  id: 'bacanal_adrios',
+  title: 'La bacanal de los andrios',
+  author: 'Tiziano, Vecellio di Gregorio',
+  info: 'Óleo sobre lienzo, 175 x 193 cm',
+  location: 'Museo del Prado, Sala C',
+  date: '1523 - 1526'
+};
+
 export const sampleArtworks: ArtworkData[] = [
   vulcano,
   arachne,
@@ -82,4 +148,10 @@ export const sampleArtworks: ArtworkData[] = [
   proserpina,
   hipodamia,
   diana,
+  hipomenes_atalanta,
+  venus_adonis,
+  venus_adonis_cupido,
+  susana,
+  ofrenda_venus,
+  bacanal_adrios,
 ];

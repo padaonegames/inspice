@@ -96,6 +96,11 @@ const HelpText = styled.div`
   line-height: 3.5vh;
 `;
 
+const ArtworkContainer = styled.div`
+  overflow-y: scroll;
+  height: 37.5vh;
+`;
+
 interface SelectArtworkProps {
   imagesData: ArtworkData[];
   selectedArtwork: string | undefined;
@@ -121,23 +126,25 @@ const SelectArtwork: React.FC<SelectArtworkProps> = ({
           OBRAS DISPONIBLES
         </ArtworkListHeader>
         <ArtworkListDottedLine />
-        {imagesData.map((img) => (
-          <div key={img.id + '_c'}>
-            <ArtworkListItem>
-              <ArtworkListText
-                onClick={() => onArtworkSelected(img.id)}
-                active={selectedArtwork !== undefined && img.id === selectedArtwork}
-                key={img.id}
-              >
-                {img.title}
-              </ArtworkListText>
-              {selectedArtwork !== undefined && img.id === selectedArtwork &&
-                <ArtworkSelectedIcon />
-              }
-            </ArtworkListItem>
-            <ArtworkListDottedLine key={img.id + '_d'} />
-          </div>
-        ))}
+        <ArtworkContainer>
+          {imagesData.map((img) => (
+            <div key={img.id + '_c'}>
+              <ArtworkListItem>
+                <ArtworkListText
+                  onClick={() => onArtworkSelected(img.id)}
+                  active={selectedArtwork !== undefined && img.id === selectedArtwork}
+                  key={img.id}
+                >
+                  {img.title}
+                </ArtworkListText>
+                {selectedArtwork !== undefined && img.id === selectedArtwork &&
+                  <ArtworkSelectedIcon />
+                }
+              </ArtworkListItem>
+              <ArtworkListDottedLine key={img.id + '_d'} />
+            </div>
+          ))}
+        </ArtworkContainer>
         {selectedArtwork &&
           <NextCornerButton
             onNextClicked={onNextClicked}
