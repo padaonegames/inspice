@@ -5,6 +5,7 @@ import { Envelope } from '@styled-icons/boxicons-solid/Envelope';
 import { PlusCircle } from '@styled-icons/boxicons-regular/PlusCircle';
 import { Clock } from '@styled-icons/evaicons-solid/Clock';
 import NextCornerButton from './NextCornerButton';
+import { useTranslation } from 'react-i18next';
 
 interface RootProps {
   backgroundImage: string;
@@ -180,11 +181,13 @@ const WriteHints: React.FC<WriteHintsProps> = ({
   onNextClicked
 }) => {
 
+  const { t, i18n } = useTranslation('app');
+  
   const [selectedHint, setSelectedHint] = useState<number>(0);
 
   const placeholder = selectedHint > 0 ?
-    'Escribe tu siguiente pista...' :
-    'Escribe una pista que permita encontrar la obra seleccionada...';
+    t('typeYourNextHint') :
+    t('writeHintToHelpFindSelectedArtwork');
 
   const canAdvance = hints.every(h => h.length > 0);
 
@@ -195,7 +198,7 @@ const WriteHints: React.FC<WriteHintsProps> = ({
       <ReferencePanel>
         <QuestionWrapper>
           <Question>
-            ¿De qué obra estamos hablando?
+            {t('whatArtworkAreWeTalkingAbout')}
         </Question>
         </QuestionWrapper>
         <ClueWrapper>
@@ -225,14 +228,13 @@ const WriteHints: React.FC<WriteHintsProps> = ({
             />
           </DotsWrapper>
           <HintsText>
-            PISTAS
+            {t('hints')}
           </HintsText>
         </CluePanelWrapper>
 
         <ControlsWrapper>
           <NextCornerButton
             type='previous'
-            text='RETROCEDER'
             size='small'
             fontSize='0.65em'
             alignSelf='flex-start'
@@ -241,6 +243,7 @@ const WriteHints: React.FC<WriteHintsProps> = ({
           />
           <NextCornerButton
             size='small'
+            type='next'
             fontSize='0.65em'
             alignSelf='flex-end'
             margin='0'

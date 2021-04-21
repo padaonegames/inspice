@@ -3,6 +3,7 @@ import styled from 'styled-components';
 
 import { Envelope } from '@styled-icons/boxicons-solid/Envelope';
 import { EnvelopeOpen } from '@styled-icons/boxicons-solid/EnvelopeOpen';
+import { useTranslation } from 'react-i18next';
 
 const Root = styled.div`
   justify-content: center;
@@ -123,6 +124,8 @@ interface ClueHolderProps {
 
 const ClueHolder: React.FC<ClueHolderProps> = ({ clues, onClueOpened }) => {
 
+  const { t, i18n } = useTranslation('app');
+  
   const [selectedClue, setSelectedClue] = useState<number>(0);
   const [openedClues, setOpenedClues] = useState<boolean[]>(() => {
     let init = Array(clues.length).fill(false);
@@ -137,12 +140,12 @@ const ClueHolder: React.FC<ClueHolderProps> = ({ clues, onClueOpened }) => {
     <Root>
       <QuestionWrapper>
         <Question>
-          ¿De qué obra estamos hablando?
+          {t('whatArtworkAreWeTalkingAbout')}
         </Question>
       </QuestionWrapper>
       <ClueWrapper>
         <Clue>
-          {clues[selectedClue]}
+          {t(clues[selectedClue])}
         </Clue>
       </ClueWrapper>
       <DotsWrapper>
@@ -172,7 +175,7 @@ const ClueHolder: React.FC<ClueHolderProps> = ({ clues, onClueOpened }) => {
         )}
       </DotsWrapper>
       <HintsText>
-        PISTAS
+        {t('hints')}
       </HintsText>
     </Root>
   );

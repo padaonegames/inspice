@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { ArtworkData } from '../artworks/artworkData';
 import { RadioCircleMarked } from '@styled-icons/boxicons-regular/RadioCircleMarked';
 import NextCornerButton from './NextCornerButton';
+import { useTranslation } from 'react-i18next';
 
 const Root = styled.div`
   display: flex;
@@ -115,6 +116,8 @@ const SelectArtwork: React.FC<SelectArtworkProps> = ({
   onNextClicked
 }) => {
 
+  const { t, i18n } = useTranslation('app');
+
   const retrieveArtworkSrc = (artworkId: string): string => {
     return imagesData.find(elem => elem.id === artworkId)!.src;
   };
@@ -123,7 +126,7 @@ const SelectArtwork: React.FC<SelectArtworkProps> = ({
     <Root>
       <SelectionPanel>
         <ArtworkListHeader>
-          OBRAS DISPONIBLES
+          {t('availableArtworks')}
         </ArtworkListHeader>
         <ArtworkListDottedLine />
         <ArtworkContainer>
@@ -135,7 +138,7 @@ const SelectArtwork: React.FC<SelectArtworkProps> = ({
                   active={selectedArtwork !== undefined && img.id === selectedArtwork}
                   key={img.id}
                 >
-                  {img.title}
+                  {i18n.language === 'en' ? img.title_en : img.title}
                 </ArtworkListText>
                 {selectedArtwork !== undefined && img.id === selectedArtwork &&
                   <ArtworkSelectedIcon />
@@ -156,8 +159,7 @@ const SelectArtwork: React.FC<SelectArtworkProps> = ({
           backgroundImage={retrieveArtworkSrc(selectedArtwork)}
         /> :
         <HelpText>
-          Selecciona una obra de entre las disponibles
-          en el panel lateral para empezar a editar la fase.
+          {t('selectArtworkMessage')}
         </HelpText>
       }
     </Root>

@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { PlusCircle } from '@styled-icons/boxicons-regular/PlusCircle';
+import { useTranslation } from 'react-i18next';
 
 const AddStageIcon = styled(PlusCircle)`
   color: black;
@@ -42,13 +43,15 @@ interface AddStagePanelProps {
 
 const AddStagePanel: React.FC<AddStagePanelProps> = ({ onButtonClicked }) => {
 
+  const { t, i18n } = useTranslation('app');
+  
   return (
     <AddStageCorner
       onClick={onButtonClicked}
     >
       <AddStageIcon/>
       <AddStageText>
-        NUEVA ETAPA  
+        {t('newPhase')}
       </AddStageText>      
     </AddStageCorner>
   );

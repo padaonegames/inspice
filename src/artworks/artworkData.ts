@@ -15,6 +15,7 @@ export interface ArtworkData {
   src: string; // path de la imagen a usar
   id: string; // id único que identifique a la obra
   title: string; // título de la obra
+  title_en?: string; // título en inglés
   author: string; // autor de la obra
   date: string; // año o época en la que se creó
   location: string; // museo y sala donde se encuentra la obra
@@ -25,6 +26,7 @@ const vulcano: ArtworkData = {
   src: vulcano_src,
   id: 'vulcano',
   title: 'La fragua de vulcano',
+  title_en: `Vulcan's forge`,
   author: 'Velázquez, Diego Rodríguez de Silva y',
   info: 'Óleo sobre lienzo, 223 x 290 cm',
   location: 'Museo del Prado Sala 011',
@@ -35,6 +37,7 @@ const arachne: ArtworkData = {
   src: arachne_src,
   id: 'arachne',
   title: 'Las hilanderas o la fábula de Aracne',
+  title_en: `The Spinners, or the Fable of Arachne`,
   author: 'Velázquez, Diego Rodríguez de Silva y',
   info: 'Óleo sobre lienzo, 220 x 289 cm',
   location: 'Museo del Prado Sala C',
@@ -45,6 +48,7 @@ const judit: ArtworkData = {
   src: judit_src,
   id: 'judit',
   title: 'Judit en el banquete de Holofernes',
+  title_en: `Judith at the Banquet of Holofernes`,
   author: 'Rembrandt Harmensz. van Rijn',
   info: 'Óleo sobre lienzo, 143 x 154,7 cm',
   location: 'Museo del Prado Sala 076',
@@ -55,6 +59,7 @@ const proserpina: ArtworkData = {
   src: proserpina_src,
   id: 'proserpina',
   title: 'El rapto de Proserpina',
+  title_en: `The Rape of Proserpine`,
   author: 'Rubens, Pedro Pablo',
   info: 'Óleo sobre lienzo, 181 x 271,2cm',
   location: 'Museo del Prado Sala 079',
@@ -65,6 +70,7 @@ const hipodamia: ArtworkData = {
   src: hipodamia_src,
   id: 'hipodamia',
   title: 'El rapto de Hipodamía',
+  title_en: `The Rape of Hippodamia`,
   author: 'Rubens, Pedro Pablo',
   info: 'Óleo sobre lienzo, 182,5 x 285,5 cm',
   location: 'Museo del Prado Sala 079',
@@ -75,6 +81,7 @@ const diana: ArtworkData = {
   src: diana_src,
   id: 'diana',
   title: 'Diana y Calisto',
+  title_en: `Diana and Callisto`,
   author: 'Rubens, Pedro Pablo',
   info: 'Óleo sobre lienzo, 202,6 x 325,5 cm',
   location: 'Museo del Prado Sala C',
@@ -85,6 +92,7 @@ const hipomenes_atalanta: ArtworkData = {
   src: hipomenes_atalanta_src,
   id: 'hipomenes_atalanta',
   title: 'Hipómenes y Atalanta',
+  title_en: `Hippomenes and Atalanta`,
   author: 'Reni, Guido',
   info: 'Óleo sobre lienzo, 206 x 297 cm',
   location: 'Museo del Prado, No expuesto',
@@ -95,6 +103,7 @@ const venus_adonis: ArtworkData = {
   src: venus_adonis_src,
   id: 'venus_adonis',
   title: 'Venus y Adonis',
+  title_en: `Venus and Adonis`,
   author: 'Veronés, Paolo',
   info: 'Óleo sobre lienzo, 162 x 191 cm',
   location: 'Museo del Prado, Sala C',
@@ -105,6 +114,7 @@ const venus_adonis_cupido: ArtworkData = {
   src: venus_adonis_cupido_src,
   id: 'venus_adonis_cupido',
   title: 'Venus, Adonis y Cupido',
+  title_en: `Venus, Adonis and Cupid`,
   author: 'Carracci, Annibale',
   info: 'Óleo sobre lienzo, 212 x 268 cm',
   location: 'Museo del Prado, Sala 026',
@@ -115,6 +125,7 @@ const susana: ArtworkData = {
   src: susana_src,
   id: 'susana',
   title: 'Susana y los viejos',
+  title_en: `Susannah and the Elders`,
   author: 'Guercino',
   info: 'Óleo sobre lienzo, 176 x 208 cm',
   location: 'Museo del Prado, Sala 005',
@@ -125,6 +136,7 @@ const ofrenda_venus: ArtworkData = {
   src: ofrenda_venus_src,
   id: 'ofrenda_venus',
   title: 'Ofrenda a Venus',
+  title_en: `The Worship of Venus`,
   author: 'Tiziano, Vecellio di Gregorio',
   info: 'Óleo sobre lienzo, 172 x 175 cm',
   location: 'Museo del Prado, Sala C',
@@ -135,6 +147,7 @@ const bacanal_adrios: ArtworkData = {
   src: bacanal_adrios_src,
   id: 'bacanal_adrios',
   title: 'La bacanal de los andrios',
+  title_en: `The Andrians`,
   author: 'Tiziano, Vecellio di Gregorio',
   info: 'Óleo sobre lienzo, 175 x 193 cm',
   location: 'Museo del Prado, Sala C',

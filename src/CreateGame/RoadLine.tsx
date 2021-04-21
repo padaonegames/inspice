@@ -5,6 +5,7 @@ import { FlagOutline } from '@styled-icons/evaicons-outline/FlagOutline';
 import { ClockOutline } from '@styled-icons/evaicons-outline/ClockOutline';
 import { DoneAllOutline } from '@styled-icons/evaicons-outline/DoneAllOutline';
 import { MapPin } from '@styled-icons/boxicons-regular/MapPin';
+import { useTranslation } from 'react-i18next';
 
 const RoadLineWrapper = styled.div`
   display: flex;
@@ -124,6 +125,8 @@ interface RoadLineProps {
 
 const RoadLine: React.FC<RoadLineProps> = ({ currentStage, stagesCompleted, onStageSelected }) => {
 
+  const { t, i18n } = useTranslation('app');
+  
   return (
     <RoadLineWrapper>
       {stagesCompleted.map((stageCompleted, index) => {
@@ -144,7 +147,7 @@ const RoadLine: React.FC<RoadLineProps> = ({ currentStage, stagesCompleted, onSt
             <StageDescription
               selected={index === currentStage}
             >
-              FASE {index + 1}
+              {t('phase')} {index + 1}
             </StageDescription>
             <DividerLine
               width={100}
@@ -163,7 +166,7 @@ const RoadLine: React.FC<RoadLineProps> = ({ currentStage, stagesCompleted, onSt
         <StageDescription
           selected={false}
         >
-          FIN
+          {t('endPhase')}
         </StageDescription>
       </StageWrapper>
     </RoadLineWrapper>

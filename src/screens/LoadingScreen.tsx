@@ -3,6 +3,7 @@ import styled, { keyframes } from 'styled-components';
 
 import { Spinner2 } from '@styled-icons/icomoon/Spinner2';
 import { NumberLiteralType } from 'typescript';
+import { useTranslation } from 'react-i18next';
 
 const Root = styled.div`
   display: flex;
@@ -54,12 +55,15 @@ interface LoadingScreenProps {
 };
 
 const LoadingScreen: React.FC<LoadingScreenProps> = ({ loadedAssets, totalAssets }) => {
+
+  const { t, i18n } = useTranslation('app');
+  
   return (
     <Root>
       <ContentWrapper>
         <SpinnerIcon />
         <LoadingText>
-          Cargando demo: {loadedAssets}/{totalAssets}.
+          {t('loadingDemo')}: {loadedAssets}/{totalAssets}.
       </LoadingText>
       </ContentWrapper>
     </Root>

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 import AudioPlayer from '../components/AudioPlayer';
 
@@ -81,9 +82,13 @@ interface ArtworkCorrectProps {
   image: string;
   recording: string;
   title: string;
+  title_en: string;
 };
 
-const ArtworkCorrect: React.FC<ArtworkCorrectProps> = ({ flipped, image, recording, title }) => {
+const ArtworkCorrect: React.FC<ArtworkCorrectProps> = ({ flipped, image, recording, title, title_en }) => {
+
+  const { t, i18n } = useTranslation('app');
+  
   return (
     <CardContent
       flipped={flipped}
@@ -95,7 +100,7 @@ const ArtworkCorrect: React.FC<ArtworkCorrectProps> = ({ flipped, image, recordi
           {title}
         </NameText>
         <InformationText>
-          ¡Pieza correcta! Aquí tienes tu audio:
+          {t('correctArtworkAudioHere')}
         </InformationText>
         <AudioPlayer 
           src={recording}

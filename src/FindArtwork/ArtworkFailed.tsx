@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Block } from '@styled-icons/boxicons-regular/Block';
+import { useTranslation } from 'react-i18next';
 
 const RevealText = styled.div`
   display: flex;
@@ -87,9 +88,12 @@ interface ArtworkFailedProps {
   flipped: boolean;
   image: string;
   title: string;
+  title_en: string;
 };
 
-const ArtworkFailed: React.FC<ArtworkFailedProps> = ({ flipped, image, title }) => {
+const ArtworkFailed: React.FC<ArtworkFailedProps> = ({ flipped, image, title, title_en }) => {
+  
+  const { t, i18n } = useTranslation('app');
   
   return (
     <CardContent
@@ -99,10 +103,10 @@ const ArtworkFailed: React.FC<ArtworkFailedProps> = ({ flipped, image, title }) 
       <DarkLayer/>
       <RevealText>
         <NameText>
-          {title}
+          {i18n.language === 'en' ? title_en : title}
         </NameText>
         <InformationText>
-          Pieza incorrecta.
+          {t('incorrectArtwork')}
         </InformationText>
         <FailedIcon />
       </RevealText>

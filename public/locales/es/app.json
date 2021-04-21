@@ -1,0 +1,26 @@
+{
+  "recordAudio": "Graba el audio a reproducir tras encontrar la obra",
+  "goBack": "RETROCEDER",
+  "goForward": "CONTINUAR",
+  "museumHeader": "MUSEO DEL PRADO",
+  "newPhase": "NUEVA FASE",
+  "endPhase": "FIN",
+  "phase": "FASE",
+  "availableArtworks": "OBRAS DISPONIBLES",
+  "selectArtworkMessage": "Selecciona una obra de entre las disponibles en el panel lateral para empezar a editar la fase.",
+  "submitGame": "ENVIAR JUEGO",
+  "correctArtworkAudioHere": "¡Pieza correcta! Aquí tienes tu audio:",
+  "incorrectArtwork": "Pieza incorrecta.",
+  "whatArtworkAreWeTalkingAbout": "¿De qué obra estamos hablando?",
+  "hints": "PISTAS",
+  "points": "PUNTUACIÓN",
+  "typeYourNextHint": "Escribe tu siguiente pista...",
+  "loadingDemo": "Cargando demo",
+  "writeHintToHelpFindSelectedArtwork": "Escribe una pista que permita encontrar la obra seleccionada...",
+  "clue0_0": "En esta obra se narra un duelo entre personajes mitológicos, incluyendo una diosa muy orgullosa...",
+  "clue0_1": "La diosa en cuestión no es otra que Atenea, diosa de la sabiduría...",
+  "clue0_2": "Irritada por no ser capaz de derrotar a Arachne en su duelo, ¡Atenea transformó a su rival en araña!",
+  "clue1_0": "En esta obra se narra la visita de Apolo, el resplandeciente dios del sol, al taller del herrero de los dioses del Olimpo...",
+  "clue1_1": "Su objetivo era darle al herrero la humillante noticia de que su mujer, Venus, estaba cometiendo adulterio con el dios guerrero Marte."
+
+}

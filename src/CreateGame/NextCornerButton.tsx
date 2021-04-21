@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { NextPlan } from '@styled-icons/material-outlined/NextPlan';
+import { useTranslation } from 'react-i18next';
 
 interface IconProps {
   size: 'small' | 'medium';
@@ -74,7 +75,6 @@ const NextCorner = styled.div<CornerProps>`
 interface NextCornerButtonProps {
   onNextClicked: () => void;
   type?: 'next' | 'previous';
-  text?: string;
   size?: 'small' | 'medium';
   fontSize?: string;
   alignSelf?: 'flex-start' | 'flex-end' | 'center';
@@ -85,13 +85,14 @@ interface NextCornerButtonProps {
 const NextCornerButton: React.FC<NextCornerButtonProps> = ({
   onNextClicked,
   type = 'next',
-  text = 'CONTINUAR',
   size = 'medium',
   fontSize = '0.8em',
   alignSelf = 'center',
   margin = 'auto',
   active = true
 }) => {
+
+  const { t, i18n } = useTranslation('app');
 
   return (
     <NextCorner
@@ -112,7 +113,7 @@ const NextCornerButton: React.FC<NextCornerButtonProps> = ({
       <NextCornerText
         fontSize={fontSize}
       >
-        {text}
+        { type === 'next' ? t('goForward') : t('goBack') }
       </NextCornerText>
     </NextCorner>
   );

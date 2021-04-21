@@ -40,12 +40,14 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({ artworkData, flipped, status,
         <ArtworkCorrect
           image={artworkData.src}
           title={artworkData.title}
+          title_en={artworkData.title_en!}
           flipped={flipped}
           recording={status.recording}
         /> :
         <ArtworkFailed
           image={artworkData.src}
           title={artworkData.title}
+          title_en={artworkData.title_en!}
           flipped={flipped}
         />
       }

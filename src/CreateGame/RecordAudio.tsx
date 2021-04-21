@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
+import { useTranslation } from 'react-i18next';
 
 import NextCornerButton from './NextCornerButton';
 import useRecorder from './useRecorder';
@@ -140,6 +141,7 @@ const RecordAudio: React.FC<RecordAudioProps> = ({
   onNextClicked
 }) => {
 
+  const { t, i18n } = useTranslation('app');
   let [audioURL, isRecording, startRecording, stopRecording] = useRecorder();
 
   useEffect(() => {
@@ -157,7 +159,7 @@ const RecordAudio: React.FC<RecordAudioProps> = ({
       <ReferencePanel>
         <QuestionWrapper>
           <Question>
-            Graba el audio a reproducir tras encontrar la obra
+            {t('recordAudio')}
         </Question>
         </QuestionWrapper>
 
@@ -172,7 +174,6 @@ const RecordAudio: React.FC<RecordAudioProps> = ({
         <ControlsWrapper>
           <NextCornerButton
             type='previous'
-            text='RETROCEDER'
             size='small'
             fontSize='0.65em'
             alignSelf='flex-start'
@@ -196,7 +197,7 @@ const RecordAudio: React.FC<RecordAudioProps> = ({
         </ControlsWrapper>
       </ReferencePanel>
     </Root>
-  );
+  ); 
 }
 
 export default RecordAudio;

@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { CloudUpload } from '@styled-icons/boxicons-regular/CloudUpload';
+import { useTranslation } from 'react-i18next';
 
 const SubmitGameIcon = styled(CloudUpload)`
   color: black;
@@ -55,6 +56,8 @@ interface SubmitGamePanelProps {
 
 const SubmitGamePanel: React.FC<SubmitGamePanelProps> = ({ onButtonClicked, enabled }) => {
 
+  const { t, i18n } = useTranslation('app');
+  
   return (
     <SubmitGameCorner
       active={enabled}
@@ -62,7 +65,7 @@ const SubmitGamePanel: React.FC<SubmitGamePanelProps> = ({ onButtonClicked, enab
     >
       <SubmitGameIcon/>
       <SubmitGameText>
-        ENVIAR JUEGO  
+        {t('submitGame')}
       </SubmitGameText>      
     </SubmitGameCorner>
   );

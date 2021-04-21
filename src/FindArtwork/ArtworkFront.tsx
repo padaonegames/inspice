@@ -2,6 +2,7 @@ import React from 'react';
 import styled, { keyframes } from 'styled-components';
 import { Mouse } from '@styled-icons/material-outlined/Mouse';
 import { ArtworkData } from '../artworks/artworkData';
+import { useTranslation } from 'react-i18next';
 
 const RevealText = styled.div`
   display: flex;
@@ -198,6 +199,8 @@ interface ArtworkFrontProps {
 
 const ArtworkFront: React.FC<ArtworkFrontProps> = ({ artworkData, flipped, onArtworkSelected }) => {
   
+  const { t, i18n } = useTranslation('app');
+  
   return (
     <CardBackground
       backgroundImage={artworkData.src}
@@ -206,7 +209,7 @@ const ArtworkFront: React.FC<ArtworkFrontProps> = ({ artworkData, flipped, onArt
       <DarkLayer>
         <RevealText>
           <NameText>
-            {artworkData.title}
+            {i18n.language === 'en' ? artworkData.title_en : artworkData.title}
           </NameText>
           <InformationText>
             {artworkData.author}

@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useTranslation } from 'react-i18next';
 
 const Root = styled.div`
   justify-content: left;
@@ -10,6 +11,7 @@ const Root = styled.div`
   width: 100%;
   height: auto;
   padding-left: 1.5vw;
+  padding-right: 1.5vw;
   padding-top: 3vh;
   border-style: solid;
   border-color: lightgrey;
@@ -22,11 +24,28 @@ const AppName = styled.p`
   font-family: 'Anonymous Pro';
 `;
 
+const LanguageSwitch = styled.div`
+  margin-left: auto;
+  font-size: 1.1em;
+  letter-spacing: +2px;
+  font-family: 'Anonymous Pro';
+  cursor: pointer;
+`;
+
 const Header: React.FC = () => {
+
+  const { t, i18n } = useTranslation('app');
 
   return (
     <Root>
-      <AppName>MUSEO DEL PRADO</AppName>
+      <AppName>{t('museumHeader')}</AppName>
+      <LanguageSwitch>
+        <AppName
+          onClick={() => i18n.changeLanguage(i18n.language === 'en' ? 'es' : 'en')}
+        >
+          {i18n.language === 'en' ? 'ES' : 'EN'}
+        </AppName>
+      </LanguageSwitch>
     </Root>
   );
 }

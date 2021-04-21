@@ -9,9 +9,7 @@ export interface StageData {
 
 // Ejemplos
 const clues0 = [
-  'En esta obra se narra un duelo entre personajes mitológicos, incluyendo una diosa muy orgullosa...',
-  'La diosa en cuestión no es otra que Atenea, diosa de la sabiduría...',
-  'Irritada por no ser capaz de derrotar a Arachne en su duelo, ¡Atenea transformó a su rival en araña!'
+  'clue0_0', 'clue0_1', 'clue0_2'
 ];
 
 export const stage0: StageData = {
@@ -21,8 +19,7 @@ export const stage0: StageData = {
 };
 
 const clues1 = [
-  'En esta obra se narra la visita de Apolo, el resplandeciente dios del sol, al taller del herrero de los dioses del Olimpo...',
-  'Su objetivo era darle al herrero la humillante noticia de que su mujer, Venus, estaba cometiendo adulterio con el dios guerrero Marte.',
+  'clue1_0', 'clue1_1', 'clue1_2'
 ];
 
 export const stage1: StageData = {

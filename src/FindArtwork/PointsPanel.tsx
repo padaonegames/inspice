@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 const PointsCornerScore = styled.p`
@@ -39,13 +40,15 @@ interface PointsPanelProps {
 
 const PointsPanel: React.FC<PointsPanelProps> = ({ points }) => {
 
+  const { t, i18n } = useTranslation('app');
+  
   return (
     <PointsCorner>
       <PointsCornerScore>
         {points}
       </PointsCornerScore>
       <PointsCornerText>
-        PUNTUACIÓN
+        {t('points')}
       </PointsCornerText>
     </PointsCorner>
   );

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, Suspense } from 'react';
 import {
   BrowserRouter as Router,
   Switch,
@@ -20,7 +20,7 @@ const App: React.FC = () => {
   const [loadedImages, setLoadedImages] = useState<number>(0);
 
   return (
-    <>
+    <Suspense fallback='loading'>
       <div id='preload-images-demo'>
         {sampleArtworks.map(artw =>
           <img
@@ -55,7 +55,7 @@ const App: React.FC = () => {
             </Switch>
           )}
       </Router>
-    </>
+    </Suspense>
   );
 };
 

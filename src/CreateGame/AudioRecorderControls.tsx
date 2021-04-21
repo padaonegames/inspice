@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { PlayCircle } from '@styled-icons/boxicons-regular/PlayCircle';
 import { PauseCircle } from '@styled-icons/boxicons-regular/PauseCircle';
 import { SkipPreviousCircle } from '@styled-icons/boxicons-regular/SkipPreviousCircle';
-import { FastForwardCircle } from '@styled-icons/boxicons-regular/FastForwardCircle';
 import { Microphone } from '@styled-icons/fa-solid/Microphone';
 
 const AudioRecorderControlsContainer = styled.div`

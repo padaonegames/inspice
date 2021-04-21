@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { NextPlan } from '@styled-icons/material-outlined/NextPlan';
+import { useTranslation } from 'react-i18next';
 
 const NextCornerIcon = styled(NextPlan)`
   color: black;
@@ -42,13 +43,15 @@ interface NextPanelProps {
 
 const NextPanel: React.FC<NextPanelProps> = ({ onNextClicked }) => {
 
+  const { t, i18n } = useTranslation('app');
+  
   return (
     <NextCorner
       onClick={onNextClicked}
     >
       <NextCornerIcon />
       <NextCornerText>
-        CONTINUAR
+        {t('goForward')}
       </NextCornerText>
     </NextCorner>
   );
