@@ -97,7 +97,7 @@ const ArtworkCorrect: React.FC<ArtworkCorrectProps> = ({ flipped, image, recordi
       <DarkLayer/>
       <RevealText>
         <NameText>
-          {title}
+          {i18n.language == 'en' ? title_en : title}
         </NameText>
         <InformationText>
           {t('correctArtworkAudioHere')}

@@ -19,7 +19,7 @@ export const stage0: StageData = {
 };
 
 const clues1 = [
-  'clue1_0', 'clue1_1', 'clue1_2'
+  'clue1_0', 'clue1_1'
 ];
 
 export const stage1: StageData = {
