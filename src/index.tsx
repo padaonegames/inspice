@@ -3,6 +3,14 @@ import ReactDOM from 'react-dom';
 import reportWebVitals from './reportWebVitals';
 import App from './App';
 import './i18n';
+import { initMockAdapter } from './services/mockAdapter';
+import { initializeServices } from './services';
+
+if (process.env.NODE_ENV === 'development') {
+  initMockAdapter();
+}
+
+initializeServices();
 
 ReactDOM.render(
   <React.StrictMode>

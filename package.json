@@ -10,6 +10,7 @@
     "@types/node": "^12.20.6",
     "@types/react": "^17.0.3",
     "@types/react-dom": "^17.0.2",
+    "axios": "^0.21.1",
     "i18next": "^20.2.1",
     "i18next-http-backend": "^1.2.1",
     "react": "^17.0.1",
@@ -49,6 +50,8 @@
   "devDependencies": {
     "@types/dom-mediacapture-record": "^1.0.7",
     "@types/react-router-dom": "^5.1.7",
-    "@types/styled-components": "^5.1.9"
+    "@types/styled-components": "^5.1.9",
+    "axios-mock-adapter": "^1.19.0",
+    "cross-env": "^7.0.3"
   }
 }

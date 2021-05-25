@@ -1,4 +1,4 @@
-import React, { useState, Suspense } from 'react';
+import React, { useState, Suspense, useEffect } from 'react';
 import {
   BrowserRouter as Router,
   Switch,
@@ -12,12 +12,17 @@ import { GlobalStyles } from './global/global';
 import { stage0, stage1 } from './artworks/stageData';
 import { sampleArtworks } from './artworks/artworkData';
 import LoadingScreen from './screens/LoadingScreen';
+import { api } from './services';
 
 const stages = [stage0, stage1];
 
 const App: React.FC = () => {
 
   const [loadedImages, setLoadedImages] = useState<number>(0);
+
+  useEffect(() => {
+    api.getArtworkById('vulcano').then(res => console.log(res));
+  }, []);
 
   return (
     <Suspense fallback='loading'>
