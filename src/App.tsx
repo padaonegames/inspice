@@ -1,4 +1,4 @@
-import React, { useState, Suspense, useEffect } from 'react';
+import React, { useState, Suspense } from 'react';
 import {
   BrowserRouter as Router,
   Switch,
@@ -12,7 +12,7 @@ import { GlobalStyles } from './global/global';
 import { stage0, stage1 } from './artworks/stageData';
 import { sampleArtworks } from './artworks/artworkData';
 import LoadingScreen from './screens/LoadingScreen';
-import { api } from './services';
+import CreateFindArtworkActivityScreen from './screens/CreateFindArtworkActivityScreen';
 
 const stages = [stage0, stage1];
 
@@ -20,9 +20,7 @@ const App: React.FC = () => {
 
   const [loadedImages, setLoadedImages] = useState<number>(0);
 
-  useEffect(() => {
-    api.getArtworkById('vulcano').then(res => console.log(res));
-  }, []);
+  // const [getArtworkTask] = useAsyncRequest(() => api.getArtworkById('vulcano'), []);
 
   return (
     <Suspense fallback='loading'>
@@ -40,22 +38,25 @@ const App: React.FC = () => {
         <GlobalStyles />
         <Header />
         {loadedImages < sampleArtworks.length ?
-          <LoadingScreen 
+          <LoadingScreen
             loadedAssets={loadedImages}
             totalAssets={sampleArtworks.length}
           /> : (
             <Switch>
-              <Route path="/play">
+              <Route path='/consumer/play/:treasure-hunt-id'>
                 <FindArtworkScreen
                   stages={stages}
                   artworks={sampleArtworks}
                 />
               </Route>
-              <Route path="/create">
+              <Route path='/consumer/create/:find-artword-activity-id'>
                 <CreateGameScreen />
               </Route>
+              <Route path='/curator/create'>
+                <CreateFindArtworkActivityScreen />
+              </Route>
               <Route>
-                <Redirect to='/create' />
+                <Redirect to='/curator/create' />
               </Route>
             </Switch>
           )}
