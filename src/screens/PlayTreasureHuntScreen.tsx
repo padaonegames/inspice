@@ -1,21 +1,20 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import FindArtwork from '../FindArtwork/FindArtwork';
-import { ArtworkData } from '../artworks/artworkData';
-import { StageData } from '../artworks/stageData';
 import Fader from '../components/Fader';
+import { ArtworkData, StageData } from '../services/commonDefinitions';
 
 const Root = styled.div`
   display: flex;
   flex-direction: column;
 `;
 
-interface FindArtworkScreenProps {
+interface PlayTreasureHuntScreenProps {
   stages: StageData[];
   artworks: ArtworkData[];
 };
 
-const FindArtworkScreen: React.FC<FindArtworkScreenProps> = ({ stages, artworks }) => {
+const PlayTreasureHuntScreen: React.FC<PlayTreasureHuntScreenProps> = ({ stages, artworks }) => {
 
   const [activeStage, setActiveStage] = useState<number>(0);
   const [showPanel, setShowPanel] = useState<boolean>(true);
@@ -49,4 +48,4 @@ const FindArtworkScreen: React.FC<FindArtworkScreenProps> = ({ stages, artworks 
   );
 }
 
-export default FindArtworkScreen;
+export default PlayTreasureHuntScreen;

@@ -1,8 +1,8 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
 import { Mouse } from '@styled-icons/material-outlined/Mouse';
-import { ArtworkData } from '../artworks/artworkData';
 import { useTranslation } from 'react-i18next';
+import { ArtworkData } from '../services/commonDefinitions';
 
 const RevealText = styled.div`
   display: flex;

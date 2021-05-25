@@ -1,47 +1,38 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { ArtworkData, sampleArtworks } from '../artworks/artworkData';
+import { sampleArtworks } from '../artworks/artworkData';
 import Fader from '../components/Fader';
 import GameOverviewPanel from '../CreateGame/GameOverviewPanel';
 import RecordAudio from '../CreateGame/RecordAudio';
 import SelectArtwork from '../CreateGame/SelectArtwork';
 import WriteHints from '../CreateGame/WriteHints';
+import { ArtworkData, defaultTreasureHuntStage, InProgressTreasureHuntStage } from '../services/commonDefinitions';
 
 const Root = styled.div`
   display: flex;
   flex-direction: column;
 `;
 
-interface InProgressStage {
-  clues: string[];
-  artworkId: string | undefined;
-  recordingSrc: string | undefined;
-};
-
-const isStageCompleted = (stage: InProgressStage): boolean => {
+const isStageCompleted = (stage: InProgressTreasureHuntStage): boolean => {
   return stage.artworkId !== undefined &&
     stage.clues !== undefined && stage.clues.length > 0 &&
     stage.recordingSrc !== undefined;
 };
 
-const defaultStage: InProgressStage = {
-  clues: [''],
-  artworkId: undefined,
-  recordingSrc: undefined
-};
-
 type StageStatus = 'select-artwork' | 'write-hints' | 'record-audio' | 'none';
 
-const CreateGameScreen: React.FC = () => {
+const CreateTreasureHuntScreen: React.FC = () => {
 
+  // TODO: change data types to match the ones from commonDefinitions.ts
+  // that is, TreasureHuntDefinition/ InProgressTreasureHuntDefinition
   const [activeStage, setActiveStage] = useState<number>(0);
-  const [stageList, setStageList] = useState<InProgressStage[]>([defaultStage]);
+  const [stageList, setStageList] = useState<InProgressTreasureHuntStage[]>([defaultTreasureHuntStage]);
 
   const [activeStageStatus, setActiveStageStatus] = useState<StageStatus>('select-artwork');
   const [displayedState, setDisplayedState] = useState<StageStatus>('select-artwork');
 
   const handleAddStage = () => {
-    setStageList(prev => [...prev, defaultStage]);
+    setStageList(prev => [...prev, defaultTreasureHuntStage]);
   };
 
   const handleSelectArtwork = (artworkId: string) => {
@@ -63,7 +54,7 @@ const CreateGameScreen: React.FC = () => {
 
   const handleAddHint = () => {
     setStageList(prev => {
-      let aux: InProgressStage[] = JSON.parse(JSON.stringify(prev));
+      let aux: InProgressTreasureHuntStage[] = JSON.parse(JSON.stringify(prev));
       aux[activeStage].clues.push('');
       return aux;
     });
@@ -71,7 +62,7 @@ const CreateGameScreen: React.FC = () => {
 
   const handleUpdateHint = (text: string, index: number) => {
     setStageList(prev => {
-      let aux: InProgressStage[] = JSON.parse(JSON.stringify(prev));
+      let aux: InProgressTreasureHuntStage[] = JSON.parse(JSON.stringify(prev));
       aux[activeStage].clues[index] = text;
       return aux;
     });
@@ -79,7 +70,7 @@ const CreateGameScreen: React.FC = () => {
 
   const handleRecordingReady = (audioURL: string) => {
     setStageList(prev => {
-      let aux: InProgressStage[] = JSON.parse(JSON.stringify(prev));
+      let aux: InProgressTreasureHuntStage[] = JSON.parse(JSON.stringify(prev));
       aux[activeStage].recordingSrc = audioURL;
       return aux;
     });
@@ -161,4 +152,4 @@ const CreateGameScreen: React.FC = () => {
   );
 }
 
-export default CreateGameScreen;
+export default CreateTreasureHuntScreen;

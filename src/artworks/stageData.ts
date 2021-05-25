@@ -1,11 +1,6 @@
+import { StageData } from '../services/commonDefinitions';
 import arachne from './arachne.mp3';
 import vulcano from './vulcano.mp3';
-
-export interface StageData {
-  artworkId: string; // id del artwork seleccionado
-  recordingPath: string; // path de la grabación a emplear
-  clues: string[]; // pistas a mostrar al jugador
-};
 
 // Ejemplos
 const clues0 = [

@@ -5,8 +5,8 @@ import {
   Route,
   Redirect
 } from 'react-router-dom';
-import FindArtworkScreen from './screens/FindArtworkScreen';
-import CreateGameScreen from './screens/CreateGameScreen';
+import PlayTreasureHuntScreen from './screens/PlayTreasureHuntScreen';
+import CreateTreasureHuntScreen from './screens/CreateTreasureHuntScreen';
 import Header from './components/Header';
 import { GlobalStyles } from './global/global';
 import { stage0, stage1 } from './artworks/stageData';
@@ -43,14 +43,14 @@ const App: React.FC = () => {
             totalAssets={sampleArtworks.length}
           /> : (
             <Switch>
-              <Route path='/consumer/play/:treasure-hunt-id'>
-                <FindArtworkScreen
+              <Route path='/consumer/play'>
+                <PlayTreasureHuntScreen
                   stages={stages}
                   artworks={sampleArtworks}
                 />
               </Route>
-              <Route path='/consumer/create/:find-artword-activity-id'>
-                <CreateGameScreen />
+              <Route path='/consumer/create'>
+                <CreateTreasureHuntScreen />
               </Route>
               <Route path='/curator/create'>
                 <CreateFindArtworkActivityScreen />

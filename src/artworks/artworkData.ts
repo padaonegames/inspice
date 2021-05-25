@@ -23,17 +23,7 @@ import swarms_the_moth_src from "./swarms_the_moth.jpg";
 import la_forma_deforme_src from "./la_forma_deforme.jpg";
 import cape_siren_src from "./cape_siren.jpg";
 import boy_src from "./boy.jpg";
-
-export interface ArtworkData {
-  src: string; // path de la imagen a usar
-  id: string; // id único que identifique a la obra
-  title: string; // título de la obra
-  title_en?: string; // título en inglés
-  author: string; // autor de la obra
-  date: string; // año o época en la que se creó
-  location: string; // museo y sala donde se encuentra la obra
-  info: string; // cualquier otro tipo de info adicional
-}
+import { ArtworkData } from "../services/commonDefinitions";
 
 const vulcano: ArtworkData = {
   src: vulcano_src,
@@ -311,18 +301,6 @@ const boy: ArtworkData = {
 };
 
 export const sampleArtworks: ArtworkData[] = [
-  vulcano,
-  arachne,
-  judit,
-  proserpina,
-  hipodamia,
-  diana,
-  hipomenes_atalanta,
-  venus_adonis,
-  venus_adonis_cupido,
-  susana,
-  ofrenda_venus,
-  bacanal_adrios,
   little_miss_muffet,
   magnificent_seven,
   the_bakers_wife,
@@ -336,4 +314,16 @@ export const sampleArtworks: ArtworkData[] = [
   la_forma_deforme,
   cape_siren,
   boy,
+  vulcano,
+  arachne,
+  judit,
+  proserpina,
+  hipodamia,
+  diana,
+  hipomenes_atalanta,
+  venus_adonis,
+  venus_adonis_cupido,
+  susana,
+  ofrenda_venus,
+  bacanal_adrios,
 ];

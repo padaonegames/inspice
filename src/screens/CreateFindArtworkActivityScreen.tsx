@@ -1,72 +1,36 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import CreateFindArtworkOverviewPanel from '../CreateFindArtworkActivity/CreateFindArtworkOverviewPanel';
-import { AllowedInputs } from '../services/commonDefinitions';
+import { defaultFindArtworkActivityDefinition, InProgressFindArtworkActivityDefinition } from '../services/commonDefinitions';
 
 const Root = styled.div`
   display: flex;
   flex-direction: column;
 `;
 
-interface InProgressActivityDefinition {
-  activityTitle: string | undefined;
-  activityAuthor: string | undefined;
-  beginsOn: Date | undefined;
-  endsOn: Date | undefined;
-  minStages: number | undefined;
-  maxStages: number | undefined;
-  minCluesPerStage: number | undefined;
-  maxCluesPerStage: number | undefined;
-  allowedInputs: AllowedInputs[];
-  huntPersistenceLocationPost: string | undefined;
-  huntPersistenceLocationGet: string | undefined;
-  artworks: string[];
-};
-
-const isActivityDefinitionCompleted = (definition: InProgressActivityDefinition): boolean => {
-  return isStageOneCompleted(definition) &&
-    isStageTwoCompleted(definition) &&
-    isStageThreeCompleted(definition);
-};
-
-const isStageOneCompleted = (definition: InProgressActivityDefinition): boolean => {
+const isStageOneCompleted = (definition: InProgressFindArtworkActivityDefinition): boolean => {
   return definition.activityAuthor !== undefined &&
     definition.activityTitle !== undefined &&
     definition.beginsOn !== undefined &&
     definition.endsOn !== undefined;
 }
 
-const isStageTwoCompleted = (definition: InProgressActivityDefinition): boolean => {
+const isStageTwoCompleted = (definition: InProgressFindArtworkActivityDefinition): boolean => {
   return definition.minCluesPerStage !== undefined &&
     definition.maxCluesPerStage !== undefined &&
     definition.minStages !== undefined &&
     definition.maxStages !== undefined;
 }
 
-const isStageThreeCompleted = (definition: InProgressActivityDefinition): boolean => {
+const isStageThreeCompleted = (definition: InProgressFindArtworkActivityDefinition): boolean => {
   return definition.artworks.length > 0;
 }
-
-const defaultActivityDefinition: InProgressActivityDefinition = {
-  activityTitle: undefined,
-  activityAuthor: undefined,
-  beginsOn: undefined,
-  endsOn: undefined,
-  minStages: undefined,
-  maxStages: undefined,
-  minCluesPerStage: undefined,
-  maxCluesPerStage: undefined,
-  allowedInputs: [],
-  huntPersistenceLocationPost: undefined,
-  huntPersistenceLocationGet: undefined,
-  artworks: []
-};
 
 type ActivityDefinitionStatus = 'set-title-author-dates' | 'configure-stage-params' | 'select-artworks' | 'none';
 
 const CreateFindArtworkActivityScreen: React.FC = () => {
 
-  const [activityDefinition, setActivityDefinition] = useState<InProgressActivityDefinition>(defaultActivityDefinition);
+  const [activityDefinition, setActivityDefinition] = useState<InProgressFindArtworkActivityDefinition>(defaultFindArtworkActivityDefinition);
   const [activeActivityDefinitionStatus, setActiveActivityDefinitionStatus] = useState<ActivityDefinitionStatus>('set-title-author-dates');
 
   const activeStageToIndex = (): number => {

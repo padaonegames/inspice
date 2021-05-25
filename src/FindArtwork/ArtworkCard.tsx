@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { ArtworkData } from '../artworks/artworkData';
+import { ArtworkData } from '../services/commonDefinitions';
 import ArtworkCorrect from './ArtworkCorrect';
 import ArtworkFailed from './ArtworkFailed';
 import ArtworkFront from './ArtworkFront';

@@ -3,14 +3,13 @@ import styled from 'styled-components';
 import ArtworkCard from '../FindArtwork/ArtworkCard';
 
 import ClueHolder from './ClueHolder';
-import { ArtworkData } from '../artworks/artworkData';
-import { StageData } from '../artworks/stageData';
 import Fader from '../components/Fader';
 import PointsPanel from './PointsPanel';
 import NextPanel from './NextCornerPanel';
 
 import { NavigateNext } from '@styled-icons/material/NavigateNext';
 import { NavigateBefore } from '@styled-icons/material/NavigateBefore';
+import { ArtworkData, StageData } from '../services/commonDefinitions';
 
 const Root = styled.div`
   margin-top: 1vh;

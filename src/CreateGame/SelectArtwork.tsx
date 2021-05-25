@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
-import { ArtworkData } from '../artworks/artworkData';
 import { RadioCircleMarked } from '@styled-icons/boxicons-regular/RadioCircleMarked';
 import NextCornerButton from './NextCornerButton';
 import { useTranslation } from 'react-i18next';
+import { ArtworkData } from '../services/commonDefinitions';
 
 const Root = styled.div`
   display: flex;
