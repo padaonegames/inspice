@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import styled from 'styled-components';
 import ArtworkCard from '../FindArtwork/ArtworkCard';
 
@@ -134,11 +134,23 @@ const FindArtwork: React.FC<FindArtworkProps> = ({
     onPointsUpdate(-value);
   };
 
-  const displayedArtworks = imagesData.slice(displayIndex, displayIndex + 1).concat(
-    imagesData[displayIndex + 2], imagesData[displayIndex + 4],
-    imagesData[displayIndex + 1], imagesData[displayIndex + 3], imagesData[displayIndex + 5],
-  ); //The Artworks are shown in a snake shape for the 1by1 move
+  const newIndex = (oldIndex: number): number => {
+    if (oldIndex === 0) return 0;
+    else if (oldIndex === 1) return 2;
+    else if (oldIndex === 2) return 4;
+    else if (oldIndex === 3) return 1;
+    else if (oldIndex === 4) return 3;
+    else return 5;
+  };
 
+  //The Artworks are shown in a snake shape for the 1by1 move
+  const displayedArtworks = imagesData.slice(displayIndex, displayIndex + 1).concat(
+    imagesData.slice(displayIndex + 2, displayIndex + 3),
+    imagesData.slice(displayIndex + 4, displayIndex + 5),
+    imagesData.slice(displayIndex + 1, displayIndex + 2),
+    imagesData.slice(displayIndex + 3, displayIndex + 4),
+    imagesData.slice(displayIndex + 5, displayIndex + 6)
+  );
   return (
     <Root>
       <UpperRowContainer>
@@ -162,13 +174,9 @@ const FindArtwork: React.FC<FindArtworkProps> = ({
         <NavigateBeforeIcon
           active={displayIndex > 0}
           onClick={() => {
-            if (displayIndex > 1) {
+            if (displayIndex > 0) {
               setDisplayIndex(prev => prev - 2);
             }
-            else if (displayIndex > 0) {
-              setDisplayIndex(prev => prev - 1);
-            }
-
           }}
         />
         <ArtworkGrid>
@@ -176,23 +184,20 @@ const FindArtwork: React.FC<FindArtworkProps> = ({
             <ArtworkCard
               key={im.id}
               artworkData={im}
-              flipped={flippedCards[i + displayIndex]}
+              flipped={flippedCards[newIndex(i) + displayIndex]}
               status={im.id === stageData.artworkId ?
                 { status: 'right', recording: stageData.recordingPath } :
                 { status: 'wrong' }
               }
-              onCardSelected={() => handleCardSelected(im.id, i + displayIndex)}
+              onCardSelected={() => handleCardSelected(im.id, newIndex(i) + displayIndex)}
             />
           ))}
         </ArtworkGrid>
         <NavigateNextIcon
           active={displayIndex + 6 < imagesData.length}
           onClick={() => {
-            if (displayIndex + 7 < imagesData.length) {
+            if (displayIndex + 6 < imagesData.length) {
               setDisplayIndex(prev => prev + 2);
-            }
-            else if (displayIndex + 6 < imagesData.length) {
-              setDisplayIndex(prev => prev + 1);
             }
           }}
         />
