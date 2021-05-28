@@ -134,7 +134,10 @@ const FindArtwork: React.FC<FindArtworkProps> = ({
     onPointsUpdate(-value);
   };
 
-  const displayedArtworks = imagesData.slice(displayIndex, displayIndex + 6);
+  const displayedArtworks = imagesData.slice(displayIndex, displayIndex + 1).concat(
+    imagesData[displayIndex + 2], imagesData[displayIndex + 4],
+    imagesData[displayIndex + 1], imagesData[displayIndex + 3], imagesData[displayIndex + 5],
+  ); //The Artworks are shown in a snake shape for the 1by1 move
 
   return (
     <Root>
@@ -159,9 +162,13 @@ const FindArtwork: React.FC<FindArtworkProps> = ({
         <NavigateBeforeIcon
           active={displayIndex > 0}
           onClick={() => {
-            if (displayIndex > 0) {
+            if (displayIndex > 1) {
+              setDisplayIndex(prev => prev - 2);
+            }
+            else if (displayIndex > 0) {
               setDisplayIndex(prev => prev - 1);
             }
+
           }}
         />
         <ArtworkGrid>
@@ -181,7 +188,10 @@ const FindArtwork: React.FC<FindArtworkProps> = ({
         <NavigateNextIcon
           active={displayIndex + 6 < imagesData.length}
           onClick={() => {
-            if (displayIndex + 6 < imagesData.length) {
+            if (displayIndex + 7 < imagesData.length) {
+              setDisplayIndex(prev => prev + 2);
+            }
+            else if (displayIndex + 6 < imagesData.length) {
               setDisplayIndex(prev => prev + 1);
             }
           }}
