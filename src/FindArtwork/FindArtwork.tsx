@@ -134,15 +134,6 @@ const FindArtwork: React.FC<FindArtworkProps> = ({
     onPointsUpdate(-value);
   };
 
-  const newIndex = (oldIndex: number): number => {
-    if (oldIndex === 0) return 0;
-    else if (oldIndex === 1) return 2;
-    else if (oldIndex === 2) return 4;
-    else if (oldIndex === 3) return 1;
-    else if (oldIndex === 4) return 3;
-    else return 5;
-  };
-
   //The Artworks are shown in a snake shape for the 1by1 move
   const displayedArtworks = imagesData.slice(displayIndex, displayIndex + 1).concat(
     imagesData.slice(displayIndex + 2, displayIndex + 3),
@@ -151,6 +142,8 @@ const FindArtwork: React.FC<FindArtworkProps> = ({
     imagesData.slice(displayIndex + 3, displayIndex + 4),
     imagesData.slice(displayIndex + 5, displayIndex + 6)
   );
+  const newIndex: number[] = [0, 2, 4, 1, 3, 5]; //used for knowing the positions of the snake shpe
+
   return (
     <Root>
       <UpperRowContainer>
@@ -184,12 +177,12 @@ const FindArtwork: React.FC<FindArtworkProps> = ({
             <ArtworkCard
               key={im.id}
               artworkData={im}
-              flipped={flippedCards[newIndex(i) + displayIndex]}
+              flipped={flippedCards[newIndex[i] + displayIndex]}
               status={im.id === stageData.artworkId ?
                 { status: 'right', recording: stageData.recordingPath } :
                 { status: 'wrong' }
               }
-              onCardSelected={() => handleCardSelected(im.id, newIndex(i) + displayIndex)}
+              onCardSelected={() => handleCardSelected(im.id, newIndex[i] + displayIndex)}
             />
           ))}
         </ArtworkGrid>

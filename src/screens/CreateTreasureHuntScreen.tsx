@@ -93,7 +93,7 @@ const CreateTreasureHuntScreen: React.FC = () => {
         stagesCompleted={stageList.map(isStageCompleted)}
         onAddNewStage={handleAddStage}
         onStageSelected={handleSelectStage}
-        onSubmitGame={() => {}}
+        onSubmitGame={() => { }}
       />
       {activeStageStatus === 'select-artwork' &&
         <Fader

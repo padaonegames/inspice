@@ -16,11 +16,11 @@ const Root = styled.div<RootProps>`
   flex-direction: row;
   width: auto;
   height: 76.2vh;
-
   background-image: ${props => `url(${props.backgroundImage})`};
-  background-size: 115% auto;
-  background-position: 15% 15%;
   overflow: hidden;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  background-size: auto 90%;
 `;
 
 const ReferencePanel = styled.div`
@@ -182,7 +182,7 @@ const WriteHints: React.FC<WriteHintsProps> = ({
 }) => {
 
   const { t, i18n } = useTranslation('app');
-  
+
   const [selectedHint, setSelectedHint] = useState<number>(0);
 
   const placeholder = selectedHint > 0 ?
@@ -199,7 +199,7 @@ const WriteHints: React.FC<WriteHintsProps> = ({
         <QuestionWrapper>
           <Question>
             {t('whatArtworkAreWeTalkingAbout')}
-        </Question>
+          </Question>
         </QuestionWrapper>
         <ClueWrapper>
           <Clue

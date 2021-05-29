@@ -149,9 +149,10 @@ const CardBackground = styled.div<CardBackgroundProps>`
   height: 100%;
   width: 100%;
   background-image: ${props => `url(${props.backgroundImage})`};
-  background-size: cover;
-  background-position: 0% 20%;
   overflow: hidden;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  background-size: auto 90%;
   
   ${GoCorner} {
     animation: ${shrinkCorner} 0.5s linear;
@@ -198,9 +199,9 @@ interface ArtworkFrontProps {
 };
 
 const ArtworkFront: React.FC<ArtworkFrontProps> = ({ artworkData, flipped, onArtworkSelected }) => {
-  
+
   const { t, i18n } = useTranslation('app');
-  
+
   return (
     <CardBackground
       backgroundImage={artworkData.src}

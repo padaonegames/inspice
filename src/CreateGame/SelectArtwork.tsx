@@ -80,9 +80,11 @@ const ArtworkDisplay = styled.div<ArtworkDisplayProps>`
   height: 76.2vh;
   width: 72vw;
   background-image: ${props => `url(${props.backgroundImage})`};
-  background-size: 115% auto;
-  background-position: 15% 15%;
   overflow: hidden;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  background-size: auto 90%;
+
 `;
 
 const HelpText = styled.div`

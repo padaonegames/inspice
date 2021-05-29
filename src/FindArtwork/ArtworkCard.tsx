@@ -17,7 +17,7 @@ const CardContainer = styled.div`
   background-color: transparent;
 `;
 
-export type ArtworkCardStatus = 
+export type ArtworkCardStatus =
   | { status: 'wrong' }
   | { status: 'right', recording: string };
 

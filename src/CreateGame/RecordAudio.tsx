@@ -17,11 +17,11 @@ const Root = styled.div<RootProps>`
   flex-direction: row;
   width: auto;
   height: 76.2vh;
-
   background-image: ${props => `url(${props.backgroundImage})`};
-  background-size: 115% auto;
-  background-position: 15% 15%;
   overflow: hidden;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  background-size: auto 90%;
 `;
 
 const ReferencePanel = styled.div`
@@ -160,7 +160,7 @@ const RecordAudio: React.FC<RecordAudioProps> = ({
         <QuestionWrapper>
           <Question>
             {t('recordAudio')}
-        </Question>
+          </Question>
         </QuestionWrapper>
 
         {isRecording ?
@@ -197,7 +197,7 @@ const RecordAudio: React.FC<RecordAudioProps> = ({
         </ControlsWrapper>
       </ReferencePanel>
     </Root>
-  ); 
+  );
 }
 
 export default RecordAudio;
