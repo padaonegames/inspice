@@ -15,6 +15,7 @@ const CardContainer = styled.div`
   transform-style: preserve-3d;
   perspective: 1000px;
   background-color: transparent;
+  border: 5px solid black;
 `;
 
 export type ArtworkCardStatus =
