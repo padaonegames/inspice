@@ -6,6 +6,7 @@ import GameOverviewPanel from '../CreateGame/GameOverviewPanel';
 import RecordAudio from '../CreateGame/RecordAudio';
 import SelectArtwork from '../CreateGame/SelectArtwork';
 import WriteHints from '../CreateGame/WriteHints';
+import WriteGifts from '../CreateGame/WriteGifts';
 import { ArtworkData, defaultTreasureHuntStage, InProgressTreasureHuntStage } from '../services/commonDefinitions';
 
 const Root = styled.div`
@@ -16,10 +17,12 @@ const Root = styled.div`
 const isStageCompleted = (stage: InProgressTreasureHuntStage): boolean => {
   return stage.artworkId !== undefined &&
     stage.clues !== undefined && stage.clues.length > 0 &&
-    stage.recordingSrc !== undefined;
+    stage.gifts !== undefined && stage.gifts.length > 0 &&
+    stage.gifts[0] !== "";
+  //&& stage.recordingSrc !== undefined;
 };
 
-type StageStatus = 'select-artwork' | 'write-hints' | 'record-audio' | 'none';
+type StageStatus = 'select-artwork' | 'write-hints' | 'record-audio' | 'write-gifts' | 'none';
 
 const CreateTreasureHuntScreen: React.FC = () => {
 
@@ -68,6 +71,32 @@ const CreateTreasureHuntScreen: React.FC = () => {
     });
   };
 
+
+  const handleRemoveGift = (index: number) => {
+    setStageList(prev => {
+      let aux = prev.slice();
+      const filtGifts = aux[activeStage].gifts.filter((_, ind) => ind !== index);
+      aux[activeStage].gifts = filtGifts;
+      return aux;
+    });
+  };
+
+  const handleAddGift = () => {
+    setStageList(prev => {
+      let aux: InProgressTreasureHuntStage[] = JSON.parse(JSON.stringify(prev));
+      aux[activeStage].gifts.push('');
+      return aux;
+    });
+  };
+
+  const handleUpdateGift = (text: string, index: number) => {
+    setStageList(prev => {
+      let aux: InProgressTreasureHuntStage[] = JSON.parse(JSON.stringify(prev));
+      aux[activeStage].gifts[index] = text;
+      return aux;
+    });
+  };
+
   const handleRecordingReady = (audioURL: string) => {
     setStageList(prev => {
       let aux: InProgressTreasureHuntStage[] = JSON.parse(JSON.stringify(prev));
@@ -75,7 +104,6 @@ const CreateTreasureHuntScreen: React.FC = () => {
       return aux;
     });
   };
-
   const handleSelectStage = (index: number) => {
     setActiveStage(index);
     setActiveStageStatus('select-artwork');
@@ -122,8 +150,35 @@ const CreateTreasureHuntScreen: React.FC = () => {
             onAddNewHint={handleAddHint}
             onRemoveHint={(ind: number) => handleRemoveHint(ind)}
             onUpdateHint={handleUpdateHint}
-            onNextClicked={() => setDisplayedState('record-audio')}
+            onNextClicked={() => setDisplayedState('write-gifts')}
             onBackClicked={() => setDisplayedState('select-artwork')}
+          />
+        </Fader>
+      }
+
+
+      {activeStageStatus === 'write-gifts' &&
+        <Fader
+          show={displayedState === 'write-gifts'}
+          transitionTime={1.25}
+          onAnimationCompleted={() => {
+            if (displayedState === 'select-artwork') {
+              setActiveStage(prev => prev + 1);
+            }
+            setActiveStageStatus(displayedState);
+          }}
+        >
+          <WriteGifts
+            gifts={stageList[activeStage].gifts}
+            imageSrc={retrieveArtworkById(stageList[activeStage].artworkId!)!.src}
+            onAddNewGift={handleAddGift}
+            onRemoveGift={(ind: number) => handleRemoveGift(ind)}
+            onUpdateGift={handleUpdateGift}
+            onNextClicked={() => setDisplayedState('select-artwork')}
+            onBackClicked={() => setDisplayedState('write-hints')}
+            canClickNext={activeStage + 1 < stageList.length}
+
+
           />
         </Fader>
       }
@@ -148,6 +203,7 @@ const CreateTreasureHuntScreen: React.FC = () => {
           />
         </Fader>
       }
+
     </Root>
   );
 }

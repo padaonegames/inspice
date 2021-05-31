@@ -15,7 +15,7 @@ export interface ArtworkData {
 
 export interface GetArtworkByIdResponse {
   artwork?: ArtworkData;
-};
+}
 
 //------------------------------------------
 //       TREASURE HUNT DEFINITIONS
@@ -25,40 +25,42 @@ export interface InProgressTreasureHuntDefinition {
   treasureHuntAuthor: string | undefined;
   activityId: string | undefined;
   stages: StageData[];
-};
+}
 
 export interface TreasureHuntDefinition {
   treasureHuntId: string;
   treasureHuntAuthor: string;
   activityId: string;
   stages: StageData[];
-};
+}
 
 export interface StageData {
   artworkId: string; // id del artwork seleccionado
   recordingPath: string; // path de la grabación a emplear
   clues: string[]; // pistas a mostrar al jugador
-};
+}
 
 export interface InProgressTreasureHuntStage {
   clues: string[];
+  gifts: string[];
   artworkId: string | undefined;
   recordingSrc: string | undefined;
-};
+}
 
 export const defaultTreasureHuntStage: InProgressTreasureHuntStage = {
-  clues: [''],
+  clues: [""],
+  gifts: [""],
   artworkId: undefined,
-  recordingSrc: undefined
+  recordingSrc: undefined,
 };
 
 export interface SubmitTreasureHuntDefinitionRequest {
   treasureHuntDefinition: InProgressTreasureHuntDefinition;
-};
+}
 
 export interface GetFindTreasureHuntDefinitionByIdResponse {
   treasureHuntDefinition: TreasureHuntDefinition;
-};
+}
 
 //------------------------------------------
 //         ACTIVITY DEFINITIONS
@@ -77,24 +79,28 @@ export interface InProgressFindArtworkActivityDefinition {
   huntPersistenceLocationPost: string | undefined;
   huntPersistenceLocationGet: string | undefined;
   artworks: string[];
-};
+}
 
-export type CompletedFindArtworkActivityDefinition = Omit<FindArtworkActivityDefinition, 'activityId'>;
+export type CompletedFindArtworkActivityDefinition = Omit<
+  FindArtworkActivityDefinition,
+  "activityId"
+>;
 
-export const defaultFindArtworkActivityDefinition: InProgressFindArtworkActivityDefinition = {
-  activityTitle: undefined,
-  activityAuthor: undefined,
-  beginsOn: undefined,
-  endsOn: undefined,
-  minStages: undefined,
-  maxStages: undefined,
-  minCluesPerStage: undefined,
-  maxCluesPerStage: undefined,
-  allowedInputs: [],
-  huntPersistenceLocationPost: undefined,
-  huntPersistenceLocationGet: undefined,
-  artworks: []
-};
+export const defaultFindArtworkActivityDefinition: InProgressFindArtworkActivityDefinition =
+  {
+    activityTitle: undefined,
+    activityAuthor: undefined,
+    beginsOn: undefined,
+    endsOn: undefined,
+    minStages: undefined,
+    maxStages: undefined,
+    minCluesPerStage: undefined,
+    maxCluesPerStage: undefined,
+    allowedInputs: [],
+    huntPersistenceLocationPost: undefined,
+    huntPersistenceLocationGet: undefined,
+    artworks: [],
+  };
 
 export interface FindArtworkActivityDefinition {
   activityId: string;
@@ -110,21 +116,18 @@ export interface FindArtworkActivityDefinition {
   huntPersistenceLocationPost: string;
   huntPersistenceLocationGet: string;
   artworks: string[];
-};
+}
 
-export type AllowedInputs =
-  | 'Text'
-  | 'Audio'
-  ;
+export type AllowedInputs = "Text" | "Audio";
 
 export interface SubmitFindArtworkActivityDefinitionRequest {
   activityDefinition: CompletedFindArtworkActivityDefinition;
-};
+}
 
 export interface SubmitFindArtworkActivityDefinitionResponse {
   activityDefinition: FindArtworkActivityDefinition | undefined;
-};
+}
 
 export interface GetFindArtworkActivityDefinitionByIdResponse {
   activityDefinition: FindArtworkActivityDefinition;
-};
+}
