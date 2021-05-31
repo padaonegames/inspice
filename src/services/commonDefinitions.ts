@@ -22,13 +22,16 @@ export interface GetArtworkByIdResponse {
 //------------------------------------------
 
 export interface InProgressTreasureHuntDefinition {
-  // TODO: fill in with fields from specification schema
-  // except for unique id (which is generated on the backend)
-  // and all of them possibly undefined.
+  treasureHuntAuthor: string | undefined;
+  activityId: string | undefined;
+  stages: StageData[];
 };
 
 export interface TreasureHuntDefinition {
-  // TODO: fill in with fields from specification schema
+  treasureHuntId: string;
+  treasureHuntAuthor: string;
+  activityId: string;
+  stages: StageData[];
 };
 
 export interface StageData {
@@ -76,6 +79,8 @@ export interface InProgressFindArtworkActivityDefinition {
   artworks: string[];
 };
 
+export type CompletedFindArtworkActivityDefinition = Omit<FindArtworkActivityDefinition, 'activityId'>;
+
 export const defaultFindArtworkActivityDefinition: InProgressFindArtworkActivityDefinition = {
   activityTitle: undefined,
   activityAuthor: undefined,
@@ -113,7 +118,11 @@ export type AllowedInputs =
   ;
 
 export interface SubmitFindArtworkActivityDefinitionRequest {
-  activityDefinition: InProgressFindArtworkActivityDefinition;
+  activityDefinition: CompletedFindArtworkActivityDefinition;
+};
+
+export interface SubmitFindArtworkActivityDefinitionResponse {
+  activityDefinition: FindArtworkActivityDefinition | undefined;
 };
 
 export interface GetFindArtworkActivityDefinitionByIdResponse {
