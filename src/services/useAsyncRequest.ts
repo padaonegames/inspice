@@ -7,7 +7,7 @@ export type AsyncProgress<ResultType = any, ErrorType = any> =
   | { kind: 'running' }
   | { kind: 'success', result: ResultType }
   | { kind: 'failure', reason: ErrorType }
-  | { kind: 'none' }
+  | { kind: 'idle' }
   ;
 
 /**
@@ -25,13 +25,13 @@ export function useAsyncRequest<ResultType, ErrorType>(
   triggerOnStart: boolean = true,
 ): [AsyncProgress<ResultType, ErrorType | Error>, () => void] {
   const [state, setState] = useState<AsyncProgress<ResultType, ErrorType | Error>>(
-    { kind: 'none' },
+    { kind: 'idle' },
   );
   const [triggerRequest, setTriggerRequest] = useState<boolean>(triggerOnStart);
 
   useEffect(() => {
     // request hasn't started yet.
-    if (state.kind === 'none') {
+    if (state.kind === 'idle') {
       if (triggerRequest) {
         // trigger request by changing state to running
         setState({ kind: 'running' });

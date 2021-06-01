@@ -70,7 +70,7 @@ async function getApiResult<T>(url: string, config: AxiosRequestConfig = {}): Pr
   try {
     // we attempt to perform a GET request to the specified url and save the
     // corresponding response within the response variable.
-    response = await axios.get<T>(url, config)
+    response = await axios.get<T>(url, config);
   } catch (error: any) {
     if (error.response) {
       // if the error has a response, then this means that server responded

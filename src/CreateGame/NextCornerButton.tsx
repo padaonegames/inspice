@@ -6,10 +6,11 @@ import { useTranslation } from 'react-i18next';
 
 interface IconProps {
   size: 'small' | 'medium';
+  color: string;
 };
 
 const NextCornerIcon = styled(NextPlan) <IconProps>`
-  color: #F8F8F8;
+  color: ${props => props.color};
   height: ${props => props.size === 'medium' ? 7.5 : 5}vh;
   align-self: center;
   margin-bottom: 1vh;
@@ -21,6 +22,7 @@ const PrevCornerIcon = styled(NextCornerIcon)`
 
 interface TextProps {
   fontSize: string;
+  color: string;
 };
 
 const NextCornerText = styled.p<TextProps>`
@@ -28,7 +30,7 @@ const NextCornerText = styled.p<TextProps>`
   font-weight: 400;
   letter-spacing: +1px;
   font-family: Raleway;
-  color: #F8F8F8;
+  color: ${props => props.color};
 `;
 
 interface CornerProps {
@@ -80,6 +82,7 @@ interface NextCornerButtonProps {
   alignSelf?: 'flex-start' | 'flex-end' | 'center';
   margin?: string;
   active?: boolean;
+  color?: string;
 };
 
 const NextCornerButton: React.FC<NextCornerButtonProps> = ({
@@ -89,7 +92,8 @@ const NextCornerButton: React.FC<NextCornerButtonProps> = ({
   fontSize = '0.8em',
   alignSelf = 'center',
   margin = 'auto',
-  active = true
+  active = true,
+  color = '#F8F8F8',
 }) => {
 
   const { t, i18n } = useTranslation('app');
@@ -104,14 +108,17 @@ const NextCornerButton: React.FC<NextCornerButtonProps> = ({
       { type === 'next' ?
         <NextCornerIcon
           size={size}
+          color={color}
         /> :
         <PrevCornerIcon
           size={size}
+          color={color}
         />
       }
 
       <NextCornerText
         fontSize={fontSize}
+        color={color}
       >
         { type === 'next' ? t('goForward') : t('goBack') }
       </NextCornerText>

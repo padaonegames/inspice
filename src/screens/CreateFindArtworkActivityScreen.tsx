@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import CreateFindArtworkOverviewPanel from '../CreateFindArtworkActivity/CreateFindArtworkOverviewPanel';
+import SetTitleAuthorDatesStage from '../CreateFindArtworkActivity/SetTitleAuthorDatesStage';
+import NextCornerButton from '../CreateGame/NextCornerButton';
 import { api } from '../services';
-import { CompletedFindArtworkActivityDefinition, defaultFindArtworkActivityDefinition, InProgressFindArtworkActivityDefinition, SubmitFindArtworkActivityDefinitionResponse } from '../services/commonDefinitions';
-import { AsyncProgress, useAsyncRequest } from '../services/useAsyncRequest';
+import { CompletedFindArtworkActivityDefinition, InProgressFindArtworkActivityDefinition } from '../services/commonDefinitions';
+import { useAsyncRequest } from '../services/useAsyncRequest';
 
 const Root = styled.div`
   display: flex;
@@ -11,8 +13,8 @@ const Root = styled.div`
 `;
 
 const isStageOneCompleted = (definition: InProgressFindArtworkActivityDefinition): boolean => {
-  return definition.activityAuthor !== undefined &&
-    definition.activityTitle !== undefined &&
+  return definition.activityAuthor !== undefined && definition.activityAuthor.length > 0 &&
+    definition.activityTitle !== undefined && definition.activityTitle.length > 0 &&
     definition.beginsOn !== undefined &&
     definition.endsOn !== undefined;
 }
@@ -52,17 +54,12 @@ const CreateFindArtworkActivityScreen: React.FC = () => {
   const [activeActivityDefinitionStatus, setActiveActivityDefinitionStatus] =
     useState<ActivityDefinitionStatus>('set-title-author-dates');
 
-  
+
   // TODO: All of these requests are just for testing/ demonstration purposes and should eventually be removed.
   const submitDefinition = () => {
     return api.submitFindArtworkActivityDefinition({ ...(activityDefinition as CompletedFindArtworkActivityDefinition) });
   };
   const [submitDefinitionStatus, triggerRequest] = useAsyncRequest(submitDefinition, [], false);
-  const [getActivityDefinitionStatus, triggerGetRequest] = useAsyncRequest(() => api.getFindArtworkActivityDefinitionById('1'));
-
-  useEffect(() => {
-    console.log(getActivityDefinitionStatus);
-  }, [getActivityDefinitionStatus]);
 
   const activeStageToIndex = (): number => {
     switch (activeActivityDefinitionStatus) {
@@ -90,6 +87,18 @@ const CreateFindArtworkActivityScreen: React.FC = () => {
     }
   };
 
+  const handleRangeSelected = (from: Date | undefined, to: Date | undefined) => {
+    setActivityDefinition(prev => ({ ...prev, beginsOn: from, endsOn: to }));
+  };
+
+  const onTitleChange = (title: string) => {
+    setActivityDefinition(prev => ({ ...prev, activityTitle: title }));
+  };
+
+  const onAuthorChange = (author: string) => {
+    setActivityDefinition(prev => ({ ...prev, activityAuthor: author }));
+  };
+
   useEffect(() => {
     console.log(submitDefinitionStatus);
   }, [submitDefinitionStatus]);
@@ -105,6 +114,34 @@ const CreateFindArtworkActivityScreen: React.FC = () => {
         ]}
         onStageSelected={(index) => setActiveActivityDefinitionStatus(indexToActiveStage(index))}
         onSubmitGame={triggerRequest}
+      />
+
+      { activeActivityDefinitionStatus === 'set-title-author-dates' &&
+        <SetTitleAuthorDatesStage
+          handleDateRangeSelected={handleRangeSelected}
+          onAuthorChange={onAuthorChange}
+          onTitleChange={onTitleChange}
+          initialTitle={sample.activityTitle}
+          initialAuthor={sample.activityAuthor}
+          initialFrom={sample.beginsOn}
+          initialTo={sample.endsOn}
+        />
+      }
+
+      { activeActivityDefinitionStatus === 'configure-stage-params' &&
+        <p>Configure Stage Params</p>
+      }
+
+      { activeActivityDefinitionStatus === 'select-artworks' &&
+        <p>Select Artworks</p>
+      }
+
+      { activeActivityDefinitionStatus === 'none' &&
+        <p>None</p>
+      }
+      <NextCornerButton
+        onNextClicked={() => setActiveActivityDefinitionStatus('configure-stage-params')}
+        color='#000000'
       />
     </Root>
   );
