@@ -60,6 +60,16 @@ export class Api {
     return postApiResult<CompletedFindArtworkActivityDefinition, SubmitFindArtworkActivityDefinitionResponse>
       (url, activityDefinition);
   }
+
+  public async fetchAllArtworksFromDataset(datasetUuid: string): Promise<ApiResult<any>> {
+    const url = `https://api2.mksmart.org/query/f1f1018c-6e72-4e95-953e-889d9ae0c914/sparql?query=SELECT%20%3Fsubject%20%3Fpredicate%20%3Fobject%20WHERE%20%7B%20%3Fsubject%20%3Chttp%3A%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23type%3E%20%3Chttp%3A%2F%2Fschema.org%2FSocialMediaPosting%3E%20.%20%20%7D`;
+    return getApiResult<any>(url, {
+      auth: {
+        username: 'f6b5743b-220c-4802-8163-7c9de0d6c56d',
+        password: 'f6b5743b-220c-4802-8163-7c9de0d6c56d'
+      }
+    });
+  }
 }
 
 /**

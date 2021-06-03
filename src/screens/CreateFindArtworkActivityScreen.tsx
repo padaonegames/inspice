@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import ConfigureStageParamsStage from '../CreateFindArtworkActivity/ConfigureStageParamsStage';
 import CreateFindArtworkOverviewPanel from '../CreateFindArtworkActivity/CreateFindArtworkOverviewPanel';
 import SetTitleAuthorDatesStage from '../CreateFindArtworkActivity/SetTitleAuthorDatesStage';
 import NextCornerButton from '../CreateGame/NextCornerButton';
@@ -129,7 +130,16 @@ const CreateFindArtworkActivityScreen: React.FC = () => {
       }
 
       { activeActivityDefinitionStatus === 'configure-stage-params' &&
-        <p>Configure Stage Params</p>
+        <ConfigureStageParamsStage
+        onMinStagesChange={(minStages) => setActivityDefinition(prev => ({ ...prev, minStages: minStages }))}
+        onMaxStagesChange={(maxStages) => setActivityDefinition(prev => ({ ...prev, maxStages: maxStages }))}
+        onMinCluesChange={(minClues) => setActivityDefinition(prev => ({ ...prev, minCluesPerStage: minClues }))}
+        onMaxCluesChange={(maxClues) => setActivityDefinition(prev => ({ ...prev, maxCluesPerStage: maxClues }))}
+        initialMinStages={1}
+        initialMaxStages={4}
+        initialMinClues={1}
+        initialMaxClues={4}
+        />
       }
 
       { activeActivityDefinitionStatus === 'select-artworks' &&

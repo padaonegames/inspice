@@ -1,4 +1,4 @@
-import React, { useState, Suspense } from 'react';
+import React, { useState, Suspense, useEffect } from 'react';
 import {
   BrowserRouter as Router,
   Switch,
@@ -13,6 +13,8 @@ import { stage0, stage1 } from './artworks/stageData';
 import { sampleArtworks } from './artworks/artworkData';
 import LoadingScreen from './screens/LoadingScreen';
 import CreateFindArtworkActivityScreen from './screens/CreateFindArtworkActivityScreen';
+import { useAsyncRequest } from './services/useAsyncRequest';
+import { api } from './services';
 
 const stages = [stage0, stage1];
 
@@ -20,7 +22,11 @@ const App: React.FC = () => {
 
   const [loadedImages, setLoadedImages] = useState<number>(0);
 
-  // const [getArtworkTask] = useAsyncRequest(() => api.getArtworkById('vulcano'), []);
+  const [getArtworksTask] = useAsyncRequest(() => api.fetchAllArtworksFromDataset('f1f1018c-6e72-4e95-953e-889d9ae0c914'), []);
+
+  useEffect(() => {
+    console.log(getArtworksTask);
+  }, [getArtworksTask]);
 
   return (
     <Suspense fallback='loading'>
