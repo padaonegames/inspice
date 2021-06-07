@@ -4,15 +4,15 @@ import styled from 'styled-components';
 const Root = styled.div`
   margin: 0;
   padding: 0;
-  height: 50vh;
+  min-height: 12.5vh;
+  width: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
 `;
 
 const SliderContainer = styled.div`
-  width: 50%;
-  max-width: 500px;
+  width: 80%;
   height: 3vh;
   position: relative;
 `;
@@ -86,18 +86,21 @@ const RangeInput = styled.input`
     width: 5vh;
     height: 5vh;
     -webkit-appearance: none;
+    cursor: pointer;
   }
   &::-webkit-slider-thumb {
     pointer-events: all;
     width: 5vh;
     height: 5vh;
     -webkit-appearance: none;
+    cursor: pointer;
   }
   &::-ms-thumb {
     pointer-events: all;
     width: 5vh;
     height: 5vh;
     -webkit-appearance: none;
+    cursor: pointer;
   }
 `;
 
@@ -131,7 +134,7 @@ const Marker = styled.div<MarkerProps>`
 interface IntegerRangeSliderProps {
   min: number;
   max: number;
-  step: number;
+  step?: number;
   initialMin?: number;
   initialMax?: number;
   onMinValueChange: (min: number) => void;
@@ -141,7 +144,7 @@ interface IntegerRangeSliderProps {
 const IntegerRangeSlider: React.FC<IntegerRangeSliderProps> = ({
   min,
   max,
-  step,
+  step = 1,
   initialMin,
   initialMax,
   onMinValueChange,
@@ -169,7 +172,7 @@ const IntegerRangeSlider: React.FC<IntegerRangeSliderProps> = ({
 
   const renderMarkers = () => {
     let markers = [];
-    for (let i = min; i <= max; i++) {
+    for (let i = min; i <= max; i += step) {
       markers.push(<Marker percent={100 * (i - min) / (max - min)}>{i}</Marker>);
     }
     return markers;
@@ -186,12 +189,14 @@ const IntegerRangeSlider: React.FC<IntegerRangeSliderProps> = ({
             type='range'
             min={min}
             max={max}
+            step={step}
             value={minValue}
             onChange={handleMinValueChange}
           />
           <RangeInput
             type='range'
             min={min}
+            step={step}
             max={max}
             value={maxValue}
             onChange={handleMaxValueChange}

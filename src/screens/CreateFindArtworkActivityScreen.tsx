@@ -5,7 +5,7 @@ import CreateFindArtworkOverviewPanel from '../CreateFindArtworkActivity/CreateF
 import SetTitleAuthorDatesStage from '../CreateFindArtworkActivity/SetTitleAuthorDatesStage';
 import NextCornerButton from '../CreateGame/NextCornerButton';
 import { api } from '../services';
-import { CompletedFindArtworkActivityDefinition, InProgressFindArtworkActivityDefinition } from '../services/commonDefinitions';
+import { AllowedInputs, CompletedFindArtworkActivityDefinition, InProgressFindArtworkActivityDefinition } from '../services/commonDefinitions';
 import { useAsyncRequest } from '../services/useAsyncRequest';
 
 const Root = styled.div`
@@ -24,26 +24,27 @@ const isStageTwoCompleted = (definition: InProgressFindArtworkActivityDefinition
   return definition.minCluesPerStage !== undefined &&
     definition.maxCluesPerStage !== undefined &&
     definition.minStages !== undefined &&
-    definition.maxStages !== undefined;
+    definition.maxStages !== undefined &&
+    definition.allowedInputs.length > 0;
 }
 
 const isStageThreeCompleted = (definition: InProgressFindArtworkActivityDefinition): boolean => {
   return definition.artworks.length > 0;
 }
 
-const sample: CompletedFindArtworkActivityDefinition = {
-  activityTitle: 'demo',
-  activityAuthor: 'imma',
-  beginsOn: new Date(),
-  endsOn: new Date(),
+const sample: InProgressFindArtworkActivityDefinition = {
+  activityTitle: undefined,
+  activityAuthor: undefined,
+  beginsOn: undefined,
+  endsOn: undefined,
   minStages: 1,
-  maxStages: 3,
+  maxStages: 5,
   minCluesPerStage: 1,
-  maxCluesPerStage: 3,
-  allowedInputs: ['Text'],
+  maxCluesPerStage: 5,
+  allowedInputs: [],
   huntPersistenceLocationPost: 'sample/post',
   huntPersistenceLocationGet: 'sample/get',
-  artworks: ['1']
+  artworks: []
 };
 
 type ActivityDefinitionStatus = 'set-title-author-dates' | 'configure-stage-params' | 'select-artworks' | 'none';
@@ -100,9 +101,24 @@ const CreateFindArtworkActivityScreen: React.FC = () => {
     setActivityDefinition(prev => ({ ...prev, activityAuthor: author }));
   };
 
+  const handleInputTypeToggle = (label: string) => {
+    const inputType = label as AllowedInputs;
+    if (inputType == null) return;
+
+    let newInputs = [...activityDefinition.allowedInputs];
+    if (newInputs.some(elem => elem === inputType)) {
+      newInputs = newInputs.filter(elem => elem !== inputType);
+    }
+    else {
+      newInputs.push(inputType);
+    }
+    setActivityDefinition(prev => ({ ...prev, allowedInputs: newInputs }));
+  };
+
   useEffect(() => {
     console.log(submitDefinitionStatus);
   }, [submitDefinitionStatus]);
+
 
   return (
     <Root>
@@ -122,23 +138,25 @@ const CreateFindArtworkActivityScreen: React.FC = () => {
           handleDateRangeSelected={handleRangeSelected}
           onAuthorChange={onAuthorChange}
           onTitleChange={onTitleChange}
-          initialTitle={sample.activityTitle}
-          initialAuthor={sample.activityAuthor}
-          initialFrom={sample.beginsOn}
-          initialTo={sample.endsOn}
+          initialTitle={activityDefinition.activityTitle}
+          initialAuthor={activityDefinition.activityAuthor}
+          initialFrom={activityDefinition.beginsOn}
+          initialTo={activityDefinition.endsOn}
         />
       }
 
       { activeActivityDefinitionStatus === 'configure-stage-params' &&
         <ConfigureStageParamsStage
-        onMinStagesChange={(minStages) => setActivityDefinition(prev => ({ ...prev, minStages: minStages }))}
-        onMaxStagesChange={(maxStages) => setActivityDefinition(prev => ({ ...prev, maxStages: maxStages }))}
-        onMinCluesChange={(minClues) => setActivityDefinition(prev => ({ ...prev, minCluesPerStage: minClues }))}
-        onMaxCluesChange={(maxClues) => setActivityDefinition(prev => ({ ...prev, maxCluesPerStage: maxClues }))}
-        initialMinStages={1}
-        initialMaxStages={4}
-        initialMinClues={1}
-        initialMaxClues={4}
+          onMinStagesChange={(minStages) => setActivityDefinition(prev => ({ ...prev, minStages: minStages }))}
+          onMaxStagesChange={(maxStages) => setActivityDefinition(prev => ({ ...prev, maxStages: maxStages }))}
+          onMinCluesChange={(minClues) => setActivityDefinition(prev => ({ ...prev, minCluesPerStage: minClues }))}
+          onMaxCluesChange={(maxClues) => setActivityDefinition(prev => ({ ...prev, maxCluesPerStage: maxClues }))}
+          onInputTypeToggle={handleInputTypeToggle}
+          initialMinStages={activityDefinition.minStages || 1}
+          initialMaxStages={activityDefinition.maxStages || 5}
+          initialMinClues={activityDefinition.minCluesPerStage || 1}
+          initialMaxClues={activityDefinition.maxCluesPerStage || 5}
+          initialAllowedInputTypes={activityDefinition.allowedInputs || []}
         />
       }
 
