@@ -2,7 +2,7 @@ import { createGlobalStyle } from 'styled-components';
 
 const global = {
   colour: {
-    smokeWhite: '#F8F8F8',
+    smokeWhite: '#F3F3F3',
   },
 
   fonts: {
@@ -54,7 +54,7 @@ const GlobalStyles = createGlobalStyle`
 
   /* Global styles */
   html {
-    background-color: ${global.colour.smokeWhite};
+    background-color: white;
     margin: 0 auto;
     /* Limit the maximum width of all screens */
     /* Desktop */
@@ -62,7 +62,7 @@ const GlobalStyles = createGlobalStyle`
 
   body {
     font-family: Hoefler Text, Baskerville Old Face, Garamond, Times New Roman, serif;;
-    background-color: ${global.colour.smokeWhite};
+    background-color: white;
     color: black;
     -webkit-font-smoothing: antialiased;
     margin: 0 auto;

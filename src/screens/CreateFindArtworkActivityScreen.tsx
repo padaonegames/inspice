@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import ConfigureStageParamsStage from '../CreateFindArtworkActivity/ConfigureStageParamsStage';
 import CreateFindArtworkOverviewPanel from '../CreateFindArtworkActivity/CreateFindArtworkOverviewPanel';
+import SelectArtworksStage from '../CreateFindArtworkActivity/SelectArtworksStage';
 import SetTitleAuthorDatesStage from '../CreateFindArtworkActivity/SetTitleAuthorDatesStage';
 import NextCornerButton from '../CreateGame/NextCornerButton';
 import { api } from '../services';
@@ -161,7 +162,9 @@ const CreateFindArtworkActivityScreen: React.FC = () => {
       }
 
       { activeActivityDefinitionStatus === 'select-artworks' &&
-        <p>Select Artworks</p>
+        <SelectArtworksStage
+        
+        />
       }
 
       { activeActivityDefinitionStatus === 'none' &&
