@@ -74,7 +74,7 @@ const SelectArtworksStage: React.FC = () => {
   const [itemsPerPage, setItemsPerPage] = useState<number>(21);
 
   const fetchArtworksFromDataset = async () => {
-    return api.fetchArtworks();
+    return api.fetchArtworks({ sortingField: 'id', pageNumber: page, pageSize: itemsPerPage });
   };
 
   const [findArtworkStatus, triggerRequest] = useAsyncRequest(fetchArtworksFromDataset, []);
