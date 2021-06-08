@@ -42,12 +42,12 @@ const FilterPanel = styled.div`
 `;
 
 const ArtworkGrid = styled.div`
-  height: auto;
+  height: fit-content;
   width: 75%;
   padding-left: 2.5%;
   display: flex;
   flex-wrap: wrap;
-  align-self: center;
+  align-self: top;
   justify-content: space-between;
 `;
 
@@ -77,57 +77,68 @@ const SelectArtworksStage: React.FC = () => {
     return api.fetchArtworks({ sortingField: 'id', pageNumber: page, pageSize: itemsPerPage });
   };
 
-  const [findArtworkStatus, triggerRequest] = useAsyncRequest(fetchArtworksFromDataset, []);
+  const fetchUniqueFieldValuesFromDataset = async (field: 'date' | 'author' | 'info') => {
+    return api.fetchUniqueFieldValues(field);
+  };
+
+  const [findArtworkStatus] = useAsyncRequest(fetchArtworksFromDataset, []);
+  const [findUniqueAuthorsStatus] = useAsyncRequest(() => fetchUniqueFieldValuesFromDataset('author'), []);
+  const [findUniqueDatesStatus] = useAsyncRequest(() => fetchUniqueFieldValuesFromDataset('date'), []);
+  const [findUniqueInfoStatus] = useAsyncRequest(() => fetchUniqueFieldValuesFromDataset('info'), []);
 
   useEffect(() => {
-    console.log(findArtworkStatus);
-  }, [findArtworkStatus]);
+    console.log(findUniqueDatesStatus);
+  }, [findUniqueDatesStatus]);
 
-  if (findArtworkStatus.kind === 'success') {
-    if (findArtworkStatus.result.kind === 'ok') {
-
-      return (
-        <Root>
-          <ResultsUpperPanel>
-            <ResultsWrapper>
-              <Results>
-                Showing results {(page - 1) * itemsPerPage + 1}-{(page - 1) * itemsPerPage + findArtworkStatus.result.data.length}
-              </Results>
-            </ResultsWrapper>
-          </ResultsUpperPanel>
-          <VerticalSeparator />
-          <ResultsLowerPanel>
-            <FilterPanel>
-              <FilterField
-                filterField='ESCUELA'
-                filterOptions={['Española (1)', 'Inglesa (20)', 'Francesa (1)', 'Rusa (3)']}
-                bottomBorder={false}
+  if (findArtworkStatus.kind === 'success' &&
+    findArtworkStatus.result.kind === 'ok' &&
+    findUniqueAuthorsStatus.kind === 'success' &&
+    findUniqueAuthorsStatus.result.kind === 'ok' &&
+    findUniqueDatesStatus.kind === 'success' &&
+    findUniqueDatesStatus.result.kind === 'ok' &&
+    findUniqueInfoStatus.kind === 'success' &&
+    findUniqueInfoStatus.result.kind === 'ok') {
+    return (
+      <Root>
+        <ResultsUpperPanel>
+          <ResultsWrapper>
+            <Results>
+              Showing results {(page - 1) * itemsPerPage + 1}-{(page - 1) * itemsPerPage + findArtworkStatus.result.data.length}
+            </Results>
+          </ResultsWrapper>
+        </ResultsUpperPanel>
+        <VerticalSeparator />
+        <ResultsLowerPanel>
+          <FilterPanel>
+            <FilterField
+              filterField='DATE'
+              filterOptions={findUniqueDatesStatus.result.data}
+              bottomBorder={false}
+            />
+            <FilterField
+              filterField='AUTHOR'
+              filterOptions={findUniqueAuthorsStatus.result.data}
+              bottomBorder={false}
+            />
+            <FilterField
+              filterField='MATERIAL'
+              filterOptions={findUniqueInfoStatus.result.data}
+              bottomBorder={true}
+            />
+          </FilterPanel>
+          <ArtworkGrid>
+            {findArtworkStatus.result.data.map((im, i) => (
+              <ArtworkSelectionCard
+                key={im.id}
+                artworkData={im}
+                selected={false}
+                onCardSelected={() => { }}
               />
-              <FilterField
-                filterField='ÉPOCA'
-                filterOptions={['Siglo II', 'Siglo XVI', 'Siglo XIX', 'Siglo XX']}
-                bottomBorder={false}
-              />
-              <FilterField
-                filterField='SOPORTE'
-                filterOptions={['Papel (20)', 'Lienzo (2)', 'Tabla (3)']}
-                bottomBorder={true}
-              />
-            </FilterPanel>
-            <ArtworkGrid>
-              {findArtworkStatus.result.data.map((im, i) => (
-                <ArtworkSelectionCard
-                  key={im.id}
-                  artworkData={im}
-                  selected={false}
-                  onCardSelected={() => { }}
-                />
-              ))}
-            </ArtworkGrid>
-          </ResultsLowerPanel>
-        </Root>
-      );
-    }
+            ))}
+          </ArtworkGrid>
+        </ResultsLowerPanel>
+      </Root>
+    );
   }
 
   return <p>Loading...</p>

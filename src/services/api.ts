@@ -1,6 +1,6 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { ArtworkData, ArtworkFieldMapping, CompletedFindArtworkActivityDefinition, GetFindArtworkActivityDefinitionByIdResponse, SubmitFindArtworkActivityDefinitionResponse } from './commonDefinitions';
-import { GetArtworksOptions, retrieveAllArtworksQuery } from './queries';
+import { GetArtworksOptions, retrieveAllArtworksQuery, retrieveDistinctAuthorValuesQuery, retrieveDistinctDateValuesQuery, retrieveDistinctInfoValuesQuery } from './queries';
 
 export type ApiResult<T> =
   | { kind: 'ok', data: T }
@@ -76,8 +76,42 @@ export class Api {
       (url, activityDefinition);
   }
 
-  public async fetchArtworks(queryOpts: GetArtworksOptions = {}): Promise<ApiResult<ArtworkData[]>> {
+  public async fetchUniqueFieldValues(field: 'date' | 'author' | 'info'): Promise<ApiResult<string[]>> {
+    if (this.mappingMode.mode === 'JSON') {
+      // testing for now
+      let demoPromise = new Promise<ApiResult<string[]>>((resolve, reject) => {
+        let wait = setTimeout(() => {
+          clearTimeout(wait);
+          resolve({ kind: 'ok', data: ['value A', 'value B', 'value C'] });
+        }, 200);
+      });
+      return demoPromise;
+    }
+    else {
+      const url = `${this.apiUrl}/query/${this.datasetUuid}/sparql`;
 
+      const query =
+        field === 'author' ?
+          retrieveDistinctAuthorValuesQuery()
+        : field === 'date' ?
+          retrieveDistinctDateValuesQuery()
+        : retrieveDistinctInfoValuesQuery();
+
+      const opts: AxiosRequestConfig = {
+        auth: {
+          username: this.apiKey,
+          password: this.apiKey
+        },
+        params: {
+          query: query
+        }
+      };
+
+      return getUniqueFieldValuesRDF(url, field, opts);
+    }
+  };
+
+  public async fetchArtworks(queryOpts: GetArtworksOptions = {}): Promise<ApiResult<ArtworkData[]>> {
     if (this.mappingMode.mode === 'JSON') {
       const url = `${this.apiUrl}/browse/${this.datasetUuid}`;
 
@@ -147,13 +181,60 @@ async function getArtworksResultRDF(url: string, config: AxiosRequestConfig = {}
 
   const parsedData = (data.results.bindings as any[]).map((elem: any) => {
     let artworkInfo: Partial<ArtworkData> = {};
-    for(let key of Object.keys(elem)) {
+    for (let key of Object.keys(elem)) {
       artworkInfo[key as keyof ArtworkData] = elem[key].value;
     }
     return artworkInfo as ArtworkData;
   }) as ArtworkData[];
 
-  if(parsedData) {
+  if (parsedData) {
+    return { kind: 'ok', data: parsedData };
+  }
+  else {
+    return { kind: 'parse-error', errors: 'InvalidJson' };
+  }
+};
+
+// RDF Unique fields
+async function getUniqueFieldValuesRDF(url: string, field: 'date' | 'author' | 'info', config: AxiosRequestConfig = {}): Promise<ApiResult<string[]>> {
+  let response: AxiosResponse<any>;
+  try {
+    // we attempt to perform a GET request to the specified url and save the
+    // corresponding response within the response variable.
+    response = await axios.get<any>(url, config);
+  } catch (error: any) {
+    if (error.response) {
+      // if the error has a response, then this means that server responded
+      // with an error status (4xx, 5xx), which leads us to categorize it 
+      // as an http error
+      return { kind: 'http-error', response: error.response };
+    }
+    else if (error.request) {
+      // if an error were to happen where we have a request but no response, 
+      // we can categorize it as an axios error (the request wasn't performed
+      // correctly or the server did not respond at all).
+      return { kind: 'axios-error', error: error };
+    }
+    else {
+      // in any other case, we categorize this as an unhandled error
+      return { kind: 'unhandled-error', error: error };
+    }
+
+  }
+
+  // Validation
+  const data = response.data;
+  console.log(response);
+
+  if (!(data as Object).hasOwnProperty('results') ||
+    !(data.results as Object).hasOwnProperty('bindings') ||
+    !Array.isArray(data.results.bindings)) {
+    return { kind: 'parse-error', errors: 'InvalidJson' };
+  }
+
+  const parsedData = (data.results.bindings as any[]).map((elem: any) => elem[field].value) as string[];
+
+  if (parsedData) {
     return { kind: 'ok', data: parsedData };
   }
   else {

@@ -75,6 +75,8 @@ interface FilterFieldProps {
   filterField: string;
   filterOptions: string[];
   bottomBorder?: boolean;
+  // TODO: max number to show
+  // TODO: show button
 };
 
 const FilterField: React.FC<FilterFieldProps> = ({
@@ -86,7 +88,7 @@ const FilterField: React.FC<FilterFieldProps> = ({
   const [opened, setOpened] = useState<boolean>(false);
 
   return (
-    <Root bottomBorder={bottomBorder}>
+    <Root bottomBorder={bottomBorder} key={filterField}>
       <FieldHeader
         onClick={() => setOpened(prev => !prev)}
         bottomBorder={opened}
@@ -99,8 +101,8 @@ const FilterField: React.FC<FilterFieldProps> = ({
         </ExpandIcon>
       </FieldHeader>
       {opened &&
-        filterOptions.map(elem =>
-          <OptionContainer>
+        filterOptions.sort().map(elem =>
+          <OptionContainer key={elem}>
             <OptionText>
               {elem}
             </OptionText>
