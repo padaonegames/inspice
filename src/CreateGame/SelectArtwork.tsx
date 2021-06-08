@@ -117,7 +117,7 @@ const SelectArtwork: React.FC<SelectArtworkProps> = ({
   onNextClicked
 }) => {
 
-  const { t, i18n } = useTranslation('app');
+  const { t } = useTranslation('app');
 
   const retrieveArtworkSrc = (artworkId: string): string => {
     return imagesData.find(elem => elem.id === artworkId)!.src;
@@ -139,7 +139,7 @@ const SelectArtwork: React.FC<SelectArtworkProps> = ({
                   active={selectedArtwork !== undefined && img.id === selectedArtwork}
                   key={img.id}
                 >
-                  {i18n.language === 'en' ? img.title_en : img.title}
+                  {img.title}
                 </ArtworkListText>
                 {selectedArtwork !== undefined && img.id === selectedArtwork &&
                   <ArtworkSelectedIcon />

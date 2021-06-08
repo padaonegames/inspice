@@ -16,6 +16,11 @@ export type ParseError =
   | 'InvalidJson'
   ;
 
+export type MappingMode =
+  | { mode: 'JSON', mapping: ArtworkFieldMapping }
+  | { mode: 'RDF' }
+  ;
+
 /**
  * The Api is responsible for all communication with the Project's Apis and Backends.
  * Ideally, we should incorporate a schema validator to all requests to ensure that
@@ -33,7 +38,10 @@ export class Api {
     private apiUrl: string,
     private datasetUuid: string,
     private apiKey: string,
-  ) { }
+    private mappingMode: MappingMode,
+  ) {
+    console.log(mappingMode);
+  }
 
 
   /**
@@ -71,16 +79,6 @@ export class Api {
 
   public async fetchArtworks(queryParams: Object = {}): Promise<ApiResult<ArtworkData[]>> {
     const url = `${this.apiUrl}/browse/${this.datasetUuid}`;
-    const mapping: ArtworkFieldMapping = {
-      author: 'Autore',
-      title: 'Titolo',
-      title_en: 'Titolo',
-      location: 'Tecnica',
-      id: '_id',
-      date: 'Datazione',
-      info: 'Dimensioni',
-      src: 'Immagine'
-    };
 
     const opts: AxiosRequestConfig = {
       auth: {
@@ -90,11 +88,12 @@ export class Api {
       params: queryParams
     };
 
-    return getArtworksResult(url, mapping, opts);
+    return getArtworksResult(url, this.mappingMode, opts);
   }
 }
 
-async function getArtworksResult(url: string, mapping: ArtworkFieldMapping, config: AxiosRequestConfig = {}): Promise<ApiResult<ArtworkData[]>> {
+// GAM format
+async function getArtworksResult(url: string, mappingMode: MappingMode, config: AxiosRequestConfig = {}): Promise<ApiResult<ArtworkData[]>> {
   let response: AxiosResponse<any>;
   try {
     // we attempt to perform a GET request to the specified url and save the
@@ -122,37 +121,43 @@ async function getArtworksResult(url: string, mapping: ArtworkFieldMapping, conf
 
   // Validation
   const data = response.data;
-  if (!(data as Object).hasOwnProperty('results') || !Array.isArray(data.results)) {
-    return { kind: 'parse-error', errors: 'InvalidJson' };
-  }
 
-  // data has results field, this should be a list of artworks adhering to mapping
-  const results = data.results as any[];
-  let parsedResults: ArtworkData[] = [];
-  
-  for(let elem of results) {
-    let artworkInfo: Partial<ArtworkData> = {};
-    // for each potential artwork, we iterate over its fields to check if it has all the mapped
-    // properties. For instance, if a mapping says that 'title' maps to 'Titolo', we check whether
-    // the field 'Titolo' actually exists in elem, and if that's the case, we add its value to 
-    // the artworkInfo auxiliary object under the standard field name.
-    for(let key in mapping) {
-      // TS currently has trouble realising that key is an actual key of the ArtworkFieldMapping
-      if(!(elem as Object).hasOwnProperty(mapping[key as keyof ArtworkFieldMapping])) {
-        return { kind: 'parse-error', errors: 'InvalidJson' };
-      }
-      artworkInfo[key as keyof ArtworkFieldMapping] = elem[mapping[key as keyof ArtworkFieldMapping]];
-    }
-    const parsedElem = artworkInfo as ArtworkData;
-    if (parsedElem) {
-      parsedResults.push(parsedElem);
-    }
-    else {
+  if (mappingMode.mode === 'JSON') {
+    const mapping = mappingMode.mapping;
+
+    if (!(data as Object).hasOwnProperty('results') || !Array.isArray(data.results)) {
       return { kind: 'parse-error', errors: 'InvalidJson' };
     }
-  }
 
-  return { kind: 'ok', data: parsedResults };
+    // data has results field, this should be a list of artworks adhering to mapping
+    const results = data.results as any[];
+    let parsedResults: ArtworkData[] = [];
+
+    for (let elem of results) {
+      let artworkInfo: Partial<ArtworkData> = {};
+      // for each potential artwork, we iterate over its fields to check if it has all the mapped
+      // properties. For instance, if a mapping says that 'title' maps to 'Titolo', we check whether
+      // the field 'Titolo' actually exists in elem, and if that's the case, we add its value to 
+      // the artworkInfo auxiliary object under the standard field name.
+      for (let key in mapping) {
+        // TS currently has trouble realising that key is an actual key of the ArtworkFieldMapping
+        if (!(elem as Object).hasOwnProperty(mapping[key as keyof ArtworkFieldMapping])) {
+          return { kind: 'parse-error', errors: 'InvalidJson' };
+        }
+        artworkInfo[key as keyof ArtworkFieldMapping] = elem[mapping[key as keyof ArtworkFieldMapping]];
+      }
+      const parsedElem = artworkInfo as ArtworkData;
+      if (parsedElem) {
+        parsedResults.push(parsedElem);
+      }
+      else {
+        return { kind: 'parse-error', errors: 'InvalidJson' };
+      }
+    }
+
+    return { kind: 'ok', data: parsedResults };
+  }
+  else return { kind: 'ok', data: [] };
 }
 
 

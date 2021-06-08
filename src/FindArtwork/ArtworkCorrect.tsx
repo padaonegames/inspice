@@ -81,12 +81,11 @@ interface ArtworkCorrectProps {
   flipped: boolean;
   image: string;
   title: string;
-  title_en: string;
 };
 
-const ArtworkCorrect: React.FC<ArtworkCorrectProps> = ({ flipped, image, title, title_en }) => {
+const ArtworkCorrect: React.FC<ArtworkCorrectProps> = ({ flipped, image, title }) => {
 
-  const { t, i18n } = useTranslation('app');
+  const { t } = useTranslation('app');
 
   return (
     <CardContent
@@ -96,7 +95,7 @@ const ArtworkCorrect: React.FC<ArtworkCorrectProps> = ({ flipped, image, title, 
       <DarkLayer />
       <RevealText>
         <NameText>
-          {i18n.language == 'en' ? title_en : title}
+          {title}
         </NameText>
         <InformationText>
           {t('correctArtworkAudioHere')}

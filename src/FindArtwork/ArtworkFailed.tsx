@@ -88,12 +88,11 @@ interface ArtworkFailedProps {
   flipped: boolean;
   image: string;
   title: string;
-  title_en: string;
 };
 
-const ArtworkFailed: React.FC<ArtworkFailedProps> = ({ flipped, image, title, title_en }) => {
+const ArtworkFailed: React.FC<ArtworkFailedProps> = ({ flipped, image, title }) => {
   
-  const { t, i18n } = useTranslation('app');
+  const { t } = useTranslation('app');
   
   return (
     <CardContent
@@ -103,7 +102,7 @@ const ArtworkFailed: React.FC<ArtworkFailedProps> = ({ flipped, image, title, ti
       <DarkLayer/>
       <RevealText>
         <NameText>
-          {i18n.language === 'en' ? title_en : title}
+          {title}
         </NameText>
         <InformationText>
           {t('incorrectArtwork')}

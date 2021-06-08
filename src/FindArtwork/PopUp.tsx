@@ -322,7 +322,7 @@ type Props = {
 };
 
 const Popup: React.FC<Props> = ({ gift, artworkData, setModalOpen }) => {
-    const { t, i18n } = useTranslation('app');
+    const { t } = useTranslation('app');
     const [selectedGift, setSelectedGift] = useState<number>(0);
     return (
         <Root
@@ -342,7 +342,7 @@ const Popup: React.FC<Props> = ({ gift, artworkData, setModalOpen }) => {
                     {artworkData.author}
                 </InformationText>
                 <NameText>
-                    {i18n.language === 'en' ? artworkData.title_en : artworkData.title}
+                    {artworkData.title}
                 </NameText>
             </RevealText>
             <ReferencePanel>

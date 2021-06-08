@@ -56,7 +56,6 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({ artworkData, flipped, status,
         <ArtworkFailed
           image={artworkData.src}
           title={artworkData.title}
-          title_en={artworkData.title_en!}
           flipped={flipped}
         />
       }

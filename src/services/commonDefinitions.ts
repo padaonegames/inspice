@@ -6,7 +6,6 @@ export interface ArtworkData {
   src: string; // path de la imagen a usar
   id: string; // id único que identifique a la obra
   title: string; // título de la obra
-  title_en?: string; // título en inglés
   author: string; // autor de la obra
   date: string; // año o época en la que se creó
   location: string; // museo y sala donde se encuentra la obra
