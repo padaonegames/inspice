@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { sampleArtworks } from '../artworks/artworkData';
+import { api } from '../services';
+import { useAsyncRequest } from '../services/useAsyncRequest';
 import ArtworkSelectionCard from './ArtworkSelectionCard';
 import FilterField from './FilterField';
 
@@ -67,47 +69,68 @@ const Results = styled.span`
 `;
 
 const SelectArtworksStage: React.FC = () => {
-  return (
-    <Root>
-      <ResultsUpperPanel>
-        <ResultsWrapper>
-          <Results>
-            {sampleArtworks.length} Results
-        </Results>
-        </ResultsWrapper>
-      </ResultsUpperPanel>
-      <VerticalSeparator />
-      <ResultsLowerPanel>
-        <FilterPanel>
-          <FilterField
-            filterField='ESCUELA'
-            filterOptions={['Española (1)', 'Inglesa (20)', 'Francesa (1)', 'Rusa (3)']}
-            bottomBorder={false}
-          />
-          <FilterField
-            filterField='ÉPOCA'
-            filterOptions={['Siglo II', 'Siglo XVI', 'Siglo XIX', 'Siglo XX']}
-            bottomBorder={false}
-          />
-          <FilterField
-            filterField='SOPORTE'
-            filterOptions={['Papel (20)', 'Lienzo (2)', 'Tabla (3)']}
-            bottomBorder={true}
-          />
-        </FilterPanel>
-        <ArtworkGrid>
-          {sampleArtworks.map((im, i) => (
-            <ArtworkSelectionCard
-              key={im.id}
-              artworkData={im}
-              selected={false}
-              onCardSelected={() => { }}
-            />
-          ))}
-        </ArtworkGrid>
-      </ResultsLowerPanel>
-    </Root>
-  );
+
+  const [page, setPage] = useState<number>(1);
+  const [itemsPerPage, setItemsPerPage] = useState<number>(21);
+
+  const fetchArtworksFromDataset = async () => {
+    return api.fetchArtworks();
+  };
+
+  const [findArtworkStatus, triggerRequest] = useAsyncRequest(fetchArtworksFromDataset, []);
+
+  useEffect(() => {
+    console.log(findArtworkStatus);
+  }, [findArtworkStatus]);
+
+  if (findArtworkStatus.kind === 'success') {
+    if (findArtworkStatus.result.kind === 'ok') {
+
+      return (
+        <Root>
+          <ResultsUpperPanel>
+            <ResultsWrapper>
+              <Results>
+                Showing results {(page - 1) * itemsPerPage + 1}-{(page - 1) * itemsPerPage + findArtworkStatus.result.data.length}
+              </Results>
+            </ResultsWrapper>
+          </ResultsUpperPanel>
+          <VerticalSeparator />
+          <ResultsLowerPanel>
+            <FilterPanel>
+              <FilterField
+                filterField='ESCUELA'
+                filterOptions={['Española (1)', 'Inglesa (20)', 'Francesa (1)', 'Rusa (3)']}
+                bottomBorder={false}
+              />
+              <FilterField
+                filterField='ÉPOCA'
+                filterOptions={['Siglo II', 'Siglo XVI', 'Siglo XIX', 'Siglo XX']}
+                bottomBorder={false}
+              />
+              <FilterField
+                filterField='SOPORTE'
+                filterOptions={['Papel (20)', 'Lienzo (2)', 'Tabla (3)']}
+                bottomBorder={true}
+              />
+            </FilterPanel>
+            <ArtworkGrid>
+              {findArtworkStatus.result.data.map((im, i) => (
+                <ArtworkSelectionCard
+                  key={im.id}
+                  artworkData={im}
+                  selected={false}
+                  onCardSelected={() => { }}
+                />
+              ))}
+            </ArtworkGrid>
+          </ResultsLowerPanel>
+        </Root>
+      );
+    }
+  }
+
+  return <p>Loading...</p>
 };
 
 export default SelectArtworksStage;

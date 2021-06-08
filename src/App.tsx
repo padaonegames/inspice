@@ -22,11 +22,12 @@ const App: React.FC = () => {
 
   const [loadedImages, setLoadedImages] = useState<number>(0);
 
+  /*
   const [getArtworksTask] = useAsyncRequest(() => api.fetchAllArtworksFromDataset('f1f1018c-6e72-4e95-953e-889d9ae0c914'), []);
 
   useEffect(() => {
     console.log(getArtworksTask);
-  }, [getArtworksTask]);
+  }, [getArtworksTask]);*/
 
   return (
     <Suspense fallback='loading'>
