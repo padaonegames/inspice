@@ -7,7 +7,7 @@ import { initMockAdapter } from './services/mockAdapter';
 import { initializeServices } from './services';
 
 if (process.env.NODE_ENV === 'development') {
-  initMockAdapter();
+  // initMockAdapter();
 }
 
 initializeServices();

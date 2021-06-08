@@ -6,12 +6,13 @@ import RoadLine from './RoadLine';
 import SubmitGamePanel from './SubmitGamePanel';
 
 const Root = styled.div`
-  margin-top: 1vh;
+  padding-top: 1vh;
   align-items: center;
   justify-content: center;
   display: flex;
   flex-direction: column;
   position: relative;
+  background-color: #F3F3F3;
 `;
 
 const UpperRowContainer = styled.div`

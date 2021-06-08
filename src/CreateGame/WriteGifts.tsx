@@ -53,7 +53,7 @@ const GiftStyle = styled.textarea`
   width: 90%;
   height: 27.5vh;
   resize: none;
-  border: solid 1px #F8F8F8;
+  border: solid 1px #F3F3F3;
   padding: 3%;
 `;
 

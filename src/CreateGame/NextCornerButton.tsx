@@ -52,11 +52,11 @@ const NextCorner = styled.div<CornerProps>`
   transition: transform linear 0.3s;
 
   ${NextCornerText} {
-    color: ${props => props.active ? '#F8F8F8' : 'darkgray'}
+    color: ${props => props.active ? '#F3F3F3' : 'darkgray'}
   }
 
   ${NextCornerIcon} {
-    color: ${props => props.active ? '#F8F8F8' : 'darkgray'}
+    color: ${props => props.active ? '#F3F3F3' : 'darkgray'}
   }
 
   &:hover {
@@ -65,11 +65,11 @@ const NextCorner = styled.div<CornerProps>`
     transition: transform linear 0.3s;
 
     ${NextCornerText} {
-      color: ${props => props.active ? '#F8F8F8' : 'darkgray'}
+      color: ${props => props.active ? '#F3F3F3' : 'darkgray'}
     }
   
     ${NextCornerIcon} {
-      color: ${props => props.active ? '#F8F8F8' : 'darkgray'}
+      color: ${props => props.active ? '#F3F3F3' : 'darkgray'}
     }
   }
 `;
@@ -93,7 +93,7 @@ const NextCornerButton: React.FC<NextCornerButtonProps> = ({
   alignSelf = 'center',
   margin = 'auto',
   active = true,
-  color = '#F8F8F8',
+  color = '#F3F3F3',
 }) => {
 
   const { t, i18n } = useTranslation('app');

@@ -44,7 +44,7 @@ const UpperRowContainer = styled.div`
 `;
 
 const LowerPanelContainer = styled.div`
-  background-color: #F8F8F8;
+  background-color: #F3F3F3;
   height: 100%;
   width: 100%;
   display: flex;

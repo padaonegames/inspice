@@ -66,7 +66,7 @@ const ArtworkListItem = styled.div`
 `;
 
 const ArtworkSelectedIcon = styled(RadioCircleMarked)`
-  color: #F8F8F8;
+  color: #F3F3F3;
   height: 4vh;
   width: auto;
   margin-right: 2vw;
@@ -84,7 +84,6 @@ const ArtworkDisplay = styled.div<ArtworkDisplayProps>`
   background-position: 50% 50%;
   background-repeat: no-repeat;
   background-size: auto 90%;
-
 `;
 
 const HelpText = styled.div`
