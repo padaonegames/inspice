@@ -36,8 +36,9 @@ export interface TreasureHuntDefinition {
 
 export interface StageData {
   artworkId: string; // id del artwork seleccionado
-  recordingPath: string; // path de la grabación a emplear
+  //recordingPath: string; // path de la grabación a emplear
   clues: string[]; // pistas a mostrar al jugador
+  gifts: string[]; //rewards to show after finding the art
 }
 
 export interface InProgressTreasureHuntStage {

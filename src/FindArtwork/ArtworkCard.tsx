@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { ArtworkData } from '../services/commonDefinitions';
 import ArtworkCorrect from './ArtworkCorrect';
 import ArtworkFailed from './ArtworkFailed';
 import ArtworkFront from './ArtworkFront';
+import ArtworkPopup from './ArtworkPopup';
 
 const CardContainer = styled.div`
   flex: 0 0 auto; 
@@ -20,7 +21,7 @@ const CardContainer = styled.div`
 
 export type ArtworkCardStatus =
   | { status: 'wrong' }
-  | { status: 'right', recording: string };
+  | { status: 'right', gifts: string[] };
 
 interface ArtworkCardProps {
   artworkData: ArtworkData;
@@ -30,6 +31,8 @@ interface ArtworkCardProps {
 };
 
 const ArtworkCard: React.FC<ArtworkCardProps> = ({ artworkData, flipped, status, onCardSelected }) => {
+  const [modalOpen, setModalOpen] = useState(false);
+
   return (
     <CardContainer>
       <ArtworkFront
@@ -38,13 +41,18 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({ artworkData, flipped, status,
         flipped={!flipped}
       />
       {status.status === 'right' ?
-        <ArtworkCorrect
-          image={artworkData.src}
-          title={artworkData.title}
-          title_en={artworkData.title_en!}
+        /* <ArtworkCorrect
+           image={artworkData.src}
+           title={artworkData.title}
+           title_en={artworkData.title_en!}
+           flipped={flipped}       
+         />*/
+        <ArtworkPopup
           flipped={flipped}
-          recording={status.recording}
-        /> :
+          gift={status.gifts}
+          artworkData={artworkData}
+        />
+        :
         <ArtworkFailed
           image={artworkData.src}
           title={artworkData.title}

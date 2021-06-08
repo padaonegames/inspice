@@ -188,8 +188,8 @@ const WriteGifts: React.FC<WriteGiftsProps> = ({
   const [selectedGift, setSelectedGift] = useState<number>(0);
 
   const placeholder = selectedGift > 0 ?
-    t('What is your gift for the player') :
-    t('Write a message for the player to read after completing the game...');
+    t('WhatIsYourGiftForThePlayer') :
+    t('WriteAMessage');
 
   const canAdvance = gifts.every(h => h.length > 0);
 
@@ -201,7 +201,7 @@ const WriteGifts: React.FC<WriteGiftsProps> = ({
       <ReferencePanel>
         <QuestionWrapper>
           <Question>
-            {t('What is Your Gift For The Player?')}
+            {t('WhatIsYourGiftForThePlayer')}
           </Question>
         </QuestionWrapper>
         <ClueWrapper>

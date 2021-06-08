@@ -1,7 +1,18 @@
 import React from 'react';
+
+import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
-import styled from 'styled-components';
-import AudioPlayer from '../components/AudioPlayer';
+import styled, { keyframes } from 'styled-components';
+import { Mouse } from '@styled-icons/material-outlined/Mouse';
+import { ArtworkData, StageData } from '../services/commonDefinitions';
+import { PlusCircle } from '@styled-icons/boxicons-regular/PlusCircle';
+import { Gift } from '@styled-icons/boxicons-solid/Gift';
+import { ControllerNext } from '@styled-icons/entypo/ControllerNext';
+import { useState } from 'react';
+import Popup from './PopUp';
+import Modal from '../components/Modal';
+
+
 
 const RevealText = styled.div`
   display: flex;
@@ -19,7 +30,7 @@ const RevealText = styled.div`
 
 const NameText = styled.h3`
   font-family: 'EB Garamond';
-  font-size: 0.85em;
+  font-size: 1.2em;
   font-style: italic;
   font-weight: 850;
   color: white;
@@ -54,7 +65,6 @@ const CardContent = styled.div<CardContentProps>`
   transform: ${props => props.flipped ? 'rotateY(0deg)' : 'rotateY(-180deg)'};
   position: absolute;
   display: block;
-
   height: 100%;
   width: 100%;
 `;
@@ -77,33 +87,60 @@ const CardBackground = styled.div<CardBackgroundProps>`
   overflow: hidden;
 `;
 
-interface ArtworkCorrectProps {
+
+const GiftBox = styled(Gift)`
+  height: 6vh;
+  width: auto;
+  align-self: center;
+`;
+
+const GiftContainer = styled.button`
+  position: relative;
+  margin-left: 0.2vw;
+  margin-right: 0.2vw;
+  color:rgb(255, 255, 255);
+
+  &:hover {
+    color: rgb(207, 207, 207);
+  }
+`;
+
+type Props = {
   flipped: boolean;
-  image: string;
-  title: string;
-  title_en: string;
+  gift: string[];
+  artworkData: ArtworkData;
 };
 
-const ArtworkCorrect: React.FC<ArtworkCorrectProps> = ({ flipped, image, title, title_en }) => {
+
+const ArtworkPopup: React.FC<Props> = ({ flipped, gift, artworkData }) => {
 
   const { t, i18n } = useTranslation('app');
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
 
   return (
+
     <CardContent
-      flipped={flipped}
-    >
-      <CardBackground backgroundImage={image} />
-      <DarkLayer />
+      flipped={flipped}>
+      <CardBackground backgroundImage={artworkData.src} />
+
       <RevealText>
         <NameText>
-          {i18n.language == 'en' ? title_en : title}
+          {t('WellDone')}
         </NameText>
-        <InformationText>
-          {t('correctArtworkAudioHere')}
-        </InformationText>
+        <GiftContainer
+          onClick={() => { setModalOpen(true) }}>
+          <GiftBox />
+        </GiftContainer>
       </RevealText>
+      <Modal modalOpen={modalOpen}>
+        <Popup
+          setModalOpen={setModalOpen}
+          gift={gift}
+          artworkData={artworkData}
+        />
+      </Modal>
     </CardContent>
   );
 };
 
-export default ArtworkCorrect;
+export default ArtworkPopup;

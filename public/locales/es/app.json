@@ -18,10 +18,18 @@
   "typeYourNextHint": "Escribe tu siguiente pista...",
   "loadingDemo": "Cargando demo",
   "writeHintToHelpFindSelectedArtwork": "Escribe una pista que permita encontrar la obra seleccionada...",
+  "WellDone": "Well Done, Here is your reward",
+  "gifts": "REGALOS",
+  "WhatIsYourGiftForThePlayer": "What is your gift for the player?",
+  "WriteAMessage": "Write a message for the player to read after completing the game...",
   "clue0_0": "En esta obra se narra un duelo entre personajes mitológicos, incluyendo una diosa muy orgullosa...",
   "clue0_1": "La diosa en cuestión no es otra que Atenea, diosa de la sabiduría...",
   "clue0_2": "Irritada por no ser capaz de derrotar a Arachne en su duelo, ¡Atenea transformó a su rival en araña!",
   "clue1_0": "En esta obra se narra la visita de Apolo, el resplandeciente dios del sol, al taller del herrero de los dioses del Olimpo...",
-  "clue1_1": "Su objetivo era darle al herrero la humillante noticia de que su mujer, Venus, estaba cometiendo adulterio con el dios guerrero Marte."
-
+  "clue1_1": "Su objetivo era darle al herrero la humillante noticia de que su mujer, Venus, estaba cometiendo adulterio con el dios guerrero Marte.",
+  "gift0_0": "Well Done",
+  "gift0_1": "Good Job",
+  "gift0_2": "Do you remember when we visited this?",
+  "gift1_0": "Well Done",
+  "gift1_1": "This is for you to remember"
 }

@@ -35,7 +35,7 @@ const UpperRowContainer = styled.div`
   padding-top: 0.5%;
   padding-bottom: 0.5%;
   height: max-content;
-  display: inline-flex:
+  display: inline-flex;
   flex-direction: row;
   align-content: center;
   border-style: solid;
@@ -106,6 +106,7 @@ const FindArtwork: React.FC<FindArtworkProps> = ({
   const [flippedCards, setFlippedCards] = useState<boolean[]>(Array(imagesData.length).fill(false));
   const [stageCompleted, setStageCompleted] = useState<boolean>(false);
   const [displayIndex, setDisplayIndex] = useState<number>(0);
+
 
   useEffect(() => {
     setFlippedCards(Array(imagesData.length).fill(false));
@@ -179,7 +180,7 @@ const FindArtwork: React.FC<FindArtworkProps> = ({
               artworkData={im}
               flipped={flippedCards[newIndex[i] + displayIndex]}
               status={im.id === stageData.artworkId ?
-                { status: 'right', recording: stageData.recordingPath } :
+                { status: 'right', gifts: stageData.gifts } :
                 { status: 'wrong' }
               }
               onCardSelected={() => handleCardSelected(im.id, newIndex[i] + displayIndex)}

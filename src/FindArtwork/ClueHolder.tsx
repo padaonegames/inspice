@@ -125,7 +125,7 @@ interface ClueHolderProps {
 const ClueHolder: React.FC<ClueHolderProps> = ({ clues, onClueOpened }) => {
 
   const { t, i18n } = useTranslation('app');
-  
+
   const [selectedClue, setSelectedClue] = useState<number>(0);
   const [openedClues, setOpenedClues] = useState<boolean[]>(() => {
     let init = Array(clues.length).fill(false);
@@ -134,7 +134,7 @@ const ClueHolder: React.FC<ClueHolderProps> = ({ clues, onClueOpened }) => {
   });
 
   // añade 15 puntos de penalización por cada pista abierta
-  const cluePrice = 15*(openedClues.filter(elem => elem).length);
+  const cluePrice = 15 * (openedClues.filter(elem => elem).length);
 
   return (
     <Root>
@@ -169,7 +169,7 @@ const ClueHolder: React.FC<ClueHolderProps> = ({ clues, onClueOpened }) => {
               onClueOpened(cluePrice);
             }}
           >
-            <InfoIconClosed/>
+            <InfoIconClosed />
             <InfoPoints>-{cluePrice}</InfoPoints>
           </InfoIconWrapper>
         )}
