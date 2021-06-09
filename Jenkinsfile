@@ -24,7 +24,7 @@ def deployMachines() {
 // variables de entorno.
 def deployInfo() {
     [
-            'iss01-ci-cd':  [
+            'dev':  [
                 host: 'gaiatemp',
                 envFile: 'spice-activity-demo.env.dev'
             ]
