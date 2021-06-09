@@ -1,0 +1,21 @@
+# Incorpora a la configuración de Docker Compose etiquetas para Traefik.
+#
+# Es útil si se va a lanzar en un entorno de ejecución en el que Traefik hace
+# de proxy inverso para llegar al servidor.
+
+version: '3'
+
+networks:
+    traefik:
+        external:
+            name: ${TRAEFIK_NETWORK}
+
+services:
+    server:
+        networks:
+            - traefik
+        labels:
+            - "traefik.enable=true"
+            - "traefik.docker.network=${TRAEFIK_NETWORK}"
+            - "traefik.http.routers.${TRAEFIK_SERVICE_ID}.rule=Host(`${SERVER_PUBLIC_NAME}`)"
+            - "traefik.http.services.${TRAEFIK_SERVICE_ID}.loadbalancer.server.port=80"

@@ -43,8 +43,7 @@ const sample: InProgressFindArtworkActivityDefinition = {
   minCluesPerStage: 1,
   maxCluesPerStage: 5,
   allowedInputs: [],
-  huntPersistenceLocationPost: 'sample/post',
-  huntPersistenceLocationGet: 'sample/get',
+  huntPersistenceLocation: process.env.REACT_APP_HUNT_LOCATION || 'sample/post',
   artworks: []
 };
 
@@ -116,9 +115,20 @@ const CreateFindArtworkActivityScreen: React.FC = () => {
     setActivityDefinition(prev => ({ ...prev, allowedInputs: newInputs }));
   };
 
+  const handleArtworkSelected = (artworkId: string) => {
+    // add to list
+    setActivityDefinition(prev => ({ ...prev, artworks: [...prev.artworks, artworkId] }));
+  };
+
+  const handleArtworkDeselected = (artworkId: string) => {
+    console.log("deselected");
+    // remove from list
+    setActivityDefinition(prev => ({ ...prev, artworks: prev.artworks.filter(elem => elem !== artworkId) }));
+  };
+
   useEffect(() => {
-    console.log(submitDefinitionStatus);
-  }, [submitDefinitionStatus]);
+    console.log(activityDefinition);
+  }, [activityDefinition]);
 
 
   return (
@@ -163,7 +173,9 @@ const CreateFindArtworkActivityScreen: React.FC = () => {
 
       { activeActivityDefinitionStatus === 'select-artworks' &&
         <SelectArtworksStage
-        
+          onArtworkSelected={handleArtworkSelected}
+          onArtworkDeselected={handleArtworkDeselected}
+          selectedArtworks={activityDefinition.artworks}
         />
       }
 
