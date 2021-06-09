@@ -1,0 +1,21 @@
+# Docker Compose "modular" para lanzar la aplicación.
+# Es un poco matar moscas a cañonazos, que la aplicación es
+# bastante simple, pero bueno.
+#
+# Este es el fichero base, con la definición inicial de los
+# servicios... aunque solo hay uno, con el servidor web estático.
+#
+# Tiene una definición parcial que requiere la parametrización
+# con variables de entorno. Además deja algunas decisiones
+# pendientes (modo de inicialización de la base de datos,
+# configuración de la red...) que son particularizadas mezclando
+# este fichero con otros .yml.
+#
+# Consulta env.template para parametrización y ejemplos de uso.
+version: '3'
+
+services:
+
+    server:
+        image: ${IMAGES_REGISTRY}spice/activity-demo:${SERVER_TAG:-latest}
+        user: ${UID:-1000}:${GUID:-1000}
