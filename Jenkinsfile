@@ -69,7 +69,7 @@ pipeline {
                 ]) {
                     script {
 	  	               image = docker.build("spice/spice-activity-demo/spice/activity-demo",
-                         "--build-arg REACT_APP_API_KEY=$REACT_APP_API_KEY --build-arg REACT_APP_DATASET_UUID=$REACT_APP_DATASET_UUID"
+                         "--build-arg REACT_APP_API_KEY=${REACT_APP_API_KEY} --build-arg REACT_APP_DATASET_UUID=${REACT_APP_DATASET_UUID}"
                          );
                     }
                 }
