@@ -19,11 +19,12 @@ pipeline {
                     string(credentialsId='spice-activity-demo-api-key', varible: 'REACT_APP_API_KEY'),
                     string(credentialsId='spice-activity-demo-dataset-uuid', varible: 'REACT_APP_DATASET_UUID')
                 ]) {
-	  	            image = docker.build("spice/spice-activity-demo/spice/activity-demo");
+                    script {
+	  	               image = docker.build("spice/spice-activity-demo/spice/activity-demo");
+                    }
                 }
             }
 	    }
-
 
     }
 }
