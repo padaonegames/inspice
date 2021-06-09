@@ -24,6 +24,10 @@ def deployMachines() {
 // variables de entorno.
 def deployInfo() {
     [
+            'master':  [
+                host: 'gaiatemp',
+                envFile: 'spice-activity-demo.master.dev'
+            ],
             'dev':  [
                 host: 'gaiatemp',
                 envFile: 'spice-activity-demo.env.dev'
