@@ -12,8 +12,7 @@ const activityOne: FindArtworkActivityDefinition = {
   minCluesPerStage: 2,
   maxCluesPerStage: 4,
   allowedInputs: ['Text'],
-  huntPersistenceLocationGet: 'fakeApi/treasure-hunt',
-  huntPersistenceLocationPost: 'fakeApi/treasure-hunt',
+  huntPersistenceLocation: 'fakeApi/treasure-hunt',
   artworks: sampleArtworks.slice(0, 10).map(elem => elem.id)
 };
 

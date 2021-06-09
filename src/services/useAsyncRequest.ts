@@ -30,6 +30,7 @@ export function useAsyncRequest<ResultType, ErrorType>(
   const [triggerRequest, setTriggerRequest] = useState<boolean>(triggerOnStart);
 
   useEffect(() => {
+    console.log("test " + state.kind + " " + triggerRequest);
     // request hasn't started yet.
     if (state.kind === 'idle') {
       if (triggerRequest) {

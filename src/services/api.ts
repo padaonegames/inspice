@@ -76,13 +76,17 @@ export class Api {
       (url, activityDefinition);
   }
 
-  public async fetchUniqueFieldValues(field: 'date' | 'author' | 'info'): Promise<ApiResult<string[]>> {
+  public async fetchUniqueFieldValues(field: 'date' | 'author' | 'info'): Promise<ApiResult<{ value: string, count: number }[]>> {
     if (this.mappingMode.mode === 'JSON') {
       // testing for now
-      let demoPromise = new Promise<ApiResult<string[]>>((resolve, reject) => {
+      let demoPromise = new Promise<ApiResult<{ value: string, count: number }[]>>((resolve, reject) => {
         let wait = setTimeout(() => {
           clearTimeout(wait);
-          resolve({ kind: 'ok', data: ['value A', 'value B', 'value C'] });
+          resolve({ kind: 'ok', data: [
+            { value: 'Sample A', count: 27 },
+            { value: 'Sample B', count: 15 },
+            { value: 'Sample C', count: 37 },
+          ] });
         }, 200);
       });
       return demoPromise;
@@ -93,9 +97,9 @@ export class Api {
       const query =
         field === 'author' ?
           retrieveDistinctAuthorValuesQuery()
-        : field === 'date' ?
-          retrieveDistinctDateValuesQuery()
-        : retrieveDistinctInfoValuesQuery();
+          : field === 'date' ?
+            retrieveDistinctDateValuesQuery()
+            : retrieveDistinctInfoValuesQuery();
 
       const opts: AxiosRequestConfig = {
         auth: {
@@ -171,7 +175,6 @@ async function getArtworksResultRDF(url: string, config: AxiosRequestConfig = {}
 
   // Validation
   const data = response.data;
-  console.log(response);
 
   if (!(data as Object).hasOwnProperty('results') ||
     !(data.results as Object).hasOwnProperty('bindings') ||
@@ -196,7 +199,8 @@ async function getArtworksResultRDF(url: string, config: AxiosRequestConfig = {}
 };
 
 // RDF Unique fields
-async function getUniqueFieldValuesRDF(url: string, field: 'date' | 'author' | 'info', config: AxiosRequestConfig = {}): Promise<ApiResult<string[]>> {
+async function getUniqueFieldValuesRDF(url: string, field: 'date' | 'author' | 'info', config: AxiosRequestConfig = {}):
+  Promise<ApiResult<{ value: string, count: number }[]>> {
   let response: AxiosResponse<any>;
   try {
     // we attempt to perform a GET request to the specified url and save the
@@ -224,7 +228,6 @@ async function getUniqueFieldValuesRDF(url: string, field: 'date' | 'author' | '
 
   // Validation
   const data = response.data;
-  console.log(response);
 
   if (!(data as Object).hasOwnProperty('results') ||
     !(data.results as Object).hasOwnProperty('bindings') ||
@@ -232,7 +235,9 @@ async function getUniqueFieldValuesRDF(url: string, field: 'date' | 'author' | '
     return { kind: 'parse-error', errors: 'InvalidJson' };
   }
 
-  const parsedData = (data.results.bindings as any[]).map((elem: any) => elem[field].value) as string[];
+  const parsedData = (data.results.bindings as any[]).map((elem: any) => 
+    ({ value: elem[field].value, count: elem.count?.value })
+  ) as { value: string, count: number }[];
 
   if (parsedData) {
     return { kind: 'ok', data: parsedData };
