@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import ArtworkFront from '../FindArtwork/ArtworkFront';
 import { ArtworkData } from '../services/commonDefinitions';
+import ArtworkSelectedCard from './ArtworkSelectedCard';
 
 const CardContainer = styled.div`
   flex: 0 0 auto; 
@@ -21,9 +22,10 @@ interface ArtworkSelectionCardProps {
   artworkData: ArtworkData;
   selected: boolean;
   onCardSelected: () => void;
+  onCardDeselected: () => void;
 };
 
-const ArtworkSelectionCard: React.FC<ArtworkSelectionCardProps> = ({ artworkData, selected, onCardSelected }) => {
+const ArtworkSelectionCard: React.FC<ArtworkSelectionCardProps> = ({ artworkData, selected, onCardSelected, onCardDeselected }) => {
   return (
     <CardContainer>
       <ArtworkFront
@@ -31,21 +33,11 @@ const ArtworkSelectionCard: React.FC<ArtworkSelectionCardProps> = ({ artworkData
         artworkData={artworkData}
         flipped={!selected}
       />
-      {/*selected ?
-        <ArtworkCorrect
-          image={artworkData.src}
-          title={artworkData.title}
-          title_en={artworkData.title_en!}
-          flipped={flipped}
-          recording={status.recording}
-        /> :
-        <ArtworkFailed
-          image={artworkData.src}
-          title={artworkData.title}
-          title_en={artworkData.title_en!}
-          flipped={flipped}
-        />
-      */}
+      <ArtworkSelectedCard
+        artworkData={artworkData}
+        onArtworkDeselected={onCardDeselected}
+        flipped={selected}
+      />
     </CardContainer>
   );
 }

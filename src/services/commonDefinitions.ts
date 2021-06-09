@@ -78,8 +78,7 @@ export interface InProgressFindArtworkActivityDefinition {
   minCluesPerStage: number | undefined;
   maxCluesPerStage: number | undefined;
   allowedInputs: AllowedInputs[];
-  huntPersistenceLocationPost: string | undefined;
-  huntPersistenceLocationGet: string | undefined;
+  huntPersistenceLocation: string | undefined;
   artworks: string[];
 }
 
@@ -99,8 +98,7 @@ export const defaultFindArtworkActivityDefinition: InProgressFindArtworkActivity
     minCluesPerStage: undefined,
     maxCluesPerStage: undefined,
     allowedInputs: [],
-    huntPersistenceLocationPost: undefined,
-    huntPersistenceLocationGet: undefined,
+    huntPersistenceLocation: undefined,
     artworks: [],
   };
 
@@ -115,8 +113,7 @@ export interface FindArtworkActivityDefinition {
   minCluesPerStage: number;
   maxCluesPerStage: number;
   allowedInputs: AllowedInputs[];
-  huntPersistenceLocationPost: string;
-  huntPersistenceLocationGet: string;
+  huntPersistenceLocation: string;
   artworks: string[];
 }
 
