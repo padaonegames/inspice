@@ -49,6 +49,8 @@ COPY ./src src
 COPY ./public public
 # Configuración de la clave
 ARG REACT_APP_API_KEY
+# Configuración del id del dataset
+ARG REACT_APP_DATASET_UUID
 RUN npm run build
 # El resultado se queda en ./build/
 
