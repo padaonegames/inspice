@@ -49,7 +49,7 @@ const ArtworkGrid = styled.div`
   display: flex;
   flex-wrap: wrap;
   align-self: top;
-  justify-content: space-between;
+  justify-content: left;
 `;
 
 const ResultsWrapper = styled.div`
@@ -86,10 +86,10 @@ const SelectArtworksStage: React.FC = () => {
   const handleApplyFilter = (field: 'date' | 'author' | 'info', filter: string) => {
     let newFilter: any = {};
     newFilter[field] = filter;
-    setAppliedFilter(prev => ({ ...prev, ...newFilter }));
+    setAppliedFilter(newFilter);
   };
 
-  const [findArtworkStatus] = useAsyncRequest(fetchArtworksFromDataset, [appliedFilter], true);
+  const [findArtworkStatus] = useAsyncRequest(fetchArtworksFromDataset, [appliedFilter, page, itemsPerPage], true);
   const [findUniqueAuthorsStatus] = useAsyncRequest(() => fetchUniqueFieldValuesFromDataset('author'), []);
   const [findUniqueDatesStatus] = useAsyncRequest(() => fetchUniqueFieldValuesFromDataset('date'), []);
   const [findUniqueInfoStatus] = useAsyncRequest(() => fetchUniqueFieldValuesFromDataset('info'), []);
