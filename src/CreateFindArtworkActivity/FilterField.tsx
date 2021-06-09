@@ -47,7 +47,11 @@ const OptionContainer = styled.div`
   padding-right: 1.5%;
   align-self: center;
   display: flex;
+  flex-direction: row;
   cursor: pointer;
+  &:hover {
+    text-decoration: underline;
+  }
 `;
 
 const OptionText = styled.span`
@@ -57,9 +61,6 @@ const OptionText = styled.span`
   font-size: 0.6em;
   font-weight: 1000;
   font-family: Raleway;
-  &:hover {
-    text-decoration: underline;
-  }
 `;
 
 const ExpandIcon = styled.span`
@@ -74,15 +75,20 @@ const ExpandIcon = styled.span`
 interface FilterFieldProps {
   filterField: string;
   filterOptions: string[];
+  filterCounts: number[];
   bottomBorder?: boolean;
-  // TODO: max number to show
+  maxOptionsShown?: number;
+  onFilterSelected: (filter: string) => void;
   // TODO: show button
 };
 
 const FilterField: React.FC<FilterFieldProps> = ({
   filterField,
   filterOptions,
+  filterCounts,
   bottomBorder = true,
+  maxOptionsShown = filterOptions.length,
+  onFilterSelected,
 }) => {
 
   const [opened, setOpened] = useState<boolean>(false);
@@ -101,10 +107,10 @@ const FilterField: React.FC<FilterFieldProps> = ({
         </ExpandIcon>
       </FieldHeader>
       {opened &&
-        filterOptions.sort().map(elem =>
-          <OptionContainer key={elem}>
+        filterOptions.sort().slice(0, maxOptionsShown).map((elem, i) =>
+          <OptionContainer key={elem} onClick={() => onFilterSelected(elem)}>
             <OptionText>
-              {elem}
+              {elem} ({filterCounts.length > i && filterCounts[i]})
             </OptionText>
           </OptionContainer>
         )}

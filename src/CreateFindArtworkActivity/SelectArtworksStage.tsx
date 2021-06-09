@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { sampleArtworks } from '../artworks/artworkData';
 import { api } from '../services';
+import { GetArtworksFilter } from '../services/queries';
 import { useAsyncRequest } from '../services/useAsyncRequest';
 import ArtworkSelectionCard from './ArtworkSelectionCard';
 import FilterField from './FilterField';
@@ -72,23 +73,30 @@ const SelectArtworksStage: React.FC = () => {
 
   const [page, setPage] = useState<number>(1);
   const [itemsPerPage, setItemsPerPage] = useState<number>(21);
+  const [appliedFilter, setAppliedFilter] = useState<GetArtworksFilter>({});
 
   const fetchArtworksFromDataset = async () => {
-    return api.fetchArtworks({ sortingField: 'id', pageNumber: page, pageSize: itemsPerPage });
+    return api.fetchArtworks({ sortingField: 'id', pageNumber: page, pageSize: itemsPerPage, filter: appliedFilter });
   };
 
   const fetchUniqueFieldValuesFromDataset = async (field: 'date' | 'author' | 'info') => {
     return api.fetchUniqueFieldValues(field);
   };
 
-  const [findArtworkStatus] = useAsyncRequest(fetchArtworksFromDataset, []);
+  const handleApplyFilter = (field: 'date' | 'author' | 'info', filter: string) => {
+    let newFilter: any = {};
+    newFilter[field] = filter;
+    setAppliedFilter(prev => ({ ...prev, ...newFilter }));
+  };
+
+  const [findArtworkStatus] = useAsyncRequest(fetchArtworksFromDataset, [appliedFilter], true);
   const [findUniqueAuthorsStatus] = useAsyncRequest(() => fetchUniqueFieldValuesFromDataset('author'), []);
   const [findUniqueDatesStatus] = useAsyncRequest(() => fetchUniqueFieldValuesFromDataset('date'), []);
   const [findUniqueInfoStatus] = useAsyncRequest(() => fetchUniqueFieldValuesFromDataset('info'), []);
 
   useEffect(() => {
-    console.log(findUniqueDatesStatus);
-  }, [findUniqueDatesStatus]);
+    console.log(findArtworkStatus);
+  }, [findArtworkStatus]);
 
   if (findArtworkStatus.kind === 'success' &&
     findArtworkStatus.result.kind === 'ok' &&
@@ -112,18 +120,27 @@ const SelectArtworksStage: React.FC = () => {
           <FilterPanel>
             <FilterField
               filterField='DATE'
-              filterOptions={findUniqueDatesStatus.result.data}
+              filterOptions={findUniqueDatesStatus.result.data.map(elem => elem.value)}
+              filterCounts={findUniqueDatesStatus.result.data.map(elem => elem.count)}
               bottomBorder={false}
+              maxOptionsShown={8}
+              onFilterSelected={(filter: string) => handleApplyFilter('date', filter)}
             />
             <FilterField
               filterField='AUTHOR'
-              filterOptions={findUniqueAuthorsStatus.result.data}
+              filterOptions={findUniqueAuthorsStatus.result.data.map(elem => elem.value)}
+              filterCounts={findUniqueAuthorsStatus.result.data.map(elem => elem.count)}
               bottomBorder={false}
+              maxOptionsShown={8}
+              onFilterSelected={(filter: string) => handleApplyFilter('author', filter)}
             />
             <FilterField
               filterField='MATERIAL'
-              filterOptions={findUniqueInfoStatus.result.data}
+              filterOptions={findUniqueInfoStatus.result.data.map(elem => elem.value)}
+              filterCounts={findUniqueInfoStatus.result.data.map(elem => elem.count)}
               bottomBorder={true}
+              maxOptionsShown={8}
+              onFilterSelected={(filter: string) => handleApplyFilter('info', filter)}
             />
           </FilterPanel>
           <ArtworkGrid>
