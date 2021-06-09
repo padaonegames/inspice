@@ -1,0 +1,19 @@
+# No queremos enviar al demonio de Docker las dependencias locales
+# gestionadas por npm. Durante el proceso de creación de la imagen
+# se descargan.
+**/node_modules
+
+# El fichero de jenkins no se necesita (aunque tampoco ocupa mucho)
+Jenkinsfile
+
+# Directorios de configuración distintos (que quizá ni siquiera
+# deberían estar en el repositorio).
+.netlify
+.vscode
+
+# Fichero de configuración privado, por si se prueba en una
+# máquina de desarrollo.
+.env
+
+# Otras cosas, ignoradas en git que tampoco querremos enviar.
+build
