@@ -33,7 +33,7 @@ const FieldHeader = styled.div<FieldHeaderProps>`
 
 const FieldText = styled.span`
   align-self: center;
-  color: #6c6c6c;
+  color: #525252;
   letter-spacing: +0.5px;
   font-size: 0.75em;
   font-weight: 1000;
