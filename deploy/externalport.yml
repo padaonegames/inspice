@@ -1,0 +1,13 @@
+# Añade la configuración para hacer a la aplicación web
+# accesible desde un puerto externo.
+#
+# Si no se usa, la aplicación se podrá acceder únicamente a través
+# de la red de Docker en la que se desplieguen los contenedores
+# en el puerto, fijo, 80 de la imagen del servidor.
+
+version: '3'
+
+services:
+    server:
+        ports:
+            - '${PUBLIC_PORT:-80}:80'

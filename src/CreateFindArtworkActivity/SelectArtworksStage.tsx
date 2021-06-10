@@ -4,7 +4,10 @@ import { api } from '../services';
 import { GetArtworksFilter } from '../services/queries';
 import { useAsyncRequest } from '../services/useAsyncRequest';
 import ArtworkSelectionCard from './ArtworkSelectionCard';
+import RecomendationCard from './RecomendationCard';
 import FilterField from './FilterField';
+import { NavigateNext } from '@styled-icons/material/NavigateNext';
+import { NavigateBefore } from '@styled-icons/material/NavigateBefore';
 
 const Root = styled.div`
   padding-top: 2.5vh;
@@ -69,6 +72,17 @@ const ArtworkGrid = styled.div`
   justify-content: left;
 `;
 
+const RecomendationGrid = styled.div`
+  position: relative;
+  height: auto;
+  width: 100%;
+  display: flex;
+  flex-wrap: nowrap;
+  align-self: bottom;
+  justify-content: center;
+  background-color: transparent;
+`;
+
 const ResultsWrapper = styled.div`
   height: 100%;
   display: flex;
@@ -84,6 +98,38 @@ const Results = styled.span`
   font-weight: 500;
   letter-spacing: +1px;
   font-family: 'EB Garamond';
+`;
+interface NavIconProps {
+  active: boolean;
+};
+const NavigateNextIcon = styled(NavigateNext) <NavIconProps>`
+  color: ${props => props.active ? 'darkgray' : 'lightgray'};
+  cursor: ${props => props.active ? 'pointer' : 'default'};
+  height: 7.5vh;
+  align-self: center;
+  margin-bottom: 1vh;
+  transform: scale(0.9);
+  transition: transform 0.5s ease;
+
+  &:hover {
+    transform: ${props => props.active ? 'scale(1.1)' : 'scale(0.9)'};
+    transition: transform 0.5s ease;
+  }
+`;
+
+const NavigateBeforeIcon = styled(NavigateBefore) <NavIconProps>`
+  color: ${props => props.active ? 'darkgray' : 'lightgray'};
+  cursor: ${props => props.active ? 'pointer' : 'default'};
+  height: 7.5vh;
+  align-self: center;
+  margin-bottom: 1vh;
+  transform: scale(0.9);
+  transition: transform 0.5s ease;
+
+  &:hover {
+    transform: ${props => props.active ? 'scale(1.1)' : 'scale(0.9)'};
+    transition: transform 0.5s ease;
+  }
 `;
 
 interface SelectArtworksStageProps {
@@ -121,11 +167,13 @@ const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSele
   const [findUniqueAuthorsStatus] = useAsyncRequest(() => fetchUniqueFieldValuesFromDataset('author'), []);
   const [findUniqueDatesStatus] = useAsyncRequest(() => fetchUniqueFieldValuesFromDataset('date'), []);
   const [findUniqueInfoStatus] = useAsyncRequest(() => fetchUniqueFieldValuesFromDataset('info'), []);
+  const [displayRecom, setDisplayRecom] = useState<number>(0);
   const [fetchByEmotionStatus] = useAsyncRequest(getRecommendations, [lastArtwork]);
 
   useEffect(() => {
     console.log(fetchByEmotionStatus);
   }, [fetchByEmotionStatus]);
+
 
   if (findArtworkStatus.kind === 'success' &&
     findArtworkStatus.result.kind === 'ok' &&
@@ -192,6 +240,39 @@ const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSele
             ))}
           </ArtworkGrid>
         </ResultsLowerPanel>
+        <ResultsUpperPanel>
+          <ResultsWrapper>
+            <Results>
+              People Also Checked:
+            </Results>
+          </ResultsWrapper>
+        </ResultsUpperPanel>
+        <RecomendationGrid>
+          <NavigateBeforeIcon
+            active={displayRecom > 0}
+            onClick={() => {
+              if (displayRecom > 0) {
+                setDisplayRecom(prev => prev - 1);
+              }
+            }}
+          />
+          {findArtworkStatus.result.data.slice(displayRecom, displayRecom + 6).map((im, i) => (
+            <RecomendationCard
+              key={im.id}
+              artworkData={im}
+              selected={false}
+              onCardSelected={() => { }}
+            />
+          ))}
+          <NavigateNextIcon
+            active={displayRecom + 6 < findArtworkStatus.result.data.length}
+            onClick={() => {
+              if (displayRecom + 6 < 20) {
+                setDisplayRecom(prev => prev + 1);
+              }
+            }}
+          />
+        </RecomendationGrid>
       </Root>
     );
   }
