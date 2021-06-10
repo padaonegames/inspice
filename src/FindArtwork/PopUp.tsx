@@ -14,7 +14,7 @@ import { useState } from 'react';
 ///////
 
 interface RootProps {
-    backgroundImage: string;
+  backgroundImage: string;
 };
 
 const Root = styled.div<RootProps>`
@@ -119,7 +119,7 @@ const DotsWrapper = styled.div`
 `;
 
 interface IconProps {
-    selected: boolean;
+  selected: boolean;
 };
 
 const GiftBox = styled(Gift)`
@@ -219,7 +219,7 @@ const RewardText = styled.h1`
 
 
 interface PopupBackgroundProps {
-    backgroundImage: string;
+  backgroundImage: string;
 };
 
 const PopupBackground = styled.div<PopupBackgroundProps>`
@@ -268,9 +268,6 @@ font-size: 0.8em;
 font-weight: 575;
 `;
 
-
-
-
 const DarkLayer = styled.div`
   background-color: rgba(0, 0, 0, 0.5);
   position: absolute;
@@ -281,7 +278,7 @@ const DarkLayer = styled.div`
 `;
 
 interface CardContentProps {
-    flipped: boolean;
+  flipped: boolean;
 };
 
 const CardContent = styled.div<CardContentProps>`
@@ -298,7 +295,7 @@ const CardContent = styled.div<CardContentProps>`
 `;
 
 interface CardBackgroundProps {
-    backgroundImage: string;
+  backgroundImage: string;
 };
 
 const CardBackground = styled.div<CardBackgroundProps>`
@@ -316,71 +313,71 @@ const CardBackground = styled.div<CardBackgroundProps>`
 `;
 
 type Props = {
-    gift: string[];
-    artworkData: ArtworkData;
-    setModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  gift: string[];
+  artworkData: ArtworkData;
+  setModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const Popup: React.FC<Props> = ({ gift, artworkData, setModalOpen }) => {
-    const { t } = useTranslation('app');
-    const [selectedGift, setSelectedGift] = useState<number>(0);
-    return (
-        <Root
-            backgroundImage={artworkData.src}
-        >
-            <RevealText>
-                <InformationText>
-                    {artworkData.location}
-                </InformationText>
-                <InformationText>
-                    {artworkData.date}
-                </InformationText>
-                <InformationText>
-                    {artworkData.info}
-                </InformationText>
-                <InformationText>
-                    {artworkData.author}
-                </InformationText>
-                <NameText>
-                    {artworkData.title}
-                </NameText>
-            </RevealText>
-            <ReferencePanel>
-                <TitleWrapper>
-                    <Title>
-                        {t('WellDone')}
-                    </Title>
-                </TitleWrapper>
-                <ClueWrapper>
-                    <GiftStyle
-                        maxLength={400}
-                        value={t(gift[selectedGift]).toString()}
-                    />
-                </ClueWrapper>
-                <GiftPanelWrapper>
-                    <DotsWrapper>
-                        {
-                            gift.map((_, i) =>
-                                <GiftContainer
-                                    selected={i === selectedGift}
-                                    onClick={() => setSelectedGift(i)}
-                                    key={'env' + i}
-                                >
-                                    <GiftBox />
-                                </GiftContainer>
-                            )}
-                        <CloseIcon
-                            onClick={() => setModalOpen(false)}
-                        />
-                    </DotsWrapper>
-                    <GiftsText>
-                        {t('gifts')}
-                    </GiftsText>
+  const { t } = useTranslation('app');
+  const [selectedGift, setSelectedGift] = useState<number>(0);
+  return (
+    <Root
+      backgroundImage={artworkData.src}
+    >
+      <RevealText>
+        <InformationText>
+          {artworkData.location}
+        </InformationText>
+        <InformationText>
+          {artworkData.date}
+        </InformationText>
+        <InformationText>
+          {artworkData.info}
+        </InformationText>
+        <InformationText>
+          {artworkData.author}
+        </InformationText>
+        <NameText>
+          {artworkData.title}
+        </NameText>
+      </RevealText>
+      <ReferencePanel>
+        <TitleWrapper>
+          <Title>
+            {t('WellDone')}
+          </Title>
+        </TitleWrapper>
+        <ClueWrapper>
+          <GiftStyle
+            maxLength={400}
+            value={t(gift[selectedGift]).toString()}
+          />
+        </ClueWrapper>
+        <GiftPanelWrapper>
+          <DotsWrapper>
+            {
+              gift.map((_, i) =>
+                <GiftContainer
+                  selected={i === selectedGift}
+                  onClick={() => setSelectedGift(i)}
+                  key={'env' + i}
+                >
+                  <GiftBox />
+                </GiftContainer>
+              )}
+            <CloseIcon
+              onClick={() => setModalOpen(false)}
+            />
+          </DotsWrapper>
+          <GiftsText>
+            {t('gifts')}
+          </GiftsText>
 
-                </GiftPanelWrapper>
-            </ReferencePanel>
-        </Root >
-    );
+        </GiftPanelWrapper>
+      </ReferencePanel>
+    </Root >
+  );
 };
 
 export default Popup;

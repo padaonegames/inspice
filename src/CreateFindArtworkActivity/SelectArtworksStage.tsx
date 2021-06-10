@@ -4,7 +4,10 @@ import { api } from '../services';
 import { GetArtworksFilter } from '../services/queries';
 import { useAsyncRequest } from '../services/useAsyncRequest';
 import ArtworkSelectionCard from './ArtworkSelectionCard';
+import RecomendationCard from './RecomendationCard';
 import FilterField from './FilterField';
+import { NavigateNext } from '@styled-icons/material/NavigateNext';
+import { NavigateBefore } from '@styled-icons/material/NavigateBefore';
 
 const Root = styled.div`
   padding-top: 2.5vh;
@@ -69,6 +72,15 @@ const ArtworkGrid = styled.div`
   justify-content: left;
 `;
 
+const RecomendationGrid = styled.div`
+  height: fit-content;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  background-color: transparent;
+`;
+
 const ResultsWrapper = styled.div`
   height: 100%;
   display: flex;
@@ -85,6 +97,38 @@ const Results = styled.span`
   letter-spacing: +1px;
   font-family: 'EB Garamond';
 `;
+interface NavIconProps {
+  active: boolean;
+};
+const NavigateNextIcon = styled(NavigateNext) <NavIconProps>`
+  color: ${props => props.active ? 'darkgray' : 'lightgray'};
+  cursor: ${props => props.active ? 'pointer' : 'default'};
+  height: 7.5vh;
+  align-self: center;
+  margin-bottom: 1vh;
+  transform: scale(0.9);
+  transition: transform 0.5s ease;
+
+  &:hover {
+    transform: ${props => props.active ? 'scale(1.1)' : 'scale(0.9)'};
+    transition: transform 0.5s ease;
+  }
+`;
+
+const NavigateBeforeIcon = styled(NavigateBefore) <NavIconProps>`
+  color: ${props => props.active ? 'darkgray' : 'lightgray'};
+  cursor: ${props => props.active ? 'pointer' : 'default'};
+  height: 7.5vh;
+  align-self: center;
+  margin-bottom: 1vh;
+  transform: scale(0.9);
+  transition: transform 0.5s ease;
+
+  &:hover {
+    transform: ${props => props.active ? 'scale(1.1)' : 'scale(0.9)'};
+    transition: transform 0.5s ease;
+  }
+`;
 
 interface SelectArtworksStageProps {
   selectedArtworks: string[];
@@ -94,9 +138,10 @@ interface SelectArtworksStageProps {
 
 const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSelected, onArtworkDeselected, selectedArtworks }) => {
 
-  const [page, setPage] = useState<number>(1);
-  const [itemsPerPage, setItemsPerPage] = useState<number>(21);
+  const [page, setPage] = useState<number>(7);
+  const [itemsPerPage, setItemsPerPage] = useState<number>(30);
   const [appliedFilter, setAppliedFilter] = useState<GetArtworksFilter>({});
+  const [lastArtwork, setLastArtwork] = useState<string>('');
 
   const fetchArtworksFromDataset = async () => {
     return api.fetchArtworks({ sortingField: 'title', pageNumber: page, pageSize: itemsPerPage, filter: appliedFilter });
@@ -112,14 +157,21 @@ const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSele
     setAppliedFilter(newFilter);
   };
 
+  const getRecommendations = () => {
+    return api.fetchRecommendationsByEmotion(lastArtwork);
+  }
+
   const [findArtworkStatus] = useAsyncRequest(fetchArtworksFromDataset, [appliedFilter, page, itemsPerPage], true);
   const [findUniqueAuthorsStatus] = useAsyncRequest(() => fetchUniqueFieldValuesFromDataset('author'), []);
   const [findUniqueDatesStatus] = useAsyncRequest(() => fetchUniqueFieldValuesFromDataset('date'), []);
   const [findUniqueInfoStatus] = useAsyncRequest(() => fetchUniqueFieldValuesFromDataset('info'), []);
+  const [displayRecom, setDisplayRecom] = useState<number>(0);
+  const [fetchByEmotionStatus] = useAsyncRequest(getRecommendations, [lastArtwork]);
 
   useEffect(() => {
-    console.log(findArtworkStatus);
-  }, [findArtworkStatus]);
+    console.log(fetchByEmotionStatus);
+  }, [fetchByEmotionStatus]);
+
 
   if (findArtworkStatus.kind === 'success' &&
     findArtworkStatus.result.kind === 'ok' &&
@@ -177,12 +229,53 @@ const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSele
                 key={im.id}
                 artworkData={im}
                 selected={selectedArtworks.some(elem => elem === im.id)}
-                onCardSelected={() => onArtworkSelected(im.id)}
+                onCardSelected={() => {
+                  onArtworkSelected(im.id);
+                  setLastArtwork(im.id); // just for testing
+                }}
                 onCardDeselected={() => onArtworkDeselected(im.id)}
               />
             ))}
           </ArtworkGrid>
         </ResultsLowerPanel>
+        <VerticalSeparator />
+        <ResultsUpperPanel>
+          <ResultsWrapper>
+            <Results>
+              Artworks triggering similar or opposite emotions:
+            </Results>
+          </ResultsWrapper>
+        </ResultsUpperPanel>
+        <RecomendationGrid>
+          <NavigateBeforeIcon
+            active={displayRecom > 0}
+            onClick={() => {
+              if (displayRecom > 0) {
+                setDisplayRecom(prev => prev - 1);
+              }
+            }}
+          />
+          {findArtworkStatus.result.data.slice(displayRecom, displayRecom + 5).map((im, i) => (
+            <RecomendationCard
+              key={im.id}
+              artworkData={im}
+              selected={selectedArtworks.some(elem => elem === im.id)}
+              onCardSelected={() => {
+                onArtworkSelected(im.id);
+                setLastArtwork(im.id); // just for testing
+              }}
+              onCardDeselected={() => onArtworkDeselected(im.id)}
+            />
+          ))}
+          <NavigateNextIcon
+            active={displayRecom + 6 < findArtworkStatus.result.data.length}
+            onClick={() => {
+              if (displayRecom + 6 < 20) {
+                setDisplayRecom(prev => prev + 1);
+              }
+            }}
+          />
+        </RecomendationGrid>
       </Root>
     );
   }

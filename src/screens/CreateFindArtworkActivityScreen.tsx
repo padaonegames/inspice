@@ -182,10 +182,6 @@ const CreateFindArtworkActivityScreen: React.FC = () => {
       { activeActivityDefinitionStatus === 'none' &&
         <p>None</p>
       }
-      <NextCornerButton
-        onNextClicked={() => setActiveActivityDefinitionStatus('configure-stage-params')}
-        color='#000000'
-      />
     </Root>
   );
 }
