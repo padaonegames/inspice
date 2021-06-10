@@ -2,74 +2,66 @@ import React from 'react';
 import styled from 'styled-components';
 import ArtworkRecomendation from './ArtworkRecomendation';
 import { ArtworkData } from '../services/commonDefinitions';
-import { ControllerNext } from '@styled-icons/entypo/ControllerNext';
 
-const ArtworkGrid = styled.div`
-  width: 15%;
-  height: auto;
-  flex-wrap: wrap;
+interface RootProps {
+  selected: boolean;
+};
+
+const Root = styled.div<RootProps>`
+  width: 17%;
+  height: 50vh;
   align-self: center;
-  justify-content: center;
   flex-direction: column;
-  border: 1px solid black;
-  flex: 0 auto auto;
-  text-align:center;
-  display:inline-block;
-  vertical-align:top;
-  margin-right: 5px;
-  margin-bottom: 5px;
+  margin-top: 1.5%;
+  margin-bottom: 1.5%;
+  display: flex;
+  vertical-align: top;
+  border: ${props => props.selected ? '2px solid #f49997' : '1px solid #e0e0e0' };
 `;
 
 const ArtContainer = styled.div`
-  flex: 0 0 auto; 
-  display: block;
-  position: relative;
-  width: Auto;
-  height: 25vh;
-  transform-style: preserve-3d;
+  width: 100%;
+  height: 50%;
   perspective: 1000px;
   background-color: transparent;
-
 `;
 
 const GoBottom = styled.div`
-  position: relative;
-  overflow: hidden;
-  justify-content: center;
+  justify-content: left;
   align-content: center;
   display: flex;
   flex-direction: column;
-  width: auto;
-  height: 10%;
-
-  &:hover {    
-    color: lightgray;
-    cursor: pointer;
-  }
+  width: 100%;
+  height: 50%;
+  padding: 3.5%;
+  padding-top: 5%;
+  border-top: 1px solid #e0e0e0;
 `;
 
 const AddIcon = styled.button`
-color: rgb(255, 255, 255);
-font-size: 15px; 
-line-height: 15px; 
-padding: 5px; 
-border-radius: 10px; 
-font-family: Georgia, serif; 
-font-weight: normal; 
-text-decoration: none; 
-font-style: normal; 
-font-variant: normal; 
-text-transform: none; 
-background-image: linear-gradient(to right, rgb(28, 110, 164) 0%, rgb(35, 136, 203) 50%, rgb(20, 78, 117) 100%);
-box-shadow: rgb(0, 0, 0) 5px 5px 15px 5px; 
-border: 2px solid rgb(28, 110, 164); 
-display: inline-block;
-margin-top: 2vh;
+  color: rgb(255, 255, 255);
+  font-size: 15px; 
+  line-height: 15px; 
+  padding: 5px; 
+  border-radius: 10px; 
+  font-family: Georgia, serif; 
+  font-weight: normal; 
+  text-decoration: none; 
+  font-style: normal; 
+  font-variant: normal; 
+  text-transform: none; 
+  background-image: linear-gradient(to right, rgb(28, 110, 164) 0%, rgb(35, 136, 203) 50%, rgb(20, 78, 117) 100%);
+  box-shadow: rgb(0, 0, 0) 5px 5px 15px 5px; 
+  border: 2px solid rgb(28, 110, 164); 
+  display: inline-block;
+  margin-top: 2vh;
 
-&:hover {
-background: #1C6EA4; }
-&:active {
-background: #144E75; }
+  &:hover {
+    background: #1C6EA4; 
+  }
+  &:active {
+    background: #144E75;
+  }
 `;
 
 const NameText = styled.h3`
@@ -91,46 +83,46 @@ const InformationText = styled.p`
   font-weight: 575;
   max-width: 85%;
   text-align: left;
-  
 `;
 
 interface RecomendationCardProps {
-    artworkData: ArtworkData;
-    selected: boolean;
-    onCardSelected: () => void;
+  artworkData: ArtworkData;
+  selected: boolean;
+  onCardSelected: () => void;
+  onCardDeselected: () => void;
 };
 
-const RecomendationCard: React.FC<RecomendationCardProps> = ({ artworkData, selected, onCardSelected }) => {
-    return (
-        <ArtworkGrid>
-            <ArtContainer>
-                <ArtworkRecomendation
-                    onArtworkSelected={onCardSelected}
-                    artworkData={artworkData}
-                    flipped={!selected}
-                />
+const RecomendationCard: React.FC<RecomendationCardProps> = ({ artworkData, selected, onCardSelected, onCardDeselected }) => {
 
-            </ArtContainer>
-            <GoBottom>
-                <NameText>
-                    {artworkData.title}
-                </NameText>
-                <InformationText>
-                    {artworkData.author}
-                </InformationText>
-                <InformationText>
-                    {artworkData.info}
-                </InformationText>
-                <InformationText>
-                    {artworkData.date}
-                </InformationText>
-                <InformationText>
-                    {artworkData.location}
-                </InformationText>
-                <AddIcon>Add Item</AddIcon>
-            </GoBottom>
-        </ArtworkGrid>
-    );
+  return (
+    <Root selected={selected}>
+      <ArtContainer>
+        <ArtworkRecomendation
+          onArtworkSelected={onCardSelected}
+          onArtworkDeselected={onCardDeselected}
+          artworkData={artworkData}
+          selected={selected}
+        />
+      </ArtContainer>
+      <GoBottom>
+        <NameText>
+          {artworkData.title}
+        </NameText>
+        <InformationText>
+          {artworkData.author}
+        </InformationText>
+        <InformationText>
+          {artworkData.info}
+        </InformationText>
+        <InformationText>
+          {artworkData.date}
+        </InformationText>
+        <InformationText>
+          {artworkData.location}
+        </InformationText>
+      </GoBottom>
+    </Root>
+  );
 }
 
 export default RecomendationCard;

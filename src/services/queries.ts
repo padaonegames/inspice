@@ -1,5 +1,6 @@
 export interface GetArtworksFilter {
   id?: string; // exact
+  ids?: string[]; // multiple artworks
   author?: string; // regex
   date?: string; // exact
   info?: string; // regex
@@ -12,6 +13,16 @@ export interface GetArtworksOptions {
   sortingField?: string;
   filter?: GetArtworksFilter;
 };
+
+const filterRegexIds = (ids: string[]) => {
+  if (ids.length === 0) return '';
+  let res = `FILTER ${ids.length > 1 ? '(' : ''}regex(str(?id), "${ids[0]}", "i")`;
+  for (let i = 1; i < ids.length; i++) {
+    res += ` || regex(str(?id), "${ids[i]}", "i")`
+  }
+  return res;
+};
+
 
 export const retrieveAllArtworksQuery = (options: GetArtworksOptions) => `
   PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -30,6 +41,7 @@ export const retrieveAllArtworksQuery = (options: GetArtworksOptions) => `
     ?id <http://schema.org/image> ?imageUri .
     ?imageUri <http://schema.org/url> ?src .
     ${options.filter?.id ? `FILTER regex(str(?id), "${options.filter.id}", "i")` : ''}
+    ${options.filter?.ids ? filterRegexIds(options.filter?.ids) : ''}
   }
   ${options.sortingField ? `ORDER BY (LCASE(?${options.sortingField}))` : ''}
   ${(options.pageSize && options.pageNumber) ? `

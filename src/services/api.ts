@@ -117,7 +117,7 @@ export class Api {
     }
   };
 
-  public async fetchRecommendationsByEmotion(artworkId: string): Promise<ApiResult<string[]>> {
+  public async fetchRecommendationsByEmotion(artworkId: string): Promise<ApiResult<ArtworkData[]>> {
     const url = 'http://130.192.212.225/fuseki/Test_SPICE_DEGARI_Reasoner/query';
     const opts: AxiosRequestConfig = {
       headers: {
@@ -126,7 +126,18 @@ export class Api {
     };
     let params = new URLSearchParams();
     params.append('query', retrieveArtworksWithAtLeastAnEmotionInCommon('spiceartefact' + artworkId));
-    return getRecommendationsResultRDF(url, opts, params);
+    const ids = await getRecommendationsResultRDF(url, opts, params);
+
+    if(ids.kind === 'ok') {
+      return this.fetchArtworks({
+        filter: {
+          ids: ids.data
+        }
+      });
+    }
+    else {
+      return { kind: 'unhandled-error', error:  new Error('test') };
+    }
   };
 
   public async fetchArtworks(queryOpts: GetArtworksOptions = {}): Promise<ApiResult<ArtworkData[]>> {
@@ -252,7 +263,7 @@ async function getRecommendationsResultRDF(url: string, config: AxiosRequestConf
   }
 
   const parsedData = (data.results.bindings as any[]).map((elem: any) =>
-    elem.id?.value?.slice(elem.id?.value?.lastIndexOf('/') + 'spiceartefact'.length)) as string[];
+    elem.id?.value?.slice(elem.id?.value?.lastIndexOf('/') + 'spiceartefact'.length + 1)) as string[];
 
   if (parsedData) {
     console.log(parsedData);

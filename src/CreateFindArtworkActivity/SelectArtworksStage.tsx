@@ -73,13 +73,11 @@ const ArtworkGrid = styled.div`
 `;
 
 const RecomendationGrid = styled.div`
-  position: relative;
-  height: auto;
+  height: fit-content;
   width: 100%;
   display: flex;
-  flex-wrap: nowrap;
-  align-self: bottom;
-  justify-content: center;
+  flex-direction: row;
+  justify-content: space-between;
   background-color: transparent;
 `;
 
@@ -240,10 +238,11 @@ const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSele
             ))}
           </ArtworkGrid>
         </ResultsLowerPanel>
+        <VerticalSeparator />
         <ResultsUpperPanel>
           <ResultsWrapper>
             <Results>
-              People Also Checked:
+              Artworks triggering similar or opposite emotions:
             </Results>
           </ResultsWrapper>
         </ResultsUpperPanel>
@@ -256,12 +255,16 @@ const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSele
               }
             }}
           />
-          {findArtworkStatus.result.data.slice(displayRecom, displayRecom + 6).map((im, i) => (
+          {findArtworkStatus.result.data.slice(displayRecom, displayRecom + 5).map((im, i) => (
             <RecomendationCard
               key={im.id}
               artworkData={im}
-              selected={false}
-              onCardSelected={() => { }}
+              selected={selectedArtworks.some(elem => elem === im.id)}
+              onCardSelected={() => {
+                onArtworkSelected(im.id);
+                setLastArtwork(im.id); // just for testing
+              }}
+              onCardDeselected={() => onArtworkDeselected(im.id)}
             />
           ))}
           <NavigateNextIcon
