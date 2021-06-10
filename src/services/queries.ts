@@ -19,17 +19,17 @@ export const retrieveAllArtworksQuery = (options: GetArtworksOptions) => `
   SELECT ?id ?title ?author ?date ?info ?location ?src WHERE {
     ?id <http://schema.org/author> ?authorUri .
     ?authorUri <http://www.w3.org/2000/01/rdf-schema#label> ?author .
-    ${options.filter?.author ? `FILTER regex(?author, "${options.filter.author}", "i")` : ''}
+    ${options.filter?.author ? `FILTER regex(str(?author), "${options.filter.author}", "i")` : ''}
     ?id <https://w3id.org/arco/ontology/context-description/hasTitle> ?title .
-    ${options.filter?.title ? `FILTER regex(?title, "${options.filter.title}", "i")` : ''}
+    ${options.filter?.title ? `FILTER regex(str(?title), "${options.filter.title}", "i")` : ''}
     ?id <http://schema.org/dateCreated> ?date .
-    ${options.filter?.date ? `FILTER regex(?date, "${options.filter.date}", "i")` : ''}
+    ${options.filter?.date ? `FILTER regex(str(?date), "${options.filter.date}", "i")` : ''}
     ?id <http://schema.org/material> ?info .
-    ${options.filter?.info ? `FILTER regex(?info, "${options.filter.info}", "i")` : ''}
+    ${options.filter?.info ? `FILTER regex(str(?info), "${options.filter.info}", "i")` : ''}
     ?id <https://w3id.org/arco/ontology/arco/hasRelatedAgency> ?location .
     ?id <http://schema.org/image> ?imageUri .
     ?imageUri <http://schema.org/url> ?src .
-    ${options.filter?.id ? `FILTER regex(?id, "${options.filter.id}", "i")` : ''}
+    ${options.filter?.id ? `FILTER regex(str(?id), "${options.filter.id}", "i")` : ''}
   }
   ${options.sortingField ? `ORDER BY (LCASE(?${options.sortingField}))` : ''}
   ${(options.pageSize && options.pageNumber) ? `
@@ -87,4 +87,25 @@ export const retrieveDistinctInfoValuesQuery = () => `
   }
   GROUP BY ?info
   ORDER BY (LCASE(?info))
+`;
+
+
+//---------------------------------
+//            EMOTIONS
+//---------------------------------
+export const retrieveArtworksWithAtLeastAnEmotionInCommon = (artworkId: string) => `
+  PREFIX cult: <http://dati.beniculturali.it/cis/> 
+  PREFIX emo: <https://w3id.org/spice/SON/emotion/>
+  PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+  PREFIX owl: <http://www.w3.org/2002/07/owl#>
+  PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+  PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+  PREFIX cont: <https://w3id.org/spice/SON/emotionInCulturalContext/>
+
+  SELECT ?id ?label ?emotion
+  WHERE {
+    emo:${artworkId} emo:triggers ?emotion.
+    ?id rdfs:label ?label;
+          emo:triggers ?emotion.
+  }
 `;

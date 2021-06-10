@@ -94,9 +94,10 @@ interface SelectArtworksStageProps {
 
 const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSelected, onArtworkDeselected, selectedArtworks }) => {
 
-  const [page, setPage] = useState<number>(1);
-  const [itemsPerPage, setItemsPerPage] = useState<number>(21);
+  const [page, setPage] = useState<number>(7);
+  const [itemsPerPage, setItemsPerPage] = useState<number>(30);
   const [appliedFilter, setAppliedFilter] = useState<GetArtworksFilter>({});
+  const [lastArtwork, setLastArtwork] = useState<string>('');
 
   const fetchArtworksFromDataset = async () => {
     return api.fetchArtworks({ sortingField: 'title', pageNumber: page, pageSize: itemsPerPage, filter: appliedFilter });
@@ -112,14 +113,19 @@ const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSele
     setAppliedFilter(newFilter);
   };
 
+  const getRecommendations = () => {
+    return api.fetchRecommendationsByEmotion(lastArtwork);
+  }
+
   const [findArtworkStatus] = useAsyncRequest(fetchArtworksFromDataset, [appliedFilter, page, itemsPerPage], true);
   const [findUniqueAuthorsStatus] = useAsyncRequest(() => fetchUniqueFieldValuesFromDataset('author'), []);
   const [findUniqueDatesStatus] = useAsyncRequest(() => fetchUniqueFieldValuesFromDataset('date'), []);
   const [findUniqueInfoStatus] = useAsyncRequest(() => fetchUniqueFieldValuesFromDataset('info'), []);
+  const [fetchByEmotionStatus] = useAsyncRequest(getRecommendations, [lastArtwork]);
 
   useEffect(() => {
-    console.log(findArtworkStatus);
-  }, [findArtworkStatus]);
+    console.log(fetchByEmotionStatus);
+  }, [fetchByEmotionStatus]);
 
   if (findArtworkStatus.kind === 'success' &&
     findArtworkStatus.result.kind === 'ok' &&
@@ -177,7 +183,10 @@ const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSele
                 key={im.id}
                 artworkData={im}
                 selected={selectedArtworks.some(elem => elem === im.id)}
-                onCardSelected={() => onArtworkSelected(im.id)}
+                onCardSelected={() => {
+                  onArtworkSelected(im.id);
+                  setLastArtwork(im.id); // just for testing
+                }}
                 onCardDeselected={() => onArtworkDeselected(im.id)}
               />
             ))}

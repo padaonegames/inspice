@@ -1,6 +1,6 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { ArtworkData, ArtworkFieldMapping, CompletedFindArtworkActivityDefinition, GetFindArtworkActivityDefinitionByIdResponse, SubmitFindArtworkActivityDefinitionResponse } from './commonDefinitions';
-import { GetArtworksOptions, retrieveAllArtworksQuery, retrieveDistinctAuthorValuesQuery, retrieveDistinctDateValuesQuery, retrieveDistinctInfoValuesQuery } from './queries';
+import { GetArtworksOptions, retrieveAllArtworksQuery, retrieveArtworksWithAtLeastAnEmotionInCommon, retrieveDistinctAuthorValuesQuery, retrieveDistinctDateValuesQuery, retrieveDistinctInfoValuesQuery } from './queries';
 
 export type ApiResult<T> =
   | { kind: 'ok', data: T }
@@ -82,11 +82,13 @@ export class Api {
       let demoPromise = new Promise<ApiResult<{ value: string, count: number }[]>>((resolve, reject) => {
         let wait = setTimeout(() => {
           clearTimeout(wait);
-          resolve({ kind: 'ok', data: [
-            { value: 'Sample A', count: 27 },
-            { value: 'Sample B', count: 15 },
-            { value: 'Sample C', count: 37 },
-          ] });
+          resolve({
+            kind: 'ok', data: [
+              { value: 'Sample A', count: 27 },
+              { value: 'Sample B', count: 15 },
+              { value: 'Sample C', count: 37 },
+            ]
+          });
         }, 200);
       });
       return demoPromise;
@@ -113,6 +115,18 @@ export class Api {
 
       return getUniqueFieldValuesRDF(url, field, opts);
     }
+  };
+
+  public async fetchRecommendationsByEmotion(artworkId: string): Promise<ApiResult<string[]>> {
+    const url = 'http://130.192.212.225/fuseki/Test_SPICE_DEGARI_Reasoner/query';
+    const opts: AxiosRequestConfig = {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    };
+    let params = new URLSearchParams();
+    params.append('query', retrieveArtworksWithAtLeastAnEmotionInCommon('spiceartefact' + artworkId));
+    return getRecommendationsResultRDF(url, opts, params);
   };
 
   public async fetchArtworks(queryOpts: GetArtworksOptions = {}): Promise<ApiResult<ArtworkData[]>> {
@@ -143,7 +157,7 @@ export class Api {
 
       return getArtworksResultRDF(url, opts);
     }
-  }
+  };
 }
 
 // IMMA format
@@ -187,10 +201,61 @@ async function getArtworksResultRDF(url: string, config: AxiosRequestConfig = {}
     for (let key of Object.keys(elem)) {
       artworkInfo[key as keyof ArtworkData] = elem[key].value;
     }
-    return artworkInfo as ArtworkData;
+    const res = artworkInfo as ArtworkData;
+    return { ...res, id: res.id.slice(res.id.lastIndexOf('/') + 1) };
   }) as ArtworkData[];
 
   if (parsedData) {
+    console.log(parsedData);
+    return { kind: 'ok', data: parsedData };
+  }
+  else {
+    return { kind: 'parse-error', errors: 'InvalidJson' };
+  }
+};
+
+// IMMA format
+async function getRecommendationsResultRDF(url: string, config: AxiosRequestConfig = {}, params: URLSearchParams): Promise<ApiResult<string[]>> {
+  let response: AxiosResponse<any>;
+  try {
+    // we attempt to perform a GET request to the specified url and save the
+    // corresponding response within the response variable.
+    response = await axios.post<any>(url, params, config);
+  } catch (error: any) {
+    if (error.response) {
+      // if the error has a response, then this means that server responded
+      // with an error status (4xx, 5xx), which leads us to categorize it 
+      // as an http error
+      return { kind: 'http-error', response: error.response };
+    }
+    else if (error.request) {
+      // if an error were to happen where we have a request but no response, 
+      // we can categorize it as an axios error (the request wasn't performed
+      // correctly or the server did not respond at all).
+      return { kind: 'axios-error', error: error };
+    }
+    else {
+      // in any other case, we categorize this as an unhandled error
+      return { kind: 'unhandled-error', error: error };
+    }
+
+  }
+
+  // Validation
+  const data = response.data;
+  console.log(data);
+
+  if (!(data as Object).hasOwnProperty('results') ||
+    !(data.results as Object).hasOwnProperty('bindings') ||
+    !Array.isArray(data.results.bindings)) {
+    return { kind: 'parse-error', errors: 'InvalidJson' };
+  }
+
+  const parsedData = (data.results.bindings as any[]).map((elem: any) =>
+    elem.id?.value?.slice(elem.id?.value?.lastIndexOf('/') + 'spiceartefact'.length)) as string[];
+
+  if (parsedData) {
+    console.log(parsedData);
     return { kind: 'ok', data: parsedData };
   }
   else {
@@ -235,7 +300,7 @@ async function getUniqueFieldValuesRDF(url: string, field: 'date' | 'author' | '
     return { kind: 'parse-error', errors: 'InvalidJson' };
   }
 
-  const parsedData = (data.results.bindings as any[]).map((elem: any) => 
+  const parsedData = (data.results.bindings as any[]).map((elem: any) =>
     ({ value: elem[field].value, count: elem.count?.value })
   ) as { value: string, count: number }[];
 
