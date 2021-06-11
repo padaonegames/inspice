@@ -6,11 +6,12 @@ interface BoxProps {
 };
 
 const NumberBox = styled.button<BoxProps>`
+position:relative;
+display: block;
+overflow: visible;
+white-space: nowrap;
 background: ${props => props.Selected ? '#ffffff' : '#d3d3d3'};
 cursor: ${props => props.Selected ? 'default' : 'pointer'};
-//background: -moz-linear-gradient(left, #aaaaaa 0%, rgb(219,219,219) 100%);
-//background: -webkit-linear-gradient(left, #aaaaaa 0%, rgb(219,219,219) 100%);
-//background: linear-gradient(to right, #aaaaaa 0%, rgb(219,219,219) 100%);
 font-size: 20px; 
 line-height: 10px; 
 padding: 15px; 
@@ -36,7 +37,7 @@ background: rgb(219,219,219); }
 `;
 
 interface NumberIconProps {
-    UsingNumber: any;
+    UsingNumber: number | string;
     Selected: boolean;
     children?: React.ReactNode;
     onClick: () => void;

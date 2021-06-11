@@ -21,7 +21,7 @@ const Root = styled.div`
 
 const PageNumberGrid = styled.div`
   height: auto;
-  width: 60%;
+  width: 100vh;
   display: flex;
   flex-direction: row;
   justify-content: space-around;
@@ -69,7 +69,7 @@ const PageBar: React.FC<PageBarProps> = ({ currentPage, numberOfPages, onPageSel
                     }
                 }}
             />
-          &nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;
             {testArray.slice(currentPage - 1, currentPage + 3).map((im, i) => (
                 <NumberIcon
                     Selected={im === currentPage - 1}
@@ -77,7 +77,7 @@ const PageBar: React.FC<PageBarProps> = ({ currentPage, numberOfPages, onPageSel
                     UsingNumber={im + 1}
                 />
             ))}
-          &nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;
             <NumberIcon
                 UsingNumber={"→"}
                 Selected={false}
