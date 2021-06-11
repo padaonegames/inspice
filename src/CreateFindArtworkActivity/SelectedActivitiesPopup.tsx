@@ -166,12 +166,11 @@ const NavigateBeforeIcon = styled(NavigateBefore) <NavIconProps>`
 
 
 interface SelectedActivitiesPopupProps {
-  isOpen: boolean;
   artworks: ArtworkData[];
   onArtworkRemoved: (artworkId: string) => void;
 };
 
-const SelectedActivitiesPopup: React.FC<SelectedActivitiesPopupProps> = ({ isOpen, artworks, onArtworkRemoved }) => {
+const SelectedActivitiesPopup: React.FC<SelectedActivitiesPopupProps> = ({ artworks, onArtworkRemoved }) => {
 
   const [page, setPage] = useState<number>(3);
 
@@ -182,7 +181,6 @@ const SelectedActivitiesPopup: React.FC<SelectedActivitiesPopupProps> = ({ isOpe
     }
   }, []);
 
-  if (!isOpen) return null;
   return ReactDOM.createPortal(
     <Root>
       <PopupPanelContent>

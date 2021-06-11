@@ -3,15 +3,13 @@ import styled from 'styled-components';
 import { api } from '../services';
 import { GetArtworksFilter } from '../services/queries';
 import { useAsyncRequest } from '../services/useAsyncRequest';
-import ArtworkSelectionCard from './ArtworkSelectionCard';
 import RecomendationCard from './RecomendationCard';
 import FilterField from './FilterField';
-import NumberIcon from '../components/NumberIcon'
 import { NavigateNext } from '@styled-icons/material/NavigateNext';
 import { NavigateBefore } from '@styled-icons/material/NavigateBefore';
-import { ArrowRight } from '@styled-icons/bootstrap/ArrowRight';
-import PageBar from './PageBar';
 import SelectedActivitiesPopup from './SelectedActivitiesPopup';
+import ArtworkSearchResults from './ArtworkSearchResults';
+import LoadingOverlay from '../components/LoadingOverlay';
 
 const Root = styled.div`
   padding-top: 2.5vh;
@@ -19,6 +17,12 @@ const Root = styled.div`
   flex-direction: column;
   width: 72.5%;
   align-self: center;
+`;
+
+const DisplayPanel = styled.div`
+  position: relative;
+  width: auto;
+  height: auto;
 `;
 
 const VerticalSeparator = styled.div`
@@ -66,16 +70,6 @@ const FilterPanel = styled.div`
   width: 25%;
 `;
 
-const ArtworkGrid = styled.div`
-  height: fit-content;
-  width: 75%;
-  padding-left: 2.5%;
-  display: flex;
-  flex-wrap: wrap;
-  align-self: top;
-  justify-content: left;
-`;
-
 const RecomendationGrid = styled.div`
   height: fit-content;
   width: 100%;
@@ -83,28 +77,6 @@ const RecomendationGrid = styled.div`
   flex-direction: row;
   justify-content: space-between;
   background-color: transparent;
-`;
-const PageNumberGrid = styled.div`
-  height: auto;
-  width: 60%;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  background-color: #F3F3F3;
-  justify-content: center;
-  align-self: center;
-  vertical-align: middle;
-  padding-bottom: 10px;
-  padding-top: 10px;
-  font-size: 20px; 
-  margin-left :5px;
- font-family: Verdana, Geneva, san-serif; 
- text-transform: capitalize;
- justify-content: center;
- vertical-align: middle;
- &:hover {
-  cursor: default;
-  }
 `;
 
 const ResultsWrapper = styled.div`
@@ -168,7 +140,8 @@ const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSele
   const [itemsPerPage, setItemsPerPage] = useState<number>(30);
   const [appliedFilter, setAppliedFilter] = useState<GetArtworksFilter>({});
   const [lastArtwork, setLastArtwork] = useState<string>('');
-  const [selectedPage, setSelectedPage] = useState<number>(1);
+  const [selectedArtworksOpen, setSelectedArtworksOpen] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const fetchArtworksFromDataset = async () => {
     return api.fetchArtworks({ sortingField: 'title', pageNumber: page, pageSize: itemsPerPage, filter: appliedFilter });
@@ -195,9 +168,6 @@ const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSele
   const [displayRecom, setDisplayRecom] = useState<number>(0);
   const [fetchByEmotionStatus] = useAsyncRequest(getRecommendations, [lastArtwork]);
 
-  const testArray: number[] = Array.from(Array(50).keys());
-
-
   useEffect(() => {
     console.log(fetchByEmotionStatus);
   }, [fetchByEmotionStatus]);
@@ -218,56 +188,55 @@ const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSele
             SELECT ARTWORKS
           </PromptText>
         </PromptTitlePanel>
-        <ResultsUpperPanel>
-          <ResultsWrapper>
-            <Results>
-              Showing results {(page - 1) * itemsPerPage + 1}-{(page - 1) * itemsPerPage + findArtworkStatus.result.data.length}
-            </Results>
-          </ResultsWrapper>
-        </ResultsUpperPanel>
-        <VerticalSeparator />
-        <ResultsLowerPanel>
-          <FilterPanel>
-            <FilterField
-              filterField='DATE'
-              filterOptions={findUniqueDatesStatus.result.data.map(elem => elem.value)}
-              filterCounts={findUniqueDatesStatus.result.data.map(elem => elem.count)}
-              bottomBorder={false}
-              maxOptionsShown={8}
-              onFilterSelected={(filter: string) => handleApplyFilter('date', filter)}
-            />
-            <FilterField
-              filterField='AUTHOR'
-              filterOptions={findUniqueAuthorsStatus.result.data.map(elem => elem.value)}
-              filterCounts={findUniqueAuthorsStatus.result.data.map(elem => elem.count)}
-              bottomBorder={false}
-              maxOptionsShown={8}
-              onFilterSelected={(filter: string) => handleApplyFilter('author', filter)}
-            />
-            <FilterField
-              filterField='MATERIAL'
-              filterOptions={findUniqueInfoStatus.result.data.map(elem => elem.value)}
-              filterCounts={findUniqueInfoStatus.result.data.map(elem => elem.count)}
-              bottomBorder={true}
-              maxOptionsShown={8}
-              onFilterSelected={(filter: string) => handleApplyFilter('info', filter)}
-            />
-          </FilterPanel>
-          <ArtworkGrid>
-            {findArtworkStatus.result.data.map((im, i) => (
-              <ArtworkSelectionCard
-                key={im.id}
-                artworkData={im}
-                selected={selectedArtworks.some(elem => elem === im.id)}
-                onCardSelected={() => {
-                  onArtworkSelected(im.id);
-                  setLastArtwork(im.id); // just for testing
-                }}
-                onCardDeselected={() => onArtworkDeselected(im.id)}
+
+        <DisplayPanel>
+          <ResultsUpperPanel>
+            <ResultsWrapper>
+              <Results>
+                Showing results {(page - 1) * itemsPerPage + 1}-{(page - 1) * itemsPerPage + findArtworkStatus.result.data.length}
+              </Results>
+            </ResultsWrapper>
+          </ResultsUpperPanel>
+          <VerticalSeparator />
+          <ResultsLowerPanel>
+            <FilterPanel>
+              <FilterField
+                filterField='DATE'
+                filterOptions={findUniqueDatesStatus.result.data.map(elem => elem.value)}
+                filterCounts={findUniqueDatesStatus.result.data.map(elem => elem.count)}
+                bottomBorder={false}
+                maxOptionsShown={8}
+                onFilterSelected={(filter: string) => handleApplyFilter('date', filter)}
               />
-            ))}
-          </ArtworkGrid>
-        </ResultsLowerPanel>
+              <FilterField
+                filterField='AUTHOR'
+                filterOptions={findUniqueAuthorsStatus.result.data.map(elem => elem.value)}
+                filterCounts={findUniqueAuthorsStatus.result.data.map(elem => elem.count)}
+                bottomBorder={false}
+                maxOptionsShown={8}
+                onFilterSelected={(filter: string) => handleApplyFilter('author', filter)}
+              />
+              <FilterField
+                filterField='MATERIAL'
+                filterOptions={findUniqueInfoStatus.result.data.map(elem => elem.value)}
+                filterCounts={findUniqueInfoStatus.result.data.map(elem => elem.count)}
+                bottomBorder={true}
+                maxOptionsShown={8}
+                onFilterSelected={(filter: string) => handleApplyFilter('info', filter)}
+              />
+            </FilterPanel>
+            <ArtworkSearchResults
+              artworks={findArtworkStatus.result.data}
+              onArtworkDeselected={onArtworkDeselected}
+              onArtworkSelected={onArtworkSelected}
+              selectedArtworks={selectedArtworks}
+              page={page}
+              pageTotal={27}
+              onPageChange={setPage}
+            />
+          </ResultsLowerPanel>
+          {loading && <LoadingOverlay />}
+        </DisplayPanel>
         <VerticalSeparator />
 
         <ResultsUpperPanel>
@@ -307,16 +276,12 @@ const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSele
             }}
           />
         </RecomendationGrid>
-        <PageBar
-          currentPage={page}
-          numberOfPages={9}
-          onPageSelected={setPage}
-        />
 
-        <SelectedActivitiesPopup
-          artworks={findArtworkStatus.result.data}
-          isOpen={true}
-          onArtworkRemoved={() => { }} />
+        {selectedArtworksOpen &&
+          <SelectedActivitiesPopup
+            artworks={findArtworkStatus.result.data}
+            onArtworkRemoved={(id) => onArtworkDeselected(id)} />
+        }
       </Root>
     );
   }
