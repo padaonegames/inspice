@@ -167,7 +167,6 @@ const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSele
   const [itemsPerPage, setItemsPerPage] = useState<number>(30);
   const [appliedFilter, setAppliedFilter] = useState<GetArtworksFilter>({});
   const [lastArtwork, setLastArtwork] = useState<string>('');
-  const [selectedPage, setSelectedPage] = useState<number>(1);
 
   const fetchArtworksFromDataset = async () => {
     return api.fetchArtworks({ sortingField: 'title', pageNumber: page, pageSize: itemsPerPage, filter: appliedFilter });
