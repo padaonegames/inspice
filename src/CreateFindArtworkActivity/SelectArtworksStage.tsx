@@ -8,6 +8,7 @@ import RecomendationCard from './RecomendationCard';
 import FilterField from './FilterField';
 import { NavigateNext } from '@styled-icons/material/NavigateNext';
 import { NavigateBefore } from '@styled-icons/material/NavigateBefore';
+import SelectedActivitiesPopup from './SelectedActivitiesPopup';
 
 const Root = styled.div`
   padding-top: 2.5vh;
@@ -276,6 +277,11 @@ const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSele
             }}
           />
         </RecomendationGrid>
+        <SelectedActivitiesPopup
+          artworks={findArtworkStatus.result.data}
+          isOpen={true}
+          onArtworkRemoved={() => { }}
+        />
       </Root>
     );
   }
