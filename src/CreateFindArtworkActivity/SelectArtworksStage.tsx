@@ -6,8 +6,11 @@ import { useAsyncRequest } from '../services/useAsyncRequest';
 import ArtworkSelectionCard from './ArtworkSelectionCard';
 import RecomendationCard from './RecomendationCard';
 import FilterField from './FilterField';
+import NumberIcon from '../components/NumberIcon'
 import { NavigateNext } from '@styled-icons/material/NavigateNext';
 import { NavigateBefore } from '@styled-icons/material/NavigateBefore';
+import { ArrowRight } from '@styled-icons/bootstrap/ArrowRight';
+import PageBar from './PageBar';
 import SelectedActivitiesPopup from './SelectedActivitiesPopup';
 
 const Root = styled.div`
@@ -81,6 +84,28 @@ const RecomendationGrid = styled.div`
   justify-content: space-between;
   background-color: transparent;
 `;
+const PageNumberGrid = styled.div`
+  height: auto;
+  width: 60%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  background-color: #F3F3F3;
+  justify-content: center;
+  align-self: center;
+  vertical-align: middle;
+  padding-bottom: 10px;
+  padding-top: 10px;
+  font-size: 20px; 
+  margin-left :5px;
+ font-family: Verdana, Geneva, san-serif; 
+ text-transform: capitalize;
+ justify-content: center;
+ vertical-align: middle;
+ &:hover {
+  cursor: default;
+  }
+`;
 
 const ResultsWrapper = styled.div`
   height: 100%;
@@ -139,10 +164,11 @@ interface SelectArtworksStageProps {
 
 const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSelected, onArtworkDeselected, selectedArtworks }) => {
 
-  const [page, setPage] = useState<number>(7);
+  const [page, setPage] = useState<number>(1);
   const [itemsPerPage, setItemsPerPage] = useState<number>(30);
   const [appliedFilter, setAppliedFilter] = useState<GetArtworksFilter>({});
   const [lastArtwork, setLastArtwork] = useState<string>('');
+  const [selectedPage, setSelectedPage] = useState<number>(1);
 
   const fetchArtworksFromDataset = async () => {
     return api.fetchArtworks({ sortingField: 'title', pageNumber: page, pageSize: itemsPerPage, filter: appliedFilter });
@@ -168,6 +194,9 @@ const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSele
   const [findUniqueInfoStatus] = useAsyncRequest(() => fetchUniqueFieldValuesFromDataset('info'), []);
   const [displayRecom, setDisplayRecom] = useState<number>(0);
   const [fetchByEmotionStatus] = useAsyncRequest(getRecommendations, [lastArtwork]);
+
+  const testArray: number[] = Array.from(Array(50).keys());
+
 
   useEffect(() => {
     console.log(fetchByEmotionStatus);
@@ -240,6 +269,7 @@ const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSele
           </ArtworkGrid>
         </ResultsLowerPanel>
         <VerticalSeparator />
+
         <ResultsUpperPanel>
           <ResultsWrapper>
             <Results>
@@ -271,17 +301,22 @@ const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSele
           <NavigateNextIcon
             active={displayRecom + 6 < findArtworkStatus.result.data.length}
             onClick={() => {
-              if (displayRecom + 6 < 20) {
+              if (displayRecom + 6 < 20) { //for now it is just showing 20 items max. for test
                 setDisplayRecom(prev => prev + 1);
               }
             }}
           />
         </RecomendationGrid>
+        <PageBar
+          currentPage={page}
+          numberOfPages={9}
+          onPageSelected={setPage}
+        />
+
         <SelectedActivitiesPopup
           artworks={findArtworkStatus.result.data}
           isOpen={true}
-          onArtworkRemoved={() => { }}
-        />
+          onArtworkRemoved={() => { }} />
       </Root>
     );
   }
