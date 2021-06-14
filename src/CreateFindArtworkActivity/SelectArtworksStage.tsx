@@ -11,6 +11,7 @@ import { NavigateNext } from '@styled-icons/material/NavigateNext';
 import { NavigateBefore } from '@styled-icons/material/NavigateBefore';
 import { ArrowRight } from '@styled-icons/bootstrap/ArrowRight';
 import PageBar from './PageBar';
+import ShowFilters from './ShowFilters'
 
 const Root = styled.div`
   padding-top: 2.5vh;
@@ -224,6 +225,13 @@ const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSele
           </ResultsWrapper>
         </ResultsUpperPanel>
         <VerticalSeparator />
+        <ShowFilters
+          onFilterDelete={() => setAppliedFilter({})} //this should change with the delete function
+          onClear={() => setAppliedFilter({})}
+          filterName={["this is a very very very very long test ", "test2", "test3"]}
+        //Here should be filled with a strin array with the filters name
+        >
+        </ShowFilters>
         <ResultsLowerPanel>
           <FilterPanel>
             <FilterField

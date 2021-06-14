@@ -21,7 +21,7 @@ const Root = styled.div`
 
 const PageNumberGrid = styled.div`
   height: auto;
-  width: 100vh;
+  width: 93%;
   display: flex;
   flex-direction: row;
   justify-content: space-around;
