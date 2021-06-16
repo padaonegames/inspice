@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect, useRef } from "react";
 import ReactDOM from 'react-dom';
 import styled from 'styled-components';
 import { ArtworkData } from '../services/commonDefinitions';
 import { NavigateNext } from '@styled-icons/material/NavigateNext';
 import { NavigateBefore } from '@styled-icons/material/NavigateBefore';
 import { Cross } from '@styled-icons/entypo/Cross';
+import { Close } from '@styled-icons/evaicons-solid/Close';
 
 const Root = styled.div`
   width: 100%;
@@ -21,7 +22,7 @@ const Root = styled.div`
 `;
 
 const PopupPanelContent = styled.div`
-  width: 47.5%;
+  width: 75%;
   height: 72.5%;
   background-color: white;
   display: flex;
@@ -77,7 +78,7 @@ const ArtworksContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  width: 40%;
+  width: 20%;
   height: 100%;
   padding-left: 2%;
 `;
@@ -88,7 +89,8 @@ const ArtworkColumnContainer = styled.div`
   flex-direction: row;
   justify-content: space-between;
   width: 100%;
-  height: 70%;
+  height: 80%;
+  
 `;
 
 const FieldsContainer = styled.div`
@@ -97,6 +99,11 @@ const FieldsContainer = styled.div`
   width: auto;
   padding-left: 10px;
   justify-content: center;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  
+
 `;
 
 const AuthorText = styled.span`
@@ -133,6 +140,7 @@ const RemoveArtworkIcon = styled(Cross)`
   color: darkgray;
 `;
 
+
 interface NavIconProps {
   active: boolean;
 };
@@ -163,14 +171,31 @@ const NavigateBeforeIcon = styled(NavigateBefore) <NavIconProps>`
     transition: transform 0.5s ease;
   }
 `;
+const CloseIcon = styled(Close)`
+  color: lightgray;
+  cursor: pointer;
+  height: 7.5vh;
+  align-self: right;
+  margin-bottom: 1vh;
+  transform: scale(0.9);
+  transition: transform 0.5s ease;
+  position:absolute;
+ 
 
+  &:hover {
+    transform: scale(1.1);
+    transition: transform 0.5s ease;
+    color: darkgray;
+  }
+`;
 
 interface SelectedActivitiesPopupProps {
   artworks: ArtworkData[];
   onArtworkRemoved: (artworkId: string) => void;
+  setPopupOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const SelectedActivitiesPopup: React.FC<SelectedActivitiesPopupProps> = ({ artworks, onArtworkRemoved }) => {
+const SelectedActivitiesPopup: React.FC<SelectedActivitiesPopupProps> = ({ artworks, onArtworkRemoved, setPopupOpen }) => {
 
   const [page, setPage] = useState<number>(3);
 
@@ -187,7 +212,8 @@ const SelectedActivitiesPopup: React.FC<SelectedActivitiesPopupProps> = ({ artwo
         <PopupTitlePanel>
           <PopupText>
             SELECTED ARTWORKS
-        </PopupText>
+          </PopupText>
+          <CloseIcon onClick={() => setPopupOpen(false)} />
         </PopupTitlePanel>
         <ArtworkColumnContainer>
           <NavIconContainer>
@@ -200,7 +226,7 @@ const SelectedActivitiesPopup: React.FC<SelectedActivitiesPopupProps> = ({ artwo
               }}
             />
           </NavIconContainer>
-          {[0, 1].map(column =>
+          {[0, 1, 2, 3].map(column =>
             <ArtworksContainer>
               {artworks.slice((page + column) * 4, (page + 1 + column) * 4).map(elem => (
                 <ArtworkItemContainer key={elem.id}>

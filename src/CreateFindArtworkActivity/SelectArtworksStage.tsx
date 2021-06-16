@@ -11,6 +11,7 @@ import ShowFilters from './ShowFilters'
 import SelectedActivitiesPopup from './SelectedActivitiesPopup';
 import LoadingOverlay from '../components/LoadingOverlay';
 import ArtworkSearchResults from './ArtworkSearchResults';
+import { ShoppingCart } from '@styled-icons/fa-solid/ShoppingCart';
 
 const Root = styled.div`
   padding-top: 2.5vh;
@@ -129,6 +130,28 @@ const DisplayPanel = styled.div`
   height: auto;
 `;
 
+interface ShoppingCartProps {
+  active: boolean;
+};
+const ShoppingCartIcon = styled(ShoppingCart) <ShoppingCartProps>`
+  color: ${props => props.active ? 'lightgray' : 'darkgray'};
+  cursor: ${props => props.active ? 'pointer' : 'default'};
+  height: 7.5vh;
+  align-self: right;
+  margin-bottom: 1vh;
+  transform: scale(0.9);
+  transition: transform 0.5s ease;
+  position: absolute;
+  top:7px;
+  right:5px;
+
+  &:hover {
+    transform: ${props => props.active ? 'scale(1.1)' : 'scale(0.9)'};
+    color: ${props => props.active ? 'darkgray' : 'darkgray'};
+    transition: transform 0.5s ease;
+  }
+`;
+
 interface SelectArtworksStageProps {
   selectedArtworks: string[];
   onArtworkSelected: (artworkId: string) => void;
@@ -197,7 +220,7 @@ const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSele
           SELECT ARTWORKS
         </PromptText>
       </PromptTitlePanel>
-      { (findArtworkStatus.kind === 'success' && findArtworkStatus.result.kind === 'ok') && (
+      {(findArtworkStatus.kind === 'success' && findArtworkStatus.result.kind === 'ok') && (
         <DisplayPanel>
           <ResultsUpperPanel>
             <ResultsWrapper>
@@ -212,9 +235,12 @@ const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSele
             onClear={() => setAppliedFilter({})}
             filterName={["this is a very very very very long test ", "test2", "test3"]}
           //Here should be filled with a strin array with the filters name
-          >
-          </ShowFilters>
+          />
+          <ShoppingCartIcon
+            active={true}
+            onClick={() => setSelectedArtworksOpen(true)} />
           <ResultsLowerPanel>
+
             <FilterPanel>
               {(findUniqueDatesStatus.kind === 'success' && findUniqueDatesStatus.result.kind === 'ok') && (
                 <FilterField
@@ -297,7 +323,9 @@ const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSele
           {selectedArtworksOpen &&
             <SelectedActivitiesPopup
               artworks={findArtworkStatus.result.data}
-              onArtworkRemoved={(id) => onArtworkDeselected(id)} />
+              onArtworkRemoved={(id) => onArtworkDeselected(id)}
+              setPopupOpen={setSelectedArtworksOpen}
+            />
           }
         </>
       )}
