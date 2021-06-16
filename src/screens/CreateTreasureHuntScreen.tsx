@@ -164,11 +164,12 @@ const CreateTreasureHuntScreen: React.FC = () => {
     if (fetchActivityDefinitionStatus.kind === 'success' && fetchActivityDefinitionStatus.result.kind === 'ok') {
       const definition = fetchActivityDefinitionStatus.result.data[0];
       setTreasureHuntDefinition(prev => ({
-        ...prev, stages: [{
+        ...prev,
+        stages: Array.from(Array(definition.minStages).keys()).map(_ => ({
           artworkId: undefined,
           clues: Array.from(Array(definition.minCluesPerStage).keys()).map(_ => ''),
           multimediaData: [{ kind: 'Text', text: '' }]
-        }]
+        }))
       }));
     }
   }, [fetchActivityDefinitionStatus]);

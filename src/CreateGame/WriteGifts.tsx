@@ -50,7 +50,7 @@ const GiftStyle = styled.textarea`
   color: white;
   line-height: 3.5vh;
   background-color: rgba(11, 11, 11, 0.85);
-  width: 90%;
+  width: 65%;
   height: 27.5vh;
   resize: none;
   border: solid 1px #F3F3F3;
@@ -227,7 +227,12 @@ const WriteGifts: React.FC<WriteGiftsProps> = ({
               </EnvelopeContainer>
             )}
             <AddGiftIcon
-              onClick={onAddNewGift}
+              onClick={() => {
+                if (gifts.length < 10) {
+                  onAddNewGift();
+                  setSelectedGift(gifts.length);
+                }
+              }}
             />
           </DotsWrapper>
           <GiftsText>
