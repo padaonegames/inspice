@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { sampleArtworks } from '../artworks/artworkData';
 import Fader from '../components/Fader';
@@ -8,6 +8,9 @@ import SelectArtwork from '../CreateGame/SelectArtwork';
 import WriteHints from '../CreateGame/WriteHints';
 import WriteGifts from '../CreateGame/WriteGifts';
 import { ArtworkData, defaultTreasureHuntStage, InProgressTreasureHuntStage } from '../services/commonDefinitions';
+import { useParams } from 'react-router';
+import { useAsyncRequest } from '../services/useAsyncRequest';
+import { api } from '../services';
 
 const Root = styled.div`
   display: flex;
@@ -26,8 +29,23 @@ type StageStatus = 'select-artwork' | 'write-hints' | 'record-audio' | 'write-gi
 
 const CreateTreasureHuntScreen: React.FC = () => {
 
-  // TODO: change data types to match the ones from commonDefinitions.ts
-  // that is, TreasureHuntDefinition/ InProgressTreasureHuntDefinition
+  let { id } = useParams<{ id: string }>();
+
+  const fetchActivityDefinition = async () => {
+    return await api.getFindArtworkActivityDefinitionById(id);
+  };
+
+  const fetchActivityArtworks = async () => {
+    if (!(fetchActivityDefinitionStatus.kind === 'success' && fetchActivityDefinitionStatus.result.kind === 'ok')) {
+      return Promise.reject();
+    }
+    // fetched a correct definition => fetch artwork data from api by id
+    console.log(fetchActivityDefinitionStatus.result.data);
+    return api.fetchArtworks({ filter: { ids: fetchActivityDefinitionStatus.result.data[0].artworks } });
+  };
+
+  const [fetchActivityDefinitionStatus] = useAsyncRequest(fetchActivityDefinition, []);
+  const [fetchActivityArtworksStatus] = useAsyncRequest(fetchActivityArtworks, [fetchActivityDefinitionStatus]);
   const [activeStage, setActiveStage] = useState<number>(0);
   const [stageList, setStageList] = useState<InProgressTreasureHuntStage[]>([defaultTreasureHuntStage]);
 
@@ -114,6 +132,18 @@ const CreateTreasureHuntScreen: React.FC = () => {
     return sampleArtworks.find(artw => artw.id === artworkId);
   };
 
+  useEffect(() => {
+    console.log(fetchActivityArtworksStatus);
+  }, [fetchActivityArtworksStatus]);
+
+  if (!(fetchActivityDefinitionStatus.kind === 'success' && fetchActivityDefinitionStatus.result.kind === 'ok')) {
+    return <p>Fetching activity definition...</p>;
+  }
+
+  if (!(fetchActivityArtworksStatus.kind === 'success' && fetchActivityArtworksStatus.result.kind === 'ok')) {
+    return <p>Fetching activity artworks...</p>;
+  }
+
   return (
     <Root>
       <GameOverviewPanel
@@ -130,7 +160,7 @@ const CreateTreasureHuntScreen: React.FC = () => {
           onAnimationCompleted={() => setActiveStageStatus(displayedState)}
         >
           <SelectArtwork
-            imagesData={sampleArtworks}
+            imagesData={fetchActivityArtworksStatus.result.data}
             selectedArtwork={stageList[activeStage].artworkId}
             onArtworkSelected={handleSelectArtwork}
             onNextClicked={() => setDisplayedState('write-hints')}
@@ -177,8 +207,6 @@ const CreateTreasureHuntScreen: React.FC = () => {
             onNextClicked={() => setDisplayedState('select-artwork')}
             onBackClicked={() => setDisplayedState('write-hints')}
             canClickNext={activeStage + 1 < stageList.length}
-
-
           />
         </Fader>
       }

@@ -65,7 +65,7 @@ export class Api {
   public async getFindArtworkActivityDefinitionById(activityId: string): Promise<ApiResult<GetFindArtworkActivityDefinitionByIdResponse>> {
     const url = `${this.apiUrl}/object/${this.activityDefinitionsDatasetUuid}`;
 
-    const query = `{ "id": "${activityId}" }`;
+    const query = `{ "_id": "${activityId}" }`;
 
     const opts: AxiosRequestConfig = {
       auth: {

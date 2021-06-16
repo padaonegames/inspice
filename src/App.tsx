@@ -1,4 +1,4 @@
-import React, { useState, Suspense, useEffect } from 'react';
+import React, { useState, Suspense } from 'react';
 import {
   BrowserRouter as Router,
   Switch,
@@ -13,8 +13,6 @@ import { stage0, stage1 } from './artworks/stageData';
 import { sampleArtworks } from './artworks/artworkData';
 import LoadingScreen from './screens/LoadingScreen';
 import CreateFindArtworkActivityScreen from './screens/CreateFindArtworkActivityScreen';
-import { useAsyncRequest } from './services/useAsyncRequest';
-import { api } from './services';
 
 const stages = [stage0, stage1];
 
@@ -56,14 +54,14 @@ const App: React.FC = () => {
                   artworks={sampleArtworks}
                 />
               </Route>
-              <Route path='/consumer/create'>
+              <Route path='/consumer/create/:id'>
                 <CreateTreasureHuntScreen />
               </Route>
               <Route path='/curator/create'>
                 <CreateFindArtworkActivityScreen />
               </Route>
               <Route>
-                <Redirect to='/curator/create' />
+                <Redirect to='/consumer/create/60c9c74db64f2b6cb70bb206' />
               </Route>
             </Switch>
           )}

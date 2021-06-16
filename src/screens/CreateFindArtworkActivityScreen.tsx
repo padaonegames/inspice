@@ -56,13 +56,14 @@ const CreateFindArtworkActivityScreen: React.FC = () => {
     useState<InProgressFindArtworkActivityDefinition>(sample);
   const [activeActivityDefinitionStatus, setActiveActivityDefinitionStatus] =
     useState<ActivityDefinitionStatus>('set-title-author-dates');
+  const [submitGame, setSubmitGame] = useState<boolean>(false);
 
-
-  // TODO: All of these requests are just for testing/ demonstration purposes and should eventually be removed.
   const submitDefinition = () => {
+    if (!submitGame) return Promise.reject();
+    setSubmitGame(false);
     return api.submitFindArtworkActivityDefinition({ ...(activityDefinition as CompletedFindArtworkActivityDefinition) });
   };
-  const [submitDefinitionStatus, triggerRequest] = useAsyncRequest(submitDefinition, [], false);
+  const [submitDefinitionStatus] = useAsyncRequest(submitDefinition, [submitGame]);
 
   const activeStageToIndex = (): number => {
     switch (activeActivityDefinitionStatus) {
@@ -142,7 +143,7 @@ const CreateFindArtworkActivityScreen: React.FC = () => {
           { name: 'Artwork Selection'.toUpperCase(), completed: isStageThreeCompleted(activityDefinition) }
         ]}
         onStageSelected={(index) => setActiveActivityDefinitionStatus(indexToActiveStage(index))}
-        onSubmitGame={triggerRequest}
+        onSubmitGame={() => setSubmitGame(true)}
       />
 
       { activeActivityDefinitionStatus === 'set-title-author-dates' &&

@@ -22,7 +22,7 @@ export const initMockAdapter = () => {
   mock.onGet(new RegExp(`${activitiesUrl}/*`)).reply((config: AxiosRequestConfig) => {
     const activityId = config.url?.slice(activitiesUrl.length + 1);
     console.log(activityId);
-    const res = sampleActivities.find(elem => elem.activityId === activityId);
+    const res = sampleActivities.find(elem => elem._id === activityId);
     return res ? [200, { activity: res }] : [400];
   });
 
@@ -30,8 +30,8 @@ export const initMockAdapter = () => {
   mock.onPost(new RegExp(`${findArtworkActivityDefinitionUrl}*`))
   .reply((config: AxiosRequestConfig) => {
     const res = JSON.parse(config.data) as CompletedFindArtworkActivityDefinition;
-    const actDef: FindArtworkActivityDefinition = { ...res, activityId: '123'};
-    const response: SubmitFindArtworkActivityDefinitionResponse = { activityDefinition: actDef };
+    const actDef: FindArtworkActivityDefinition = { ...res, _id: '123'};
+    const response: SubmitFindArtworkActivityDefinitionResponse = actDef;
     return [201, response];
   });
 }

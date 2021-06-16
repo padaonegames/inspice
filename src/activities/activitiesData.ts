@@ -2,7 +2,7 @@ import { sampleArtworks } from "../artworks/artworkData";
 import { FindArtworkActivityDefinition } from "../services/commonDefinitions";
 
 const activityOne: FindArtworkActivityDefinition = {
-  activityId: '1',
+  _id: '1',
   activityAuthor: 'sampleAuthor',
   activityTitle: 'activity one',
   beginsOn: new Date('2021-05-31'),
@@ -12,7 +12,9 @@ const activityOne: FindArtworkActivityDefinition = {
   minCluesPerStage: 2,
   maxCluesPerStage: 4,
   allowedInputs: ['Text'],
-  huntPersistenceLocation: 'fakeApi/treasure-hunt',
+  huntDefinitionsDatasetUuid: 'undefined',
+  activityDefinitionsDatasetUuid: 'undefined',
+  artworksDatasetUuid: 'undefined',
   artworks: sampleArtworks.slice(0, 10).map(elem => elem.id)
 };
 
