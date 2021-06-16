@@ -129,7 +129,10 @@ const CreateTreasureHuntScreen: React.FC = () => {
   };
 
   const retrieveArtworkById = (artworkId: string): ArtworkData | undefined => {
-    return sampleArtworks.find(artw => artw.id === artworkId);
+    if (!(fetchActivityArtworksStatus.kind === 'success' && fetchActivityArtworksStatus.result.kind === 'ok')) {
+      return undefined;
+    }
+    return fetchActivityArtworksStatus.result.data.find(artw => artw.id === artworkId);
   };
 
   useEffect(() => {
