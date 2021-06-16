@@ -49,8 +49,6 @@ const CreateTreasureHuntScreen: React.FC = () => {
     if (!(fetchActivityDefinitionStatus.kind === 'success' && fetchActivityDefinitionStatus.result.kind === 'ok')) {
       return Promise.reject();
     }
-    // fetched a correct definition => fetch artwork data from api by id
-    console.log(fetchActivityDefinitionStatus.result.data);
     return api.fetchArtworks({ filter: { ids: fetchActivityDefinitionStatus.result.data[0].artworks } });
   };
 

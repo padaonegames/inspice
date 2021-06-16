@@ -1,5 +1,5 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
-import { ArtworkData, ArtworkFieldMapping, CompletedFindArtworkActivityDefinition, CompletedTreasureHuntDefinition, GetFindArtworkActivityDefinitionByIdResponse, SubmitFindArtworkActivityDefinitionResponse, SubmitTreasureHuntDefinitionResponse } from './commonDefinitions';
+import { ArtworkData, ArtworkFieldMapping, CompletedFindArtworkActivityDefinition, CompletedTreasureHuntDefinition, GetFindArtworkActivityDefinitionByIdResponse, GetTreasureHuntDefinitionByIdResponse, SubmitFindArtworkActivityDefinitionResponse, SubmitTreasureHuntDefinitionResponse } from './commonDefinitions';
 import { GetArtworksOptions, retrieveAllArtworksQuery, retrieveArtworksWithAtLeastAnEmotionInCommon, retrieveDistinctAuthorValuesQuery, retrieveDistinctDateValuesQuery, retrieveDistinctInfoValuesQuery } from './queries';
 
 export type ApiResult<T> =
@@ -77,6 +77,26 @@ export class Api {
       }
     };
     return getApiResult<GetFindArtworkActivityDefinitionByIdResponse>(url, opts);
+  }
+
+  /**
+ * Retrieve a treasure hunt by its id
+ */
+  public async getTreasureHuntDefinitionById(treasureHuntId: string): Promise<ApiResult<GetTreasureHuntDefinitionByIdResponse>> {
+    const url = `${this.apiUrl}/object/${this.huntDefinitionsDatasetUuid}`;
+
+    const query = `{ "_id": "${treasureHuntId}" }`;
+
+    const opts: AxiosRequestConfig = {
+      auth: {
+        username: this.apiKey,
+        password: this.apiKey
+      },
+      params: {
+        query: query
+      }
+    };
+    return getApiResult<GetTreasureHuntDefinitionByIdResponse>(url, opts);
   }
 
   /**
