@@ -26,9 +26,9 @@ const Root = styled.div<RootProps>`
 const ReferencePanel = styled.div`
   display: flex;
   flex-direction: column;
-  background-color: rgba(11, 11, 11, 0.85);
+  background-color: rgba(11, 11, 11, 0.65);
   margin: auto;
-  width: 55%;
+  width: 100%;
   height: 100%;
   padding: 1.5%;
   padding-top: 3%;
@@ -50,7 +50,7 @@ const GiftStyle = styled.textarea`
   color: white;
   line-height: 3.5vh;
   background-color: rgba(11, 11, 11, 0.85);
-  width: 90%;
+  width: 65%;
   height: 27.5vh;
   resize: none;
   border: solid 1px #F3F3F3;
@@ -166,7 +166,7 @@ interface WriteGiftsProps {
   imageSrc: string;
   onAddNewGift: () => void;
   onRemoveGift: (index: number) => void;
-  onUpdateGift: (text: string, index: number) => void;
+  onUpdateGift: (index: number, content: string) => void;
   canClickNext: boolean;
   onNextClicked: () => void;
   onBackClicked: () => void;
@@ -183,7 +183,7 @@ const WriteGifts: React.FC<WriteGiftsProps> = ({
   onNextClicked
 }) => {
 
-  const { t, i18n } = useTranslation('app');
+  const { t } = useTranslation('app');
 
   const [selectedGift, setSelectedGift] = useState<number>(0);
 
@@ -208,7 +208,7 @@ const WriteGifts: React.FC<WriteGiftsProps> = ({
           <GiftStyle
             maxLength={400}
             placeholder={placeholder}
-            onChange={(e) => onUpdateGift(e.target.value, selectedGift)}
+            onChange={(e) => onUpdateGift(selectedGift, e.target.value)}
             value={gifts[selectedGift]}
           />
         </ClueWrapper>
@@ -227,7 +227,12 @@ const WriteGifts: React.FC<WriteGiftsProps> = ({
               </EnvelopeContainer>
             )}
             <AddGiftIcon
-              onClick={onAddNewGift}
+              onClick={() => {
+                if (gifts.length < 10) {
+                  onAddNewGift();
+                  setSelectedGift(gifts.length);
+                }
+              }}
             />
           </DotsWrapper>
           <GiftsText>

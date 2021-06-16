@@ -166,6 +166,7 @@ const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSele
   const [lastArtwork, setLastArtwork] = useState<string>('');
 
   const fetchArtworksFromDataset = async () => {
+    setPage(1);
     return api.fetchArtworks({ sortingField: 'title', pageNumber: page, pageSize: itemsPerPage, filter: appliedFilter });
   };
 
@@ -192,10 +193,6 @@ const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSele
   const [selectedArtworksOpen, setSelectedArtworksOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
   const [displayRecom, setDisplayRecom] = useState<number>(0);
-
-
-  const testArray: number[] = Array.from(Array(50).keys());
-
 
   useEffect(() => {
     if (findArtworkStatus.kind === 'success' &&
@@ -233,12 +230,12 @@ const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSele
           <ShowFilters
             onFilterDelete={() => setAppliedFilter({})} //this should change with the delete function
             onClear={() => setAppliedFilter({})}
-            filterName={["this is a very very very very long test ", "test2", "test3"]}
-          //Here should be filled with a strin array with the filters name
+            filterName={Object.keys(appliedFilter).map(elem => appliedFilter[elem as keyof GetArtworksFilter] as string)}
           />
           <ShoppingCartIcon
             active={true}
             onClick={() => setSelectedArtworksOpen(true)} />
+
           <ResultsLowerPanel>
 
             <FilterPanel>

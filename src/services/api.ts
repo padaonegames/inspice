@@ -1,5 +1,5 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
-import { ArtworkData, ArtworkFieldMapping, CompletedFindArtworkActivityDefinition, GetFindArtworkActivityDefinitionByIdResponse, SubmitFindArtworkActivityDefinitionResponse } from './commonDefinitions';
+import { ArtworkData, ArtworkFieldMapping, CompletedFindArtworkActivityDefinition, CompletedTreasureHuntDefinition, GetFindArtworkActivityDefinitionByIdResponse, GetTreasureHuntDefinitionByIdResponse, SubmitFindArtworkActivityDefinitionResponse, SubmitTreasureHuntDefinitionResponse } from './commonDefinitions';
 import { GetArtworksOptions, retrieveAllArtworksQuery, retrieveArtworksWithAtLeastAnEmotionInCommon, retrieveDistinctAuthorValuesQuery, retrieveDistinctDateValuesQuery, retrieveDistinctInfoValuesQuery } from './queries';
 
 export type ApiResult<T> =
@@ -80,6 +80,26 @@ export class Api {
   }
 
   /**
+ * Retrieve a treasure hunt by its id
+ */
+  public async getTreasureHuntDefinitionById(treasureHuntId: string): Promise<ApiResult<GetTreasureHuntDefinitionByIdResponse>> {
+    const url = `${this.apiUrl}/object/${this.huntDefinitionsDatasetUuid}`;
+
+    const query = `{ "_id": "${treasureHuntId}" }`;
+
+    const opts: AxiosRequestConfig = {
+      auth: {
+        username: this.apiKey,
+        password: this.apiKey
+      },
+      params: {
+        query: query
+      }
+    };
+    return getApiResult<GetTreasureHuntDefinitionByIdResponse>(url, opts);
+  }
+
+  /**
    * Submit an Activity Definition to the persistence layer
    */
   public async submitFindArtworkActivityDefinition(activityDefinition: CompletedFindArtworkActivityDefinition):
@@ -101,6 +121,25 @@ export class Api {
     };
 
     return postApiResult<CompletedFindArtworkActivityDefinition, SubmitFindArtworkActivityDefinitionResponse>
+      (url, apiDefinition, opts);
+  }
+
+  public async submitTreasureHuntDefinition(treasureHuntDefinition: CompletedTreasureHuntDefinition):
+    Promise<ApiResult<SubmitTreasureHuntDefinitionResponse>> {
+    const url = `${this.apiUrl}/object/${this.huntDefinitionsDatasetUuid}`;
+
+    const opts: AxiosRequestConfig = {
+      auth: {
+        username: this.apiKey,
+        password: this.apiKey
+      },
+    };
+
+    const apiDefinition: CompletedTreasureHuntDefinition = {
+      ...treasureHuntDefinition
+    };
+
+    return postApiResult<CompletedTreasureHuntDefinition, SubmitTreasureHuntDefinitionResponse>
       (url, apiDefinition, opts);
   }
 

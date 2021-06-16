@@ -180,7 +180,7 @@ const FindArtwork: React.FC<FindArtworkProps> = ({
               artworkData={im}
               flipped={flippedCards[newIndex[i] + displayIndex]}
               status={im.id === stageData.artworkId ?
-                { status: 'right', gifts: stageData.gifts } :
+                { status: 'right', gifts: stageData.multimediaData.map(elem => elem.kind === 'Text' ? elem.text : elem.src) } :
                 { status: 'wrong' }
               }
               onCardSelected={() => handleCardSelected(im.id, newIndex[i] + displayIndex)}

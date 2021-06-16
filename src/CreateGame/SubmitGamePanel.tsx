@@ -56,7 +56,7 @@ interface SubmitGamePanelProps {
 
 const SubmitGamePanel: React.FC<SubmitGamePanelProps> = ({ onButtonClicked, enabled }) => {
 
-  const { t, i18n } = useTranslation('app');
+  const { t } = useTranslation('app');
   
   return (
     <SubmitGameCorner

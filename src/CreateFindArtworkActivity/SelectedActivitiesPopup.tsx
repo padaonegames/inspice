@@ -22,8 +22,8 @@ const Root = styled.div`
 `;
 
 const PopupPanelContent = styled.div`
-  width: 75%;
-  height: 72.5%;
+  width: 60%;
+  height: 80%;
   background-color: white;
   display: flex;
   flex-direction: column;
@@ -47,11 +47,11 @@ const PopupText = styled.h2`
 `;
 
 const ArtworkMiniatureContainer = styled.div`
-  height: 65px;
-  width: 65px;
+  height: 80px;
+  width: 100%;
   overflow: hidden;
   display: flex;
-  align-items: center;
+  align-self: center;
   justify-content: center;
 `;
 
@@ -63,10 +63,16 @@ const ArtworkMiniature = styled.img`
 
 const ArtworkItemContainer = styled.div`
   display: flex;
-  flex-direction: row;
-  height: 70px;
+  flex-direction: column;
+  height: 120px;
   width: 100%;
   justify-content: space-between;
+  border: 1px solid darkgray;
+  overflow: visible;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
   &:hover {
     background-color: lightgray;
     cursor: pointer;
@@ -135,9 +141,9 @@ const RemoveArtworkIcon = styled(Cross)`
   cursor: pointer;
   height: 15px;
   width: 15px;
-  align-self: center;
-  justify-self: end;
+  align-self: flex-end;
   color: darkgray;
+
 `;
 
 
@@ -175,13 +181,11 @@ const CloseIcon = styled(Close)`
   color: lightgray;
   cursor: pointer;
   height: 7.5vh;
-  align-self: right;
+  align-self: flex-end;
   margin-bottom: 1vh;
   transform: scale(0.9);
   transition: transform 0.5s ease;
-  position:absolute;
- 
-
+  position: absolute;
   &:hover {
     transform: scale(1.1);
     transition: transform 0.5s ease;
@@ -209,11 +213,12 @@ const SelectedActivitiesPopup: React.FC<SelectedActivitiesPopupProps> = ({ artwo
   return ReactDOM.createPortal(
     <Root>
       <PopupPanelContent>
+        <CloseIcon onClick={() => setPopupOpen(false)} />
         <PopupTitlePanel>
           <PopupText>
             SELECTED ARTWORKS
           </PopupText>
-          <CloseIcon onClick={() => setPopupOpen(false)} />
+
         </PopupTitlePanel>
         <ArtworkColumnContainer>
           <NavIconContainer>
@@ -230,6 +235,7 @@ const SelectedActivitiesPopup: React.FC<SelectedActivitiesPopupProps> = ({ artwo
             <ArtworksContainer>
               {artworks.slice((page + column) * 4, (page + 1 + column) * 4).map(elem => (
                 <ArtworkItemContainer key={elem.id}>
+                  <RemoveArtworkIcon />
                   <ArtworkMiniatureContainer>
                     <ArtworkMiniature src={elem.src} />
                   </ArtworkMiniatureContainer>
@@ -237,7 +243,6 @@ const SelectedActivitiesPopup: React.FC<SelectedActivitiesPopupProps> = ({ artwo
                     <TitleText>{elem.title}</TitleText>
                     <AuthorText>{elem.author}</AuthorText>
                   </FieldsContainer>
-                  <RemoveArtworkIcon />
                 </ArtworkItemContainer>
               ))}
             </ArtworksContainer>
