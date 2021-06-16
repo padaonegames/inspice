@@ -25,44 +25,53 @@ export interface GetArtworkByIdResponse {
 export interface InProgressTreasureHuntDefinition {
   treasureHuntAuthor: string | undefined;
   activityId: string | undefined;
-  stages: StageData[];
+  stages: InProgressTreasureHuntStage[];
 }
 
 export interface TreasureHuntDefinition {
-  treasureHuntId: string;
+  _id: string;
   treasureHuntAuthor: string;
   activityId: string;
   stages: StageData[];
 }
 
+export type CompletedTreasureHuntDefinition = Omit<
+  TreasureHuntDefinition,
+  "_id"
+>;
+
 export interface StageData {
   artworkId: string; // id del artwork seleccionado
   //recordingPath: string; // path de la grabación a emplear
   clues: string[]; // pistas a mostrar al jugador
-  gifts: string[]; //rewards to show after finding the art
+  multimediaData: TreasureHuntMutimediaData[]; //rewards to show after finding the art
 }
+
+export type TreasureHuntMutimediaData =
+  | { kind: 'Text', text: string }
+  | { kind: 'Audio', src: string }
+  | { kind: 'Image', src: string }
+  ;
 
 export interface InProgressTreasureHuntStage {
   clues: string[];
-  gifts: string[];
+  multimediaData: TreasureHuntMutimediaData[];
   artworkId: string | undefined;
-  recordingSrc: string | undefined;
 }
 
 export const defaultTreasureHuntStage: InProgressTreasureHuntStage = {
   clues: [""],
-  gifts: [""],
+  multimediaData: [],
   artworkId: undefined,
-  recordingSrc: undefined,
 };
 
 export interface SubmitTreasureHuntDefinitionRequest {
   treasureHuntDefinition: InProgressTreasureHuntDefinition;
 }
 
-export interface GetFindTreasureHuntDefinitionByIdResponse {
-  treasureHuntDefinition: TreasureHuntDefinition;
-}
+export type SubmitTreasureHuntDefinitionResponse = TreasureHuntDefinition;
+
+export type GetTreasureHuntDefinitionByIdResponse = TreasureHuntDefinition[];
 
 //------------------------------------------
 //         ACTIVITY DEFINITIONS
@@ -90,21 +99,21 @@ export type CompletedFindArtworkActivityDefinition = Omit<
 >;
 
 export const defaultFindArtworkActivityDefinition: InProgressFindArtworkActivityDefinition =
-  {
-    activityTitle: undefined,
-    activityAuthor: undefined,
-    beginsOn: undefined,
-    endsOn: undefined,
-    minStages: undefined,
-    maxStages: undefined,
-    minCluesPerStage: undefined,
-    maxCluesPerStage: undefined,
-    allowedInputs: [],
-    huntDefinitionsDatasetUuid: undefined,
-    activityDefinitionsDatasetUuid: undefined,
-    artworksDatasetUuid: undefined,
-    artworks: [],
-  };
+{
+  activityTitle: undefined,
+  activityAuthor: undefined,
+  beginsOn: undefined,
+  endsOn: undefined,
+  minStages: undefined,
+  maxStages: undefined,
+  minCluesPerStage: undefined,
+  maxCluesPerStage: undefined,
+  allowedInputs: [],
+  huntDefinitionsDatasetUuid: undefined,
+  activityDefinitionsDatasetUuid: undefined,
+  artworksDatasetUuid: undefined,
+  artworks: [],
+};
 
 export interface FindArtworkActivityDefinition {
   _id: string;
@@ -123,7 +132,7 @@ export interface FindArtworkActivityDefinition {
   artworks: string[];
 }
 
-export type AllowedInputs = "Text" | "Audio";
+export type AllowedInputs = 'Text' | 'Audio' | 'Image';
 
 export type SubmitFindArtworkActivityDefinitionResponse = FindArtworkActivityDefinition;
 
