@@ -1,5 +1,5 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
-import { ArtworkData, ArtworkFieldMapping, CompletedFindArtworkActivityDefinition, GetFindArtworkActivityDefinitionByIdResponse, SubmitFindArtworkActivityDefinitionResponse } from './commonDefinitions';
+import { ArtworkData, ArtworkFieldMapping, CompletedFindArtworkActivityDefinition, CompletedTreasureHuntDefinition, GetFindArtworkActivityDefinitionByIdResponse, SubmitFindArtworkActivityDefinitionResponse, SubmitTreasureHuntDefinitionResponse } from './commonDefinitions';
 import { GetArtworksOptions, retrieveAllArtworksQuery, retrieveArtworksWithAtLeastAnEmotionInCommon, retrieveDistinctAuthorValuesQuery, retrieveDistinctDateValuesQuery, retrieveDistinctInfoValuesQuery } from './queries';
 
 export type ApiResult<T> =
@@ -101,6 +101,25 @@ export class Api {
     };
 
     return postApiResult<CompletedFindArtworkActivityDefinition, SubmitFindArtworkActivityDefinitionResponse>
+      (url, apiDefinition, opts);
+  }
+
+  public async submitTreasureHuntDefinition(treasureHuntDefinition: CompletedTreasureHuntDefinition):
+    Promise<ApiResult<SubmitTreasureHuntDefinitionResponse>> {
+    const url = `${this.apiUrl}/object/${this.huntDefinitionsDatasetUuid}`;
+
+    const opts: AxiosRequestConfig = {
+      auth: {
+        username: this.apiKey,
+        password: this.apiKey
+      },
+    };
+
+    const apiDefinition: CompletedTreasureHuntDefinition = {
+      ...treasureHuntDefinition
+    };
+
+    return postApiResult<CompletedTreasureHuntDefinition, SubmitTreasureHuntDefinitionResponse>
       (url, apiDefinition, opts);
   }
 

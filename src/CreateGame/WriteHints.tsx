@@ -26,9 +26,9 @@ const Root = styled.div<RootProps>`
 const ReferencePanel = styled.div`
   display: flex;
   flex-direction: column;
-  background-color: rgba(11, 11, 11, 0.85);
+  background-color: rgba(11, 11, 11, 0.65);
   margin: auto;
-  width: 55%;
+  width: 100%;
   height: 100%;
   padding: 1.5%;
   padding-top: 3%;
@@ -50,7 +50,7 @@ const Clue = styled.textarea`
   color: white;
   line-height: 3.5vh;
   background-color: rgba(11, 11, 11, 0.85);
-  width: 90%;
+  width: 65%;
   height: 27.5vh;
   resize: none;
   border: solid 1px #F3F3F3;
@@ -138,17 +138,24 @@ const EnvelopeContainer = styled.div<IconProps>`
   }
 `;
 
-const AddHintIcon = styled(PlusCircle)`
+interface AddHintIconProps {
+  enabled: boolean
+};
+
+const AddHintIcon = styled(PlusCircle) <AddHintIconProps>`
   color: darkgray;
   height: 5vh;
   align-self: center;
   margin-left: 0.5vw;
   width: auto;
 
+  ${props => props.enabled &&
+  `
   &:hover {
     color: lightgray;
     cursor: pointer;
   }
+  `}
 `;
 
 const HintsText = styled.p`
@@ -164,6 +171,8 @@ const HintsText = styled.p`
 interface WriteHintsProps {
   hints: string[];
   imageSrc: string;
+  minHints: number;
+  maxHints: number;
   onAddNewHint: () => void;
   onRemoveHint: (index: number) => void;
   onUpdateHint: (text: string, index: number) => void;
@@ -174,6 +183,8 @@ interface WriteHintsProps {
 const WriteHints: React.FC<WriteHintsProps> = ({
   hints,
   imageSrc,
+  minHints,
+  maxHints,
   onAddNewHint,
   onRemoveHint,
   onUpdateHint,
@@ -181,7 +192,7 @@ const WriteHints: React.FC<WriteHintsProps> = ({
   onNextClicked
 }) => {
 
-  const { t, i18n } = useTranslation('app');
+  const { t } = useTranslation('app');
 
   const [selectedHint, setSelectedHint] = useState<number>(0);
 
@@ -189,7 +200,7 @@ const WriteHints: React.FC<WriteHintsProps> = ({
     t('typeYourNextHint') :
     t('writeHintToHelpFindSelectedArtwork');
 
-  const canAdvance = hints.every(h => h.length > 0);
+  const canAdvance = hints.length >= minHints && hints.length <= maxHints && hints.every(h => h.length > 0);
 
   return (
     <Root
@@ -224,7 +235,13 @@ const WriteHints: React.FC<WriteHintsProps> = ({
               </EnvelopeContainer>
             )}
             <AddHintIcon
-              onClick={onAddNewHint}
+              enabled={hints.length < maxHints}
+              onClick={() => {
+                if (hints.length < maxHints) {
+                  onAddNewHint();
+                  setSelectedHint(hints.length);
+                }
+              }}
             />
           </DotsWrapper>
           <HintsText>

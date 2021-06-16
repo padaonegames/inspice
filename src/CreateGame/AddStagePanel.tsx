@@ -19,7 +19,11 @@ const AddStageText = styled.p`
   font-family: 'EB Garamond';
 `;
 
-const AddStageCorner = styled.div`
+interface AddStageCornerProps {
+  enabled: boolean;
+};
+
+const AddStageCorner = styled.div<AddStageCornerProps>`
   width: 12.5%;
   height: 100%;
   display: flex;
@@ -30,29 +34,43 @@ const AddStageCorner = styled.div`
   transform: scale(0.9);
   transition: transform ease 0.5s;
 
-  &:hover {
-    cursor: pointer;
-    transform: scale(1);
-    transition: transform ease 0.5s;
+  ${AddStageIcon} {
+    color: ${props => props.enabled ? 'black' : 'darkgray'}
+  }
+
+  ${AddStageText} {
+    color: ${props => props.enabled ? 'black' : 'darkgray'}
+  }
+
+  ${props => props.enabled &&
+    `
+    &:hover {
+      cursor: pointer;
+      transform: scale(1);
+      transition: transform ease 0.5s;
+    }
+    `
   }
 `;
 
 interface AddStagePanelProps {
+  enabled: boolean;
   onButtonClicked: () => void;
 };
 
-const AddStagePanel: React.FC<AddStagePanelProps> = ({ onButtonClicked }) => {
+const AddStagePanel: React.FC<AddStagePanelProps> = ({ onButtonClicked, enabled }) => {
 
-  const { t, i18n } = useTranslation('app');
-  
+  const { t } = useTranslation('app');
+
   return (
     <AddStageCorner
-      onClick={onButtonClicked}
+      enabled={enabled}
+      onClick={() => { if (enabled) onButtonClicked(); }}
     >
-      <AddStageIcon/>
+      <AddStageIcon />
       <AddStageText>
         {t('newPhase')}
-      </AddStageText>      
+      </AddStageText>
     </AddStageCorner>
   );
 }
