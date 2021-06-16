@@ -78,13 +78,15 @@ export interface InProgressFindArtworkActivityDefinition {
   minCluesPerStage: number | undefined;
   maxCluesPerStage: number | undefined;
   allowedInputs: AllowedInputs[];
-  huntPersistenceLocation: string | undefined;
+  huntDefinitionsDatasetUuid: string | undefined;
+  activityDefinitionsDatasetUuid: string | undefined;
+  artworksDatasetUuid: string | undefined;
   artworks: string[];
 }
 
 export type CompletedFindArtworkActivityDefinition = Omit<
   FindArtworkActivityDefinition,
-  "activityId"
+  "_id"
 >;
 
 export const defaultFindArtworkActivityDefinition: InProgressFindArtworkActivityDefinition =
@@ -98,12 +100,14 @@ export const defaultFindArtworkActivityDefinition: InProgressFindArtworkActivity
     minCluesPerStage: undefined,
     maxCluesPerStage: undefined,
     allowedInputs: [],
-    huntPersistenceLocation: undefined,
+    huntDefinitionsDatasetUuid: undefined,
+    activityDefinitionsDatasetUuid: undefined,
+    artworksDatasetUuid: undefined,
     artworks: [],
   };
 
 export interface FindArtworkActivityDefinition {
-  activityId: string;
+  _id: string;
   activityTitle: string;
   activityAuthor: string;
   beginsOn: Date;
@@ -113,20 +117,14 @@ export interface FindArtworkActivityDefinition {
   minCluesPerStage: number;
   maxCluesPerStage: number;
   allowedInputs: AllowedInputs[];
-  huntPersistenceLocation: string;
+  huntDefinitionsDatasetUuid: string;
+  activityDefinitionsDatasetUuid: string;
+  artworksDatasetUuid: string;
   artworks: string[];
 }
 
 export type AllowedInputs = "Text" | "Audio";
 
-export interface SubmitFindArtworkActivityDefinitionRequest {
-  activityDefinition: CompletedFindArtworkActivityDefinition;
-}
+export type SubmitFindArtworkActivityDefinitionResponse = FindArtworkActivityDefinition;
 
-export interface SubmitFindArtworkActivityDefinitionResponse {
-  activityDefinition: FindArtworkActivityDefinition | undefined;
-}
-
-export interface GetFindArtworkActivityDefinitionByIdResponse {
-  activityDefinition: FindArtworkActivityDefinition;
-}
+export type GetFindArtworkActivityDefinitionByIdResponse = FindArtworkActivityDefinition[];

@@ -4,7 +4,6 @@ import ConfigureStageParamsStage from '../CreateFindArtworkActivity/ConfigureSta
 import CreateFindArtworkOverviewPanel from '../CreateFindArtworkActivity/CreateFindArtworkOverviewPanel';
 import SelectArtworksStage from '../CreateFindArtworkActivity/SelectArtworksStage';
 import SetTitleAuthorDatesStage from '../CreateFindArtworkActivity/SetTitleAuthorDatesStage';
-import NextCornerButton from '../CreateGame/NextCornerButton';
 import { api } from '../services';
 import { AllowedInputs, CompletedFindArtworkActivityDefinition, InProgressFindArtworkActivityDefinition } from '../services/commonDefinitions';
 import { useAsyncRequest } from '../services/useAsyncRequest';
@@ -43,7 +42,9 @@ const sample: InProgressFindArtworkActivityDefinition = {
   minCluesPerStage: 1,
   maxCluesPerStage: 5,
   allowedInputs: [],
-  huntPersistenceLocation: process.env.REACT_APP_HUNT_LOCATION || 'sample/post',
+  huntDefinitionsDatasetUuid: process.env.REACT_APP_HUNT_DEFINITIONS_DATASET_UUID || '',
+  activityDefinitionsDatasetUuid: process.env.REACT_APP_ACTIVITY_DEFINITIONS_DATASET_UUID || '',
+  artworksDatasetUuid: process.env.REACT_APP_DATASET_UUID || '',
   artworks: []
 };
 
@@ -127,8 +128,8 @@ const CreateFindArtworkActivityScreen: React.FC = () => {
   };
 
   useEffect(() => {
-    console.log(activityDefinition);
-  }, [activityDefinition]);
+    console.log(submitDefinitionStatus);
+  }, [submitDefinitionStatus]);
 
 
   return (

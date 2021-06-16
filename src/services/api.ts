@@ -38,6 +38,8 @@ export class Api {
   public constructor(
     private apiUrl: string,
     private datasetUuid: string,
+    private activityDefinitionsDatasetUuid: string,
+    private huntDefinitionsDatasetUuid: string,
     private apiKey: string,
     private mappingMode: MappingMode,
   ) { }
@@ -61,8 +63,20 @@ export class Api {
    * Retrieve an activity by its id
    */
   public async getFindArtworkActivityDefinitionById(activityId: string): Promise<ApiResult<GetFindArtworkActivityDefinitionByIdResponse>> {
-    const url = `${this.apiUrl}/activity/${activityId}`;
-    return getApiResult<GetFindArtworkActivityDefinitionByIdResponse>(url);
+    const url = `${this.apiUrl}/object/${this.activityDefinitionsDatasetUuid}`;
+
+    const query = `{ "id": "${activityId}" }`;
+
+    const opts: AxiosRequestConfig = {
+      auth: {
+        username: this.apiKey,
+        password: this.apiKey
+      },
+      params: {
+        query: query
+      }
+    };
+    return getApiResult<GetFindArtworkActivityDefinitionByIdResponse>(url, opts);
   }
 
   /**
@@ -70,16 +84,30 @@ export class Api {
    */
   public async submitFindArtworkActivityDefinition(activityDefinition: CompletedFindArtworkActivityDefinition):
     Promise<ApiResult<SubmitFindArtworkActivityDefinitionResponse>> {
-    const url = `${this.apiUrl}/findArtwork`;
-    console.log(`Post request to url: ${url}`);
+    const url = `${this.apiUrl}/object/${this.activityDefinitionsDatasetUuid}`;
+
+    const opts: AxiosRequestConfig = {
+      auth: {
+        username: this.apiKey,
+        password: this.apiKey
+      },
+    };
+
+    const apiDefinition: CompletedFindArtworkActivityDefinition = {
+      ...activityDefinition,
+      huntDefinitionsDatasetUuid: this.huntDefinitionsDatasetUuid,
+      activityDefinitionsDatasetUuid: this.activityDefinitionsDatasetUuid,
+      artworksDatasetUuid: this.datasetUuid,
+    };
+
     return postApiResult<CompletedFindArtworkActivityDefinition, SubmitFindArtworkActivityDefinitionResponse>
-      (url, activityDefinition);
+      (url, apiDefinition, opts);
   }
 
   public async fetchUniqueFieldValues(field: 'date' | 'author' | 'info'): Promise<ApiResult<{ value: string, count: number }[]>> {
     if (this.mappingMode.mode === 'JSON') {
       // testing for now
-      let demoPromise = new Promise<ApiResult<{ value: string, count: number }[]>>((resolve, reject) => {
+      let demoPromise = new Promise<ApiResult<{ value: string, count: number }[]>>((resolve, _) => {
         let wait = setTimeout(() => {
           clearTimeout(wait);
           resolve({
@@ -128,7 +156,7 @@ export class Api {
     params.append('query', retrieveArtworksWithAtLeastAnEmotionInCommon('spiceartefact' + artworkId));
     const ids = await getRecommendationsResultRDF(url, opts, params);
 
-    if(ids.kind === 'ok') {
+    if (ids.kind === 'ok') {
       return this.fetchArtworks({
         filter: {
           ids: ids.data
@@ -136,7 +164,7 @@ export class Api {
       });
     }
     else {
-      return { kind: 'unhandled-error', error:  new Error('test') };
+      return { kind: 'unhandled-error', error: new Error('test') };
     }
   };
 
