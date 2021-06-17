@@ -7,7 +7,6 @@ export type AsyncProgress<ResultType = any, ErrorType = any> =
   | { kind: 'running' }
   | { kind: 'success', result: ResultType }
   | { kind: 'failure', reason: ErrorType }
-  | { kind: 'idle' }
   ;
 
 /**
@@ -22,26 +21,12 @@ export type AsyncProgress<ResultType = any, ErrorType = any> =
 export function useAsyncRequest<ResultType, ErrorType>(
   promiseProducer: () => Promise<ResultType>,
   deps: React.DependencyList = [],
-  triggerOnStart: boolean = true,
-): [AsyncProgress<ResultType, ErrorType | Error>, () => void] {
+): [AsyncProgress<ResultType, ErrorType | Error>] {
   const [state, setState] = useState<AsyncProgress<ResultType, ErrorType | Error>>(
-    { kind: 'idle' },
+    { kind: 'running' },
   );
-  const [triggerRequest, setTriggerRequest] = useState<boolean>(triggerOnStart);
 
   useEffect(() => {
-    console.log("test " + state.kind + " " + triggerRequest);
-    // request hasn't started yet.
-    if (state.kind === 'idle') {
-      if (triggerRequest) {
-        // trigger request by changing state to running
-        setState({ kind: 'running' });
-        setTriggerRequest(false);
-      }
-      // request is not to be triggered just yet
-      return;
-    }
-
     try {
       promiseProducer()
         .then((result) => {
@@ -57,7 +42,7 @@ export function useAsyncRequest<ResultType, ErrorType>(
     } catch (err) {
       setState({ kind: 'failure', reason: err as Error });
     }
-  }, [...deps, triggerRequest]);
+  }, deps);
 
-  return [state, () => setTriggerRequest(true)];
+  return [state];
 };

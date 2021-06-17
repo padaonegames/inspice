@@ -63,7 +63,7 @@ RUN npm run build
 # La imagen final es una web estática. Usamos Apache.
 FROM httpd:alpine
 
-# Activamos la redirección, que necesitamos para redirigir
+# Activamos el módulo rewrite, que necesitamos para redirigir
 # al index.html y que React se las apañe por dentro en
 # JavaScript en el cliente.
 # https://stackoverflow.com/questions/49809748/add-mod-rewrite-to-docker-image-httpdalpine
@@ -73,6 +73,7 @@ RUN { \
   echo 'IncludeOptional conf.d/*.conf'; \
 } >> /usr/local/apache2/conf/httpd.conf \
   && mkdir /usr/local/apache2/conf.d
+
 
 # Copiamos la aplicación web compilada, que tendrá el
 # .htaccess que necesitamos gracias a reactapp.
@@ -89,3 +90,7 @@ RUN { \
 COPY --from=builder-frontend /app/build/favicon.ico /app/build/logo*.png /app/build/robots.txt /app/build/.htaccess /app/build/index.html /usr/local/apache2/htdocs/
 COPY --from=builder-frontend /app/build/locales /usr/local/apache2/htdocs/locales
 COPY --from=builder-frontend /app/build/static /usr/local/apache2/htdocs/static
+
+# Activamos la redirección para el directorio de la
+# aplicación, sacado del .htaccess
+RUN echo '<Directory "/usr/local/apache2/htdocs">' > /usr/local/apache2/conf.d/redirect.conf; cat /usr/local/apache2/htdocs/.htaccess >> /usr/local/apache2/conf.d/redirect.conf; echo -e '\n</Directory>' >> /usr/local/apache2/conf.d/redirect.conf

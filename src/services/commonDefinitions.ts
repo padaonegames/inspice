@@ -25,44 +25,53 @@ export interface GetArtworkByIdResponse {
 export interface InProgressTreasureHuntDefinition {
   treasureHuntAuthor: string | undefined;
   activityId: string | undefined;
-  stages: StageData[];
+  stages: InProgressTreasureHuntStage[];
 }
 
 export interface TreasureHuntDefinition {
-  treasureHuntId: string;
+  _id: string;
   treasureHuntAuthor: string;
   activityId: string;
   stages: StageData[];
 }
 
+export type CompletedTreasureHuntDefinition = Omit<
+  TreasureHuntDefinition,
+  "_id"
+>;
+
 export interface StageData {
   artworkId: string; // id del artwork seleccionado
   //recordingPath: string; // path de la grabación a emplear
   clues: string[]; // pistas a mostrar al jugador
-  gifts: string[]; //rewards to show after finding the art
+  multimediaData: TreasureHuntMutimediaData[]; //rewards to show after finding the art
 }
+
+export type TreasureHuntMutimediaData =
+  | { kind: 'Text', text: string }
+  | { kind: 'Audio', src: string }
+  | { kind: 'Image', src: string }
+  ;
 
 export interface InProgressTreasureHuntStage {
   clues: string[];
-  gifts: string[];
+  multimediaData: TreasureHuntMutimediaData[];
   artworkId: string | undefined;
-  recordingSrc: string | undefined;
 }
 
 export const defaultTreasureHuntStage: InProgressTreasureHuntStage = {
   clues: [""],
-  gifts: [""],
+  multimediaData: [],
   artworkId: undefined,
-  recordingSrc: undefined,
 };
 
 export interface SubmitTreasureHuntDefinitionRequest {
   treasureHuntDefinition: InProgressTreasureHuntDefinition;
 }
 
-export interface GetFindTreasureHuntDefinitionByIdResponse {
-  treasureHuntDefinition: TreasureHuntDefinition;
-}
+export type SubmitTreasureHuntDefinitionResponse = TreasureHuntDefinition;
+
+export type GetTreasureHuntDefinitionByIdResponse = TreasureHuntDefinition[];
 
 //------------------------------------------
 //         ACTIVITY DEFINITIONS
@@ -78,32 +87,36 @@ export interface InProgressFindArtworkActivityDefinition {
   minCluesPerStage: number | undefined;
   maxCluesPerStage: number | undefined;
   allowedInputs: AllowedInputs[];
-  huntPersistenceLocation: string | undefined;
+  huntDefinitionsDatasetUuid: string | undefined;
+  activityDefinitionsDatasetUuid: string | undefined;
+  artworksDatasetUuid: string | undefined;
   artworks: string[];
 }
 
 export type CompletedFindArtworkActivityDefinition = Omit<
   FindArtworkActivityDefinition,
-  "activityId"
+  "_id"
 >;
 
 export const defaultFindArtworkActivityDefinition: InProgressFindArtworkActivityDefinition =
-  {
-    activityTitle: undefined,
-    activityAuthor: undefined,
-    beginsOn: undefined,
-    endsOn: undefined,
-    minStages: undefined,
-    maxStages: undefined,
-    minCluesPerStage: undefined,
-    maxCluesPerStage: undefined,
-    allowedInputs: [],
-    huntPersistenceLocation: undefined,
-    artworks: [],
-  };
+{
+  activityTitle: undefined,
+  activityAuthor: undefined,
+  beginsOn: undefined,
+  endsOn: undefined,
+  minStages: undefined,
+  maxStages: undefined,
+  minCluesPerStage: undefined,
+  maxCluesPerStage: undefined,
+  allowedInputs: [],
+  huntDefinitionsDatasetUuid: undefined,
+  activityDefinitionsDatasetUuid: undefined,
+  artworksDatasetUuid: undefined,
+  artworks: [],
+};
 
 export interface FindArtworkActivityDefinition {
-  activityId: string;
+  _id: string;
   activityTitle: string;
   activityAuthor: string;
   beginsOn: Date;
@@ -113,20 +126,14 @@ export interface FindArtworkActivityDefinition {
   minCluesPerStage: number;
   maxCluesPerStage: number;
   allowedInputs: AllowedInputs[];
-  huntPersistenceLocation: string;
+  huntDefinitionsDatasetUuid: string;
+  activityDefinitionsDatasetUuid: string;
+  artworksDatasetUuid: string;
   artworks: string[];
 }
 
-export type AllowedInputs = "Text" | "Audio";
+export type AllowedInputs = 'Text' | 'Audio' | 'Image';
 
-export interface SubmitFindArtworkActivityDefinitionRequest {
-  activityDefinition: CompletedFindArtworkActivityDefinition;
-}
+export type SubmitFindArtworkActivityDefinitionResponse = FindArtworkActivityDefinition;
 
-export interface SubmitFindArtworkActivityDefinitionResponse {
-  activityDefinition: FindArtworkActivityDefinition | undefined;
-}
-
-export interface GetFindArtworkActivityDefinitionByIdResponse {
-  activityDefinition: FindArtworkActivityDefinition;
-}
+export type GetFindArtworkActivityDefinitionByIdResponse = FindArtworkActivityDefinition[];

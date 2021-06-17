@@ -1,5 +1,5 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
-import { ArtworkData, ArtworkFieldMapping, CompletedFindArtworkActivityDefinition, GetFindArtworkActivityDefinitionByIdResponse, SubmitFindArtworkActivityDefinitionResponse } from './commonDefinitions';
+import { ArtworkData, ArtworkFieldMapping, CompletedFindArtworkActivityDefinition, CompletedTreasureHuntDefinition, FindArtworkActivityDefinition, GetFindArtworkActivityDefinitionByIdResponse, GetTreasureHuntDefinitionByIdResponse, SubmitFindArtworkActivityDefinitionResponse, SubmitTreasureHuntDefinitionResponse, TreasureHuntDefinition } from './commonDefinitions';
 import { GetArtworksOptions, retrieveAllArtworksQuery, retrieveArtworksWithAtLeastAnEmotionInCommon, retrieveDistinctAuthorValuesQuery, retrieveDistinctDateValuesQuery, retrieveDistinctInfoValuesQuery } from './queries';
 
 export type ApiResult<T> =
@@ -38,31 +38,80 @@ export class Api {
   public constructor(
     private apiUrl: string,
     private datasetUuid: string,
+    private activityDefinitionsDatasetUuid: string,
+    private huntDefinitionsDatasetUuid: string,
     private apiKey: string,
     private mappingMode: MappingMode,
   ) { }
-
-
-  /**
-   * Retrieve an artwork by its id
-   */
-  public async getArtworkById(artworkId: string): Promise<ApiResult<any>> {
-    const url = `${this.apiUrl}/browse/${this.datasetUuid}`;
-
-    return getApiResult<any>(url, {
-      auth: {
-        username: this.apiKey,
-        password: this.apiKey
-      }
-    });
-  }
 
   /**
    * Retrieve an activity by its id
    */
   public async getFindArtworkActivityDefinitionById(activityId: string): Promise<ApiResult<GetFindArtworkActivityDefinitionByIdResponse>> {
-    const url = `${this.apiUrl}/activity/${activityId}`;
-    return getApiResult<GetFindArtworkActivityDefinitionByIdResponse>(url);
+    const url = `${this.apiUrl}/object/${this.activityDefinitionsDatasetUuid}`;
+
+    const query = `{ "_id": "${activityId}" }`;
+
+    const opts: AxiosRequestConfig = {
+      auth: {
+        username: this.apiKey,
+        password: this.apiKey
+      },
+      params: {
+        query: query
+      }
+    };
+    return getApiResult<GetFindArtworkActivityDefinitionByIdResponse>(url, opts);
+  }
+
+  /**
+ * Retrieve all activities
+ */
+  public async getFindArtworkActivityDefinitions(): Promise<ApiResult<FindArtworkActivityDefinition[]>> {
+    const url = `${this.apiUrl}/object/${this.activityDefinitionsDatasetUuid}`;
+
+    const opts: AxiosRequestConfig = {
+      auth: {
+        username: this.apiKey,
+        password: this.apiKey
+      },
+    };
+    return getApiResult<FindArtworkActivityDefinition[]>(url, opts);
+  }
+
+  /**
+* Retrieve all treasure hunts
+*/
+  public async getTreasureHuntDefinitions(): Promise<ApiResult<GetTreasureHuntDefinitionByIdResponse>> {
+    const url = `${this.apiUrl}/object/${this.huntDefinitionsDatasetUuid}`;
+
+    const opts: AxiosRequestConfig = {
+      auth: {
+        username: this.apiKey,
+        password: this.apiKey
+      },
+    };
+    return getApiResult<GetTreasureHuntDefinitionByIdResponse>(url, opts);
+  }
+
+  /**
+ * Retrieve a treasure hunt by its id
+ */
+  public async getTreasureHuntDefinitionById(treasureHuntId: string): Promise<ApiResult<GetTreasureHuntDefinitionByIdResponse>> {
+    const url = `${this.apiUrl}/object/${this.huntDefinitionsDatasetUuid}`;
+
+    const query = `{ "_id": "${treasureHuntId}" }`;
+
+    const opts: AxiosRequestConfig = {
+      auth: {
+        username: this.apiKey,
+        password: this.apiKey
+      },
+      params: {
+        query: query
+      }
+    };
+    return getApiResult<GetTreasureHuntDefinitionByIdResponse>(url, opts);
   }
 
   /**
@@ -70,16 +119,49 @@ export class Api {
    */
   public async submitFindArtworkActivityDefinition(activityDefinition: CompletedFindArtworkActivityDefinition):
     Promise<ApiResult<SubmitFindArtworkActivityDefinitionResponse>> {
-    const url = `${this.apiUrl}/findArtwork`;
-    console.log(`Post request to url: ${url}`);
+    const url = `${this.apiUrl}/object/${this.activityDefinitionsDatasetUuid}`;
+
+    const opts: AxiosRequestConfig = {
+      auth: {
+        username: this.apiKey,
+        password: this.apiKey
+      },
+    };
+
+    const apiDefinition: CompletedFindArtworkActivityDefinition = {
+      ...activityDefinition,
+      huntDefinitionsDatasetUuid: this.huntDefinitionsDatasetUuid,
+      activityDefinitionsDatasetUuid: this.activityDefinitionsDatasetUuid,
+      artworksDatasetUuid: this.datasetUuid,
+    };
+
     return postApiResult<CompletedFindArtworkActivityDefinition, SubmitFindArtworkActivityDefinitionResponse>
-      (url, activityDefinition);
+      (url, apiDefinition, opts);
+  }
+
+  public async submitTreasureHuntDefinition(treasureHuntDefinition: CompletedTreasureHuntDefinition):
+    Promise<ApiResult<SubmitTreasureHuntDefinitionResponse>> {
+    const url = `${this.apiUrl}/object/${this.huntDefinitionsDatasetUuid}`;
+
+    const opts: AxiosRequestConfig = {
+      auth: {
+        username: this.apiKey,
+        password: this.apiKey
+      },
+    };
+
+    const apiDefinition: CompletedTreasureHuntDefinition = {
+      ...treasureHuntDefinition
+    };
+
+    return postApiResult<CompletedTreasureHuntDefinition, SubmitTreasureHuntDefinitionResponse>
+      (url, apiDefinition, opts);
   }
 
   public async fetchUniqueFieldValues(field: 'date' | 'author' | 'info'): Promise<ApiResult<{ value: string, count: number }[]>> {
     if (this.mappingMode.mode === 'JSON') {
       // testing for now
-      let demoPromise = new Promise<ApiResult<{ value: string, count: number }[]>>((resolve, reject) => {
+      let demoPromise = new Promise<ApiResult<{ value: string, count: number }[]>>((resolve, _) => {
         let wait = setTimeout(() => {
           clearTimeout(wait);
           resolve({
@@ -128,7 +210,7 @@ export class Api {
     params.append('query', retrieveArtworksWithAtLeastAnEmotionInCommon('spiceartefact' + artworkId));
     const ids = await getRecommendationsResultRDF(url, opts, params);
 
-    if(ids.kind === 'ok') {
+    if (ids.kind === 'ok') {
       return this.fetchArtworks({
         filter: {
           ids: ids.data
@@ -136,7 +218,7 @@ export class Api {
       });
     }
     else {
-      return { kind: 'unhandled-error', error:  new Error('test') };
+      return { kind: 'unhandled-error', error: new Error('test') };
     }
   };
 

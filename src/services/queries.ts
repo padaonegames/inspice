@@ -20,6 +20,7 @@ const filterRegexIds = (ids: string[]) => {
   for (let i = 1; i < ids.length; i++) {
     res += ` || regex(str(?id), "${ids[i]}", "i")`
   }
+  res += ')';
   return res;
 };
 

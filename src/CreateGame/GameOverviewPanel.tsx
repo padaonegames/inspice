@@ -29,6 +29,8 @@ const UpperRowContainer = styled.div`
 `;
 
 interface GameOverviewPanelProps {
+  minStages: number;
+  maxStages: number;
   activeStage: number;
   stagesCompleted: boolean[];
   onAddNewStage: () => void;
@@ -37,6 +39,8 @@ interface GameOverviewPanelProps {
 };
 
 const GameOverviewPanel: React.FC<GameOverviewPanelProps> = ({
+  minStages,
+  maxStages,
   activeStage,
   stagesCompleted,
   onAddNewStage,
@@ -53,10 +57,11 @@ const GameOverviewPanel: React.FC<GameOverviewPanelProps> = ({
           onStageSelected={onStageSelected}
         />
         <AddStagePanel
+          enabled={stagesCompleted.length < maxStages}
           onButtonClicked={onAddNewStage}
         />
         <SubmitGamePanel
-          enabled={stagesCompleted.every(elem => elem)}
+          enabled={stagesCompleted.every(elem => elem) && stagesCompleted.length >= minStages}
           onButtonClicked={onSubmitGame}
         />
       </UpperRowContainer>

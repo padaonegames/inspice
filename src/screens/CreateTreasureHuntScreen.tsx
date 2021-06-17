@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { sampleArtworks } from '../artworks/artworkData';
 import Fader from '../components/Fader';
 import GameOverviewPanel from '../CreateGame/GameOverviewPanel';
 import RecordAudio from '../CreateGame/RecordAudio';
 import SelectArtwork from '../CreateGame/SelectArtwork';
 import WriteHints from '../CreateGame/WriteHints';
 import WriteGifts from '../CreateGame/WriteGifts';
-import { ArtworkData, defaultTreasureHuntStage, InProgressTreasureHuntStage } from '../services/commonDefinitions';
+import { ArtworkData, CompletedTreasureHuntDefinition, InProgressTreasureHuntDefinition, InProgressTreasureHuntStage } from '../services/commonDefinitions';
+import { useParams } from 'react-router';
+import { useAsyncRequest } from '../services/useAsyncRequest';
+import { api } from '../services';
 
 const Root = styled.div`
   display: flex;
@@ -16,112 +18,187 @@ const Root = styled.div`
 
 const isStageCompleted = (stage: InProgressTreasureHuntStage): boolean => {
   return stage.artworkId !== undefined &&
-    stage.clues !== undefined && stage.clues.length > 0 &&
-    stage.gifts !== undefined && stage.gifts.length > 0 &&
-    stage.gifts[0] !== "";
-  //&& stage.recordingSrc !== undefined;
+    stage.clues !== undefined && stage.clues.length > 0 && stage.clues.every(elem => elem.length > 0) &&
+    stage.multimediaData !== undefined && stage.multimediaData.length > 0 &&
+    stage.multimediaData.length > 0 && stage.multimediaData.every(
+      elem => elem.kind === 'Text' ?
+        (elem.text && elem.text.length > 0) :
+        (elem.src && elem.src.length > 0)
+    );
 };
 
 type StageStatus = 'select-artwork' | 'write-hints' | 'record-audio' | 'write-gifts' | 'none';
 
 const CreateTreasureHuntScreen: React.FC = () => {
 
-  // TODO: change data types to match the ones from commonDefinitions.ts
-  // that is, TreasureHuntDefinition/ InProgressTreasureHuntDefinition
+  let { id } = useParams<{ id: string }>();
+
+  const fetchActivityDefinition = async () => {
+    return await api.getFindArtworkActivityDefinitionById(id);
+  };
+
+  const [submitGame, setSubmitGame] = useState<boolean>(false);
+
+  const submitDefinition = () => {
+    if (!submitGame) return Promise.reject();
+    setSubmitGame(false);
+    return api.submitTreasureHuntDefinition({ ...(treasureHuntDefinition as CompletedTreasureHuntDefinition) });
+  };
+
+  const fetchActivityArtworks = async () => {
+    if (!(fetchActivityDefinitionStatus.kind === 'success' && fetchActivityDefinitionStatus.result.kind === 'ok')) {
+      return Promise.reject();
+    }
+    return api.fetchArtworks({ filter: { ids: fetchActivityDefinitionStatus.result.data[0].artworks } });
+  };
+
+  const [fetchActivityDefinitionStatus] = useAsyncRequest(fetchActivityDefinition, []);
+  const [fetchActivityArtworksStatus] = useAsyncRequest(fetchActivityArtworks, [fetchActivityDefinitionStatus]);
+  const [submitGameStatus] = useAsyncRequest(submitDefinition, [submitGame]);
   const [activeStage, setActiveStage] = useState<number>(0);
-  const [stageList, setStageList] = useState<InProgressTreasureHuntStage[]>([defaultTreasureHuntStage]);
+  const [treasureHuntDefinition, setTreasureHuntDefinition] = useState<InProgressTreasureHuntDefinition>({
+    treasureHuntAuthor: '',
+    activityId: id,
+    stages: [{
+      artworkId: undefined,
+      clues: [],
+      multimediaData: []
+    }]
+  });
 
   const [activeStageStatus, setActiveStageStatus] = useState<StageStatus>('select-artwork');
   const [displayedState, setDisplayedState] = useState<StageStatus>('select-artwork');
 
   const handleAddStage = () => {
-    setStageList(prev => [...prev, defaultTreasureHuntStage]);
+    if (fetchActivityDefinitionStatus.kind === 'success' && fetchActivityDefinitionStatus.result.kind === 'ok') {
+      const definition = fetchActivityDefinitionStatus.result.data[0];
+      setTreasureHuntDefinition(prev => ({
+        ...prev, stages: [...prev.stages, {
+          artworkId: undefined,
+          clues: Array.from(Array(definition.minCluesPerStage).keys()).map(_ => ''),
+          multimediaData: [{ kind: 'Text', text: '' }]
+        }]
+      }));
+    }
   };
 
   const handleSelectArtwork = (artworkId: string) => {
-    setStageList(prev => {
-      let aux = prev.slice();
+    setTreasureHuntDefinition(prev => {
+      let aux: InProgressTreasureHuntStage[] = JSON.parse(JSON.stringify(prev.stages));
       aux[activeStage].artworkId = artworkId;
-      return aux;
+      return { ...prev, stages: aux };
     });
   };
 
   const handleRemoveHint = (index: number) => {
-    setStageList(prev => {
-      let aux = prev.slice();
+    setTreasureHuntDefinition(prev => {
+      let aux: InProgressTreasureHuntStage[] = JSON.parse(JSON.stringify(prev.stages));
       const filtClues = aux[activeStage].clues.filter((_, ind) => ind !== index);
       aux[activeStage].clues = filtClues;
-      return aux;
+      return { ...prev, stages: aux };
     });
   };
 
   const handleAddHint = () => {
-    setStageList(prev => {
-      let aux: InProgressTreasureHuntStage[] = JSON.parse(JSON.stringify(prev));
+    setTreasureHuntDefinition(prev => {
+      let aux: InProgressTreasureHuntStage[] = JSON.parse(JSON.stringify(prev.stages));
       aux[activeStage].clues.push('');
-      return aux;
+      return { ...prev, stages: aux };
     });
   };
 
   const handleUpdateHint = (text: string, index: number) => {
-    setStageList(prev => {
-      let aux: InProgressTreasureHuntStage[] = JSON.parse(JSON.stringify(prev));
+    setTreasureHuntDefinition(prev => {
+      let aux: InProgressTreasureHuntStage[] = JSON.parse(JSON.stringify(prev.stages));
       aux[activeStage].clues[index] = text;
-      return aux;
+      return { ...prev, stages: aux };
     });
   };
 
 
   const handleRemoveGift = (index: number) => {
-    setStageList(prev => {
-      let aux = prev.slice();
-      const filtGifts = aux[activeStage].gifts.filter((_, ind) => ind !== index);
-      aux[activeStage].gifts = filtGifts;
-      return aux;
+    setTreasureHuntDefinition(prev => {
+      let aux: InProgressTreasureHuntStage[] = JSON.parse(JSON.stringify(prev.stages));
+      const filtGifts = aux[activeStage].multimediaData.filter((_, ind) => ind !== index);
+      aux[activeStage].multimediaData = filtGifts;
+      return { ...prev, stages: aux };
     });
   };
 
   const handleAddGift = () => {
-    setStageList(prev => {
-      let aux: InProgressTreasureHuntStage[] = JSON.parse(JSON.stringify(prev));
-      aux[activeStage].gifts.push('');
-      return aux;
+    setTreasureHuntDefinition(prev => {
+      let aux: InProgressTreasureHuntStage[] = JSON.parse(JSON.stringify(prev.stages));
+      aux[activeStage].multimediaData.push({ kind: 'Text', text: '' });
+      return { ...prev, stages: aux };
     });
   };
 
-  const handleUpdateGift = (text: string, index: number) => {
-    setStageList(prev => {
-      let aux: InProgressTreasureHuntStage[] = JSON.parse(JSON.stringify(prev));
-      aux[activeStage].gifts[index] = text;
-      return aux;
+  const handleUpdateGift = (index: number, content: string) => {
+    setTreasureHuntDefinition(prev => {
+      let aux: InProgressTreasureHuntStage[] = JSON.parse(JSON.stringify(prev.stages));
+      let multimediaData = aux[activeStage].multimediaData[index];
+      if (multimediaData.kind === 'Text') {
+        multimediaData.text = content;
+      }
+      else {
+        multimediaData.src = content;
+      }
+      return { ...prev, stages: aux };
     });
   };
 
-  const handleRecordingReady = (audioURL: string) => {
-    setStageList(prev => {
-      let aux: InProgressTreasureHuntStage[] = JSON.parse(JSON.stringify(prev));
-      aux[activeStage].recordingSrc = audioURL;
-      return aux;
-    });
-  };
   const handleSelectStage = (index: number) => {
     setActiveStage(index);
     setActiveStageStatus('select-artwork');
     setDisplayedState('select-artwork');
   };
 
-  const retrieveArtworkById = (artworkId: string): ArtworkData | undefined => {
-    return sampleArtworks.find(artw => artw.id === artworkId);
+  const retrieveArtworkById = (artworkId?: string): ArtworkData | undefined => {
+    if (!artworkId || !(fetchActivityArtworksStatus.kind === 'success' && fetchActivityArtworksStatus.result.kind === 'ok')) {
+      return undefined;
+    }
+    return fetchActivityArtworksStatus.result.data.find(artw => artw.id === artworkId);
   };
+
+  useEffect(() => {
+    if (fetchActivityDefinitionStatus.kind === 'success' && fetchActivityDefinitionStatus.result.kind === 'ok') {
+      const definition = fetchActivityDefinitionStatus.result.data[0];
+      setTreasureHuntDefinition(prev => ({
+        ...prev,
+        stages: Array.from(Array(definition.minStages).keys()).map(_ => ({
+          artworkId: undefined,
+          clues: Array.from(Array(definition.minCluesPerStage).keys()).map(_ => ''),
+          multimediaData: [{ kind: 'Text', text: '' }]
+        }))
+      }));
+    }
+  }, [fetchActivityDefinitionStatus]);
+
+  
+  useEffect(() => {
+    if (submitGameStatus.kind === 'success' && submitGameStatus.result.kind === 'ok') {
+      window.alert('Your treasure hunt was successfully uploaded to the linked data hub.');
+    }
+  }, [submitGameStatus]);
+
+  if (!(fetchActivityDefinitionStatus.kind === 'success' && fetchActivityDefinitionStatus.result.kind === 'ok')) {
+    return <p>Fetching activity definition...</p>;
+  }
+
+  if (!(fetchActivityArtworksStatus.kind === 'success' && fetchActivityArtworksStatus.result.kind === 'ok')) {
+    return <p>Fetching activity artworks...</p>;
+  }
 
   return (
     <Root>
       <GameOverviewPanel
         activeStage={activeStage}
-        stagesCompleted={stageList.map(isStageCompleted)}
+        stagesCompleted={treasureHuntDefinition.stages.map(isStageCompleted)}
+        minStages={fetchActivityDefinitionStatus.result.data[0].minStages}
+        maxStages={fetchActivityDefinitionStatus.result.data[0].maxStages}
         onAddNewStage={handleAddStage}
         onStageSelected={handleSelectStage}
-        onSubmitGame={() => { }}
+        onSubmitGame={() => setSubmitGame(true)}
       />
       {activeStageStatus === 'select-artwork' &&
         <Fader
@@ -130,8 +207,10 @@ const CreateTreasureHuntScreen: React.FC = () => {
           onAnimationCompleted={() => setActiveStageStatus(displayedState)}
         >
           <SelectArtwork
-            imagesData={sampleArtworks}
-            selectedArtwork={stageList[activeStage].artworkId}
+            key={activeStage || ''}
+            titleText={fetchActivityDefinitionStatus.result.data[0].activityTitle}
+            imagesData={fetchActivityArtworksStatus.result.data}
+            selectedArtwork={treasureHuntDefinition.stages[activeStage]?.artworkId}
             onArtworkSelected={handleSelectArtwork}
             onNextClicked={() => setDisplayedState('write-hints')}
           />
@@ -145,13 +224,15 @@ const CreateTreasureHuntScreen: React.FC = () => {
           onAnimationCompleted={() => setActiveStageStatus(displayedState)}
         >
           <WriteHints
-            hints={stageList[activeStage].clues}
-            imageSrc={retrieveArtworkById(stageList[activeStage].artworkId!)!.src}
+            hints={treasureHuntDefinition.stages[activeStage].clues}
+            imageSrc={retrieveArtworkById(treasureHuntDefinition.stages[activeStage].artworkId)?.src || ''}
             onAddNewHint={handleAddHint}
-            onRemoveHint={(ind: number) => handleRemoveHint(ind)}
+            onRemoveHint={handleRemoveHint}
             onUpdateHint={handleUpdateHint}
             onNextClicked={() => setDisplayedState('write-gifts')}
             onBackClicked={() => setDisplayedState('select-artwork')}
+            minHints={fetchActivityDefinitionStatus.result.data[0]?.minCluesPerStage || 1}
+            maxHints={fetchActivityDefinitionStatus.result.data[0]?.maxCluesPerStage || 10}
           />
         </Fader>
       }
@@ -169,16 +250,14 @@ const CreateTreasureHuntScreen: React.FC = () => {
           }}
         >
           <WriteGifts
-            gifts={stageList[activeStage].gifts}
-            imageSrc={retrieveArtworkById(stageList[activeStage].artworkId!)!.src}
+            gifts={treasureHuntDefinition.stages[activeStage]?.multimediaData.map(elem => elem.kind === 'Text' ? elem.text : elem.src) || []}
+            imageSrc={retrieveArtworkById(treasureHuntDefinition.stages[activeStage].artworkId!)!.src}
             onAddNewGift={handleAddGift}
             onRemoveGift={(ind: number) => handleRemoveGift(ind)}
             onUpdateGift={handleUpdateGift}
             onNextClicked={() => setDisplayedState('select-artwork')}
             onBackClicked={() => setDisplayedState('write-hints')}
-            canClickNext={activeStage + 1 < stageList.length}
-
-
+            canClickNext={activeStage + 1 < treasureHuntDefinition.stages.length}
           />
         </Fader>
       }
@@ -195,15 +274,14 @@ const CreateTreasureHuntScreen: React.FC = () => {
           }}
         >
           <RecordAudio
-            imageSrc={retrieveArtworkById(stageList[activeStage].artworkId!)!.src}
-            onRecordingReady={handleRecordingReady}
-            canClickNext={activeStage + 1 < stageList.length}
+            imageSrc={retrieveArtworkById(treasureHuntDefinition.stages[activeStage].artworkId!)!.src}
+            onRecordingReady={() => { }}
+            canClickNext={activeStage + 1 < treasureHuntDefinition.stages.length}
             onNextClicked={() => setDisplayedState('select-artwork')}
             onBackClicked={() => setDisplayedState('write-hints')}
           />
         </Fader>
       }
-
     </Root>
   );
 }
