@@ -1,5 +1,5 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
-import { ArtworkData, ArtworkFieldMapping, CompletedFindArtworkActivityDefinition, CompletedTreasureHuntDefinition, GetFindArtworkActivityDefinitionByIdResponse, GetTreasureHuntDefinitionByIdResponse, SubmitFindArtworkActivityDefinitionResponse, SubmitTreasureHuntDefinitionResponse } from './commonDefinitions';
+import { ArtworkData, ArtworkFieldMapping, CompletedFindArtworkActivityDefinition, CompletedTreasureHuntDefinition, FindArtworkActivityDefinition, GetFindArtworkActivityDefinitionByIdResponse, GetTreasureHuntDefinitionByIdResponse, SubmitFindArtworkActivityDefinitionResponse, SubmitTreasureHuntDefinitionResponse, TreasureHuntDefinition } from './commonDefinitions';
 import { GetArtworksOptions, retrieveAllArtworksQuery, retrieveArtworksWithAtLeastAnEmotionInCommon, retrieveDistinctAuthorValuesQuery, retrieveDistinctDateValuesQuery, retrieveDistinctInfoValuesQuery } from './queries';
 
 export type ApiResult<T> =
@@ -44,21 +44,6 @@ export class Api {
     private mappingMode: MappingMode,
   ) { }
 
-
-  /**
-   * Retrieve an artwork by its id
-   */
-  public async getArtworkById(artworkId: string): Promise<ApiResult<any>> {
-    const url = `${this.apiUrl}/browse/${this.datasetUuid}`;
-
-    return getApiResult<any>(url, {
-      auth: {
-        username: this.apiKey,
-        password: this.apiKey
-      }
-    });
-  }
-
   /**
    * Retrieve an activity by its id
    */
@@ -77,6 +62,36 @@ export class Api {
       }
     };
     return getApiResult<GetFindArtworkActivityDefinitionByIdResponse>(url, opts);
+  }
+
+  /**
+ * Retrieve all activities
+ */
+  public async getFindArtworkActivityDefinitions(): Promise<ApiResult<FindArtworkActivityDefinition[]>> {
+    const url = `${this.apiUrl}/object/${this.activityDefinitionsDatasetUuid}`;
+
+    const opts: AxiosRequestConfig = {
+      auth: {
+        username: this.apiKey,
+        password: this.apiKey
+      },
+    };
+    return getApiResult<FindArtworkActivityDefinition[]>(url, opts);
+  }
+
+  /**
+* Retrieve all treasure hunts
+*/
+  public async getTreasureHuntDefinitions(): Promise<ApiResult<GetTreasureHuntDefinitionByIdResponse>> {
+    const url = `${this.apiUrl}/object/${this.huntDefinitionsDatasetUuid}`;
+
+    const opts: AxiosRequestConfig = {
+      auth: {
+        username: this.apiKey,
+        password: this.apiKey
+      },
+    };
+    return getApiResult<GetTreasureHuntDefinitionByIdResponse>(url, opts);
   }
 
   /**

@@ -24,6 +24,7 @@ const AppName = styled.p`
   font-family: 'Anonymous Pro';
 `;
 
+/*
 const LanguageSwitch = styled.div`
   margin-left: auto;
   font-size: 1.1em;
@@ -31,14 +32,16 @@ const LanguageSwitch = styled.div`
   font-family: 'Anonymous Pro';
   cursor: pointer;
 `;
+*/
 
 const Header: React.FC = () => {
 
-  const { t, i18n } = useTranslation('app');
+  const { t } = useTranslation('app');
 
   return (
     <Root>
       <AppName>{t('museumHeader')}</AppName>
+      {/*
       <LanguageSwitch>
         <AppName
           onClick={() => i18n.changeLanguage(i18n.language === 'en' ? 'es' : 'en')}
@@ -46,6 +49,7 @@ const Header: React.FC = () => {
           {i18n.language === 'en' ? 'ES' : 'EN'}
         </AppName>
       </LanguageSwitch>
+      */}
     </Root>
   );
 }

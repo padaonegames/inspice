@@ -65,6 +65,12 @@ const CreateFindArtworkActivityScreen: React.FC = () => {
   };
   const [submitDefinitionStatus] = useAsyncRequest(submitDefinition, [submitGame]);
 
+  useEffect(() => {
+    if (submitDefinitionStatus.kind === 'success' && submitDefinitionStatus.result.kind === 'ok') {
+      window.alert('Your activity was successfully uploaded to the linked data hub.');
+    }
+  }, [submitDefinitionStatus]);
+
   const activeStageToIndex = (): number => {
     switch (activeActivityDefinitionStatus) {
       case 'set-title-author-dates':

@@ -16,7 +16,7 @@ i18n
   // init i18next
   // for all options read: https://www.i18next.com/overview/configuration-options
   .init({
-    lng: 'en',
+    lng: process.env.REACT_APP_LANGUAGE || 'en',
     fallbackLng: 'en',
     debug: true,
 

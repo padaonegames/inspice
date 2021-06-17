@@ -3,33 +3,19 @@ import styled from 'styled-components';
 import SelectDatePanel from '../CreateFindArtworkActivity/SelectDatePanel';
 import TextInputFieldWithTag from '../components/TextInputFieldWithTag';
 
-const HorizontalSeparator = styled.div<{ size: number }>`
-  width: 1px;
-  height: 52.5vh;
-  margin-left: ${props => props.size}vw;
-  margin-right: ${props => props.size}vw;
-  border: solid 1px;
-  border-color: DimGrey;
-`;
-
-const VerticalSpace = styled.div<{ size: number }>`
-  width: 1px;
-  height: ${props => props.size}vh;
-`;
-
 const Root = styled.div`
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   margin-top: 4.5vh;
   justify-content: center;
+  align-items: center;
 `;
 
-const FieldsContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 40vw;
-  align-items: center;
-  justify-content: center;
+const TitleText = styled.h2`
+  align-self: center;
+  color: #3f3c2d;
+  letter-spacing: +0.5px;
+  font-family: Raleway;
 `;
 
 interface SetTitleAuthorDatesStageProps {
@@ -53,22 +39,19 @@ const SetTitleAuthorDatesStage: React.FC<SetTitleAuthorDatesStageProps> = ({
 }) => {
   return (
     <Root>
-      <FieldsContainer>
+      <TitleText>Basic Information</TitleText>
         <TextInputFieldWithTag
           initialValue={initialTitle}
           placeholder='Activity name...'
-          fieldName='Specify a name for your activity:'
+          fieldName={`Choose a name for your activity`.toUpperCase()}
           onChange={(val) => onTitleChange(val)}
         />
-        <VerticalSpace size={5} />
         <TextInputFieldWithTag
           initialValue={initialAuthor}
           placeholder='Activity author...'
-          fieldName={`Specify the activity's author:`}
+          fieldName={`Specify the activity's author`.toUpperCase()}
           onChange={(val) => onAuthorChange(val)}
         />
-      </FieldsContainer>
-      <HorizontalSeparator size={2} />
       <SelectDatePanel
         onRangeSelected={(from, to) => handleDateRangeSelected(from, to)}
         initialFrom={initialFrom}
