@@ -3,12 +3,14 @@ import ReactDOM from 'react-dom';
 import reportWebVitals from './reportWebVitals';
 import App from './App';
 import './i18n';
-import { initMockAdapter } from './services/mockAdapter';
 import { initializeServices } from './services';
+// import { initMockAdapter } from './services/mockAdapter';
 
+/*
 if (process.env.NODE_ENV === 'development') {
-  // initMockAdapter();
+  initMockAdapter();
 }
+*/
 
 initializeServices();
 

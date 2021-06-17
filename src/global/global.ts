@@ -7,10 +7,10 @@ const global = {
 
   fonts: {
     body: {
-      family: "Hoefler Text, Baskerville Old Face, Garamond, Times New Roman, serif;",
+      family: "Raleway;",
     },
     title: {
-      family: "Hoefler Text, Baskerville Old Face, Garamond, Times New Roman, serif;",
+      family: "Raleway;",
       normal: 400,
       bold: 700,
       black: 900,
@@ -54,15 +54,15 @@ const GlobalStyles = createGlobalStyle`
 
   /* Global styles */
   html {
-    background-color: white;
+    background-color: #f9f9f9;
     margin: 0 auto;
     /* Limit the maximum width of all screens */
     /* Desktop */
   }
 
   body {
-    font-family: Hoefler Text, Baskerville Old Face, Garamond, Times New Roman, serif;;
-    background-color: white;
+    font-family: Raleway;
+    background-color: #f9f9f9;
     color: black;
     -webkit-font-smoothing: antialiased;
     margin: 0 auto;
