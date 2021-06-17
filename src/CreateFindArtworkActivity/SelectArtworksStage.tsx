@@ -11,7 +11,8 @@ import ShowFilters from './ShowFilters'
 import SelectedActivitiesPopup from './SelectedActivitiesPopup';
 import LoadingOverlay from '../components/LoadingOverlay';
 import ArtworkSearchResults from './ArtworkSearchResults';
-import { ShoppingCart } from '@styled-icons/fa-solid/ShoppingCart';
+import { AddShoppingCart } from '@styled-icons/material/AddShoppingCart';
+import { Search } from '@styled-icons/boxicons-regular/Search';
 
 const Root = styled.div`
   padding-top: 2.5vh;
@@ -133,7 +134,7 @@ const DisplayPanel = styled.div`
 interface ShoppingCartProps {
   active: boolean;
 };
-const ShoppingCartIcon = styled(ShoppingCart) <ShoppingCartProps>`
+const ShoppingCartIcon = styled(AddShoppingCart) <ShoppingCartProps>`
   color: ${props => props.active ? 'lightgray' : 'darkgray'};
   cursor: ${props => props.active ? 'pointer' : 'default'};
   height: 7.5vh;
@@ -149,6 +150,40 @@ const ShoppingCartIcon = styled(ShoppingCart) <ShoppingCartProps>`
     transform: ${props => props.active ? 'scale(1.1)' : 'scale(0.9)'};
     color: ${props => props.active ? 'darkgray' : 'darkgray'};
     transition: transform 0.5s ease;
+  }
+`;
+
+const SearchArea = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width:auto;
+  height:8vh;
+  margin-bottom: 20px;
+  `;
+const SearBar = styled.textarea`
+  font-size: 0.9em;
+  letter-spacing: +1px;
+  font-family: Raleway;
+  color: black;
+  resize:none;
+  text-align: center;
+  display: table-cell;
+  vertical-align: middle;
+  width: 80%;
+  height: 43px;
+  margin: 0;
+`;
+const SearchButton = styled(Search)`
+
+  width: auto;
+  height: 49px;
+  margin: 0;
+  color: white;
+  background-color: #ec6c6c;
+  &:hover{
+    cursor:pointer;
   }
 `;
 
@@ -193,6 +228,7 @@ const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSele
   const [selectedArtworksOpen, setSelectedArtworksOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
   const [displayRecom, setDisplayRecom] = useState<number>(0);
+  const [searchText, setSearchText] = useState<string>('');
 
   useEffect(() => {
     if (findArtworkStatus.kind === 'success' &&
@@ -217,6 +253,12 @@ const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSele
           SELECT ARTWORKS
         </PromptText>
       </PromptTitlePanel>
+      <SearchArea>
+        <SearBar placeholder="Search.."
+          onChange={(e) => setSearchText(e.target.value)}
+        />
+        <SearchButton onClick={() => console.log(searchText)} />
+      </SearchArea>
       {(findArtworkStatus.kind === 'success' && findArtworkStatus.result.kind === 'ok') && (
         <DisplayPanel>
           <ResultsUpperPanel>
@@ -227,6 +269,7 @@ const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSele
             </ResultsWrapper>
           </ResultsUpperPanel>
           <VerticalSeparator />
+
           <ShowFilters
             onFilterDelete={() => setAppliedFilter({})} //this should change with the delete function
             onClear={() => setAppliedFilter({})}
@@ -234,7 +277,8 @@ const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSele
           />
           <ShoppingCartIcon
             active={true}
-            onClick={() => setSelectedArtworksOpen(true)} />
+            onClick={() => setSelectedArtworksOpen(true)}>
+          </ShoppingCartIcon>
 
           <ResultsLowerPanel>
 
