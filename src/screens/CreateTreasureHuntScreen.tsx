@@ -174,6 +174,13 @@ const CreateTreasureHuntScreen: React.FC = () => {
     }
   }, [fetchActivityDefinitionStatus]);
 
+  
+  useEffect(() => {
+    if (submitGameStatus.kind === 'success' && submitGameStatus.result.kind === 'ok') {
+      window.alert('Your treasure hunt was successfully uploaded to the linked data hub.');
+    }
+  }, [submitGameStatus]);
+
   if (!(fetchActivityDefinitionStatus.kind === 'success' && fetchActivityDefinitionStatus.result.kind === 'ok')) {
     return <p>Fetching activity definition...</p>;
   }
@@ -201,6 +208,7 @@ const CreateTreasureHuntScreen: React.FC = () => {
         >
           <SelectArtwork
             key={activeStage || ''}
+            titleText={fetchActivityDefinitionStatus.result.data[0].activityTitle}
             imagesData={fetchActivityArtworksStatus.result.data}
             selectedArtwork={treasureHuntDefinition.stages[activeStage]?.artworkId}
             onArtworkSelected={handleSelectArtwork}

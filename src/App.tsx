@@ -1,4 +1,4 @@
-import React, { useState, Suspense } from 'react';
+import React, { Suspense } from 'react';
 import {
   BrowserRouter as Router,
   Switch,
@@ -10,6 +10,7 @@ import CreateTreasureHuntScreen from './screens/CreateTreasureHuntScreen';
 import Header from './components/Header';
 import { GlobalStyles } from './global/global';
 import CreateFindArtworkActivityScreen from './screens/CreateFindArtworkActivityScreen';
+import BrowseDefinitionsScreen from './screens/BrowseDefinitionsScreen';
 
 const App: React.FC = () => {
 
@@ -28,8 +29,11 @@ const App: React.FC = () => {
           <Route path='/curator/create'>
             <CreateFindArtworkActivityScreen />
           </Route>
+          <Route path='/browse'>
+            <BrowseDefinitionsScreen />            
+          </Route>
           <Route>
-            <Redirect to='/consumer/create/60c9c74db64f2b6cb70bb206' />
+            <Redirect to='/browse' />
           </Route>
         </Switch>
       </Router>

@@ -108,13 +108,15 @@ interface SelectArtworkProps {
   selectedArtwork: string | undefined;
   onArtworkSelected: (artworkId: string) => void;
   onNextClicked: () => void;
+  titleText: string;
 };
 
 const SelectArtwork: React.FC<SelectArtworkProps> = ({
   imagesData,
   selectedArtwork,
   onArtworkSelected,
-  onNextClicked
+  onNextClicked,
+  titleText,
 }) => {
 
   const { t } = useTranslation('app');
@@ -126,6 +128,9 @@ const SelectArtwork: React.FC<SelectArtworkProps> = ({
   return (
     <Root>
       <SelectionPanel>
+        <ArtworkListHeader>
+          {titleText}
+        </ArtworkListHeader>
         <ArtworkListHeader>
           {t('availableArtworks')}
         </ArtworkListHeader>

@@ -232,9 +232,9 @@ const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSele
             onClear={() => setAppliedFilter({})}
             filterName={Object.keys(appliedFilter).map(elem => appliedFilter[elem as keyof GetArtworksFilter] as string)}
           />
-          <ShoppingCartIcon
+          {/*<ShoppingCartIcon
             active={true}
-            onClick={() => setSelectedArtworksOpen(true)} />
+          onClick={() => setSelectedArtworksOpen(true)} />*/}
 
           <ResultsLowerPanel>
 
