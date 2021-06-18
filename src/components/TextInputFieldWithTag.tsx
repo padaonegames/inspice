@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 
 const FieldContainer = styled.div`
-  margin-top: 5vh;
+  margin-top: 30px;
   flex-direction: column;
   display: flex;
-  width: 40%;
+  width: 600px;
 `;
 
 const TextInputField = styled.input`
@@ -14,7 +14,7 @@ const TextInputField = styled.input`
   background-color: white;
   width: 90%;
   padding: 15px;
-  margin-top: 3vh;
+  margin-top: 30px;
   display: inline-block;
   font-size: 0.9em;
   letter-spacing: +1px;
@@ -65,7 +65,6 @@ const TextInputFieldWithTag: React.FC<TextInputFieldWithTagProps> = ({
 
       <TextInputField
         maxLength={maxLength}
-        width='45%'
         value={value}
         placeholder={placeholder}
         onChange={event => {

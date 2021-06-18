@@ -6,20 +6,21 @@ import './DateStyles.css';
 
 const Root = styled.div`
   position: relative;
-  margin-top: 5vh;
-  margin-bottom: 4vh;
+  margin-top: 30px;
+  margin-bottom: 30px;
   display: flex;
   flex-direction: column;
   align-items: center;
   align-self: center;
-  width: 40%;
+  width: 585px;
 `;
 
 const PanelContainer = styled.div`
   align-items: center;
   justify-content: center;
-  margin-top: 3vh;
-  margin-bottom: 2vh;
+  display: flex;
+  margin-top: 30px;
+  margin-bottom: 30px;
   background-color: white;
   box-shadow: 0 0 1px 3px #efefef;
   letter-spacing: +1px;

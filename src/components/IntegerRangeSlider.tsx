@@ -2,10 +2,9 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 
 const Root = styled.div`
-  margin: 0;
-  padding: 0;
-  min-height: 12.5vh;
-  width: 50%;
+  padding-bottom: 10px;
+  height: 85px;
+  width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -13,12 +12,10 @@ const Root = styled.div`
 
 const SliderContainer = styled.div`
   width: 80%;
-  height: 3vh;
+  height: 10px;
   position: relative;
 `;
 
-const MultiRangeSlider = styled.div`
-`;
 
 const Track = styled.div`
   position: absolute;
@@ -56,13 +53,13 @@ interface ThumbProps {
 const Thumb = styled.div<ThumbProps>`
   position: absolute;
   z-index: 3;
-  height: 5vh;
-  width: 5vh;
+  height: 25px;
+  width: 25px;
   background-color: #4a90e2;
   border-radius: 50%;
   opacity: 1;
   ${props => props.side === 'left' ? `left: ${props.percent}%` : `right: ${props.percent}%`};
-  transform: translate${props => props.side === 'left' ? '(-15px, -1vh)' : '(15px, -1vh)'};
+  transform: translate${props => props.side === 'left' ? '(-12px, -7px)' : '(12px, -7px)'};
 `;
 
 const Slider = styled.div`
@@ -184,33 +181,31 @@ const IntegerRangeSlider: React.FC<IntegerRangeSliderProps> = ({
   return (
     <Root>
       <SliderContainer>
-        <MultiRangeSlider>
-          <RangeInput
-            type='range'
-            min={min}
-            max={max}
-            step={step}
-            value={minValue}
-            onChange={handleMinValueChange}
-          />
-          <RangeInput
-            type='range'
-            min={min}
-            step={step}
-            max={max}
-            value={maxValue}
-            onChange={handleMaxValueChange}
-          />
+        <RangeInput
+          type='range'
+          min={min}
+          max={max}
+          step={step}
+          value={minValue}
+          onChange={handleMinValueChange}
+        />
+        <RangeInput
+          type='range'
+          min={min}
+          step={step}
+          max={max}
+          value={maxValue}
+          onChange={handleMaxValueChange}
+        />
 
-          <Slider>
-            <Track />
-            <Range left={leftPercent} right={rightPercent} />
-            <Thumb side='left' percent={leftPercent} />
-            <Thumb side='right' percent={rightPercent} />
-          </Slider>
+        <Slider>
+          <Track />
+          <Range left={leftPercent} right={rightPercent} />
+          <Thumb side='left' percent={leftPercent} />
+          <Thumb side='right' percent={rightPercent} />
+        </Slider>
 
-          {renderMarkers()}
-        </MultiRangeSlider>
+        {renderMarkers()}
       </SliderContainer>
     </Root>
   );

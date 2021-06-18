@@ -7,15 +7,15 @@ import IntegerRangeInputFieldWithTag from '../components/IntegerRangeInputFieldW
 const Root = styled.div`
   display: flex;
   flex-direction: column;
+  align-items: center;
   margin-top: 4.5vh;
 `;
 
-interface VerticalSeparatorProps {
-  size: number;
-};
-
-const VerticalSeparator = styled.div<VerticalSeparatorProps>`
-  height: ${props => props.size}vh;
+const TitleText = styled.h2`
+  align-self: center;
+  color: #3f3c2d;
+  letter-spacing: +0.5px;
+  font-family: Raleway;
 `;
 
 interface ConfigureStageParamsStageProps {
@@ -46,6 +46,9 @@ const ConfigureStageParamsStage: React.FC<ConfigureStageParamsStageProps> = ({
 
   return (
     <Root>
+      <TitleText>
+        Stage Settings
+      </TitleText>
       <IntegerRangeInputFieldWithTag
         min={1}
         max={10}
@@ -54,9 +57,8 @@ const ConfigureStageParamsStage: React.FC<ConfigureStageParamsStageProps> = ({
         initialMax={initialMaxStages}
         onMinValueChange={onMinStagesChange}
         onMaxValueChange={onMaxStagesChange}
-        fieldText='Select the number of stages (range) that visitors will be able to add to their treasure hunts:'
+        fieldText='SPECIFY THE REQUIRED NUMBER OF ARTWORKS TO PICK'
       />
-      <VerticalSeparator size={4} />
       <IntegerRangeInputFieldWithTag
         min={1}
         max={10}
@@ -65,11 +67,10 @@ const ConfigureStageParamsStage: React.FC<ConfigureStageParamsStageProps> = ({
         initialMax={initialMaxClues}
         onMinValueChange={onMinCluesChange}
         onMaxValueChange={onMaxCluesChange}
-        fieldText='Select the number of clues (range) that visitors will be able to add to their stages:'
+        fieldText='SPECIFY THE REQUIRED NUMBER OF HINTS PER ARTWORK'
       />
-      <VerticalSeparator size={6} />
       <CheckBoxGroupInput
-        fieldText='Select the types of inputs that the users will be able to choose from when adding multimedia content to their treasure hunts:'
+        fieldText='SPECIFY ALLOWED MEDIA INPUT TYPES'
         labelList={['Text', 'Audio', 'Image']}
         onCheckBoxToggled={onInputTypeToggle}
         initialAllowedInputTypes={initialAllowedInputTypes}

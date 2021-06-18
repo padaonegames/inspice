@@ -3,32 +3,41 @@ import styled from 'styled-components';
 import CheckBoxInput from './CheckBoxInput';
 
 const FieldContainer = styled.div`
-  flex-direction: row;
+  margin-top: 30px;
+  flex-direction: column;
   display: flex;
-  width: 90%;
-  align-self: center;
+  width: 600px;
 `;
 
-const TextContainer = styled.div`
-  width: 50%;
-  padding-left: 5%;
+const FieldNameLabel = styled.h3`
   align-self: center;
-`;
-
-const FieldNameLabel = styled.label`
-  font-size: 1em;
-  font-weight: 500;
+  color: #3f3c2d;
+  font-weight: 700;
   letter-spacing: +0.5px;
   font-family: Raleway;
-  color: black;
+`;
+
+const PanelContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  background-color: white;
+  box-shadow: 0 0 1px 3px #efefef;
+  letter-spacing: +1px;
+  font-family: Raleway;
+  width: 100%;
 `;
 
 const CheckBoxContainer = styled.div`
   flex-direction: row;
   display: flex;
-  width: 50%;
+  width: 100%;
+  height: 65px;
   align-self: center;
   justify-content: space-around;
+  align-items: center;
 `;
 
 interface CheckBoxGroupInputProps {
@@ -47,21 +56,21 @@ const CheckBoxGroupInput: React.FC<CheckBoxGroupInputProps> = ({
 
   return (
     <FieldContainer>
-      <TextContainer>
-        <FieldNameLabel>
-          {fieldText}
-        </FieldNameLabel>
-      </TextContainer>
-      <CheckBoxContainer>
-        {labelList.map((label, index) =>
-          <CheckBoxInput
-            initialChecked={initialAllowedInputTypes?.some(elem => elem === label)}
-            labelText={label}
-            onCheckedChange={() => onCheckBoxToggled(label)}
-            key={index}
-          />
-        )}
-      </CheckBoxContainer>
+      <FieldNameLabel>
+        {fieldText}
+      </FieldNameLabel>
+      <PanelContainer>
+        <CheckBoxContainer>
+          {labelList.map((label, index) =>
+            <CheckBoxInput
+              initialChecked={initialAllowedInputTypes?.some(elem => elem === label)}
+              labelText={label}
+              onCheckedChange={() => onCheckBoxToggled(label)}
+              key={index}
+            />
+          )}
+        </CheckBoxContainer>
+      </PanelContainer>
     </FieldContainer>
   );
 }
