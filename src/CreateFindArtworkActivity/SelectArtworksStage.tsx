@@ -36,12 +36,10 @@ const PromptTitlePanel = styled.div`
   justify-content: center;
 `;
 
-const PromptText = styled.h2`
+const TitleText = styled.h2`
   align-self: center;
-  color: #525252;
+  color: #3f3c2d;
   letter-spacing: +0.5px;
-  font-size: 1.25em;
-  font-weight: 1000;
   font-family: Raleway;
 `;
 
@@ -249,9 +247,9 @@ const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSele
   return (
     <Root>
       <PromptTitlePanel>
-        <PromptText>
-          SELECT ARTWORKS
-        </PromptText>
+        <TitleText>
+          Select Artworks
+        </TitleText>
       </PromptTitlePanel>
       <SearchArea>
         <SearBar placeholder="Search.."
