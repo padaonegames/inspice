@@ -4,7 +4,7 @@ export interface GetArtworksFilter {
   author?: string; // regex
   date?: string; // exact
   info?: string; // regex
-  title?: string; // regex
+  titleKeywords?: string; // regex
 };
 
 export interface GetArtworksOptions {
@@ -14,13 +14,15 @@ export interface GetArtworksOptions {
   filter?: GetArtworksFilter;
 };
 
-const filterRegexIds = (ids: string[]) => {
+const filterRegexField = (ids: string[], fieldName: string) => {
   if (ids.length === 0) return '';
-  let res = `FILTER ${ids.length > 1 ? '(' : ''}regex(str(?id), "${ids[0]}", "i")`;
+  let res = `FILTER ${ids.length > 1 ? '(' : ''}regex(str(?${fieldName}), "${ids[0]}", "i")`;
   for (let i = 1; i < ids.length; i++) {
-    res += ` || regex(str(?id), "${ids[i]}", "i")`
+    res += ` || regex(str(?${fieldName}), "${ids[i]}", "i")`
   }
-  res += ')';
+  if (ids.length > 1) {
+    res += ')';
+  }
   return res;
 };
 
@@ -29,7 +31,6 @@ const graphPatternRetrieveArtworks = (options: GetArtworksOptions) => `
   ?authorUri <http://www.w3.org/2000/01/rdf-schema#label> ?author .
   ${options.filter?.author ? `FILTER regex(str(?author), "${options.filter.author}", "i")` : ''}
   ?id <https://w3id.org/arco/ontology/context-description/hasTitle> ?title .
-  ${options.filter?.title ? `FILTER regex(str(?title), "${options.filter.title}", "i")` : ''}
   ?id <http://schema.org/dateCreated> ?date .
   ${options.filter?.date ? `FILTER regex(str(?date), "${options.filter.date}", "i")` : ''}
   ?id <http://schema.org/material> ?info .
@@ -38,7 +39,8 @@ const graphPatternRetrieveArtworks = (options: GetArtworksOptions) => `
   ?id <http://schema.org/image> ?imageUri .
   ?imageUri <http://schema.org/url> ?src .
   ${options.filter?.id ? `FILTER regex(str(?id), "${options.filter.id}", "i")` : ''}
-  ${options.filter?.ids ? filterRegexIds(options.filter?.ids) : ''}
+  ${options.filter?.ids ? filterRegexField(options.filter?.ids, 'id') : ''}
+  ${options.filter?.titleKeywords ? filterRegexField(options.filter?.titleKeywords.split(' '), 'title') : ''}
 `;
 
 export const retrieveAllArtworksQuery = (options: GetArtworksOptions) => `
@@ -74,7 +76,7 @@ export const retrieveDistinctAuthorValuesQuery = (artworksSubset?: string[]) => 
     ?id <https://w3id.org/arco/ontology/arco/hasRelatedAgency> ?location .
     ?id <http://schema.org/image> ?imageUri .
     ?imageUri <http://schema.org/url> ?src .
-    ${artworksSubset ? filterRegexIds(artworksSubset) : ''}
+    ${artworksSubset ? filterRegexField(artworksSubset, 'id') : ''}
   }
   GROUP BY ?author
   ORDER BY (LCASE(?author))
@@ -92,7 +94,7 @@ export const retrieveDistinctDateValuesQuery = (artworksSubset?: string[]) => `
     ?id <https://w3id.org/arco/ontology/arco/hasRelatedAgency> ?location .
     ?id <http://schema.org/image> ?imageUri .
     ?imageUri <http://schema.org/url> ?src .
-    ${artworksSubset ? filterRegexIds(artworksSubset) : ''}
+    ${artworksSubset ? filterRegexField(artworksSubset, 'id') : ''}
   }
   GROUP BY ?date
   ORDER BY (LCASE(?date))
@@ -110,7 +112,7 @@ export const retrieveDistinctInfoValuesQuery = (artworksSubset?: string[]) => `
     ?id <https://w3id.org/arco/ontology/arco/hasRelatedAgency> ?location .
     ?id <http://schema.org/image> ?imageUri .
     ?imageUri <http://schema.org/url> ?src .
-    ${artworksSubset ? filterRegexIds(artworksSubset) : ''}
+    ${artworksSubset ? filterRegexField(artworksSubset, 'id') : ''}
   }
   GROUP BY ?info
   ORDER BY (LCASE(?info))

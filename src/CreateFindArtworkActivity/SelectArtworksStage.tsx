@@ -278,6 +278,12 @@ const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSele
     }
   };
 
+  const handleApplyKeywordsFilter = (keywords: string) => {
+    let newFilter: GetArtworksFilter = JSON.parse(JSON.stringify(appliedFilter));
+    newFilter.titleKeywords = keywords;
+    setAppliedFilter(newFilter);
+  };
+
   const handleArtworkSelected = (artwork: ArtworkData) => {
     setLastArtwork(artwork.id);
     onArtworkSelected(artwork);
@@ -340,10 +346,15 @@ const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSele
       </PromptTitlePanel>
       <SearchArea>
         <SearchBar
-          placeholder="Search by artist, title..."
+          placeholder="Search by title..."
           onChange={(e) => setSearchText(e.target.value)}
+          onKeyPress={(event) => {
+            if(event.key === 'Enter') {
+              handleApplyKeywordsFilter(searchText);
+            }
+          }}
         />
-        <SearchButton onClick={() => console.log(searchText)}>
+        <SearchButton onClick={() => handleApplyKeywordsFilter(searchText)}>
           <SearchIcon />
         </SearchButton>
       </SearchArea>
