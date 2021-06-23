@@ -2,10 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 
 import ProgressLine from './ProgressLine';
-import SubmitActivityPanel from './SubmitActivityPanel';
 
 const Root = styled.div`
-  padding-top: 1vh;
+  padding-top: 10px;
   align-items: center;
   justify-content: center;
   display: flex;
@@ -48,10 +47,7 @@ const CreateFindArtworkOverviewPanel: React.FC<CreateFindArtworkOverviewPanelPro
           currentStage={activeStage}
           stages={stages}
           onStageSelected={onStageSelected}
-        />
-        <SubmitActivityPanel
-          enabled={stages.every(elem => elem.completed)}
-          onButtonClicked={onSubmitGame}
+          onSubmitGame={onSubmitGame}
         />
       </UpperRowContainer>
     </Root>

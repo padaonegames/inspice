@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { FlagOutline } from '@styled-icons/evaicons-outline/FlagOutline';
+import { CloudUpload } from '@styled-icons/boxicons-regular/CloudUpload';
 import { ClockOutline } from '@styled-icons/evaicons-outline/ClockOutline';
 import { DoneAllOutline } from '@styled-icons/evaicons-outline/DoneAllOutline';
 import { MapPin } from '@styled-icons/boxicons-regular/MapPin';
@@ -9,10 +9,13 @@ import { useTranslation } from 'react-i18next';
 
 const RoadLineWrapper = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
+  align-items: center;
   flex-direction: row;
-  width: 75%;
-  height: 10vh;
+  width: 95%;
+  max-width: 1200px;
+  min-width: 780px;
+  height: 65px;
   margin: auto;
 `;
 
@@ -22,31 +25,31 @@ interface StageWrapperProps {
 
 const StageWrapper = styled.div<StageWrapperProps>`
   width: ${props => props.width}%;
-  height: 50%;
+  height: 45px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   position: relative;
-  margin: auto;
+  align-self: center;
 `;
 
 const LocationIcon = styled(MapPin)`
   color: white;
-  height: 3.5vh;
-  width: 3.5vh;
+  height: 27px;
+  width: 27px;
 `;
 
 const PendingIcon = styled(ClockOutline)`
   color: white;
-  height: 3.5vh;
-  width: 3.5vh;
+  height: 27px;
+  width: 27px;
 `;
 
 const DoneIcon = styled(DoneAllOutline)`
   color: white;
-  height: 3.5vh;
-  width: 3.5vh;
+  height: 27px;
+  width: 27px;
 `;
 
 interface StageNumberProps {
@@ -56,12 +59,12 @@ interface StageNumberProps {
 
 const StageNumber = styled.div<StageNumberProps>`
   border-radius: 50%;
-  background-color: ${props => props.completed ? '#f49997' : 'darkgray'};
-  width: 5.5vh;
-  height: 5.5vh;
-  padding: 3px;
+  background-color: ${props => props.selected ? '#c44c49' : (props.completed ? '#f49997' : '#a9a9a9')};
+  width: 45px;
+  height: 45px;
+  padding: 2px;
   text-align: center;
-  margin-bottom: 2.5%;
+  margin-bottom: 7px;
   z-index: 2;
   transform: ${props => props.selected ? 'scale(1.1)' : 'scale(0.9)'};
   transition: transform 0.5s ease;
@@ -72,21 +75,32 @@ const StageNumber = styled.div<StageNumberProps>`
   }
 `;
 
-const FlagStage = styled.div`
+interface FlagStageProps {
+  active: boolean;
+};
+
+const FlagStage = styled.div<FlagStageProps>`
   border-radius: 50%;
-  background-color: #b7625e;
-  width: 6vh;
-  height: 6vh;
-  padding: 3px;
+  background-color: ${props => props.active ? '#b7625e' : 'lightgray'};
+  width: 45px;
+  height: 45px;
   text-align: center;
-  margin-bottom: 2.5%;
+  margin-bottom: 7px;
   z-index: 2;
+
+  transform: ${props => props.active ? 'scale(1)' : 'scale(0.9)'};
+  transition: transform 0.5s ease;
+  &:hover {
+    cursor: ${props => props.active ? 'pointer' : 'default'};
+    transform: ${props => props.active ? 'scale(1.1)' : 'scale(1)'};
+  }
 `;
 
-const FlagIcon = styled(FlagOutline)`
+const FlagIcon = styled(CloudUpload)`
   color: white;
-  height: 4vh;
-  width: 4vh;
+  height: 27px;
+  width: 27px;
+  margin: auto;
 `;
 
 interface StageDescriptionProps {
@@ -105,28 +119,30 @@ const StageDescription = styled.div<StageDescriptionProps>`
 interface DividerLineProps {
   width: number;
   active: boolean;
+  last: boolean;
 };
 
 const DividerLine = styled.div<DividerLineProps>`
-  height: ${props => props.active ? '1.5px' : '1px'};
+  height: 1px;
   z-index: 0;
   width: ${props => props.width}%;
-  background-color: ${props => props.active ? '#f49997' : 'darkgray'};
+  border-top: ${props => props.active ? `3px solid ${props.last ? '#b7625e' : '#f49997'}` : '2px dotted darkgray'};
   position: absolute;
-  top: 7.5%;
-  left: 50%
+  top: 13px;
+  left: 50%;
 `;
 
 interface RoadLineProps {
   currentStage: number;
   stages: { name: string, completed: boolean }[];
   onStageSelected: (index: number) => void;
+  onSubmitGame: () => void;
 };
 
-const ProgressLine: React.FC<RoadLineProps> = ({ currentStage, stages, onStageSelected }) => {
+const ProgressLine: React.FC<RoadLineProps> = ({ currentStage, stages, onStageSelected, onSubmitGame }) => {
 
-  const { t, i18n } = useTranslation('app');
-  
+  const { t } = useTranslation('app');
+
   return (
     <RoadLineWrapper>
       {stages.map((stage, index) => {
@@ -150,8 +166,9 @@ const ProgressLine: React.FC<RoadLineProps> = ({ currentStage, stages, onStageSe
               {stage.name}
             </StageDescription>
             <DividerLine
+              last={index === stages.length - 1}
               width={100}
-              active={stage.completed}
+              active={index === stages.length - 1 ? stages.every(elem => elem.completed) : stage.completed}
             />
           </StageWrapper>
         );
@@ -160,13 +177,20 @@ const ProgressLine: React.FC<RoadLineProps> = ({ currentStage, stages, onStageSe
         width={100 / (stages.length + 1)}
         key={stages.length}
       >
-        <FlagStage>
+        <FlagStage
+          active={stages.every(elem => elem.completed)}
+          onClick={() => {
+            if (stages.every(elem => elem.completed)) {
+              onSubmitGame();
+            }
+          }}
+        >
           <FlagIcon />
         </FlagStage>
         <StageDescription
           selected={false}
         >
-          {t('endPhase')}
+          {t('submitActivity')}
         </StageDescription>
       </StageWrapper>
     </RoadLineWrapper>
