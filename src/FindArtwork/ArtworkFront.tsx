@@ -142,6 +142,10 @@ const CardBackground = styled.div<CardBackgroundProps>`
   transition: transform ease 1s;
   transform: ${props => props.flipped ? 'rotateY(0deg)' : 'rotateY(180deg)'};
   position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
   display: block;
   z-index: 2;
 

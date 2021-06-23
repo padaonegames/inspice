@@ -98,6 +98,10 @@ const CardContent = styled.div<CardContentProps>`
   transition: transform ease 1s;
   transform: ${props => props.flipped ? 'rotateY(0deg)' : 'rotateY(-180deg)'};
   position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
   display: block;
 
   height: 100%;

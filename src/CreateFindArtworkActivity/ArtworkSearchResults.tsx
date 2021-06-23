@@ -7,9 +7,10 @@ import PageBar from './PageBar';
 const ArtworkGrid = styled.div`
   position: relative;
   height: fit-content;
-  width: 75%;
-  margin-left: 1%;
-  padding-left: 1.5%;
+  width: 100%;
+  max-width: 730px;
+  min-width: 580px;
+  padding-left: 15px;
   display: flex;
   flex-wrap: wrap;
   align-self: top;

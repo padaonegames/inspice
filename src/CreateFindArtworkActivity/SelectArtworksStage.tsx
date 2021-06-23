@@ -11,14 +11,14 @@ import ShowFilters from './ShowFilters'
 import SelectedActivitiesPopup from './SelectedActivitiesPopup';
 import LoadingOverlay from '../components/LoadingOverlay';
 import ArtworkSearchResults from './ArtworkSearchResults';
-import { AddShoppingCart } from '@styled-icons/material/AddShoppingCart';
+import { Library } from '@styled-icons/fluentui-system-filled/Library';
 import { Search } from '@styled-icons/boxicons-regular/Search';
 
 const Root = styled.div`
   padding-top: 2.5vh;
   display: flex;
   flex-direction: column;
-  width: 72.5%;
+  width: 100%;
   align-self: center;
 `;
 
@@ -45,33 +45,51 @@ const TitleText = styled.h2`
 
 const ResultsUpperPanel = styled.div`
   background-color: #F3F3F3;
-  width: 100%;
+  width: 95%;
+  max-width: 960px;
+  min-width: 770px;
   display: flex;
+  justify-content: space-between;
+  align-items: center;
   flex-direction: row;
   height: 10vh;
-  padding-left: 3.5%;
-  align-self: center;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 24px;
+  padding-right: 24px;
 `;
 
 const ResultsLowerPanel = styled.div`
-  width: 100%;
+  width: 95%;
+  max-width: 960px;
   display: flex;
   flex-direction: row;
   height: auto;
   align-self: center;
 `;
 
+const ResultsFiltersAndArtworks = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 75%;
+  max-width: 730px;
+`;
+
 const FilterPanel = styled.div`
   width: 25%;
+  max-width: 240px;
+  min-width: 195px;
 `;
 
 const RecomendationGrid = styled.div`
-  height: fit-content;
-  width: 100%;
+  height: 380px;
+  width: 95%;
+  max-width: 960px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   background-color: transparent;
+  align-self: center;
 `;
 
 const ResultsWrapper = styled.div`
@@ -90,15 +108,16 @@ const Results = styled.span`
   letter-spacing: +1px;
   font-family: 'EB Garamond';
 `;
+
 interface NavIconProps {
   active: boolean;
 };
 const NavigateNextIcon = styled(NavigateNext) <NavIconProps>`
   color: ${props => props.active ? 'darkgray' : 'lightgray'};
   cursor: ${props => props.active ? 'pointer' : 'default'};
-  height: 7.5vh;
+  height: 35px;
+  width: 35px;
   align-self: center;
-  margin-bottom: 1vh;
   transform: scale(0.9);
   transition: transform 0.5s ease;
 
@@ -111,9 +130,9 @@ const NavigateNextIcon = styled(NavigateNext) <NavIconProps>`
 const NavigateBeforeIcon = styled(NavigateBefore) <NavIconProps>`
   color: ${props => props.active ? 'darkgray' : 'lightgray'};
   cursor: ${props => props.active ? 'pointer' : 'default'};
-  height: 7.5vh;
+  height: 35px;
+  width: 35px;
   align-self: center;
-  margin-bottom: 1vh;
   transform: scale(0.9);
   transition: transform 0.5s ease;
 
@@ -127,62 +146,78 @@ const DisplayPanel = styled.div`
   position: relative;
   width: auto;
   height: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 `;
 
-interface ShoppingCartProps {
-  active: boolean;
-};
-const ShoppingCartIcon = styled(AddShoppingCart) <ShoppingCartProps>`
-  color: ${props => props.active ? 'lightgray' : 'darkgray'};
-  cursor: ${props => props.active ? 'pointer' : 'default'};
-  height: 7.5vh;
-  align-self: right;
-  margin-bottom: 1vh;
-  transform: scale(0.9);
-  transition: transform 0.5s ease;
-  position: absolute;
-  top:7px;
-  right:5px;
+const ShoppingCartContainer = styled.div`
+  height: 38px;
+  width: 38px;
+  background-color: white;
+  border-style: solid;
+  border-color: #cccccc;
+  border-width: 1px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const ShoppingCartIcon = styled(Library)`
+  color: #c2c3c7;
+  cursor: pointer;
+  height: 25px;
+  width: 25px;
 
   &:hover {
-    transform: ${props => props.active ? 'scale(1.1)' : 'scale(0.9)'};
-    color: ${props => props.active ? 'darkgray' : 'darkgray'};
-    transition: transform 0.5s ease;
+    color: #383d48;
   }
 `;
 
 const SearchArea = styled.div`
+  background-color: #f3f3f3;
+  border-style: solid;
+  border-color: #cccccc;
+  border-width: 1px 0px 1px 0px;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  width:auto;
-  height:8vh;
+  width: 100%;
+  height: 64px;
   margin-bottom: 20px;
-  `;
-const SearBar = styled.textarea`
+`;
+
+const SearchBar = styled.input`
   font-size: 0.9em;
   letter-spacing: +1px;
   font-family: Raleway;
   color: black;
-  resize:none;
-  text-align: center;
+  resize: none;
+  text-align: left;
+  padding-left: 10px;
   display: table-cell;
-  vertical-align: middle;
-  width: 80%;
-  height: 43px;
-  margin: 0;
+  width: 540px;
+  height: 34px;
 `;
-const SearchButton = styled(Search)`
 
-  width: auto;
-  height: 49px;
-  margin: 0;
-  color: white;
-  background-color: #ec6c6c;
+const SearchButton = styled.div`
+  margin-left: -1px;
+  width: 39px;
+  height: 39px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #c44c49;
   &:hover{
     cursor:pointer;
   }
+`;
+
+const SearchIcon = styled(Search)`
+  width: 25px;
+  height: 25px;
+  color: white;
 `;
 
 interface SelectArtworksStageProps {
@@ -252,10 +287,12 @@ const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSele
         </TitleText>
       </PromptTitlePanel>
       <SearchArea>
-        <SearBar placeholder="Search.."
+        <SearchBar placeholder="Search by artist, title..."
           onChange={(e) => setSearchText(e.target.value)}
         />
-        <SearchButton onClick={() => console.log(searchText)} />
+        <SearchButton onClick={() => console.log(searchText)}>
+          <SearchIcon />
+        </SearchButton>
       </SearchArea>
       {(findArtworkStatus.kind === 'success' && findArtworkStatus.result.kind === 'ok') && (
         <DisplayPanel>
@@ -265,17 +302,13 @@ const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSele
                 Showing results {(page - 1) * itemsPerPage + 1}-{(page - 1) * itemsPerPage + findArtworkStatus.result.data.length}
               </Results>
             </ResultsWrapper>
+            <ShoppingCartContainer>
+              <ShoppingCartIcon
+                onClick={() => setSelectedArtworksOpen(true)}
+              />
+            </ShoppingCartContainer>
           </ResultsUpperPanel>
           <VerticalSeparator />
-
-          <ShowFilters
-            onFilterDelete={() => setAppliedFilter({})} //this should change with the delete function
-            onClear={() => setAppliedFilter({})}
-            filterName={Object.keys(appliedFilter).map(elem => appliedFilter[elem as keyof GetArtworksFilter] as string)}
-          />
-          {<ShoppingCartIcon
-            active={true}
-            onClick={() => setSelectedArtworksOpen(true)} />}
 
           <ResultsLowerPanel>
 
@@ -311,15 +344,24 @@ const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSele
                 />
               )}
             </FilterPanel>
-            <ArtworkSearchResults
-              artworks={findArtworkStatus.result.data}
-              onArtworkDeselected={onArtworkDeselected}
-              onArtworkSelected={onArtworkSelected}
-              selectedArtworks={selectedArtworks}
-              page={page}
-              pageTotal={27}
-              onPageChange={setPage}
-            />
+
+            <ResultsFiltersAndArtworks>
+              <ShowFilters
+                onFilterDelete={() => setAppliedFilter({})} //this should change with the delete function
+                onClear={() => setAppliedFilter({})}
+                filterName={Object.keys(appliedFilter).map(elem => appliedFilter[elem as keyof GetArtworksFilter] as string)}
+              />
+              <ArtworkSearchResults
+                artworks={findArtworkStatus.result.data}
+                onArtworkDeselected={onArtworkDeselected}
+                onArtworkSelected={onArtworkSelected}
+                selectedArtworks={selectedArtworks}
+                page={page}
+                pageTotal={27}
+                onPageChange={setPage}
+              />
+            </ResultsFiltersAndArtworks>
+
           </ResultsLowerPanel>
           {loading && <LoadingOverlay />}
         </DisplayPanel>
@@ -357,6 +399,14 @@ const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSele
               />
             ))
             }
+            <NavigateNextIcon
+              active={displayRecom < 27}
+              onClick={() => {
+                if (displayRecom < 27) {
+                  setDisplayRecom(prev => prev + 1);
+                }
+              }}
+            />
           </RecomendationGrid>
           {selectedArtworksOpen &&
             <SelectedActivitiesPopup
