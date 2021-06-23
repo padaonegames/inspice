@@ -72,6 +72,7 @@ const PageBar: React.FC<PageBarProps> = ({ currentPage, numberOfPages, onPageSel
             &nbsp;&nbsp;&nbsp;&nbsp;
             {testArray.slice(currentPage - 1, currentPage + 3).map((im, i) => (
                 <NumberIcon
+                    key={i}
                     Selected={im === currentPage - 1}
                     onClick={() => onPageSelected(im + 1)}
                     UsingNumber={im + 1}

@@ -72,8 +72,8 @@ const CloseAll = styled.button`
 
 interface ShowFiltersProps {
   filterName: string[];
-  onFilterDelete: (filter: string) => void;
-  onClear?: () => void;
+  onFilterDelete: (filterName: string) => void;
+  onClear: () => void;
 };
 
 const ShowFilters: React.FC<ShowFiltersProps> = ({ filterName, onFilterDelete, onClear }) => {
@@ -81,7 +81,7 @@ const ShowFilters: React.FC<ShowFiltersProps> = ({ filterName, onFilterDelete, o
   return (
     <Root>
       {filterName.map((im, i) => (
-        <FilterGrid>
+        <FilterGrid key={i}>
           <FiltersName>
             {im}
           </FiltersName>
@@ -91,9 +91,11 @@ const ShowFilters: React.FC<ShowFiltersProps> = ({ filterName, onFilterDelete, o
           </FiltersClose>
         </FilterGrid>
       ))}
-      <CloseAll onClick={onClear}>{filterName.length > 0 ? 'Clear all' : ''}
-      </CloseAll>
-
+      {filterName.length > 0 &&
+        <CloseAll onClick={onClear}>
+          Clear all
+        </CloseAll>
+      }
     </Root>
   )
 }

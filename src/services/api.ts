@@ -1,6 +1,6 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { ArtworkData, ArtworkFieldMapping, CompletedFindArtworkActivityDefinition, CompletedTreasureHuntDefinition, FindArtworkActivityDefinition, GetFindArtworkActivityDefinitionByIdResponse, GetTreasureHuntDefinitionByIdResponse, SubmitFindArtworkActivityDefinitionResponse, SubmitTreasureHuntDefinitionResponse, TreasureHuntDefinition } from './commonDefinitions';
-import { GetArtworksOptions, retrieveAllArtworksQuery, retrieveArtworksWithAtLeastAnEmotionInCommon, retrieveDistinctAuthorValuesQuery, retrieveDistinctDateValuesQuery, retrieveDistinctInfoValuesQuery } from './queries';
+import { GetArtworksOptions, retrieveAllArtworksQuery, retrieveArtworksWithAtLeastAnEmotionInCommon, retrieveAvailableArtworksWithEmotions, retrieveDistinctAuthorValuesQuery, retrieveDistinctDateValuesQuery, retrieveDistinctInfoValuesQuery } from './queries';
 
 export type ApiResult<T> =
   | { kind: 'ok', data: T }
@@ -158,7 +158,7 @@ export class Api {
       (url, apiDefinition, opts);
   }
 
-  public async fetchUniqueFieldValues(field: 'date' | 'author' | 'info'): Promise<ApiResult<{ value: string, count: number }[]>> {
+  public async fetchUniqueFieldValues(field: 'date' | 'author' | 'info', artworksSubset?: string[]): Promise<ApiResult<{ value: string, count: number }[]>> {
     if (this.mappingMode.mode === 'JSON') {
       // testing for now
       let demoPromise = new Promise<ApiResult<{ value: string, count: number }[]>>((resolve, _) => {
@@ -180,10 +180,10 @@ export class Api {
 
       const query =
         field === 'author' ?
-          retrieveDistinctAuthorValuesQuery()
+          retrieveDistinctAuthorValuesQuery(artworksSubset)
           : field === 'date' ?
-            retrieveDistinctDateValuesQuery()
-            : retrieveDistinctInfoValuesQuery();
+            retrieveDistinctDateValuesQuery(artworksSubset)
+            : retrieveDistinctInfoValuesQuery(artworksSubset);
 
       const opts: AxiosRequestConfig = {
         auth: {
@@ -220,6 +220,19 @@ export class Api {
     else {
       return { kind: 'unhandled-error', error: new Error('test') };
     }
+  };
+
+  public async fetchAvailableArtworksWithEmotions(): Promise<ApiResult<string[]>> {
+    const url = 'http://130.192.212.225/fuseki/Test_SPICE_DEGARI_Reasoner/query';
+    const opts: AxiosRequestConfig = {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    };
+    let params = new URLSearchParams();
+    params.append('query', retrieveAvailableArtworksWithEmotions());
+
+    return await getRecommendationsResultRDF(url, opts, params);
   };
 
   public async fetchArtworks(queryOpts: GetArtworksOptions = {}): Promise<ApiResult<ArtworkData[]>> {
@@ -336,7 +349,6 @@ async function getRecommendationsResultRDF(url: string, config: AxiosRequestConf
 
   // Validation
   const data = response.data;
-  console.log(data);
 
   if (!(data as Object).hasOwnProperty('results') ||
     !(data.results as Object).hasOwnProperty('bindings') ||

@@ -229,33 +229,63 @@ interface SelectArtworksStageProps {
 const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSelected, onArtworkDeselected, selectedArtworks }) => {
 
   const [page, setPage] = useState<number>(1);
-  const [itemsPerPage, setItemsPerPage] = useState<number>(30);
+  const [itemsPerPage, setItemsPerPage] = useState<number>(6);
   const [appliedFilter, setAppliedFilter] = useState<GetArtworksFilter>({});
   const [lastArtwork, setLastArtwork] = useState<string>('');
 
   const fetchArtworksFromDataset = async () => {
-    setPage(1);
-    return api.fetchArtworks({ sortingField: 'title', pageNumber: page, pageSize: itemsPerPage, filter: appliedFilter });
+    if (fetchAvailableArtworksStatus.kind === 'success' && fetchAvailableArtworksStatus.result.kind === 'ok') {
+      return api.fetchArtworks({ sortingField: 'title', pageNumber: page, pageSize: itemsPerPage, filter: appliedFilter });
+    }
+    else return Promise.reject();
+  };
+
+  const fetchArtworksWithEmotionsIds = async () => {
+    return api.fetchAvailableArtworksWithEmotions();
   };
 
   const fetchUniqueFieldValuesFromDataset = async (field: 'date' | 'author' | 'info') => {
-    return api.fetchUniqueFieldValues(field);
+    if (fetchAvailableArtworksStatus.kind === 'success' && fetchAvailableArtworksStatus.result.kind === 'ok') {
+      return api.fetchUniqueFieldValues(field, fetchAvailableArtworksStatus.result.data);
+    }
+    else return Promise.reject();
   };
 
   const handleApplyFilter = (field: 'date' | 'author' | 'info', filter: string) => {
-    let newFilter: any = {};
+    let newFilter: GetArtworksFilter = JSON.parse(JSON.stringify(appliedFilter));
     newFilter[field] = filter;
     setAppliedFilter(newFilter);
+  };
+
+  const handleRemoveFilter = (filterName: string) => {
+    const entries = Object.entries(appliedFilter);
+    const entryToRemove = entries.find((elem) => elem[1] === filterName);
+
+    if (entryToRemove) {
+      let newFilter: GetArtworksFilter = appliedFilter;
+      delete newFilter[entryToRemove[0] as keyof GetArtworksFilter];
+      setAppliedFilter(JSON.parse(JSON.stringify(newFilter)));
+    }
+  };
+
+  const handleClearFilters = () => {
+    if (fetchAvailableArtworksStatus.kind === 'success' && fetchAvailableArtworksStatus.result.kind === 'ok') {
+      setAppliedFilter({ ids: fetchAvailableArtworksStatus.result.data });
+    }
+    else {
+      setAppliedFilter({});
+    }
   };
 
   const getRecommendations = () => {
     return api.fetchRecommendationsByEmotion(lastArtwork);
   }
 
-  const [findArtworkStatus] = useAsyncRequest(fetchArtworksFromDataset, [appliedFilter, page, itemsPerPage]);
-  const [findUniqueAuthorsStatus] = useAsyncRequest(() => fetchUniqueFieldValuesFromDataset('author'), []);
-  const [findUniqueDatesStatus] = useAsyncRequest(() => fetchUniqueFieldValuesFromDataset('date'), []);
-  const [findUniqueInfoStatus] = useAsyncRequest(() => fetchUniqueFieldValuesFromDataset('info'), []);
+  const [fetchAvailableArtworksStatus] = useAsyncRequest(fetchArtworksWithEmotionsIds, []);
+  const [findArtworkStatus] = useAsyncRequest(fetchArtworksFromDataset, [fetchAvailableArtworksStatus, appliedFilter, page, itemsPerPage]);
+  const [findUniqueAuthorsStatus] = useAsyncRequest(() => fetchUniqueFieldValuesFromDataset('author'), [fetchAvailableArtworksStatus]);
+  const [findUniqueDatesStatus] = useAsyncRequest(() => fetchUniqueFieldValuesFromDataset('date'), [fetchAvailableArtworksStatus]);
+  const [findUniqueInfoStatus] = useAsyncRequest(() => fetchUniqueFieldValuesFromDataset('info'), [fetchAvailableArtworksStatus]);
   const [fetchByEmotionStatus] = useAsyncRequest(getRecommendations, [lastArtwork]);
 
   const [selectedArtworksOpen, setSelectedArtworksOpen] = useState<boolean>(false);
@@ -264,7 +294,10 @@ const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSele
   const [searchText, setSearchText] = useState<string>('');
 
   useEffect(() => {
-    if (findArtworkStatus.kind === 'success' &&
+    if (
+      fetchAvailableArtworksStatus.kind === 'success' &&
+      fetchAvailableArtworksStatus.result.kind === 'ok' &&
+      findArtworkStatus.kind === 'success' &&
       findArtworkStatus.result.kind === 'ok' &&
       findUniqueAuthorsStatus.kind === 'success' &&
       findUniqueAuthorsStatus.result.kind === 'ok' &&
@@ -277,7 +310,14 @@ const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSele
     else {
       setLoading(true);
     }
-  }, [findArtworkStatus, findUniqueAuthorsStatus, findUniqueDatesStatus, findUniqueInfoStatus]);
+  }, [fetchAvailableArtworksStatus, findArtworkStatus, findUniqueAuthorsStatus, findUniqueDatesStatus, findUniqueInfoStatus]);
+
+  useEffect(() => {
+    if (fetchAvailableArtworksStatus.kind === 'success' && fetchAvailableArtworksStatus.result.kind === 'ok') {
+      const ids = fetchAvailableArtworksStatus.result.data;
+      setAppliedFilter(prev => ({ ...prev, ids }));
+    }
+  }, [fetchAvailableArtworksStatus]);
 
   return (
     <Root>
@@ -287,7 +327,8 @@ const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSele
         </TitleText>
       </PromptTitlePanel>
       <SearchArea>
-        <SearchBar placeholder="Search by artist, title..."
+        <SearchBar
+          placeholder="Search by artist, title..."
           onChange={(e) => setSearchText(e.target.value)}
         />
         <SearchButton onClick={() => console.log(searchText)}>
@@ -319,7 +360,7 @@ const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSele
                   filterOptions={findUniqueDatesStatus.result.data.map(elem => elem.value)}
                   filterCounts={findUniqueDatesStatus.result.data.map(elem => elem.count)}
                   bottomBorder={false}
-                  maxOptionsShown={8}
+                  maxOptionsShown={10}
                   onFilterSelected={(filter: string) => handleApplyFilter('date', filter)}
                 />
               )}
@@ -329,7 +370,7 @@ const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSele
                   filterOptions={findUniqueAuthorsStatus.result.data.map(elem => elem.value)}
                   filterCounts={findUniqueAuthorsStatus.result.data.map(elem => elem.count)}
                   bottomBorder={false}
-                  maxOptionsShown={8}
+                  maxOptionsShown={10}
                   onFilterSelected={(filter: string) => handleApplyFilter('author', filter)}
                 />
               )}
@@ -339,7 +380,7 @@ const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSele
                   filterOptions={findUniqueInfoStatus.result.data.map(elem => elem.value)}
                   filterCounts={findUniqueInfoStatus.result.data.map(elem => elem.count)}
                   bottomBorder={true}
-                  maxOptionsShown={8}
+                  maxOptionsShown={10}
                   onFilterSelected={(filter: string) => handleApplyFilter('info', filter)}
                 />
               )}
@@ -347,9 +388,9 @@ const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSele
 
             <ResultsFiltersAndArtworks>
               <ShowFilters
-                onFilterDelete={() => setAppliedFilter({})} //this should change with the delete function
-                onClear={() => setAppliedFilter({})}
-                filterName={Object.keys(appliedFilter).map(elem => appliedFilter[elem as keyof GetArtworksFilter] as string)}
+                onFilterDelete={handleRemoveFilter} //this should change with the delete function
+                onClear={handleClearFilters}
+                filterName={Object.keys(appliedFilter).filter(elem => elem !== 'ids').map(elem => appliedFilter[elem as keyof GetArtworksFilter] as string)}
               />
               <ArtworkSearchResults
                 artworks={findArtworkStatus.result.data}

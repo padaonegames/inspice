@@ -51,7 +51,7 @@ export const retrieveAllArtworksQuery = (options: GetArtworksOptions) => `
   ` : ''}
 `;
 
-export const retrieveDistinctAuthorValuesQuery = () => `
+export const retrieveDistinctAuthorValuesQuery = (artworksSubset?: string[]) => `
   PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
   PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
   SELECT ?author (COUNT(?author) as ?count) WHERE {
@@ -63,12 +63,13 @@ export const retrieveDistinctAuthorValuesQuery = () => `
     ?id <https://w3id.org/arco/ontology/arco/hasRelatedAgency> ?location .
     ?id <http://schema.org/image> ?imageUri .
     ?imageUri <http://schema.org/url> ?src .
+    ${artworksSubset ? filterRegexIds(artworksSubset) : ''}
   }
   GROUP BY ?author
   ORDER BY (LCASE(?author))
 `;
 
-export const retrieveDistinctDateValuesQuery = () => `
+export const retrieveDistinctDateValuesQuery = (artworksSubset?: string[]) => `
   PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
   PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
   SELECT ?date (COUNT(?date) as ?count) WHERE {
@@ -80,12 +81,13 @@ export const retrieveDistinctDateValuesQuery = () => `
     ?id <https://w3id.org/arco/ontology/arco/hasRelatedAgency> ?location .
     ?id <http://schema.org/image> ?imageUri .
     ?imageUri <http://schema.org/url> ?src .
+    ${artworksSubset ? filterRegexIds(artworksSubset) : ''}
   }
   GROUP BY ?date
   ORDER BY (LCASE(?date))
 `;
 
-export const retrieveDistinctInfoValuesQuery = () => `
+export const retrieveDistinctInfoValuesQuery = (artworksSubset?: string[]) => `
   PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
   PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
   SELECT ?info (COUNT(?info) as ?count) WHERE {
@@ -97,6 +99,7 @@ export const retrieveDistinctInfoValuesQuery = () => `
     ?id <https://w3id.org/arco/ontology/arco/hasRelatedAgency> ?location .
     ?id <http://schema.org/image> ?imageUri .
     ?imageUri <http://schema.org/url> ?src .
+    ${artworksSubset ? filterRegexIds(artworksSubset) : ''}
   }
   GROUP BY ?info
   ORDER BY (LCASE(?info))
@@ -120,5 +123,20 @@ export const retrieveArtworksWithAtLeastAnEmotionInCommon = (artworkId: string) 
     emo:${artworkId} emo:triggers ?emotion.
     ?id rdfs:label ?label;
           emo:triggers ?emotion.
+  }
+`;
+
+export const retrieveAvailableArtworksWithEmotions = () => `
+  PREFIX emo: <https://w3id.org/spice/SON/emotion/>
+  PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+  PREFIX owl: <http://www.w3.org/2002/07/owl#>
+  PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+  PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+  PREFIX cont: <https://w3id.org/spice/SON/emotionInCulturalContext/>
+
+  SELECT DISTINCT ?id
+  WHERE {
+    ?id emo:triggers ?emotion .
+    FILTER regex(str(?id), "spiceartefact", "i")
   }
 `;
