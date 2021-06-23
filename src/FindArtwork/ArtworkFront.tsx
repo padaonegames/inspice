@@ -1,6 +1,6 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
-import { Mouse } from '@styled-icons/material-outlined/Mouse';
+import { CheckboxBlankCircle } from '@styled-icons/remix-fill/CheckboxBlankCircle';
 import { ArtworkData } from '../services/commonDefinitions';
 
 const RevealText = styled.div`
@@ -76,30 +76,30 @@ const fadeOutText = keyframes`
 
 const expandCorner = keyframes`
   from {
-    width: 10%;
-    height: 10%;
+    width: 27px;
+    height: 27px;
   }
   to {
-    width: 20%;
-    height: 20%;
+    width: 32px;
+    height: 32px;
   }
 `;
 
 const shrinkCorner = keyframes`
   to {
-    width: 10%;
-    height: 10%;
+    width: 32px;
+    height: 32px;
   }
   from {
-    width: 20%;
-    height: 20%;
+    width: 27px;
+    height: 27px;
   }
 `;
 
-const GoCornerIcon = styled(Mouse)`
-  color: black;
-  height: 82.5%;
-  width: auto;
+const GoCornerIcon = styled(CheckboxBlankCircle)`
+  color: white;
+  height: 27px;
+  width: 27px;
 `;
 
 const GoCorner = styled.div`
@@ -114,7 +114,7 @@ const GoCorner = styled.div`
   border-style: solid;
   border-color: black;
   border-width: 1px 1px 1px 1px;
-  border-radius: 45%;
+  border-radius: 50%;
 
   &:hover {
     cursor: pointer;
@@ -159,8 +159,6 @@ const CardBackground = styled.div<CardBackgroundProps>`
   
   ${GoCorner} {
     animation: ${shrinkCorner} 0.5s linear;
-    width: 10%;
-    height: 10%;
     opacity: 0.7;
   }
 
@@ -179,8 +177,8 @@ const CardBackground = styled.div<CardBackgroundProps>`
       transition: opactiy 0.5s linear;
       opacity: 1;
       animation: ${expandCorner} 0.5s linear;
-      width: 20%;
-      height: 20%;
+      width: 32px;
+      height: 32px;
     }
 
     ${DarkLayer} {
