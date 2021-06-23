@@ -13,6 +13,7 @@ import LoadingOverlay from '../components/LoadingOverlay';
 import ArtworkSearchResults from './ArtworkSearchResults';
 import { Library } from '@styled-icons/fluentui-system-filled/Library';
 import { Search } from '@styled-icons/boxicons-regular/Search';
+import { ArtworkData } from '../services/commonDefinitions';
 
 const Root = styled.div`
   padding-top: 2.5vh;
@@ -221,8 +222,8 @@ const SearchIcon = styled(Search)`
 `;
 
 interface SelectArtworksStageProps {
-  selectedArtworks: string[];
-  onArtworkSelected: (artworkId: string) => void;
+  selectedArtworks: ArtworkData[];
+  onArtworkSelected: (artwork: ArtworkData) => void;
   onArtworkDeselected: (artworkId: string) => void;
 };
 
@@ -277,9 +278,9 @@ const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSele
     }
   };
 
-  const handleArtworkSelected = (artworkId: string) => {
-    setLastArtwork(artworkId);
-    onArtworkSelected(artworkId);
+  const handleArtworkSelected = (artwork: ArtworkData) => {
+    setLastArtwork(artwork.id);
+    onArtworkSelected(artwork);
   };
 
   const getRecommendations = () => {
@@ -407,7 +408,7 @@ const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSele
                 artworks={findArtworkStatus.result.data.artworks}
                 onArtworkDeselected={onArtworkDeselected}
                 onArtworkSelected={handleArtworkSelected}
-                selectedArtworks={selectedArtworks}
+                selectedArtworks={selectedArtworks.map(elem => elem.id)}
                 page={page}
                 pageTotal={~~(findArtworkStatus.result.data.count / itemsPerPage) + 1}
                 onPageChange={setPage}
@@ -442,8 +443,8 @@ const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSele
               <RecomendationCard
                 key={im.id}
                 artworkData={im}
-                selected={selectedArtworks.some(elem => elem === im.id)}
-                onCardSelected={() => handleArtworkSelected(im.id)}
+                selected={selectedArtworks.some(elem => elem.id === im.id)}
+                onCardSelected={() => handleArtworkSelected(im)}
                 onCardDeselected={() => onArtworkDeselected(im.id)}
               />
             ))
@@ -462,7 +463,7 @@ const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSele
       )}
       {selectedArtworksOpen && (findArtworkStatus.kind === 'success' && findArtworkStatus.result.kind === 'ok') &&
         <SelectedActivitiesPopup
-          artworks={findArtworkStatus.result.data.artworks}
+          artworks={selectedArtworks}
           onArtworkRemoved={(id) => onArtworkDeselected(id)}
           setPopupOpen={setSelectedArtworksOpen}
         />

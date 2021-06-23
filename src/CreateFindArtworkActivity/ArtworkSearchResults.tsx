@@ -22,7 +22,7 @@ interface ArtworkSearchResultsProps {
   selectedArtworks: string[];
   page: number;
   pageTotal: number;
-  onArtworkSelected: (artworkId: string) => void;
+  onArtworkSelected: (artwork: ArtworkData) => void;
   onArtworkDeselected: (artworkId: string) => void;
   onPageChange: (page: number) => void;
 };
@@ -44,7 +44,7 @@ const ArtworkSearchResults: React.FC<ArtworkSearchResultsProps> = ({
           key={im.id}
           artworkData={im}
           selected={selectedArtworks.some(elem => elem === im.id)}
-          onCardSelected={() => onArtworkSelected(im.id)}
+          onCardSelected={() => onArtworkSelected(im)}
           onCardDeselected={() => onArtworkDeselected(im.id)}
         />
       ))}

@@ -206,7 +206,7 @@ interface SelectedActivitiesPopupProps {
 
 const SelectedActivitiesPopup: React.FC<SelectedActivitiesPopupProps> = ({ artworks, onArtworkRemoved, setPopupOpen }) => {
 
-  const [page, setPage] = useState<number>(3);
+  const [page, setPage] = useState<number>(0);
 
   useEffect(() => {
     document.body.style.overflow = 'hidden';
@@ -240,7 +240,7 @@ const SelectedActivitiesPopup: React.FC<SelectedActivitiesPopupProps> = ({ artwo
             <ArtworksContainer>
               {artworks.slice((page + column) * 4, (page + 1 + column) * 4).map(elem => (
                 <ArtworkItemContainer key={elem.id}>
-                  <RemoveArtworkIcon />
+                  <RemoveArtworkIcon onClick={() => onArtworkRemoved(elem.id)}/>
                   <ArtworkMiniatureContainer>
                     <ArtworkMiniature src={elem.src} />
                   </ArtworkMiniatureContainer>

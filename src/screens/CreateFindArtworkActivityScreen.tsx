@@ -5,7 +5,7 @@ import CreateFindArtworkOverviewPanel from '../CreateFindArtworkActivity/CreateF
 import SelectArtworksStage from '../CreateFindArtworkActivity/SelectArtworksStage';
 import SetTitleAuthorDatesStage from '../CreateFindArtworkActivity/SetTitleAuthorDatesStage';
 import { api } from '../services';
-import { AllowedInputs, CompletedFindArtworkActivityDefinition, InProgressFindArtworkActivityDefinition } from '../services/commonDefinitions';
+import { AllowedInputs, ArtworkData, CompletedFindArtworkActivityDefinition, InProgressFindArtworkActivityDefinition } from '../services/commonDefinitions';
 import { useAsyncRequest } from '../services/useAsyncRequest';
 
 const Root = styled.div`
@@ -57,6 +57,7 @@ const CreateFindArtworkActivityScreen: React.FC = () => {
   const [activeActivityDefinitionStatus, setActiveActivityDefinitionStatus] =
     useState<ActivityDefinitionStatus>('set-title-author-dates');
   const [submitGame, setSubmitGame] = useState<boolean>(false);
+  const [selectedArtworks, setSelectedArtworks] = useState<ArtworkData[]>([]);
 
   const submitDefinition = () => {
     if (!submitGame) return Promise.reject();
@@ -123,15 +124,16 @@ const CreateFindArtworkActivityScreen: React.FC = () => {
     setActivityDefinition(prev => ({ ...prev, allowedInputs: newInputs }));
   };
 
-  const handleArtworkSelected = (artworkId: string) => {
+  const handleArtworkSelected = (artwork: ArtworkData) => {
     // add to list
-    setActivityDefinition(prev => ({ ...prev, artworks: [...prev.artworks, artworkId] }));
+    setActivityDefinition(prev => ({ ...prev, artworks: [...prev.artworks, artwork.id] }));
+    setSelectedArtworks(prev => ([...prev, artwork]));
   };
 
   const handleArtworkDeselected = (artworkId: string) => {
-    console.log("deselected");
     // remove from list
     setActivityDefinition(prev => ({ ...prev, artworks: prev.artworks.filter(elem => elem !== artworkId) }));
+    setSelectedArtworks(prev => prev.filter(elem => elem.id !== artworkId));
   };
 
   useEffect(() => {
@@ -152,7 +154,7 @@ const CreateFindArtworkActivityScreen: React.FC = () => {
         onSubmitGame={() => setSubmitGame(true)}
       />
 
-      { activeActivityDefinitionStatus === 'set-title-author-dates' &&
+      {activeActivityDefinitionStatus === 'set-title-author-dates' &&
         <SetTitleAuthorDatesStage
           handleDateRangeSelected={handleRangeSelected}
           onAuthorChange={onAuthorChange}
@@ -164,7 +166,7 @@ const CreateFindArtworkActivityScreen: React.FC = () => {
         />
       }
 
-      { activeActivityDefinitionStatus === 'configure-stage-params' &&
+      {activeActivityDefinitionStatus === 'configure-stage-params' &&
         <ConfigureStageParamsStage
           onMinStagesChange={(minStages) => setActivityDefinition(prev => ({ ...prev, minStages: minStages }))}
           onMaxStagesChange={(maxStages) => setActivityDefinition(prev => ({ ...prev, maxStages: maxStages }))}
@@ -179,15 +181,15 @@ const CreateFindArtworkActivityScreen: React.FC = () => {
         />
       }
 
-      { activeActivityDefinitionStatus === 'select-artworks' &&
+      {activeActivityDefinitionStatus === 'select-artworks' &&
         <SelectArtworksStage
           onArtworkSelected={handleArtworkSelected}
           onArtworkDeselected={handleArtworkDeselected}
-          selectedArtworks={activityDefinition.artworks}
+          selectedArtworks={selectedArtworks}
         />
       }
 
-      { activeActivityDefinitionStatus === 'none' &&
+      {activeActivityDefinitionStatus === 'none' &&
         <p>None</p>
       }
     </Root>
