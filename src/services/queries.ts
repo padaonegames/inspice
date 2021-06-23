@@ -24,31 +24,42 @@ const filterRegexIds = (ids: string[]) => {
   return res;
 };
 
+const graphPatternRetrieveArtworks = (options: GetArtworksOptions) => `
+  ?id <http://schema.org/author> ?authorUri .
+  ?authorUri <http://www.w3.org/2000/01/rdf-schema#label> ?author .
+  ${options.filter?.author ? `FILTER regex(str(?author), "${options.filter.author}", "i")` : ''}
+  ?id <https://w3id.org/arco/ontology/context-description/hasTitle> ?title .
+  ${options.filter?.title ? `FILTER regex(str(?title), "${options.filter.title}", "i")` : ''}
+  ?id <http://schema.org/dateCreated> ?date .
+  ${options.filter?.date ? `FILTER regex(str(?date), "${options.filter.date}", "i")` : ''}
+  ?id <http://schema.org/material> ?info .
+  ${options.filter?.info ? `FILTER regex(str(?info), "${options.filter.info}", "i")` : ''}
+  ?id <https://w3id.org/arco/ontology/arco/hasRelatedAgency> ?location .
+  ?id <http://schema.org/image> ?imageUri .
+  ?imageUri <http://schema.org/url> ?src .
+  ${options.filter?.id ? `FILTER regex(str(?id), "${options.filter.id}", "i")` : ''}
+  ${options.filter?.ids ? filterRegexIds(options.filter?.ids) : ''}
+`;
 
 export const retrieveAllArtworksQuery = (options: GetArtworksOptions) => `
   PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
   PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-  SELECT ?id ?title ?author ?date ?info ?location ?src WHERE {
-    ?id <http://schema.org/author> ?authorUri .
-    ?authorUri <http://www.w3.org/2000/01/rdf-schema#label> ?author .
-    ${options.filter?.author ? `FILTER regex(str(?author), "${options.filter.author}", "i")` : ''}
-    ?id <https://w3id.org/arco/ontology/context-description/hasTitle> ?title .
-    ${options.filter?.title ? `FILTER regex(str(?title), "${options.filter.title}", "i")` : ''}
-    ?id <http://schema.org/dateCreated> ?date .
-    ${options.filter?.date ? `FILTER regex(str(?date), "${options.filter.date}", "i")` : ''}
-    ?id <http://schema.org/material> ?info .
-    ${options.filter?.info ? `FILTER regex(str(?info), "${options.filter.info}", "i")` : ''}
-    ?id <https://w3id.org/arco/ontology/arco/hasRelatedAgency> ?location .
-    ?id <http://schema.org/image> ?imageUri .
-    ?imageUri <http://schema.org/url> ?src .
-    ${options.filter?.id ? `FILTER regex(str(?id), "${options.filter.id}", "i")` : ''}
-    ${options.filter?.ids ? filterRegexIds(options.filter?.ids) : ''}
+  SELECT * {
+    {
+      SELECT ?id ?title ?author ?date ?info ?location ?src WHERE {
+        ${graphPatternRetrieveArtworks(options)}
+      }
+      ${options.sortingField ? `ORDER BY (LCASE(?${options.sortingField}))` : ''}
+      ${(options.pageSize && options.pageNumber) ? `
+        LIMIT ${options.pageSize}
+        OFFSET ${options.pageSize * (options.pageNumber - 1)}
+      ` : ''}
+    }
+    UNION
+    {
+      SELECT (count(*) as ?count) { ${graphPatternRetrieveArtworks(options)} }
+    }
   }
-  ${options.sortingField ? `ORDER BY (LCASE(?${options.sortingField}))` : ''}
-  ${(options.pageSize && options.pageNumber) ? `
-    LIMIT ${options.pageSize}
-    OFFSET ${options.pageSize * (options.pageNumber - 1)}
-  ` : ''}
 `;
 
 export const retrieveDistinctAuthorValuesQuery = (artworksSubset?: string[]) => `
@@ -118,11 +129,10 @@ export const retrieveArtworksWithAtLeastAnEmotionInCommon = (artworkId: string) 
   PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
   PREFIX cont: <https://w3id.org/spice/SON/emotionInCulturalContext/>
 
-  SELECT ?id ?label ?emotion
+  SELECT DISTINCT ?id
   WHERE {
     emo:${artworkId} emo:triggers ?emotion.
-    ?id rdfs:label ?label;
-          emo:triggers ?emotion.
+    ?id emo:triggers ?emotion.
   }
 `;
 

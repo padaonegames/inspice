@@ -8,7 +8,7 @@ interface RootProps {
 };
 
 const Root = styled.div<RootProps>`
-  width: 175px;
+  width: 250px;
   height: 350px;
   align-self: center;
   flex-direction: column;

@@ -277,8 +277,19 @@ const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSele
     }
   };
 
+  const handleArtworkSelected = (artworkId: string) => {
+    setLastArtwork(artworkId);
+    onArtworkSelected(artworkId);
+  };
+
   const getRecommendations = () => {
-    return api.fetchRecommendationsByEmotion(lastArtwork);
+    console.log('last artwork: ' + lastArtwork);
+    if (lastArtwork) {
+      return api.fetchRecommendationsByEmotion(lastArtwork);
+    }
+    else {
+      return Promise.reject();
+    }
   }
 
   const [fetchAvailableArtworksStatus] = useAsyncRequest(fetchArtworksWithEmotionsIds, []);
@@ -340,7 +351,7 @@ const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSele
           <ResultsUpperPanel>
             <ResultsWrapper>
               <Results>
-                Showing results {(page - 1) * itemsPerPage + 1}-{(page - 1) * itemsPerPage + findArtworkStatus.result.data.length}
+                Showing results {(page - 1) * itemsPerPage + 1}-{(page - 1) * itemsPerPage + findArtworkStatus.result.data.artworks.length}
               </Results>
             </ResultsWrapper>
             <ShoppingCartContainer>
@@ -393,12 +404,12 @@ const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSele
                 filterName={Object.keys(appliedFilter).filter(elem => elem !== 'ids').map(elem => appliedFilter[elem as keyof GetArtworksFilter] as string)}
               />
               <ArtworkSearchResults
-                artworks={findArtworkStatus.result.data}
+                artworks={findArtworkStatus.result.data.artworks}
                 onArtworkDeselected={onArtworkDeselected}
-                onArtworkSelected={onArtworkSelected}
+                onArtworkSelected={handleArtworkSelected}
                 selectedArtworks={selectedArtworks}
                 page={page}
-                pageTotal={27}
+                pageTotal={~~(findArtworkStatus.result.data.count / itemsPerPage) + 1}
                 onPageChange={setPage}
               />
             </ResultsFiltersAndArtworks>
@@ -409,7 +420,7 @@ const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSele
       ) || 'Loading...'}
       <VerticalSeparator />
 
-      {(findArtworkStatus.kind === 'success' && findArtworkStatus.result.kind === 'ok') && (
+      {(fetchByEmotionStatus.kind === 'success' && fetchByEmotionStatus.result.kind === 'ok') && (
         <>
           <ResultsUpperPanel>
             <ResultsWrapper>
@@ -427,37 +438,35 @@ const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSele
                 }
               }}
             />
-            {findArtworkStatus.result.data.slice(displayRecom, displayRecom + 5).map((im, i) => (
+            {fetchByEmotionStatus.result.data.artworks.slice(displayRecom, displayRecom + 3).map((im, i) => (
               <RecomendationCard
                 key={im.id}
                 artworkData={im}
                 selected={selectedArtworks.some(elem => elem === im.id)}
-                onCardSelected={() => {
-                  onArtworkSelected(im.id);
-                  setLastArtwork(im.id); // just for testing
-                }}
+                onCardSelected={() => handleArtworkSelected(im.id)}
                 onCardDeselected={() => onArtworkDeselected(im.id)}
               />
             ))
             }
             <NavigateNextIcon
-              active={displayRecom < 27}
+              active={displayRecom + 3 < fetchByEmotionStatus.result.data.artworks.length}
               onClick={() => {
-                if (displayRecom < 27) {
+                if ((fetchByEmotionStatus.kind === 'success' && fetchByEmotionStatus.result.kind === 'ok') &&
+                  displayRecom + 3 < fetchByEmotionStatus.result.data.artworks.length) {
                   setDisplayRecom(prev => prev + 1);
                 }
               }}
             />
           </RecomendationGrid>
-          {selectedArtworksOpen &&
-            <SelectedActivitiesPopup
-              artworks={findArtworkStatus.result.data}
-              onArtworkRemoved={(id) => onArtworkDeselected(id)}
-              setPopupOpen={setSelectedArtworksOpen}
-            />
-          }
         </>
       )}
+      {selectedArtworksOpen && (findArtworkStatus.kind === 'success' && findArtworkStatus.result.kind === 'ok') &&
+        <SelectedActivitiesPopup
+          artworks={findArtworkStatus.result.data.artworks}
+          onArtworkRemoved={(id) => onArtworkDeselected(id)}
+          setPopupOpen={setSelectedArtworksOpen}
+        />
+      }
     </Root>
   );
 };

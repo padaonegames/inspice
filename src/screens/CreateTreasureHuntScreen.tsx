@@ -157,7 +157,7 @@ const CreateTreasureHuntScreen: React.FC = () => {
     if (!artworkId || !(fetchActivityArtworksStatus.kind === 'success' && fetchActivityArtworksStatus.result.kind === 'ok')) {
       return undefined;
     }
-    return fetchActivityArtworksStatus.result.data.find(artw => artw.id === artworkId);
+    return fetchActivityArtworksStatus.result.data.artworks.find(artw => artw.id === artworkId);
   };
 
   useEffect(() => {
@@ -209,7 +209,7 @@ const CreateTreasureHuntScreen: React.FC = () => {
           <SelectArtwork
             key={activeStage || ''}
             titleText={fetchActivityDefinitionStatus.result.data[0].activityTitle}
-            imagesData={fetchActivityArtworksStatus.result.data}
+            imagesData={fetchActivityArtworksStatus.result.data.artworks}
             selectedArtwork={treasureHuntDefinition.stages[activeStage]?.artworkId}
             onArtworkSelected={handleSelectArtwork}
             onNextClicked={() => setDisplayedState('write-hints')}

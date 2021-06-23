@@ -199,7 +199,7 @@ export class Api {
     }
   };
 
-  public async fetchRecommendationsByEmotion(artworkId: string): Promise<ApiResult<ArtworkData[]>> {
+  public async fetchRecommendationsByEmotion(artworkId: string): Promise<ApiResult<{ artworks: ArtworkData[], count: number }>> {
     const url = 'http://130.192.212.225/fuseki/Test_SPICE_DEGARI_Reasoner/query';
     const opts: AxiosRequestConfig = {
       headers: {
@@ -235,7 +235,7 @@ export class Api {
     return await getRecommendationsResultRDF(url, opts, params);
   };
 
-  public async fetchArtworks(queryOpts: GetArtworksOptions = {}): Promise<ApiResult<ArtworkData[]>> {
+  public async fetchArtworks(queryOpts: GetArtworksOptions = {}): Promise<ApiResult<{ artworks: ArtworkData[], count: number }>> {
     if (this.mappingMode.mode === 'JSON') {
       const url = `${this.apiUrl}/browse/${this.datasetUuid}`;
 
@@ -267,7 +267,7 @@ export class Api {
 }
 
 // IMMA format
-async function getArtworksResultRDF(url: string, config: AxiosRequestConfig = {}): Promise<ApiResult<ArtworkData[]>> {
+async function getArtworksResultRDF(url: string, config: AxiosRequestConfig = {}): Promise<ApiResult<{ artworks: ArtworkData[], count: number }>> {
   let response: AxiosResponse<any>;
   try {
     // we attempt to perform a GET request to the specified url and save the
@@ -296,13 +296,17 @@ async function getArtworksResultRDF(url: string, config: AxiosRequestConfig = {}
   // Validation
   const data = response.data;
 
+  console.log(data);
+
   if (!(data as Object).hasOwnProperty('results') ||
     !(data.results as Object).hasOwnProperty('bindings') ||
     !Array.isArray(data.results.bindings)) {
     return { kind: 'parse-error', errors: 'InvalidJson' };
   }
 
-  const parsedData = (data.results.bindings as any[]).map((elem: any) => {
+  const bindings = data.results.bindings as any[];
+  const count = bindings.find(elem => Object.keys(elem).includes('count'))['count'].value as number;
+  const parsedData = bindings.filter(elem => !Object.keys(elem).includes('count')).map((elem: any) => {
     let artworkInfo: Partial<ArtworkData> = {};
     for (let key of Object.keys(elem)) {
       artworkInfo[key as keyof ArtworkData] = elem[key].value;
@@ -313,7 +317,7 @@ async function getArtworksResultRDF(url: string, config: AxiosRequestConfig = {}
 
   if (parsedData) {
     console.log(parsedData);
-    return { kind: 'ok', data: parsedData };
+    return { kind: 'ok', data: { artworks: parsedData, count } };
   }
   else {
     return { kind: 'parse-error', errors: 'InvalidJson' };
@@ -356,8 +360,10 @@ async function getRecommendationsResultRDF(url: string, config: AxiosRequestConf
     return { kind: 'parse-error', errors: 'InvalidJson' };
   }
 
-  const parsedData = (data.results.bindings as any[]).map((elem: any) =>
+  let parsedDataAux = (data.results.bindings as any[]).map((elem: any) =>
     elem.id?.value?.slice(elem.id?.value?.lastIndexOf('/') + 'spiceartefact'.length + 1)) as string[];
+
+  const parsedData = parsedDataAux.filter(elem => elem.length);
 
   if (parsedData) {
     console.log(parsedData);
@@ -418,7 +424,7 @@ async function getUniqueFieldValuesRDF(url: string, field: 'date' | 'author' | '
 };
 
 // GAM format
-async function getArtworksResultJSON(url: string, mapping: ArtworkFieldMapping, config: AxiosRequestConfig = {}): Promise<ApiResult<ArtworkData[]>> {
+async function getArtworksResultJSON(url: string, mapping: ArtworkFieldMapping, config: AxiosRequestConfig = {}): Promise<ApiResult<{ artworks: ArtworkData[], count: number }>> {
   let response: AxiosResponse<any>;
   try {
     // we attempt to perform a GET request to the specified url and save the
@@ -477,7 +483,7 @@ async function getArtworksResultJSON(url: string, mapping: ArtworkFieldMapping, 
     }
   }
 
-  return { kind: 'ok', data: parsedResults };
+  return { kind: 'ok', data: { artworks: parsedResults, count: parsedResults.length } };
 };
 
 
