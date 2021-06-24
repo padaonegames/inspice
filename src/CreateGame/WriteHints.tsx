@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { Envelope } from '@styled-icons/boxicons-solid/Envelope';
 import { PlusCircle } from '@styled-icons/boxicons-regular/PlusCircle';
 import { Clock } from '@styled-icons/evaicons-solid/Clock';
+import { RemoveCircle } from '@styled-icons/material/RemoveCircle';
 import NextCornerButton from './NextCornerButton';
 import { useTranslation } from 'react-i18next';
 
@@ -126,10 +127,29 @@ const ExclamationIcon = styled(Clock)`
   color: #b7625e;
 `;
 
-const EnvelopeContainer = styled.div<IconProps>`
+const RemoveIcon = styled(RemoveCircle)`
+  height: 2.5vh;
+  width: auto;
+  position: absolute;
+  left: 60%;
+  top: 57%;
+  color: #b7625e;
+  transform: scale(0.9);
+  transition: transform 0.5s ease;
+
+  &:hover {
+    transform:  scale(1.1);
+    transition: transform 0.5s ease;
+  }
+`;
+const EnvelopeWrapper = styled.div`
   position: relative;
   margin-left: 0.2vw;
   margin-right: 0.2vw;
+`;
+
+const EnvelopeContainer = styled.div<IconProps>`
+  position: relative;
   cursor: ${props => props.selected ? 'default' : 'pointer'};
   color: ${props => props.selected ? 'white' : 'darkgray'};
 
@@ -150,7 +170,7 @@ const AddHintIcon = styled(PlusCircle) <AddHintIconProps>`
   width: auto;
 
   ${props => props.enabled &&
-  `
+    `
   &:hover {
     color: lightgray;
     cursor: pointer;
@@ -167,6 +187,8 @@ const HintsText = styled.p`
   margin-top: 1vh;
   color: white;
 `;
+
+
 
 interface WriteHintsProps {
   hints: string[];
@@ -191,6 +213,7 @@ const WriteHints: React.FC<WriteHintsProps> = ({
   onBackClicked,
   onNextClicked
 }) => {
+
 
   const { t } = useTranslation('app');
 
@@ -223,16 +246,25 @@ const WriteHints: React.FC<WriteHintsProps> = ({
         <CluePanelWrapper>
           <DotsWrapper>
             {hints.map((_, i) =>
-              <EnvelopeContainer
-                selected={i === selectedHint}
-                onClick={() => setSelectedHint(i)}
-                key={'env' + i}
-              >
-                <InfoIconClosed />
-                {hints[i].length == 0 &&
-                  <ExclamationIcon />
+              <EnvelopeWrapper>
+                <EnvelopeContainer
+                  selected={i === selectedHint}
+                  onClick={() => setSelectedHint(i)}
+                  key={'env' + i}
+                >
+                  <InfoIconClosed />
+
+                </EnvelopeContainer>
+                {i >= minHints &&
+                  <RemoveIcon
+                    onClick={() => {
+                      onRemoveHint(i);
+                      setSelectedHint(i - 1);
+
+                    }} />
+
                 }
-              </EnvelopeContainer>
+              </EnvelopeWrapper>
             )}
             <AddHintIcon
               enabled={hints.length < maxHints}

@@ -3,6 +3,7 @@ import styled from 'styled-components';
 
 import { Gift } from '@styled-icons/boxicons-solid/Gift';
 import { PlusCircle } from '@styled-icons/boxicons-regular/PlusCircle';
+import { RemoveCircle } from '@styled-icons/material/RemoveCircle';
 import { Clock } from '@styled-icons/evaicons-solid/Clock';
 import NextCornerButton from './NextCornerButton';
 import { useTranslation } from 'react-i18next';
@@ -126,10 +127,28 @@ const ExclamationIcon = styled(Clock)`
   color: #b7625e;
 `;
 
-const EnvelopeContainer = styled.div<IconProps>`
+const RemoveIcon = styled(RemoveCircle)`
+  height: 2.5vh;
+  width: auto;
+  position: absolute;
+  left: 55%;
+  top: 57%;
+  color: #b7625e;
+  transform: scale(0.9);
+  transition: transform 0.5s ease;
+
+  &:hover {
+    transform:  scale(1.1);
+    transition: transform 0.5s ease;
+  }
+`;
+const GiftWrapper = styled.div`
   position: relative;
   margin-left: 0.2vw;
   margin-right: 0.2vw;
+`;
+const GiftContainer = styled.div<IconProps>`
+  position: relative;
   cursor: ${props => props.selected ? 'default' : 'pointer'};
   color: ${props => props.selected ? 'white' : 'darkgray'};
 
@@ -215,20 +234,26 @@ const WriteGifts: React.FC<WriteGiftsProps> = ({
         <GiftPanelWrapper>
           <DotsWrapper>
             {gifts.map((_, i) =>
-              <EnvelopeContainer
-                selected={i === selectedGift}
-                onClick={() => setSelectedGift(i)}
-                key={'env' + i}
-              >
-                <InfoIconClosed />
-                {gifts[i].length == 0 &&
-                  <ExclamationIcon />
+              <GiftWrapper>
+                <GiftContainer
+                  selected={i === selectedGift}
+                  onClick={() => setSelectedGift(i)}
+                  key={'env' + i}
+                >
+                  <InfoIconClosed />
+                </GiftContainer>
+                {i >= 1 &&
+                  <RemoveIcon onClick={() => {
+                    onRemoveGift(i);
+                    setSelectedGift(i - 1)
+                  }} />
+
                 }
-              </EnvelopeContainer>
+              </GiftWrapper>
             )}
             <AddGiftIcon
               onClick={() => {
-                if (gifts.length < 10) {
+                if (gifts.length < 5) {
                   onAddNewGift();
                   setSelectedGift(gifts.length);
                 }
