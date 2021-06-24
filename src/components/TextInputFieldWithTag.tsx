@@ -2,40 +2,38 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 
 const FieldContainer = styled.div`
-  background-color: dark-gray;
+  margin-top: 30px;
   flex-direction: column;
   display: flex;
-  width: 100%;
+  width: 600px;
 `;
 
 const TextInputField = styled.input`
-  align-self: left;
+  box-shadow: 0 0 1px 3px #efefef;
+  align-self: center;
+  background-color: white;
   width: 90%;
-  padding: 2%;
-  margin-top: 2vh;
+  padding: 15px;
+  margin-top: 30px;
   display: inline-block;
   font-size: 0.9em;
   letter-spacing: +1px;
   font-family: Raleway;
   text-align: left;
   color: black;
-  border: solid 1px;
+  border: solid 1px white;
   ::placeholder {
     color: dark-gray;
     opacity: 0.75;
   }
 `;
 
-const TextContainer = styled.div`
-  align-self: left;
-`;
-
-const FieldNameLabel = styled.label`
-  font-size: 1em;
-  font-weight: 500;
+const FieldNameLabel = styled.h3`
+  align-self: center;
+  color: #3f3c2d;
+  font-weight: 700;
   letter-spacing: +0.5px;
   font-family: Raleway;
-  color: black;
 `;
 
 interface TextInputFieldWithTagProps {
@@ -61,15 +59,12 @@ const TextInputFieldWithTag: React.FC<TextInputFieldWithTagProps> = ({
 
   return (
     <FieldContainer>
-      <TextContainer>
-        <FieldNameLabel>
-          {fieldName}
-        </FieldNameLabel>
-      </TextContainer>
+      <FieldNameLabel>
+        {fieldName}
+      </FieldNameLabel>
 
       <TextInputField
         maxLength={maxLength}
-        width='45%'
         value={value}
         placeholder={placeholder}
         onChange={event => {

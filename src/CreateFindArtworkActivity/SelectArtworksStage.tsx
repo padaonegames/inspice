@@ -11,13 +11,15 @@ import ShowFilters from './ShowFilters'
 import SelectedActivitiesPopup from './SelectedActivitiesPopup';
 import LoadingOverlay from '../components/LoadingOverlay';
 import ArtworkSearchResults from './ArtworkSearchResults';
-import { ShoppingCart } from '@styled-icons/fa-solid/ShoppingCart';
+import { Library } from '@styled-icons/fluentui-system-filled/Library';
+import { Search } from '@styled-icons/boxicons-regular/Search';
+import { ArtworkData } from '../services/commonDefinitions';
 
 const Root = styled.div`
   padding-top: 2.5vh;
   display: flex;
   flex-direction: column;
-  width: 72.5%;
+  width: 100%;
   align-self: center;
 `;
 
@@ -35,44 +37,60 @@ const PromptTitlePanel = styled.div`
   justify-content: center;
 `;
 
-const PromptText = styled.h2`
+const TitleText = styled.h2`
   align-self: center;
-  color: #525252;
+  color: #3f3c2d;
   letter-spacing: +0.5px;
-  font-size: 1.25em;
-  font-weight: 1000;
   font-family: Raleway;
 `;
 
 const ResultsUpperPanel = styled.div`
   background-color: #F3F3F3;
-  width: 100%;
+  width: 95%;
+  max-width: 960px;
+  min-width: 770px;
   display: flex;
+  justify-content: space-between;
+  align-items: center;
   flex-direction: row;
   height: 10vh;
-  padding-left: 3.5%;
-  align-self: center;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 24px;
+  padding-right: 24px;
 `;
 
 const ResultsLowerPanel = styled.div`
-  width: 100%;
+  width: 95%;
+  max-width: 960px;
   display: flex;
   flex-direction: row;
   height: auto;
   align-self: center;
 `;
 
+const ResultsFiltersAndArtworks = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 75%;
+  max-width: 730px;
+`;
+
 const FilterPanel = styled.div`
   width: 25%;
+  max-width: 240px;
+  min-width: 195px;
 `;
 
 const RecomendationGrid = styled.div`
-  height: fit-content;
-  width: 100%;
+  height: 380px;
+  width: 95%;
+  max-width: 960px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   background-color: transparent;
+  align-self: center;
 `;
 
 const ResultsWrapper = styled.div`
@@ -91,15 +109,16 @@ const Results = styled.span`
   letter-spacing: +1px;
   font-family: 'EB Garamond';
 `;
+
 interface NavIconProps {
   active: boolean;
 };
 const NavigateNextIcon = styled(NavigateNext) <NavIconProps>`
   color: ${props => props.active ? 'darkgray' : 'lightgray'};
   cursor: ${props => props.active ? 'pointer' : 'default'};
-  height: 7.5vh;
+  height: 35px;
+  width: 35px;
   align-self: center;
-  margin-bottom: 1vh;
   transform: scale(0.9);
   transition: transform 0.5s ease;
 
@@ -112,9 +131,9 @@ const NavigateNextIcon = styled(NavigateNext) <NavIconProps>`
 const NavigateBeforeIcon = styled(NavigateBefore) <NavIconProps>`
   color: ${props => props.active ? 'darkgray' : 'lightgray'};
   cursor: ${props => props.active ? 'pointer' : 'default'};
-  height: 7.5vh;
+  height: 35px;
+  width: 35px;
   align-self: center;
-  margin-bottom: 1vh;
   transform: scale(0.9);
   transition: transform 0.5s ease;
 
@@ -128,74 +147,175 @@ const DisplayPanel = styled.div`
   position: relative;
   width: auto;
   height: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 `;
 
-interface ShoppingCartProps {
-  active: boolean;
-};
-const ShoppingCartIcon = styled(ShoppingCart) <ShoppingCartProps>`
-  color: ${props => props.active ? 'lightgray' : 'darkgray'};
-  cursor: ${props => props.active ? 'pointer' : 'default'};
-  height: 7.5vh;
-  align-self: right;
-  margin-bottom: 1vh;
-  transform: scale(0.9);
-  transition: transform 0.5s ease;
-  position: absolute;
-  top:7px;
-  right:5px;
+const ShoppingCartContainer = styled.div`
+  height: 38px;
+  width: 38px;
+  background-color: white;
+  border-style: solid;
+  border-color: #cccccc;
+  border-width: 1px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const ShoppingCartIcon = styled(Library)`
+  color: #c2c3c7;
+  cursor: pointer;
+  height: 25px;
+  width: 25px;
 
   &:hover {
-    transform: ${props => props.active ? 'scale(1.1)' : 'scale(0.9)'};
-    color: ${props => props.active ? 'darkgray' : 'darkgray'};
-    transition: transform 0.5s ease;
+    color: #383d48;
   }
 `;
 
+const SearchArea = styled.div`
+  background-color: #f3f3f3;
+  border-style: solid;
+  border-color: #cccccc;
+  border-width: 1px 0px 1px 0px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 64px;
+  margin-bottom: 20px;
+`;
+
+const SearchBar = styled.input`
+  font-size: 0.9em;
+  letter-spacing: +1px;
+  font-family: Raleway;
+  color: black;
+  resize: none;
+  text-align: left;
+  padding-left: 10px;
+  display: table-cell;
+  width: 540px;
+  height: 34px;
+`;
+
+const SearchButton = styled.div`
+  margin-left: -1px;
+  width: 39px;
+  height: 39px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #c44c49;
+  &:hover{
+    cursor:pointer;
+  }
+`;
+
+const SearchIcon = styled(Search)`
+  width: 25px;
+  height: 25px;
+  color: white;
+`;
+
 interface SelectArtworksStageProps {
-  selectedArtworks: string[];
-  onArtworkSelected: (artworkId: string) => void;
+  selectedArtworks: ArtworkData[];
+  onArtworkSelected: (artwork: ArtworkData) => void;
   onArtworkDeselected: (artworkId: string) => void;
 };
 
 const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSelected, onArtworkDeselected, selectedArtworks }) => {
 
   const [page, setPage] = useState<number>(1);
-  const [itemsPerPage, setItemsPerPage] = useState<number>(30);
+  const [itemsPerPage, setItemsPerPage] = useState<number>(6);
   const [appliedFilter, setAppliedFilter] = useState<GetArtworksFilter>({});
   const [lastArtwork, setLastArtwork] = useState<string>('');
 
   const fetchArtworksFromDataset = async () => {
-    setPage(1);
-    return api.fetchArtworks({ sortingField: 'title', pageNumber: page, pageSize: itemsPerPage, filter: appliedFilter });
+    if (fetchAvailableArtworksStatus.kind === 'success' && fetchAvailableArtworksStatus.result.kind === 'ok') {
+      return api.fetchArtworks({ sortingField: 'title', pageNumber: page, pageSize: itemsPerPage, filter: appliedFilter });
+    }
+    else return Promise.reject();
+  };
+
+  const fetchArtworksWithEmotionsIds = async () => {
+    return api.fetchAvailableArtworksWithEmotions();
   };
 
   const fetchUniqueFieldValuesFromDataset = async (field: 'date' | 'author' | 'info') => {
-    return api.fetchUniqueFieldValues(field);
+    if (fetchAvailableArtworksStatus.kind === 'success' && fetchAvailableArtworksStatus.result.kind === 'ok') {
+      return api.fetchUniqueFieldValues(field, fetchAvailableArtworksStatus.result.data);
+    }
+    else return Promise.reject();
   };
 
   const handleApplyFilter = (field: 'date' | 'author' | 'info', filter: string) => {
-    let newFilter: any = {};
+    let newFilter: GetArtworksFilter = JSON.parse(JSON.stringify(appliedFilter));
     newFilter[field] = filter;
     setAppliedFilter(newFilter);
   };
 
+  const handleRemoveFilter = (filterName: string) => {
+    const entries = Object.entries(appliedFilter);
+    const entryToRemove = entries.find((elem) => elem[1] === filterName);
+
+    if (entryToRemove) {
+      let newFilter: GetArtworksFilter = appliedFilter;
+      delete newFilter[entryToRemove[0] as keyof GetArtworksFilter];
+      setAppliedFilter(JSON.parse(JSON.stringify(newFilter)));
+    }
+  };
+
+  const handleClearFilters = () => {
+    if (fetchAvailableArtworksStatus.kind === 'success' && fetchAvailableArtworksStatus.result.kind === 'ok') {
+      setAppliedFilter({ ids: fetchAvailableArtworksStatus.result.data });
+    }
+    else {
+      setAppliedFilter({});
+    }
+  };
+
+  const handleApplyKeywordsFilter = (keywords: string) => {
+    let newFilter: GetArtworksFilter = JSON.parse(JSON.stringify(appliedFilter));
+    newFilter.titleKeywords = keywords;
+    setAppliedFilter(newFilter);
+  };
+
+  const handleArtworkSelected = (artwork: ArtworkData) => {
+    setLastArtwork(artwork.id);
+    onArtworkSelected(artwork);
+  };
+
   const getRecommendations = () => {
-    return api.fetchRecommendationsByEmotion(lastArtwork);
+    console.log('last artwork: ' + lastArtwork);
+    if (lastArtwork) {
+      return api.fetchRecommendationsByEmotion(lastArtwork);
+    }
+    else {
+      return Promise.reject();
+    }
   }
 
-  const [findArtworkStatus] = useAsyncRequest(fetchArtworksFromDataset, [appliedFilter, page, itemsPerPage]);
-  const [findUniqueAuthorsStatus] = useAsyncRequest(() => fetchUniqueFieldValuesFromDataset('author'), []);
-  const [findUniqueDatesStatus] = useAsyncRequest(() => fetchUniqueFieldValuesFromDataset('date'), []);
-  const [findUniqueInfoStatus] = useAsyncRequest(() => fetchUniqueFieldValuesFromDataset('info'), []);
+  const [fetchAvailableArtworksStatus] = useAsyncRequest(fetchArtworksWithEmotionsIds, []);
+  const [findArtworkStatus] = useAsyncRequest(fetchArtworksFromDataset, [fetchAvailableArtworksStatus, appliedFilter, page, itemsPerPage]);
+  const [findUniqueAuthorsStatus] = useAsyncRequest(() => fetchUniqueFieldValuesFromDataset('author'), [fetchAvailableArtworksStatus]);
+  const [findUniqueDatesStatus] = useAsyncRequest(() => fetchUniqueFieldValuesFromDataset('date'), [fetchAvailableArtworksStatus]);
+  const [findUniqueInfoStatus] = useAsyncRequest(() => fetchUniqueFieldValuesFromDataset('info'), [fetchAvailableArtworksStatus]);
   const [fetchByEmotionStatus] = useAsyncRequest(getRecommendations, [lastArtwork]);
 
   const [selectedArtworksOpen, setSelectedArtworksOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
   const [displayRecom, setDisplayRecom] = useState<number>(0);
+  const [searchText, setSearchText] = useState<string>('');
 
   useEffect(() => {
-    if (findArtworkStatus.kind === 'success' &&
+    if (
+      fetchAvailableArtworksStatus.kind === 'success' &&
+      fetchAvailableArtworksStatus.result.kind === 'ok' &&
+      findArtworkStatus.kind === 'success' &&
       findArtworkStatus.result.kind === 'ok' &&
       findUniqueAuthorsStatus.kind === 'success' &&
       findUniqueAuthorsStatus.result.kind === 'ok' &&
@@ -208,33 +328,51 @@ const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSele
     else {
       setLoading(true);
     }
-  }, [findArtworkStatus, findUniqueAuthorsStatus, findUniqueDatesStatus, findUniqueInfoStatus]);
+  }, [fetchAvailableArtworksStatus, findArtworkStatus, findUniqueAuthorsStatus, findUniqueDatesStatus, findUniqueInfoStatus]);
+
+  useEffect(() => {
+    if (fetchAvailableArtworksStatus.kind === 'success' && fetchAvailableArtworksStatus.result.kind === 'ok') {
+      const ids = fetchAvailableArtworksStatus.result.data;
+      setAppliedFilter(prev => ({ ...prev, ids }));
+    }
+  }, [fetchAvailableArtworksStatus]);
 
   return (
     <Root>
       <PromptTitlePanel>
-        <PromptText>
-          SELECT ARTWORKS
-        </PromptText>
+        <TitleText>
+          Select Artworks
+        </TitleText>
       </PromptTitlePanel>
+      <SearchArea>
+        <SearchBar
+          placeholder="Search by title..."
+          onChange={(e) => setSearchText(e.target.value)}
+          onKeyPress={(event) => {
+            if(event.key === 'Enter') {
+              handleApplyKeywordsFilter(searchText);
+            }
+          }}
+        />
+        <SearchButton onClick={() => handleApplyKeywordsFilter(searchText)}>
+          <SearchIcon />
+        </SearchButton>
+      </SearchArea>
       {(findArtworkStatus.kind === 'success' && findArtworkStatus.result.kind === 'ok') && (
         <DisplayPanel>
           <ResultsUpperPanel>
             <ResultsWrapper>
               <Results>
-                Showing results {(page - 1) * itemsPerPage + 1}-{(page - 1) * itemsPerPage + findArtworkStatus.result.data.length}
+                Showing results {(page - 1) * itemsPerPage + 1}-{(page - 1) * itemsPerPage + findArtworkStatus.result.data.artworks.length}
               </Results>
             </ResultsWrapper>
+            <ShoppingCartContainer>
+              <ShoppingCartIcon
+                onClick={() => setSelectedArtworksOpen(true)}
+              />
+            </ShoppingCartContainer>
           </ResultsUpperPanel>
           <VerticalSeparator />
-          <ShowFilters
-            onFilterDelete={() => setAppliedFilter({})} //this should change with the delete function
-            onClear={() => setAppliedFilter({})}
-            filterName={Object.keys(appliedFilter).map(elem => appliedFilter[elem as keyof GetArtworksFilter] as string)}
-          />
-          {/*<ShoppingCartIcon
-            active={true}
-          onClick={() => setSelectedArtworksOpen(true)} />*/}
 
           <ResultsLowerPanel>
 
@@ -245,7 +383,7 @@ const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSele
                   filterOptions={findUniqueDatesStatus.result.data.map(elem => elem.value)}
                   filterCounts={findUniqueDatesStatus.result.data.map(elem => elem.count)}
                   bottomBorder={false}
-                  maxOptionsShown={8}
+                  maxOptionsShown={10}
                   onFilterSelected={(filter: string) => handleApplyFilter('date', filter)}
                 />
               )}
@@ -255,7 +393,7 @@ const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSele
                   filterOptions={findUniqueAuthorsStatus.result.data.map(elem => elem.value)}
                   filterCounts={findUniqueAuthorsStatus.result.data.map(elem => elem.count)}
                   bottomBorder={false}
-                  maxOptionsShown={8}
+                  maxOptionsShown={10}
                   onFilterSelected={(filter: string) => handleApplyFilter('author', filter)}
                 />
               )}
@@ -265,27 +403,36 @@ const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSele
                   filterOptions={findUniqueInfoStatus.result.data.map(elem => elem.value)}
                   filterCounts={findUniqueInfoStatus.result.data.map(elem => elem.count)}
                   bottomBorder={true}
-                  maxOptionsShown={8}
+                  maxOptionsShown={10}
                   onFilterSelected={(filter: string) => handleApplyFilter('info', filter)}
                 />
               )}
             </FilterPanel>
-            <ArtworkSearchResults
-              artworks={findArtworkStatus.result.data}
-              onArtworkDeselected={onArtworkDeselected}
-              onArtworkSelected={onArtworkSelected}
-              selectedArtworks={selectedArtworks}
-              page={page}
-              pageTotal={27}
-              onPageChange={setPage}
-            />
+
+            <ResultsFiltersAndArtworks>
+              <ShowFilters
+                onFilterDelete={handleRemoveFilter} //this should change with the delete function
+                onClear={handleClearFilters}
+                filterName={Object.keys(appliedFilter).filter(elem => elem !== 'ids').map(elem => appliedFilter[elem as keyof GetArtworksFilter] as string)}
+              />
+              <ArtworkSearchResults
+                artworks={findArtworkStatus.result.data.artworks}
+                onArtworkDeselected={onArtworkDeselected}
+                onArtworkSelected={handleArtworkSelected}
+                selectedArtworks={selectedArtworks.map(elem => elem.id)}
+                page={page}
+                pageTotal={~~(findArtworkStatus.result.data.count / itemsPerPage) + 1}
+                onPageChange={setPage}
+              />
+            </ResultsFiltersAndArtworks>
+
           </ResultsLowerPanel>
           {loading && <LoadingOverlay />}
         </DisplayPanel>
       ) || 'Loading...'}
       <VerticalSeparator />
 
-      {(findArtworkStatus.kind === 'success' && findArtworkStatus.result.kind === 'ok') && (
+      {(fetchByEmotionStatus.kind === 'success' && fetchByEmotionStatus.result.kind === 'ok') && (
         <>
           <ResultsUpperPanel>
             <ResultsWrapper>
@@ -303,29 +450,35 @@ const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSele
                 }
               }}
             />
-            {findArtworkStatus.result.data.slice(displayRecom, displayRecom + 5).map((im, i) => (
+            {fetchByEmotionStatus.result.data.artworks.slice(displayRecom, displayRecom + 3).map((im, i) => (
               <RecomendationCard
                 key={im.id}
                 artworkData={im}
-                selected={selectedArtworks.some(elem => elem === im.id)}
-                onCardSelected={() => {
-                  onArtworkSelected(im.id);
-                  setLastArtwork(im.id); // just for testing
-                }}
+                selected={selectedArtworks.some(elem => elem.id === im.id)}
+                onCardSelected={() => handleArtworkSelected(im)}
                 onCardDeselected={() => onArtworkDeselected(im.id)}
               />
             ))
             }
-          </RecomendationGrid>
-          {selectedArtworksOpen &&
-            <SelectedActivitiesPopup
-              artworks={findArtworkStatus.result.data}
-              onArtworkRemoved={(id) => onArtworkDeselected(id)}
-              setPopupOpen={setSelectedArtworksOpen}
+            <NavigateNextIcon
+              active={displayRecom + 3 < fetchByEmotionStatus.result.data.artworks.length}
+              onClick={() => {
+                if ((fetchByEmotionStatus.kind === 'success' && fetchByEmotionStatus.result.kind === 'ok') &&
+                  displayRecom + 3 < fetchByEmotionStatus.result.data.artworks.length) {
+                  setDisplayRecom(prev => prev + 1);
+                }
+              }}
             />
-          }
+          </RecomendationGrid>
         </>
       )}
+      {selectedArtworksOpen && (findArtworkStatus.kind === 'success' && findArtworkStatus.result.kind === 'ok') &&
+        <SelectedActivitiesPopup
+          artworks={selectedArtworks}
+          onArtworkRemoved={(id) => onArtworkDeselected(id)}
+          setPopupOpen={setSelectedArtworksOpen}
+        />
+      }
     </Root>
   );
 };

@@ -7,9 +7,10 @@ import PageBar from './PageBar';
 const ArtworkGrid = styled.div`
   position: relative;
   height: fit-content;
-  width: 75%;
-  margin-left: 1%;
-  padding-left: 1.5%;
+  width: 100%;
+  max-width: 730px;
+  min-width: 580px;
+  padding-left: 15px;
   display: flex;
   flex-wrap: wrap;
   align-self: top;
@@ -21,7 +22,7 @@ interface ArtworkSearchResultsProps {
   selectedArtworks: string[];
   page: number;
   pageTotal: number;
-  onArtworkSelected: (artworkId: string) => void;
+  onArtworkSelected: (artwork: ArtworkData) => void;
   onArtworkDeselected: (artworkId: string) => void;
   onPageChange: (page: number) => void;
 };
@@ -43,7 +44,7 @@ const ArtworkSearchResults: React.FC<ArtworkSearchResultsProps> = ({
           key={im.id}
           artworkData={im}
           selected={selectedArtworks.some(elem => elem === im.id)}
-          onCardSelected={() => onArtworkSelected(im.id)}
+          onCardSelected={() => onArtworkSelected(im)}
           onCardDeselected={() => onArtworkDeselected(im.id)}
         />
       ))}

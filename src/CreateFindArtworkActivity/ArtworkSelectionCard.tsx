@@ -5,18 +5,19 @@ import { ArtworkData } from '../services/commonDefinitions';
 import ArtworkSelectedCard from './ArtworkSelectedCard';
 
 const CardContainer = styled.div`
-  flex: 0 0 auto; 
-  margin: 5px;
-  display: block;
+  margin: 0.5%;
   position: relative;
-  width: 30%;
-  height: 30vh;
+  width: 32%;
+  max-width: 240px;
   transform-style: preserve-3d;
   perspective: 1000px;
   background-color: transparent;
   border: 1px solid #e0e0e0;
 `;
 
+const Dummy = styled.div`
+  margin-top: 100%;
+`;
 
 interface ArtworkSelectionCardProps {
   artworkData: ArtworkData;
@@ -28,6 +29,7 @@ interface ArtworkSelectionCardProps {
 const ArtworkSelectionCard: React.FC<ArtworkSelectionCardProps> = ({ artworkData, selected, onCardSelected, onCardDeselected }) => {
   return (
     <CardContainer>
+      <Dummy />
       <ArtworkFront
         onArtworkSelected={onCardSelected}
         artworkData={artworkData}

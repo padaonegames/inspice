@@ -10,7 +10,7 @@ import { Close } from '@styled-icons/evaicons-solid/Close';
 const Root = styled.div`
   width: 100%;
   height: 100%;
-  position: absolute;
+  position: fixed;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -22,11 +22,15 @@ const Root = styled.div`
 `;
 
 const PopupPanelContent = styled.div`
-  width: 60%;
-  height: 80%;
+  position: Static;
+  width: 60vw;
+  height: 90vh;
   background-color: white;
   display: flex;
   flex-direction: column;
+  overflow: auto;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 `;
 
 const PopupTitlePanel = styled.div`
@@ -64,8 +68,9 @@ const ArtworkMiniature = styled.img`
 const ArtworkItemContainer = styled.div`
   display: flex;
   flex-direction: column;
-  height: 120px;
+  height: auto;
   width: 100%;
+  margin-bottom:5px;
   justify-content: space-between;
   border: 1px solid darkgray;
   overflow: visible;
@@ -201,7 +206,7 @@ interface SelectedActivitiesPopupProps {
 
 const SelectedActivitiesPopup: React.FC<SelectedActivitiesPopupProps> = ({ artworks, onArtworkRemoved, setPopupOpen }) => {
 
-  const [page, setPage] = useState<number>(3);
+  const [page, setPage] = useState<number>(0);
 
   useEffect(() => {
     document.body.style.overflow = 'hidden';
@@ -235,7 +240,7 @@ const SelectedActivitiesPopup: React.FC<SelectedActivitiesPopupProps> = ({ artwo
             <ArtworksContainer>
               {artworks.slice((page + column) * 4, (page + 1 + column) * 4).map(elem => (
                 <ArtworkItemContainer key={elem.id}>
-                  <RemoveArtworkIcon />
+                  <RemoveArtworkIcon onClick={() => onArtworkRemoved(elem.id)}/>
                   <ArtworkMiniatureContainer>
                     <ArtworkMiniature src={elem.src} />
                   </ArtworkMiniatureContainer>

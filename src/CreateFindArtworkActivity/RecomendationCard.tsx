@@ -8,8 +8,8 @@ interface RootProps {
 };
 
 const Root = styled.div<RootProps>`
-  width: 17%;
-  height: 50vh;
+  width: 250px;
+  height: 350px;
   align-self: center;
   flex-direction: column;
   margin-top: 1.5%;
@@ -36,32 +36,6 @@ const GoBottom = styled.div`
   padding: 3.5%;
   padding-top: 5%;
   border-top: 1px solid #e0e0e0;
-`;
-
-const AddIcon = styled.button`
-  color: rgb(255, 255, 255);
-  font-size: 15px; 
-  line-height: 15px; 
-  padding: 5px; 
-  border-radius: 10px; 
-  font-family: Georgia, serif; 
-  font-weight: normal; 
-  text-decoration: none; 
-  font-style: normal; 
-  font-variant: normal; 
-  text-transform: none; 
-  background-image: linear-gradient(to right, rgb(28, 110, 164) 0%, rgb(35, 136, 203) 50%, rgb(20, 78, 117) 100%);
-  box-shadow: rgb(0, 0, 0) 5px 5px 15px 5px; 
-  border: 2px solid rgb(28, 110, 164); 
-  display: inline-block;
-  margin-top: 2vh;
-
-  &:hover {
-    background: #1C6EA4; 
-  }
-  &:active {
-    background: #144E75;
-  }
 `;
 
 const NameText = styled.h3`

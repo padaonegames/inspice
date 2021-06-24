@@ -81,7 +81,7 @@ const PlayTreasureHuntScreen: React.FC = () => {
           onPointsUpdate={(value: number) => setCurrentScore(prev => prev + value)}
           score={currentScore}
           stageData={fetchTreasureHuntDefinitionStatus.result.data[0].stages[activeStage]}
-          imagesData={fetchActivityArtworksStatus.result.data}
+          imagesData={fetchActivityArtworksStatus.result.data.artworks}
           onStageCompleted={handleStageCompleted}
         />
       </Fader>

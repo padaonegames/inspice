@@ -3,24 +3,31 @@ import styled from 'styled-components';
 import IntegerRangeSlider from './IntegerRangeSlider';
 
 const FieldContainer = styled.div`
-  flex-direction: row;
+  margin-top: 30px;
+  flex-direction: column;
   display: flex;
-  width: 90%;
-  align-self: center;
+  width: 600px;
 `;
 
-const TextContainer = styled.div`
-  width: 50%;
-  padding-left: 5%;
+const FieldNameLabel = styled.h3`
   align-self: center;
-`;
-
-const FieldNameLabel = styled.label`
-  font-size: 1em;
-  font-weight: 500;
+  color: #3f3c2d;
+  font-weight: 700;
   letter-spacing: +0.5px;
   font-family: Raleway;
-  color: black;
+`;
+
+const PanelContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  background-color: white;
+  box-shadow: 0 0 1px 3px #efefef;
+  letter-spacing: +1px;
+  font-family: Raleway;
+  width: 100%;
 `;
 
 interface IntegerRangeInputFieldWithTagProps {
@@ -47,21 +54,21 @@ const IntegerRangeInputFieldWithTag: React.FC<IntegerRangeInputFieldWithTagProps
 
   return (
     <FieldContainer>
-      <TextContainer>
-        <FieldNameLabel>
-          {fieldText}
-        </FieldNameLabel>
-      </TextContainer>
+      <FieldNameLabel>
+        {fieldText}
+      </FieldNameLabel>
 
-      <IntegerRangeSlider
-        min={min}
-        max={max}
-        step={step}
-        initialMin={initialMin}
-        initialMax={initialMax}
-        onMaxValueChange={onMaxValueChange}
-        onMinValueChange={onMinValueChange}
-      />
+      <PanelContainer>
+        <IntegerRangeSlider
+          min={min}
+          max={max}
+          step={step}
+          initialMin={initialMin}
+          initialMax={initialMax}
+          onMaxValueChange={onMaxValueChange}
+          onMinValueChange={onMinValueChange}
+        />
+      </PanelContainer>
     </FieldContainer>
   );
 }
