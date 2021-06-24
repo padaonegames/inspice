@@ -1,34 +1,12 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
 import { ArtworkData } from '../services/commonDefinitions';
-import { DocumentRemove } from '@styled-icons/heroicons-outline/DocumentRemove';
+import { CheckboxCircle } from '@styled-icons/remix-fill/CheckboxCircle';
 
-const RemoveCornerIcon = styled(DocumentRemove)`
+const RemoveCornerIcon = styled(CheckboxCircle)`
   color: white;
-  height: 82.5%;
-  width: auto;
-`;
-
-const expandCorner = keyframes`
-  from {
-    width: 10%;
-    height: 10%;
-  }
-  to {
-    width: 20%;
-    height: 20%;
-  }
-`;
-
-const shrinkCorner = keyframes`
-  to {
-    width: 10%;
-    height: 10%;
-  }
-  from {
-    width: 20%;
-    height: 20%;
-  }
+  height: 27px;
+  width: 27px;
 `;
 
 const RemoveCorner = styled.div`
@@ -39,11 +17,37 @@ const RemoveCorner = styled.div`
   overflow: hidden;
   top: 3.5%;
   right: 3.5%;
-  background-color: red;
+  background-color: black;
   border-style: solid;
   border-color: black;
   border-width: 1px 1px 1px 1px;
-  border-radius: 45%;
+  border-radius: 50%;
+
+  &:hover {
+    cursor: pointer;
+  }
+`;
+
+const expandCorner = keyframes`
+  from {
+    width: 27px;
+    height: 27px;
+  }
+  to {
+    width: 32px;
+    height: 32px;
+  }
+`;
+
+const shrinkCorner = keyframes`
+  to {
+    width: 27px;
+    height: 27px;
+  }
+  from {
+    width: 32px;
+    height: 32px;
+  }
 `;
 
 const RevealText = styled.div`
@@ -111,7 +115,7 @@ const CardContent = styled.div<CardContentProps>`
     animation: ${shrinkCorner} 0.5s linear;
     width: 11.5%;
     height: 11.5%;
-    opacity: 0.7;
+    opacity: 0.9;
   }
 
   &:hover {
@@ -119,8 +123,8 @@ const CardContent = styled.div<CardContentProps>`
       transition: opactiy 0.5s linear;
       opacity: 1;
       animation: ${expandCorner} 0.5s linear;
-      width: 20%;
-      height: 20%;
+      width: 32px;
+      height: 32px;
       cursor: pointer;
     }
   }
