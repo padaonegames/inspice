@@ -92,7 +92,7 @@ const FlagStage = styled.div<FlagStageProps>`
   transition: transform 0.5s ease;
   &:hover {
     cursor: ${props => props.active ? 'pointer' : 'default'};
-    transform: ${props => props.active ? 'scale(1.1)' : 'scale(1)'};
+    transform: ${props => props.active ? 'scale(1.1)' : 'scale(0.9)'};
   }
 `;
 

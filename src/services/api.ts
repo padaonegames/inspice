@@ -114,6 +114,27 @@ export class Api {
     return getApiResult<GetTreasureHuntDefinitionByIdResponse>(url, opts);
   }
 
+
+    /**
+ * Retrieve all treasure hunts belonging to a given activity
+ */
+     public async getTreasureHuntDefinitionsByActivityId(activityId: string): Promise<ApiResult<GetTreasureHuntDefinitionByIdResponse>> {
+      const url = `${this.apiUrl}/object/${this.huntDefinitionsDatasetUuid}`;
+  
+      const query = `{ "activityId": "${activityId}" }`;
+  
+      const opts: AxiosRequestConfig = {
+        auth: {
+          username: this.apiKey,
+          password: this.apiKey
+        },
+        params: {
+          query: query
+        }
+      };
+      return getApiResult<GetTreasureHuntDefinitionByIdResponse>(url, opts);
+    }
+
   /**
    * Submit an Activity Definition to the persistence layer
    */

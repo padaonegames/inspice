@@ -31,6 +31,7 @@ export interface InProgressTreasureHuntDefinition {
 export interface TreasureHuntDefinition {
   _id: string;
   treasureHuntAuthor: string;
+  treasureHuntTitle?: string;
   activityId: string;
   stages: StageData[];
 }

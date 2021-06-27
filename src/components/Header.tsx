@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 const Root = styled.div`
   justify-content: left;
+  background-color: white;
   align-content: center;
   display: flex;
   flex-direction: row;
