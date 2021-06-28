@@ -266,15 +266,17 @@ const WriteHints: React.FC<WriteHintsProps> = ({
                 }
               </EnvelopeWrapper>
             )}
-            <AddHintIcon
-              enabled={hints.length < maxHints}
-              onClick={() => {
-                if (hints.length < maxHints) {
-                  onAddNewHint();
-                  setSelectedHint(hints.length);
-                }
-              }}
-            />
+            {hints.length < maxHints &&
+              <AddHintIcon
+                enabled={hints.length < maxHints}
+                onClick={() => {
+                  if (hints.length < maxHints) {
+                    onAddNewHint();
+                    setSelectedHint(hints.length);
+                  }
+                }}
+              />
+            }
           </DotsWrapper>
           <HintsText>
             {t('hints')}

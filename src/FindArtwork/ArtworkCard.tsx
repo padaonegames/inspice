@@ -11,7 +11,7 @@ const CardContainer = styled.div`
   margin: 5px;
   display: block;
   position: relative;
-  width: 30%;
+  width: 95%;
   height: 30vh;
   transform-style: preserve-3d;
   perspective: 1000px;
@@ -21,7 +21,7 @@ const CardContainer = styled.div`
 
 export type ArtworkCardStatus =
   | { status: 'wrong' }
-  | { status: 'right', gifts: string[] };
+  | { status: 'right', prizes: string[] };
 
 interface ArtworkCardProps {
   artworkData: ArtworkData;
@@ -49,7 +49,7 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({ artworkData, flipped, status,
          />*/
         <ArtworkPopup
           flipped={flipped}
-          gift={status.gifts}
+          prize={status.prizes}
           artworkData={artworkData}
         />
         :
