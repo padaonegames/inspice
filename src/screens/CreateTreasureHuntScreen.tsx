@@ -5,7 +5,7 @@ import GameOverviewPanel from '../CreateGame/GameOverviewPanel';
 import RecordAudio from '../CreateGame/RecordAudio';
 import SelectArtwork from '../CreateGame/SelectArtwork';
 import WriteHints from '../CreateGame/WriteHints';
-import WriteGifts from '../CreateGame/WriteGifts';
+import WritePrizes from '../CreateGame/WriteGifts';
 import { ArtworkData, CompletedTreasureHuntDefinition, InProgressTreasureHuntDefinition, InProgressTreasureHuntStage } from '../services/commonDefinitions';
 import { useParams } from 'react-router';
 import { useAsyncRequest } from '../services/useAsyncRequest';
@@ -27,7 +27,7 @@ const isStageCompleted = (stage: InProgressTreasureHuntStage): boolean => {
     );
 };
 
-type StageStatus = 'select-artwork' | 'write-hints' | 'record-audio' | 'write-gifts' | 'none';
+type StageStatus = 'select-artwork' | 'write-hints' | 'record-audio' | 'write-prizes' | 'none';
 
 const CreateTreasureHuntScreen: React.FC = () => {
 
@@ -116,16 +116,16 @@ const CreateTreasureHuntScreen: React.FC = () => {
   };
 
 
-  const handleRemoveGift = (index: number) => {
+  const handleRemovePrize = (index: number) => {
     setTreasureHuntDefinition(prev => {
       let aux: InProgressTreasureHuntStage[] = JSON.parse(JSON.stringify(prev.stages));
-      const filtGifts = aux[activeStage].multimediaData.filter((_, ind) => ind !== index);
-      aux[activeStage].multimediaData = filtGifts;
+      const filtPrizes = aux[activeStage].multimediaData.filter((_, ind) => ind !== index);
+      aux[activeStage].multimediaData = filtPrizes;
       return { ...prev, stages: aux };
     });
   };
 
-  const handleAddGift = () => {
+  const handleAddPrize = () => {
     setTreasureHuntDefinition(prev => {
       let aux: InProgressTreasureHuntStage[] = JSON.parse(JSON.stringify(prev.stages));
       aux[activeStage].multimediaData.push({ kind: 'Text', text: '' });
@@ -133,7 +133,7 @@ const CreateTreasureHuntScreen: React.FC = () => {
     });
   };
 
-  const handleUpdateGift = (index: number, content: string) => {
+  const handleUpdatePrize = (index: number, content: string) => {
     setTreasureHuntDefinition(prev => {
       let aux: InProgressTreasureHuntStage[] = JSON.parse(JSON.stringify(prev.stages));
       let multimediaData = aux[activeStage].multimediaData[index];
@@ -174,7 +174,7 @@ const CreateTreasureHuntScreen: React.FC = () => {
     }
   }, [fetchActivityDefinitionStatus]);
 
-  
+
   useEffect(() => {
     if (submitGameStatus.kind === 'success' && submitGameStatus.result.kind === 'ok') {
       window.alert('Your treasure hunt was successfully uploaded to the linked data hub.');
@@ -229,7 +229,7 @@ const CreateTreasureHuntScreen: React.FC = () => {
             onAddNewHint={handleAddHint}
             onRemoveHint={handleRemoveHint}
             onUpdateHint={handleUpdateHint}
-            onNextClicked={() => setDisplayedState('write-gifts')}
+            onNextClicked={() => setDisplayedState('write-prizes')}
             onBackClicked={() => setDisplayedState('select-artwork')}
             minHints={fetchActivityDefinitionStatus.result.data[0]?.minCluesPerStage || 1}
             maxHints={fetchActivityDefinitionStatus.result.data[0]?.maxCluesPerStage || 10}
@@ -238,9 +238,9 @@ const CreateTreasureHuntScreen: React.FC = () => {
       }
 
 
-      {activeStageStatus === 'write-gifts' &&
+      {activeStageStatus === 'write-prizes' &&
         <Fader
-          show={displayedState === 'write-gifts'}
+          show={displayedState === 'write-prizes'}
           transitionTime={1.25}
           onAnimationCompleted={() => {
             if (displayedState === 'select-artwork') {
@@ -249,12 +249,12 @@ const CreateTreasureHuntScreen: React.FC = () => {
             setActiveStageStatus(displayedState);
           }}
         >
-          <WriteGifts
-            gifts={treasureHuntDefinition.stages[activeStage]?.multimediaData.map(elem => elem.kind === 'Text' ? elem.text : elem.src) || []}
+          <WritePrizes
+            prizes={treasureHuntDefinition.stages[activeStage]?.multimediaData.map(elem => elem.kind === 'Text' ? elem.text : elem.src) || []}
             imageSrc={retrieveArtworkById(treasureHuntDefinition.stages[activeStage].artworkId!)!.src}
-            onAddNewGift={handleAddGift}
-            onRemoveGift={(ind: number) => handleRemoveGift(ind)}
-            onUpdateGift={handleUpdateGift}
+            onAddNewPrize={handleAddPrize}
+            onRemovePrize={(ind: number) => handleRemovePrize(ind)}
+            onUpdatePrize={handleUpdatePrize}
             onNextClicked={() => setDisplayedState('select-artwork')}
             onBackClicked={() => setDisplayedState('write-hints')}
             canClickNext={activeStage + 1 < treasureHuntDefinition.stages.length}

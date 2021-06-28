@@ -138,6 +138,7 @@ const RemoveIcon = styled(RemoveCircle)`
   transition: transform 0.5s ease;
 
   &:hover {
+    cursor: pointer;
     transform:  scale(1.1);
     transition: transform 0.5s ease;
   }
@@ -266,15 +267,17 @@ const WriteHints: React.FC<WriteHintsProps> = ({
                 }
               </EnvelopeWrapper>
             )}
-            <AddHintIcon
-              enabled={hints.length < maxHints}
-              onClick={() => {
-                if (hints.length < maxHints) {
-                  onAddNewHint();
-                  setSelectedHint(hints.length);
-                }
-              }}
-            />
+            {hints.length < maxHints &&
+              <AddHintIcon
+                enabled={hints.length < maxHints}
+                onClick={() => {
+                  if (hints.length < maxHints) {
+                    onAddNewHint();
+                    setSelectedHint(hints.length);
+                  }
+                }}
+              />
+            }
           </DotsWrapper>
           <HintsText>
             {t('hints')}
