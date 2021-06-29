@@ -24,6 +24,7 @@ export interface GetArtworkByIdResponse {
 
 export interface InProgressTreasureHuntDefinition {
   treasureHuntAuthor: string | undefined;
+  treasureHuntTitle: string | undefined;
   activityId: string | undefined;
   stages: InProgressTreasureHuntStage[];
 }
