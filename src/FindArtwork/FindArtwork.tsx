@@ -30,6 +30,14 @@ const ArtworkGrid = styled.div`
   justify-content: center;
 `;
 
+const ArtworksContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 32%;
+  height: 100%;
+  padding-left: 2%;
+`;
+
 const UpperRowContainer = styled.div`
   width: 100%;
   padding-top: 0.5%;
@@ -135,16 +143,7 @@ const FindArtwork: React.FC<FindArtworkProps> = ({
     onPointsUpdate(-value);
   };
 
-  //The Artworks are shown in a snake shape for the 1by1 move
-  const displayedArtworks = imagesData.slice(displayIndex, displayIndex + 1).concat(
-    imagesData.slice(displayIndex + 2, displayIndex + 3),
-    imagesData.slice(displayIndex + 4, displayIndex + 5),
-    imagesData.slice(displayIndex + 1, displayIndex + 2),
-    imagesData.slice(displayIndex + 3, displayIndex + 4),
-    imagesData.slice(displayIndex + 5, displayIndex + 6)
-  );
-  const newIndex: number[] = [0, 2, 4, 1, 3, 5]; //used for knowing the positions of the snake shpe
-
+  const displayedArtworks = imagesData.slice(displayIndex, displayIndex + 6);
   return (
     <Root>
       <UpperRowContainer>
@@ -174,18 +173,22 @@ const FindArtwork: React.FC<FindArtworkProps> = ({
           }}
         />
         <ArtworkGrid>
-          {displayedArtworks.map((im, i) => (
-            <ArtworkCard
-              key={im.id}
-              artworkData={im}
-              flipped={flippedCards[newIndex[i] + displayIndex]}
-              status={im.id === stageData.artworkId ?
-                { status: 'right', gifts: stageData.multimediaData.map(elem => elem.kind === 'Text' ? elem.text : elem.src) } :
-                { status: 'wrong' }
-              }
-              onCardSelected={() => handleCardSelected(im.id, newIndex[i] + displayIndex)}
-            />
-          ))}
+          {[0, 1, 2].map(column =>
+            <ArtworksContainer>
+              {imagesData.slice((displayIndex + (column * 2)), (displayIndex + 2 + (column * 2))).map((im, i) => (
+                <ArtworkCard
+                  key={im.id}
+                  artworkData={im}
+                  flipped={flippedCards[(column * 2) + i + displayIndex]}
+                  status={im.id === stageData.artworkId ?
+                    { status: 'right', prizes: stageData.multimediaData.map(elem => elem.kind === 'Text' ? elem.text : elem.src) } :
+                    { status: 'wrong' }
+                  }
+                  onCardSelected={() => handleCardSelected(im.id, ((column * 2) + i + displayIndex))}
+                />
+              ))}
+            </ArtworksContainer>
+          )}
         </ArtworkGrid>
         <NavigateNextIcon
           active={displayIndex + 6 < imagesData.length}

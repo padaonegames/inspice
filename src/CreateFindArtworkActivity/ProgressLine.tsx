@@ -5,7 +5,6 @@ import { CloudUpload } from '@styled-icons/boxicons-regular/CloudUpload';
 import { ClockOutline } from '@styled-icons/evaicons-outline/ClockOutline';
 import { DoneAllOutline } from '@styled-icons/evaicons-outline/DoneAllOutline';
 import { MapPin } from '@styled-icons/boxicons-regular/MapPin';
-import { useTranslation } from 'react-i18next';
 
 const RoadLineWrapper = styled.div`
   display: flex;
@@ -92,7 +91,7 @@ const FlagStage = styled.div<FlagStageProps>`
   transition: transform 0.5s ease;
   &:hover {
     cursor: ${props => props.active ? 'pointer' : 'default'};
-    transform: ${props => props.active ? 'scale(1.1)' : 'scale(1)'};
+    transform: ${props => props.active ? 'scale(1.1)' : 'scale(0.9)'};
   }
 `;
 
@@ -133,55 +132,54 @@ const DividerLine = styled.div<DividerLineProps>`
 `;
 
 interface RoadLineProps {
-  currentStage: number;
-  stages: { name: string, completed: boolean }[];
-  onStageSelected: (index: number) => void;
-  onSubmitGame: () => void;
+  currentItem: number;
+  items: { name: string, completed: boolean }[];
+  onItemSelected: (index: number) => void;
+  onSubmit: () => void;
+  finalItemCaption: string;
 };
 
-const ProgressLine: React.FC<RoadLineProps> = ({ currentStage, stages, onStageSelected, onSubmitGame }) => {
-
-  const { t } = useTranslation('app');
+const ProgressLine: React.FC<RoadLineProps> = ({ currentItem, items, onItemSelected, onSubmit, finalItemCaption }) => {
 
   return (
     <RoadLineWrapper>
-      {stages.map((stage, index) => {
+      {items.map((item, index) => {
         return (
           <StageWrapper
-            width={100 / (stages.length + 1)}
+            width={100 / (items.length + 1)}
             key={index}
           >
             <StageNumber
-              selected={index === currentStage}
-              completed={stage.completed}
-              onClick={() => onStageSelected(index)}
+              selected={index === currentItem}
+              completed={item.completed}
+              onClick={() => onItemSelected(index)}
             >
-              {index === currentStage ? <LocationIcon /> : (
-                stage.completed ? <DoneIcon /> : <PendingIcon />
+              {index === currentItem ? <LocationIcon /> : (
+                item.completed ? <DoneIcon /> : <PendingIcon />
               )}
             </StageNumber>
             <StageDescription
-              selected={index === currentStage}
+              selected={index === currentItem}
             >
-              {stage.name}
+              {item.name}
             </StageDescription>
             <DividerLine
-              last={index === stages.length - 1}
+              last={index === items.length - 1}
               width={100}
-              active={index === stages.length - 1 ? stages.every(elem => elem.completed) : stage.completed}
+              active={index === items.length - 1 ? items.every(elem => elem.completed) : item.completed}
             />
           </StageWrapper>
         );
       })}
       <StageWrapper
-        width={100 / (stages.length + 1)}
-        key={stages.length}
+        width={100 / (items.length + 1)}
+        key={items.length}
       >
         <FlagStage
-          active={stages.every(elem => elem.completed)}
+          active={items.every(item => item.completed)}
           onClick={() => {
-            if (stages.every(elem => elem.completed)) {
-              onSubmitGame();
+            if (items.every(item => item.completed)) {
+              onSubmit();
             }
           }}
         >
@@ -190,7 +188,7 @@ const ProgressLine: React.FC<RoadLineProps> = ({ currentStage, stages, onStageSe
         <StageDescription
           selected={false}
         >
-          {t('submitActivity')}
+          {finalItemCaption}
         </StageDescription>
       </StageWrapper>
     </RoadLineWrapper>

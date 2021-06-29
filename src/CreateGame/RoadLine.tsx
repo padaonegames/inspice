@@ -125,7 +125,7 @@ interface RoadLineProps {
 
 const RoadLine: React.FC<RoadLineProps> = ({ currentStage, stagesCompleted, onStageSelected }) => {
 
-  const { t, i18n } = useTranslation('app');
+  const { t } = useTranslation('app');
   
   return (
     <RoadLineWrapper>

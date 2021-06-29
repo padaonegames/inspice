@@ -11,6 +11,7 @@ import Header from './components/Header';
 import { GlobalStyles } from './global/global';
 import CreateFindArtworkActivityScreen from './screens/CreateFindArtworkActivityScreen';
 import BrowseDefinitionsScreen from './screens/BrowseDefinitionsScreen';
+import ExploreActivityScreen from './screens/ExploreActivityScreen';
 
 const App: React.FC = () => {
 
@@ -26,6 +27,9 @@ const App: React.FC = () => {
           <Route path='/consumer/create/:id'>
             <CreateTreasureHuntScreen />
           </Route>
+          <Route path='/consumer/explore/:id'>
+            <ExploreActivityScreen />
+          </Route>
           <Route path='/curator/create'>
             <CreateFindArtworkActivityScreen />
           </Route>
@@ -33,7 +37,7 @@ const App: React.FC = () => {
             <BrowseDefinitionsScreen />            
           </Route>
           <Route>
-            <Redirect to='/browse' />
+            <Redirect to='/consumer/explore/60db0c3c7b4a14179552cb1c' />
           </Route>
         </Switch>
       </Router>

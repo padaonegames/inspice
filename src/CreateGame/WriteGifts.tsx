@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
-import { Gift } from '@styled-icons/boxicons-solid/Gift';
+import { Medal } from '@styled-icons/remix-line/Medal';
 import { PlusCircle } from '@styled-icons/boxicons-regular/PlusCircle';
+import { RemoveCircle } from '@styled-icons/material/RemoveCircle';
 import { Clock } from '@styled-icons/evaicons-solid/Clock';
 import NextCornerButton from './NextCornerButton';
 import { useTranslation } from 'react-i18next';
@@ -43,7 +44,7 @@ const ClueWrapper = styled.div`
   height: auto;
 `;
 
-const GiftStyle = styled.textarea`
+const PrizeStyle = styled.textarea`
   font-size: 0.9em;
   letter-spacing: +1px;
   font-family: Raleway;
@@ -86,7 +87,7 @@ const ControlsWrapper = styled.div`
   margin: auto;
 `;
 
-const GiftPanelWrapper = styled.div`
+const PrizePanelWrapper = styled.div`
   justify-content: center;
   align-content: center;
   display: flex;
@@ -110,7 +111,7 @@ interface IconProps {
   selected: boolean;
 };
 
-const InfoIconClosed = styled(Gift)`
+const InfoIconClosed = styled(Medal)`
   height: 6vh;
   width: auto;
   align-self: center;
@@ -126,10 +127,29 @@ const ExclamationIcon = styled(Clock)`
   color: #b7625e;
 `;
 
-const EnvelopeContainer = styled.div<IconProps>`
+const RemoveIcon = styled(RemoveCircle)`
+  height: 2.5vh;
+  width: auto;
+  position: absolute;
+  left: 55%;
+  top: 57%;
+  color: #b7625e;
+  transform: scale(0.9);
+  transition: transform 0.5s ease;
+
+  &:hover {
+    cursor: pointer;
+    transform:  scale(1.1);
+    transition: transform 0.5s ease;
+  }
+`;
+const PrizeWrapper = styled.div`
   position: relative;
   margin-left: 0.2vw;
   margin-right: 0.2vw;
+`;
+const PrizeContainer = styled.div<IconProps>`
+  position: relative;
   cursor: ${props => props.selected ? 'default' : 'pointer'};
   color: ${props => props.selected ? 'white' : 'darkgray'};
 
@@ -138,7 +158,7 @@ const EnvelopeContainer = styled.div<IconProps>`
   }
 `;
 
-const AddGiftIcon = styled(PlusCircle)`
+const AddPrizeIcon = styled(PlusCircle)`
   color: darkgray;
   height: 5vh;
   align-self: center;
@@ -151,7 +171,7 @@ const AddGiftIcon = styled(PlusCircle)`
   }
 `;
 
-const GiftsText = styled.p`
+const PrizesText = styled.p`
   font-size: 0.7em;
   font-weight: 500;
   letter-spacing: +1px;
@@ -161,23 +181,23 @@ const GiftsText = styled.p`
   color: white;
 `;
 
-interface WriteGiftsProps {
-  gifts: string[];
+interface WritePrizesProps {
+  prizes: string[];
   imageSrc: string;
-  onAddNewGift: () => void;
-  onRemoveGift: (index: number) => void;
-  onUpdateGift: (index: number, content: string) => void;
+  onAddNewPrize: () => void;
+  onRemovePrize: (index: number) => void;
+  onUpdatePrize: (index: number, content: string) => void;
   canClickNext: boolean;
   onNextClicked: () => void;
   onBackClicked: () => void;
 };
 
-const WriteGifts: React.FC<WriteGiftsProps> = ({
-  gifts,
+const WritePrizes: React.FC<WritePrizesProps> = ({
+  prizes,
   imageSrc,
-  onAddNewGift,
-  onRemoveGift,
-  onUpdateGift,
+  onAddNewPrize,
+  onRemovePrize,
+  onUpdatePrize,
   canClickNext,
   onBackClicked,
   onNextClicked
@@ -185,13 +205,13 @@ const WriteGifts: React.FC<WriteGiftsProps> = ({
 
   const { t } = useTranslation('app');
 
-  const [selectedGift, setSelectedGift] = useState<number>(0);
+  const [selectedPrize, setSelectedPrize] = useState<number>(0);
 
-  const placeholder = selectedGift > 0 ?
-    t('WhatIsYourGiftForThePlayer') :
+  const placeholder = selectedPrize > 0 ?
+    t('WhatIsYourPrizeForThePlayer') :
     t('WriteAMessage');
 
-  const canAdvance = gifts.every(h => h.length > 0);
+  const canAdvance = prizes.every(h => h.length > 0);
 
   return (
 
@@ -201,44 +221,52 @@ const WriteGifts: React.FC<WriteGiftsProps> = ({
       <ReferencePanel>
         <QuestionWrapper>
           <Question>
-            {t('WhatIsYourGiftForThePlayer')}
+            {t('WhatIsYourPrizeForThePlayer')}
           </Question>
         </QuestionWrapper>
         <ClueWrapper>
-          <GiftStyle
+          <PrizeStyle
             maxLength={400}
             placeholder={placeholder}
-            onChange={(e) => onUpdateGift(selectedGift, e.target.value)}
-            value={gifts[selectedGift]}
+            onChange={(e) => onUpdatePrize(selectedPrize, e.target.value)}
+            value={prizes[selectedPrize]}
           />
         </ClueWrapper>
-        <GiftPanelWrapper>
+        <PrizePanelWrapper>
           <DotsWrapper>
-            {gifts.map((_, i) =>
-              <EnvelopeContainer
-                selected={i === selectedGift}
-                onClick={() => setSelectedGift(i)}
-                key={'env' + i}
-              >
-                <InfoIconClosed />
-                {gifts[i].length == 0 &&
-                  <ExclamationIcon />
+            {prizes.map((_, i) =>
+              <PrizeWrapper>
+                <PrizeContainer
+                  selected={i === selectedPrize}
+                  onClick={() => setSelectedPrize(i)}
+                  key={'env' + i}
+                >
+                  <InfoIconClosed />
+                </PrizeContainer>
+                {i >= 1 &&
+                  <RemoveIcon onClick={() => {
+                    onRemovePrize(i);
+                    setSelectedPrize(i - 1)
+                  }} />
+
                 }
-              </EnvelopeContainer>
+              </PrizeWrapper>
             )}
-            <AddGiftIcon
-              onClick={() => {
-                if (gifts.length < 10) {
-                  onAddNewGift();
-                  setSelectedGift(gifts.length);
-                }
-              }}
-            />
+            {prizes.length < 5 &&
+              <AddPrizeIcon
+                onClick={() => {
+                  if (prizes.length < 5) {
+                    onAddNewPrize();
+                    setSelectedPrize(prizes.length);
+                  }
+                }}
+              />
+            }
           </DotsWrapper>
-          <GiftsText>
-            {t('GIFTS')}
-          </GiftsText>
-        </GiftPanelWrapper>
+          <PrizesText>
+            {t('PRIZES')}
+          </PrizesText>
+        </PrizePanelWrapper>
 
         <ControlsWrapper>
           <NextCornerButton
@@ -270,4 +298,4 @@ const WriteGifts: React.FC<WriteGiftsProps> = ({
   );
 }
 
-export default WriteGifts;
+export default WritePrizes;

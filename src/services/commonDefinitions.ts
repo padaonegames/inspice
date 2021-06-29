@@ -24,6 +24,7 @@ export interface GetArtworkByIdResponse {
 
 export interface InProgressTreasureHuntDefinition {
   treasureHuntAuthor: string | undefined;
+  treasureHuntTitle: string | undefined;
   activityId: string | undefined;
   stages: InProgressTreasureHuntStage[];
 }
@@ -31,6 +32,7 @@ export interface InProgressTreasureHuntDefinition {
 export interface TreasureHuntDefinition {
   _id: string;
   treasureHuntAuthor: string;
+  treasureHuntTitle?: string;
   activityId: string;
   stages: StageData[];
 }

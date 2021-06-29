@@ -3,7 +3,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 import { ArtworkData } from '../services/commonDefinitions';
-import { Gift } from '@styled-icons/boxicons-solid/Gift';
+import { Medal } from '@styled-icons/remix-line/Medal';
 import { ControllerNext } from '@styled-icons/entypo/ControllerNext';
 import { useState } from 'react';
 
@@ -52,7 +52,7 @@ const ClueWrapper = styled.div`
   height: auto;
 `;
 
-const GiftStyle = styled.textarea`
+const PrizeStyle = styled.textarea`
   font-size: 0.9em;
   letter-spacing: +1px;
   font-family: Raleway;
@@ -83,7 +83,7 @@ const Title = styled.p`
   color: white;
 `;
 
-const GiftPanelWrapper = styled.div`
+const PrizePanelWrapper = styled.div`
   justify-content: center;
   align-content: center;
   display: flex;
@@ -107,13 +107,13 @@ interface IconProps {
   selected: boolean;
 };
 
-const GiftBox = styled(Gift)`
+const PrizeBox = styled(Medal)`
   height: 6vh;
   width: auto;
   align-self: center;
 `;
 
-const GiftContainer = styled.div<IconProps>`
+const PrizeContainer = styled.div<IconProps>`
   position: relative;
   margin-left: 0.2vw;
   margin-right: 0.2vw;
@@ -138,7 +138,7 @@ const CloseIcon = styled(ControllerNext)`
   }
 `;
 
-const GiftsText = styled.p`
+const PrizesText = styled.p`
   font-size: 0.7em;
   font-weight: 500;
   letter-spacing: +1px;
@@ -181,14 +181,14 @@ const InformationText = styled.p`
 `;
 
 type Props = {
-  gift: string[];
+  prize: string[];
   artworkData: ArtworkData;
   setModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const Popup: React.FC<Props> = ({ gift, artworkData, setModalOpen }) => {
+const Popup: React.FC<Props> = ({ prize, artworkData, setModalOpen }) => {
   const { t } = useTranslation('app');
-  const [selectedGift, setSelectedGift] = useState<number>(0);
+  const [selectedPrize, setSelectedPrize] = useState<number>(0);
   return (
     <Root
       backgroundImage={artworkData.src}
@@ -217,32 +217,32 @@ const Popup: React.FC<Props> = ({ gift, artworkData, setModalOpen }) => {
           </Title>
         </TitleWrapper>
         <ClueWrapper>
-          <GiftStyle
+          <PrizeStyle
             maxLength={400}
-            value={t(gift[selectedGift]).toString()}
+            value={t(prize[selectedPrize]).toString()}
           />
         </ClueWrapper>
-        <GiftPanelWrapper>
+        <PrizePanelWrapper>
           <DotsWrapper>
             {
-              gift.map((_, i) =>
-                <GiftContainer
-                  selected={i === selectedGift}
-                  onClick={() => setSelectedGift(i)}
+              prize.map((_, i) =>
+                <PrizeContainer
+                  selected={i === selectedPrize}
+                  onClick={() => setSelectedPrize(i)}
                   key={'env' + i}
                 >
-                  <GiftBox />
-                </GiftContainer>
+                  <PrizeBox />
+                </PrizeContainer>
               )}
             <CloseIcon
               onClick={() => setModalOpen(false)}
             />
           </DotsWrapper>
-          <GiftsText>
-            {t('gifts')}
-          </GiftsText>
+          <PrizesText>
+            {t('prizes')}
+          </PrizesText>
 
-        </GiftPanelWrapper>
+        </PrizePanelWrapper>
       </ReferencePanel>
     </Root >
   );
