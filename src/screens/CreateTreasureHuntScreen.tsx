@@ -180,7 +180,7 @@ const CreateTreasureHuntScreen: React.FC = () => {
       const definition = fetchActivityDefinitionStatus.result.data[0];
       setTreasureHuntDefinition(prev => ({
         ...prev,
-        stages: Array.from(Array(definition.minStages + 1).keys()).map(_ => ({
+        stages: Array.from(Array(definition.minStages).keys()).map(_ => ({
           artworkId: undefined,
           clues: Array.from(Array(definition.minCluesPerStage).keys()).map(_ => ''),
           multimediaData: [{ kind: 'Text', text: '' }]

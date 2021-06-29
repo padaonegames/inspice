@@ -37,7 +37,7 @@ const App: React.FC = () => {
             <BrowseDefinitionsScreen />            
           </Route>
           <Route>
-            <Redirect to='/consumer/explore/60d4579d3ba6fc581003860f' />
+            <Redirect to='/consumer/explore/60db0c3c7b4a14179552cb1c' />
           </Route>
         </Switch>
       </Router>
