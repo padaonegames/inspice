@@ -10,6 +10,8 @@ import { ArtworkData, CompletedTreasureHuntDefinition, InProgressTreasureHuntDef
 import { useParams } from 'react-router';
 import { useAsyncRequest } from '../services/useAsyncRequest';
 import { api } from '../services';
+import { useHistory } from 'react-router-dom';
+import InputBasicInformation from '../CreateGame/InputBasicInformation';
 
 const Root = styled.div`
   display: flex;
@@ -27,11 +29,12 @@ const isStageCompleted = (stage: InProgressTreasureHuntStage): boolean => {
     );
 };
 
-type StageStatus = 'select-artwork' | 'write-hints' | 'record-audio' | 'write-prizes' | 'none';
+type StageStatus = 'input-basic-information' | 'select-artwork' | 'write-hints' | 'record-audio' | 'write-prizes' | 'none';
 
 const CreateTreasureHuntScreen: React.FC = () => {
 
   let { id } = useParams<{ id: string }>();
+  let history = useHistory();
 
   const fetchActivityDefinition = async () => {
     return await api.getFindArtworkActivityDefinitionById(id);
@@ -55,8 +58,9 @@ const CreateTreasureHuntScreen: React.FC = () => {
   const [fetchActivityDefinitionStatus] = useAsyncRequest(fetchActivityDefinition, []);
   const [fetchActivityArtworksStatus] = useAsyncRequest(fetchActivityArtworks, [fetchActivityDefinitionStatus]);
   const [submitGameStatus] = useAsyncRequest(submitDefinition, [submitGame]);
-  const [activeStage, setActiveStage] = useState<number>(0);
+  const [activeStage, setActiveStage] = useState<number>(-1);
   const [treasureHuntDefinition, setTreasureHuntDefinition] = useState<InProgressTreasureHuntDefinition>({
+    treasureHuntTitle: '',
     treasureHuntAuthor: '',
     activityId: id,
     stages: [{
@@ -66,8 +70,8 @@ const CreateTreasureHuntScreen: React.FC = () => {
     }]
   });
 
-  const [activeStageStatus, setActiveStageStatus] = useState<StageStatus>('select-artwork');
-  const [displayedState, setDisplayedState] = useState<StageStatus>('select-artwork');
+  const [activeStageStatus, setActiveStageStatus] = useState<StageStatus>('input-basic-information');
+  const [displayedState, setDisplayedState] = useState<StageStatus>('input-basic-information');
 
   const handleAddStage = () => {
     if (fetchActivityDefinitionStatus.kind === 'success' && fetchActivityDefinitionStatus.result.kind === 'ok') {
@@ -149,8 +153,19 @@ const CreateTreasureHuntScreen: React.FC = () => {
 
   const handleSelectStage = (index: number) => {
     setActiveStage(index);
-    setActiveStageStatus('select-artwork');
-    setDisplayedState('select-artwork');
+    if (index === -1) {
+      setActiveStageStatus('input-basic-information');
+      setDisplayedState('input-basic-information');
+    }
+    else {
+      setActiveStageStatus('select-artwork');
+      setDisplayedState('select-artwork');
+    }
+  };
+
+  const isBasicInformationCompleted = () => {
+    return (!!treasureHuntDefinition.treasureHuntAuthor && treasureHuntDefinition.treasureHuntAuthor.length > 0 &&
+      !!treasureHuntDefinition.treasureHuntTitle && treasureHuntDefinition.treasureHuntTitle.length > 0);
   };
 
   const retrieveArtworkById = (artworkId?: string): ArtworkData | undefined => {
@@ -178,6 +193,7 @@ const CreateTreasureHuntScreen: React.FC = () => {
   useEffect(() => {
     if (submitGameStatus.kind === 'success' && submitGameStatus.result.kind === 'ok') {
       window.alert('Your treasure hunt was successfully uploaded to the linked data hub.');
+      history.push('/consumer/explore/' + id);
     }
   }, [submitGameStatus]);
 
@@ -193,13 +209,36 @@ const CreateTreasureHuntScreen: React.FC = () => {
     <Root>
       <GameOverviewPanel
         activeStage={activeStage}
-        stagesCompleted={treasureHuntDefinition.stages.map(isStageCompleted)}
+        stagesCompleted={[isBasicInformationCompleted(), ...treasureHuntDefinition.stages.map(isStageCompleted)]}
         minStages={fetchActivityDefinitionStatus.result.data[0].minStages}
         maxStages={fetchActivityDefinitionStatus.result.data[0].maxStages}
         onAddNewStage={handleAddStage}
         onStageSelected={handleSelectStage}
         onSubmitGame={() => setSubmitGame(true)}
       />
+
+      {displayedState === 'input-basic-information' &&
+        <Fader
+          show={displayedState === 'input-basic-information'}
+          transitionTime={1.25}
+          onAnimationCompleted={() => setActiveStageStatus(displayedState)}
+        >
+          <InputBasicInformation
+            key={activeStage || ''}
+            initialAuthor={treasureHuntDefinition.treasureHuntAuthor || ''}
+            initialTitle={treasureHuntDefinition.treasureHuntTitle || ''}
+            onAuthorChange={(author) => setTreasureHuntDefinition(prev => ({ ...prev, treasureHuntAuthor: author }))}
+            onTitleChange={(title) => setTreasureHuntDefinition(prev => ({ ...prev, treasureHuntTitle: title }))}
+            enabled={isBasicInformationCompleted()}
+            onNextClicked={() => {
+              setActiveStageStatus('select-artwork');
+              setDisplayedState('select-artwork');
+              setActiveStage(0);
+            }}
+          />
+        </Fader>
+      }
+
       {activeStageStatus === 'select-artwork' &&
         <Fader
           show={displayedState === 'select-artwork'}
@@ -255,7 +294,9 @@ const CreateTreasureHuntScreen: React.FC = () => {
             onAddNewPrize={handleAddPrize}
             onRemovePrize={(ind: number) => handleRemovePrize(ind)}
             onUpdatePrize={handleUpdatePrize}
-            onNextClicked={() => setDisplayedState('select-artwork')}
+            onNextClicked={() => {
+              setDisplayedState('select-artwork')
+            }}
             onBackClicked={() => setDisplayedState('write-hints')}
             canClickNext={activeStage + 1 < treasureHuntDefinition.stages.length}
           />

@@ -106,7 +106,6 @@ const TreasureHuntText = styled.p`
 const ExploreActivityScreen: React.FC = () => {
 
   let { id } = useParams<{ id: string }>();
-
   let history = useHistory();
 
   const fetchActivityDefinition = async () => {
@@ -162,7 +161,10 @@ const ExploreActivityScreen: React.FC = () => {
       </TreasureHuntListHeader>
       <TreasureHuntGrid>
         {hunts.map((elem, _) =>
-          <TreasureHuntBox onClick={() => history.push('/consumer/play/' + elem._id)}>
+          <TreasureHuntBox
+            onClick={() => history.push('/consumer/play/' + elem._id)}
+            key={elem._id}
+          >
             <TreasureHuntText>
               {elem.treasureHuntTitle || 'Unnamed Game'}
             </TreasureHuntText>

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 
 const FieldContainer = styled.div`
-  margin-top: 30px;
+  margin-top: 35px;
   flex-direction: column;
   display: flex;
   width: 600px;
