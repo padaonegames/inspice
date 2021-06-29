@@ -85,20 +85,18 @@ const ArtworkItemContainer = styled.div`
 `;
 
 const ArtworksContainer = styled.div`
-  margin: auto;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   width: 20%;
   height: 100%;
   padding-left: 2%;
+  padding-top: 20px;
 `;
 
 const ArtworkColumnContainer = styled.div`
   margin: auto;
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
   width: 100%;
   height: 80%;
   
@@ -238,18 +236,19 @@ const SelectedActivitiesPopup: React.FC<SelectedActivitiesPopupProps> = ({ artwo
           </NavIconContainer>
           {[0, 1, 2, 3].map(column =>
             <ArtworksContainer>
-              {artworks.slice((page + column) * 4, (page + 1 + column) * 4).map(elem => (
-                <ArtworkItemContainer key={elem.id}>
-                  <RemoveArtworkIcon onClick={() => onArtworkRemoved(elem.id)}/>
-                  <ArtworkMiniatureContainer>
-                    <ArtworkMiniature src={elem.src} />
-                  </ArtworkMiniatureContainer>
-                  <FieldsContainer>
-                    <TitleText>{elem.title}</TitleText>
-                    <AuthorText>{elem.author}</AuthorText>
-                  </FieldsContainer>
-                </ArtworkItemContainer>
-              ))}
+              {//artworks.slice((page + column) * 4, (page + 1 + column) * 4).map(elem => (
+                artworks.slice(page + (column * 4), page + 4 + (column * 4)).map(elem => (
+                  <ArtworkItemContainer key={elem.id}>
+                    <RemoveArtworkIcon onClick={() => onArtworkRemoved(elem.id)} />
+                    <ArtworkMiniatureContainer>
+                      <ArtworkMiniature src={elem.src} />
+                    </ArtworkMiniatureContainer>
+                    <FieldsContainer>
+                      <TitleText>{elem.title}</TitleText>
+                      <AuthorText>{elem.author}</AuthorText>
+                    </FieldsContainer>
+                  </ArtworkItemContainer>
+                ))}
             </ArtworksContainer>
           )}
           <NavIconContainer>
