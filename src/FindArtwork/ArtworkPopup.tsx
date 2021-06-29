@@ -6,7 +6,7 @@ import styled, { keyframes } from 'styled-components';
 import { Mouse } from '@styled-icons/material-outlined/Mouse';
 import { ArtworkData, StageData } from '../services/commonDefinitions';
 import { PlusCircle } from '@styled-icons/boxicons-regular/PlusCircle';
-import { Gift } from '@styled-icons/boxicons-solid/Gift';
+import { Medal } from '@styled-icons/remix-line/Medal';
 import { ControllerNext } from '@styled-icons/entypo/ControllerNext';
 import { useState } from 'react';
 import Popup from './PopUp';
@@ -88,13 +88,13 @@ const CardBackground = styled.div<CardBackgroundProps>`
 `;
 
 
-const GiftBox = styled(Gift)`
+const PrizeBox = styled(Medal)`
   height: 6vh;
   width: auto;
   align-self: center;
 `;
 
-const GiftContainer = styled.button`
+const PrizeContainer = styled.button`
   position: relative;
   margin-left: 0.2vw;
   margin-right: 0.2vw;
@@ -107,12 +107,12 @@ const GiftContainer = styled.button`
 
 type Props = {
   flipped: boolean;
-  gift: string[];
+  prize: string[];
   artworkData: ArtworkData;
 };
 
 
-const ArtworkPopup: React.FC<Props> = ({ flipped, gift, artworkData }) => {
+const ArtworkPopup: React.FC<Props> = ({ flipped, prize, artworkData }) => {
 
   const { t, i18n } = useTranslation('app');
   const [modalOpen, setModalOpen] = useState<boolean>(false);
@@ -127,15 +127,15 @@ const ArtworkPopup: React.FC<Props> = ({ flipped, gift, artworkData }) => {
         <NameText>
           {t('WellDone')}
         </NameText>
-        <GiftContainer
+        <PrizeContainer
           onClick={() => { setModalOpen(true) }}>
-          <GiftBox />
-        </GiftContainer>
+          <PrizeBox />
+        </PrizeContainer>
       </RevealText>
       <Modal modalOpen={modalOpen}>
         <Popup
           setModalOpen={setModalOpen}
-          gift={gift}
+          prize={prize}
           artworkData={artworkData}
         />
       </Modal>
