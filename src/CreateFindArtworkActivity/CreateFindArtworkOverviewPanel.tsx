@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 import ProgressLine from './ProgressLine';
@@ -40,14 +41,17 @@ const CreateFindArtworkOverviewPanel: React.FC<CreateFindArtworkOverviewPanelPro
   onStageSelected
 }) => {
 
+  const { t } = useTranslation('app');
+  
   return (
     <Root>
       <UpperRowContainer>
         <ProgressLine
-          currentStage={activeStage}
-          stages={stages}
-          onStageSelected={onStageSelected}
-          onSubmitGame={onSubmitGame}
+          currentItem={activeStage}
+          items={stages}
+          onItemSelected={onStageSelected}
+          onSubmit={onSubmitGame}
+          finalItemCaption={t('submitActivity')}
         />
       </UpperRowContainer>
     </Root>

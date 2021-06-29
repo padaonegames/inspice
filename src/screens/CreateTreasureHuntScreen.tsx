@@ -58,7 +58,7 @@ const CreateTreasureHuntScreen: React.FC = () => {
   const [fetchActivityDefinitionStatus] = useAsyncRequest(fetchActivityDefinition, []);
   const [fetchActivityArtworksStatus] = useAsyncRequest(fetchActivityArtworks, [fetchActivityDefinitionStatus]);
   const [submitGameStatus] = useAsyncRequest(submitDefinition, [submitGame]);
-  const [activeStage, setActiveStage] = useState<number>(0);
+  const [activeStage, setActiveStage] = useState<number>(-1);
   const [treasureHuntDefinition, setTreasureHuntDefinition] = useState<InProgressTreasureHuntDefinition>({
     treasureHuntTitle: '',
     treasureHuntAuthor: '',
@@ -153,7 +153,7 @@ const CreateTreasureHuntScreen: React.FC = () => {
 
   const handleSelectStage = (index: number) => {
     setActiveStage(index);
-    if (index === 0) {
+    if (index === -1) {
       setActiveStageStatus('input-basic-information');
       setDisplayedState('input-basic-information');
     }
@@ -161,6 +161,11 @@ const CreateTreasureHuntScreen: React.FC = () => {
       setActiveStageStatus('select-artwork');
       setDisplayedState('select-artwork');
     }
+  };
+
+  const isBasicInformationCompleted = () => {
+    return (!!treasureHuntDefinition.treasureHuntAuthor && treasureHuntDefinition.treasureHuntAuthor.length > 0 &&
+      !!treasureHuntDefinition.treasureHuntTitle && treasureHuntDefinition.treasureHuntTitle.length > 0);
   };
 
   const retrieveArtworkById = (artworkId?: string): ArtworkData | undefined => {
@@ -175,7 +180,7 @@ const CreateTreasureHuntScreen: React.FC = () => {
       const definition = fetchActivityDefinitionStatus.result.data[0];
       setTreasureHuntDefinition(prev => ({
         ...prev,
-        stages: Array.from(Array(definition.minStages).keys()).map(_ => ({
+        stages: Array.from(Array(definition.minStages + 1).keys()).map(_ => ({
           artworkId: undefined,
           clues: Array.from(Array(definition.minCluesPerStage).keys()).map(_ => ''),
           multimediaData: [{ kind: 'Text', text: '' }]
@@ -204,7 +209,7 @@ const CreateTreasureHuntScreen: React.FC = () => {
     <Root>
       <GameOverviewPanel
         activeStage={activeStage}
-        stagesCompleted={treasureHuntDefinition.stages.map(isStageCompleted)}
+        stagesCompleted={[isBasicInformationCompleted(), ...treasureHuntDefinition.stages.map(isStageCompleted)]}
         minStages={fetchActivityDefinitionStatus.result.data[0].minStages}
         maxStages={fetchActivityDefinitionStatus.result.data[0].maxStages}
         onAddNewStage={handleAddStage}
@@ -224,7 +229,12 @@ const CreateTreasureHuntScreen: React.FC = () => {
             initialTitle={treasureHuntDefinition.treasureHuntTitle || ''}
             onAuthorChange={(author) => setTreasureHuntDefinition(prev => ({ ...prev, treasureHuntAuthor: author }))}
             onTitleChange={(title) => setTreasureHuntDefinition(prev => ({ ...prev, treasureHuntTitle: title }))}
-            onNextClicked={() => setDisplayedState('write-hints')}
+            enabled={isBasicInformationCompleted()}
+            onNextClicked={() => {
+              setActiveStageStatus('select-artwork');
+              setDisplayedState('select-artwork');
+              setActiveStage(0);
+            }}
           />
         </Fader>
       }
@@ -284,7 +294,9 @@ const CreateTreasureHuntScreen: React.FC = () => {
             onAddNewPrize={handleAddPrize}
             onRemovePrize={(ind: number) => handleRemovePrize(ind)}
             onUpdatePrize={handleUpdatePrize}
-            onNextClicked={() => setDisplayedState('select-artwork')}
+            onNextClicked={() => {
+              setDisplayedState('select-artwork')
+            }}
             onBackClicked={() => setDisplayedState('write-hints')}
             canClickNext={activeStage + 1 < treasureHuntDefinition.stages.length}
           />

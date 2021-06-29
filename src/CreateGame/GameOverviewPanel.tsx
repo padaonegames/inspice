@@ -1,9 +1,9 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
+import ProgressLine from '../CreateFindArtworkActivity/ProgressLine';
 
 import AddStagePanel from './AddStagePanel';
-import RoadLine from './RoadLine';
-import SubmitGamePanel from './SubmitGamePanel';
 
 const Root = styled.div`
   padding-top: 1vh;
@@ -48,21 +48,21 @@ const GameOverviewPanel: React.FC<GameOverviewPanelProps> = ({
   onStageSelected
 }) => {
 
+  const { t } = useTranslation('app');
+  
   return (
     <Root>
       <UpperRowContainer>
-        <RoadLine
-          currentStage={activeStage}
-          stagesCompleted={stagesCompleted}
-          onStageSelected={onStageSelected}
+        <ProgressLine
+          currentItem={activeStage + 1}
+          items={stagesCompleted.map((elem, index) => ({ name: index === 0 ? 'BASIC INFORMATION' : `PHASE ${index}`, completed: elem }))}
+          onItemSelected={(index) => onStageSelected(index - 1)}
+          onSubmit={onSubmitGame}
+          finalItemCaption={t('submitGame')}
         />
         <AddStagePanel
           enabled={stagesCompleted.length < maxStages}
           onButtonClicked={onAddNewStage}
-        />
-        <SubmitGamePanel
-          enabled={stagesCompleted.every(elem => elem) && stagesCompleted.length >= minStages}
-          onButtonClicked={onSubmitGame}
         />
       </UpperRowContainer>
     </Root>

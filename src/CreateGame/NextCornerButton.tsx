@@ -11,7 +11,7 @@ interface IconProps {
 
 const NextCornerIcon = styled(NextPlan) <IconProps>`
   color: ${props => props.color};
-  height: ${props => props.size === 'medium' ? 7.5 : 5}vh;
+  height: ${props => props.size === 'medium' ? 60 : 50}px;
   align-self: center;
   margin-bottom: 1vh;
 `;
@@ -52,11 +52,11 @@ const NextCorner = styled.div<CornerProps>`
   transition: transform linear 0.3s;
 
   ${NextCornerText} {
-    color: ${props => props.active ? '#F3F3F3' : 'darkgray'}
+    ${props => !props.active && `color: #a9a9a9;`}
   }
 
   ${NextCornerIcon} {
-    color: ${props => props.active ? '#F3F3F3' : 'darkgray'}
+    ${props => !props.active && `color: #a9a9a9;`}
   }
 
   &:hover {
@@ -65,11 +65,11 @@ const NextCorner = styled.div<CornerProps>`
     transition: transform linear 0.3s;
 
     ${NextCornerText} {
-      color: ${props => props.active ? '#F3F3F3' : 'darkgray'}
+      ${props => !props.active && `color: #a9a9a9;`}
     }
   
     ${NextCornerIcon} {
-      color: ${props => props.active ? '#F3F3F3' : 'darkgray'}
+      ${props => !props.active && `color: #a9a9a9;`}
     }
   }
 `;
@@ -96,7 +96,7 @@ const NextCornerButton: React.FC<NextCornerButtonProps> = ({
   color = '#F3F3F3',
 }) => {
 
-  const { t, i18n } = useTranslation('app');
+  const { t } = useTranslation('app');
 
   return (
     <NextCorner
