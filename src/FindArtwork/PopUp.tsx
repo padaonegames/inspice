@@ -153,11 +153,10 @@ const RevealText = styled.div`
   justify-content: right;
   align-content: right;
   flex-direction: column-reverse;
-  word-wrap: break-word;
   position: absolute;
   align-self: auto;
   padding: 5%;
-  width: 90%;
+  width: 25%;
   height: 100%;
   left:10px;
 `;
@@ -169,6 +168,7 @@ const NameText = styled.h3`
   font-weight: 850;
   color: white;
   margin-bottom: 2vh;
+  flex-wrap:wrap;
 `;
 
 const InformationText = styled.p`
