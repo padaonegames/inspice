@@ -349,7 +349,7 @@ const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSele
           placeholder="Search by title..."
           onChange={(e) => setSearchText(e.target.value)}
           onKeyPress={(event) => {
-            if(event.key === 'Enter') {
+            if (event.key === 'Enter') {
               handleApplyKeywordsFilter(searchText);
             }
           }}

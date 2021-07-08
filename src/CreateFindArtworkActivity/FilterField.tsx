@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import FilterPopup from './FilterPopup';
 
 interface RootProps {
   bottomBorder: boolean;
@@ -62,6 +63,17 @@ const OptionText = styled.span`
   font-weight: 1000;
   font-family: Raleway;
 `;
+const OptionSeeAll = styled.span`
+  padding: 3% ;
+  color: #6b6b6b;
+  letter-spacing: +1.5px;
+  font-size: 0.8em;
+  font-weight: 1000;
+  font-family: Raleway;
+  :hover{
+    cursor: pointer;
+  }
+`;
 
 const ExpandIcon = styled.span`
   align-self: center;
@@ -92,6 +104,7 @@ const FilterField: React.FC<FilterFieldProps> = ({
 }) => {
 
   const [opened, setOpened] = useState<boolean>(false);
+  const [FilterPopupOpen, setFilterPopupOpen] = useState<boolean>(false);
 
   return (
     <Root bottomBorder={bottomBorder} key={filterField}>
@@ -107,13 +120,25 @@ const FilterField: React.FC<FilterFieldProps> = ({
         </ExpandIcon>
       </FieldHeader>
       {opened &&
-        filterOptions.sort().slice(0, maxOptionsShown).map((elem, i) =>
+        filterOptions.sort().slice(0, 5).map((elem, i) =>
           <OptionContainer key={elem} onClick={() => onFilterSelected(elem)}>
             <OptionText>
               {elem} ({filterCounts.length > i && filterCounts[i]})
             </OptionText>
           </OptionContainer>
         )}
+      {opened && <OptionSeeAll
+        onClick={() => setFilterPopupOpen(true)}>
+        SEE ALL ▶</OptionSeeAll>}
+      {FilterPopupOpen &&
+        <FilterPopup
+          filterField={filterField}
+          filterOptions={filterOptions}
+          filterCounts={filterCounts}
+          onFilterSelected={onFilterSelected}
+          setFilterPopupOpen={setFilterPopupOpen}
+        />
+      }
     </Root>
   );
 };
