@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from "react";
 import ReactDOM from 'react-dom';
 import styled from 'styled-components';
 import { Search } from '@styled-icons/boxicons-regular/Search';
+import { Close } from '@styled-icons/evaicons-solid/Close';
+
 
 const Background = styled.div`
 background-color:rgba(0, 0, 0, 0.5);
@@ -26,6 +28,23 @@ const Root = styled.div`
   top: 0;
   background-color: rgb(255, 253, 253);
   z-index:5;
+`;
+
+const CloseIcon = styled(Close)`
+  color: lightgray;
+  cursor: pointer;
+  top:0;
+  height: 7.5vh;
+  align-self: flex-end;
+  margin-bottom: 1vh;
+  transform: scale(0.7);
+  //transition: transform 0.5s ease;
+  position: absolute;
+  &:hover {
+    //transform: scale(1.1);
+    //transition: transform 0.5s ease;
+    color: darkgray;
+  }
 `;
 
 const TitleText = styled.h2`
@@ -117,54 +136,81 @@ const OptionText = styled.span`
 `;
 
 interface FilterPopupProps {
-    filterField: string;
-    filterOptions: string[];
-    filterCounts: number[];
-    onFilterSelected: (filter: string) => void;
-    setFilterPopupOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  filterField: string;
+  filterOptions: string[];
+  filterCounts: number[];
+  onFilterSelected: (filter: string) => void;
+  setFilterPopupOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const FilterPopup: React.FC<FilterPopupProps> = ({
-    filterField,
-    filterOptions,
-    filterCounts,
-    onFilterSelected,
-    setFilterPopupOpen,
+  filterField,
+  filterOptions,
+  filterCounts,
+  onFilterSelected,
+  setFilterPopupOpen,
 }) => {
-    return ReactDOM.createPortal(
-        <>
-            <Background onClick={() => setFilterPopupOpen(false)} />
-            <Root>
-                <TitleText>
-                    {filterField}
-                </TitleText>
-                <SearchArea>
-                    <SearchBar
-                        placeholder="Search by value..."
-                    // onChange={(e) => setSearchText(e.target.value)}
-                    // onKeyPress={(event) => {
-                    //   if (event.key === 'Enter') {
-                    //     handleApplyKeywordsFilter(searchText);
-                    //   }
-                    //  }}
-                    />
-                    <SearchButton>
-                        <SearchIcon />
-                    </SearchButton>
-                </SearchArea>
-                <OptionArea>
-                    {
-                        filterOptions.sort().map((elem, i) =>
-                            <OptionContainer key={elem} onClick={() => onFilterSelected(elem)}>
-                                <OptionText>
-                                    {elem.length > 50 ? elem.slice(0, 50).concat(' ...') : elem} ({filterCounts.length > i && filterCounts[i]})
-                                </OptionText>
-                            </OptionContainer>
-                        )}
-                </OptionArea>
-            </Root>
-        </>
-        , document.body);
+  const [searchText, setSearchText] = useState<string>('');
+  const [filters, setFilters] = useState<string[]>(filterOptions);
+  const [counts, setCounts] = useState<number[]>(filterCounts);
+
+  const handleSearch = (keywords: string) => {
+    setFilters([]);
+    setCounts([]);
+    var keys: string[] = keywords.split(' ');
+    var txt: string = keywords;
+    keys.forEach((key) => {
+      txt = txt.concat("|").concat(key);
+    })
+    var regTxt = new RegExp(txt, "i");
+    filterOptions.forEach((filter, index) => {
+      if ((filter.match(regTxt))) {
+        setFilters(prev => prev.concat([filterOptions[index]]));
+        setCounts(prev => prev.concat([filterCounts[index]]));
+      }
+    })
+  };
+
+  return ReactDOM.createPortal(
+    <>
+      <Background onClick={() => setFilterPopupOpen(false)} />
+      <Root>
+        <TitleText>
+          {filterField}
+        </TitleText>
+        <CloseIcon onClick={() => setFilterPopupOpen(false)} />
+        <SearchArea>
+          <SearchBar
+            placeholder="Search by value..."
+            onChange={(e) => setSearchText(e.target.value)}
+            onKeyPress={(event) => {
+              if (event.key === 'Enter') {
+                handleSearch(searchText);
+              }
+            }}
+          />
+          <SearchButton>
+            <SearchIcon onClick={() => handleSearch(searchText)} />
+          </SearchButton>
+        </SearchArea>
+        <OptionArea>
+          {
+            filters.sort().map((elem, i) =>
+              <OptionContainer key={elem} onClick={() => onFilterSelected(elem)}>
+                <OptionText>
+                  {elem.length > 50 ? elem.slice(0, 50).concat(' ...') : elem} ({counts.length > i && counts[i]})
+                </OptionText>
+              </OptionContainer>
+            )}
+          {
+            (filters.length === 0 &&
+              <OptionText>No Record Found</OptionText>
+            )
+          }
+        </OptionArea>
+      </Root>
+    </>
+    , document.body);
 };
 
 export default FilterPopup;
