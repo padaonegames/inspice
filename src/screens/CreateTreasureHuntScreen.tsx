@@ -9,7 +9,7 @@ import WritePrizes from '../CreateGame/WriteGifts';
 import { ArtworkData, CompletedTreasureHuntDefinition, InProgressTreasureHuntDefinition, InProgressTreasureHuntStage } from '../services/commonDefinitions';
 import { useParams } from 'react-router';
 import { useAsyncRequest } from '../services/useAsyncRequest';
-import { api } from '../services';
+import { api, artworksService } from '../services';
 import { useHistory } from 'react-router-dom';
 import InputBasicInformation from '../CreateGame/InputBasicInformation';
 
@@ -52,7 +52,7 @@ const CreateTreasureHuntScreen: React.FC = () => {
     if (!(fetchActivityDefinitionStatus.kind === 'success' && fetchActivityDefinitionStatus.result.kind === 'ok')) {
       return Promise.reject();
     }
-    return api.fetchArtworks({ filter: { ids: fetchActivityDefinitionStatus.result.data[0].artworks } });
+    return artworksService.fetchArtworks({ filter: { ids: fetchActivityDefinitionStatus.result.data[0].artworks } });
   };
 
   const [fetchActivityDefinitionStatus] = useAsyncRequest(fetchActivityDefinition, []);

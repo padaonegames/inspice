@@ -12,7 +12,7 @@ export interface ArtworkData {
   info: string; // cualquier otro tipo de info adicional
 }
 
-export type ArtworkFieldMapping = Record<keyof ArtworkData, string>;
+export type ArtworkFieldMapping = Record<keyof ArtworkData, string[]>;
 
 export interface GetArtworkByIdResponse {
   artwork?: ArtworkData;

@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import FindArtwork from '../FindArtwork/FindArtwork';
 import Fader from '../components/Fader';
 import { useParams } from 'react-router-dom';
-import { api } from '../services';
+import { api, artworksService } from '../services';
 import { useAsyncRequest } from '../services/useAsyncRequest';
 
 const Root = styled.div`
@@ -24,7 +24,7 @@ const PlayTreasureHuntScreen: React.FC = () => {
     if (!(fetchActivityDefinitionStatus.kind === 'success' && fetchActivityDefinitionStatus.result.kind === 'ok')) {
       return Promise.reject();
     }
-    return api.fetchArtworks({ filter: { ids: fetchActivityDefinitionStatus.result.data[0].artworks } });
+    return artworksService.fetchArtworks({ filter: { ids: fetchActivityDefinitionStatus.result.data[0].artworks } });
   };
 
   const fetchActivityDefinition = async () => {

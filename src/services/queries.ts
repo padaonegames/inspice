@@ -1,3 +1,5 @@
+import { ArtworkFieldMapping } from "./commonDefinitions";
+
 export interface GetArtworksFilter {
   id?: string; // exact
   ids?: string[]; // multiple artworks
@@ -26,6 +28,40 @@ const filterRegexField = (ids: string[], fieldName: string) => {
   return res;
 };
 
+const unfoldFieldQuery = (fieldName: string, mappingSequence: string[], nextTerm: string = 'id'): string => {
+  if (mappingSequence.length === 1) {
+    // base case: one element in mapping sequence, query directly (property containing mappingSequence term)
+    return `
+      ?${nextTerm} ?aux${fieldName} ?${fieldName} .
+      FILTER regex(str(?aux${fieldName}), "${mappingSequence[0]}", "i")
+    `;
+  }
+  else {
+    // recursive case: more than one element in mapping sequence, add link to chain and apply function again over sliced sequence
+    return `
+      ?${nextTerm} ?pred${fieldName}${mappingSequence.length} ?obj${fieldName}${mappingSequence.length} .
+      FILTER regex(str(?pred${fieldName}${mappingSequence.length}), "${mappingSequence[0]}", "i")
+      ${unfoldFieldQuery(fieldName, mappingSequence.slice(1, undefined), `obj${fieldName}${mappingSequence.length}`)}
+    `;
+  }
+};
+
+const graphPatternRetrieveArtworks = (options: GetArtworksOptions, mapping: ArtworkFieldMapping) => `
+  ${unfoldFieldQuery('author', mapping.author)}
+  ${options.filter?.author ? `FILTER regex(str(?author), "${options.filter.author}", "i")` : ''}
+  ${unfoldFieldQuery('title', mapping.title)}
+  ${unfoldFieldQuery('date', mapping.date)}
+  ${options.filter?.date ? `FILTER regex(str(?date), "${options.filter.date}", "i")` : ''}
+  ${unfoldFieldQuery('info', mapping.info)}
+  ${options.filter?.info ? `FILTER regex(str(?info), "${options.filter.info}", "i")` : ''}
+  ${unfoldFieldQuery('location', mapping.location)}
+  ${unfoldFieldQuery('src', mapping.src)}
+  ${options.filter?.id ? `FILTER regex(str(?id), "${options.filter.id}", "i")` : ''}
+  ${options.filter?.ids ? filterRegexField(options.filter?.ids, 'id') : ''}
+  ${options.filter?.titleKeywords ? filterRegexField(options.filter?.titleKeywords.split(' '), 'title') : ''}
+`;
+
+/*
 const graphPatternRetrieveArtworks = (options: GetArtworksOptions) => `
   ?id <http://schema.org/author> ?authorUri .
   ?authorUri <http://www.w3.org/2000/01/rdf-schema#label> ?author .
@@ -42,14 +78,15 @@ const graphPatternRetrieveArtworks = (options: GetArtworksOptions) => `
   ${options.filter?.ids ? filterRegexField(options.filter?.ids, 'id') : ''}
   ${options.filter?.titleKeywords ? filterRegexField(options.filter?.titleKeywords.split(' '), 'title') : ''}
 `;
+*/
 
-export const retrieveAllArtworksQuery = (options: GetArtworksOptions) => `
+export const retrieveAllArtworksQuery = (options: GetArtworksOptions, mapping: ArtworkFieldMapping) => `
   PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
   PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
   SELECT * {
     {
       SELECT ?id ?title ?author ?date ?info ?location ?src WHERE {
-        ${graphPatternRetrieveArtworks(options)}
+        ${graphPatternRetrieveArtworks(options, mapping)}
       }
       ${options.sortingField ? `ORDER BY (LCASE(?${options.sortingField}))` : ''}
       ${(options.pageSize && options.pageNumber) ? `
@@ -59,59 +96,53 @@ export const retrieveAllArtworksQuery = (options: GetArtworksOptions) => `
     }
     UNION
     {
-      SELECT (count(*) as ?count) { ${graphPatternRetrieveArtworks(options)} }
+      SELECT (count(*) as ?count) { ${graphPatternRetrieveArtworks(options, mapping)} }
     }
   }
 `;
 
-export const retrieveDistinctAuthorValuesQuery = (artworksSubset?: string[]) => `
+export const retrieveDistinctAuthorValuesQuery = (mapping: ArtworkFieldMapping, artworksSubset?: string[]) => `
   PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
   PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
   SELECT ?author (COUNT(?author) as ?count) WHERE {
-    ?id <http://schema.org/author> ?authorUri .
-    ?authorUri <http://www.w3.org/2000/01/rdf-schema#label> ?author .
-    ?id <https://w3id.org/arco/ontology/context-description/hasTitle> ?title .
-    ?id <http://schema.org/dateCreated> ?date .
-    ?id <http://schema.org/material> ?info .
-    ?id <https://w3id.org/arco/ontology/arco/hasRelatedAgency> ?location .
-    ?id <http://schema.org/image> ?imageUri .
-    ?imageUri <http://schema.org/url> ?src .
+    ${unfoldFieldQuery('author', mapping.author)}
+    ${unfoldFieldQuery('title', mapping.title)}
+    ${unfoldFieldQuery('date', mapping.date)}
+    ${unfoldFieldQuery('info', mapping.info)}
+    ${unfoldFieldQuery('location', mapping.location)}
+    ${unfoldFieldQuery('src', mapping.src)}
     ${artworksSubset ? filterRegexField(artworksSubset, 'id') : ''}
   }
   GROUP BY ?author
   ORDER BY (LCASE(?author))
 `;
 
-export const retrieveDistinctDateValuesQuery = (artworksSubset?: string[]) => `
+export const retrieveDistinctDateValuesQuery = (mapping: ArtworkFieldMapping, artworksSubset?: string[]) => `
   PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
   PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
   SELECT ?date (COUNT(?date) as ?count) WHERE {
-    ?id <http://schema.org/author> ?authorUri .
-    ?authorUri <http://www.w3.org/2000/01/rdf-schema#label> ?author .
-    ?id <https://w3id.org/arco/ontology/context-description/hasTitle> ?title .
-    ?id <http://schema.org/dateCreated> ?date .
-    ?id <http://schema.org/material> ?info .
-    ?id <https://w3id.org/arco/ontology/arco/hasRelatedAgency> ?location .
-    ?id <http://schema.org/image> ?imageUri .
-    ?imageUri <http://schema.org/url> ?src .
+    ${unfoldFieldQuery('author', mapping.author)}
+    ${unfoldFieldQuery('title', mapping.title)}
+    ${unfoldFieldQuery('date', mapping.date)}
+    ${unfoldFieldQuery('info', mapping.info)}
+    ${unfoldFieldQuery('location', mapping.location)}
+    ${unfoldFieldQuery('src', mapping.src)}
     ${artworksSubset ? filterRegexField(artworksSubset, 'id') : ''}
   }
   GROUP BY ?date
   ORDER BY (LCASE(?date))
 `;
 
-export const retrieveDistinctInfoValuesQuery = (artworksSubset?: string[]) => `
+export const retrieveDistinctInfoValuesQuery = (mapping: ArtworkFieldMapping, artworksSubset?: string[]) => `
   PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
   PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
   SELECT ?info (COUNT(?info) as ?count) WHERE {
-    ?id <http://schema.org/author> ?authorUri .
-    ?authorUri <http://www.w3.org/2000/01/rdf-schema#label> ?author .
-    ?id <https://w3id.org/arco/ontology/context-description/hasTitle> ?title .
-    ?id <http://schema.org/dateCreated> ?date .
-    ?id <http://schema.org/material> ?info .
-    ?id <https://w3id.org/arco/ontology/arco/hasRelatedAgency> ?location .
-    ?id <http://schema.org/image> ?imageUri .
-    ?imageUri <http://schema.org/url> ?src .
+    ${unfoldFieldQuery('author', mapping.author)}
+    ${unfoldFieldQuery('title', mapping.title)}
+    ${unfoldFieldQuery('date', mapping.date)}
+    ${unfoldFieldQuery('info', mapping.info)}
+    ${unfoldFieldQuery('location', mapping.location)}
+    ${unfoldFieldQuery('src', mapping.src)}
     ${artworksSubset ? filterRegexField(artworksSubset, 'id') : ''}
   }
   GROUP BY ?info
