@@ -24,6 +24,7 @@ const PlayTreasureHuntScreen: React.FC = () => {
     if (!(fetchActivityDefinitionStatus.kind === 'success' && fetchActivityDefinitionStatus.result.kind === 'ok')) {
       return Promise.reject();
     }
+    console.log(`Fetch activity artworks from: ${fetchActivityDefinitionStatus.result.data[0].artworks}`);
     return artworksService.fetchArtworks({ filter: { ids: fetchActivityDefinitionStatus.result.data[0].artworks } });
   };
 
@@ -38,10 +39,6 @@ const PlayTreasureHuntScreen: React.FC = () => {
   const [fetchTreasureHuntDefinitionStatus] = useAsyncRequest(fetchTreasureHuntDefinition, []);
   const [fetchActivityDefinitionStatus] = useAsyncRequest(fetchActivityDefinition, [fetchTreasureHuntDefinitionStatus]);
   const [fetchActivityArtworksStatus] = useAsyncRequest(fetchActivityArtworks, [fetchActivityDefinitionStatus]);
-
-  useEffect(() => {
-    console.log(fetchTreasureHuntDefinitionStatus);
-  }, [fetchTreasureHuntDefinitionStatus]);
 
   const [activeStage, setActiveStage] = useState<number>(0);
   const [showPanel, setShowPanel] = useState<boolean>(true);

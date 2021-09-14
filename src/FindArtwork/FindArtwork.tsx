@@ -143,6 +143,7 @@ const FindArtwork: React.FC<FindArtworkProps> = ({
     onPointsUpdate(-value);
   };
 
+  console.log(imagesData);
   const displayedArtworks = imagesData.slice(displayIndex, displayIndex + 6);
   return (
     <Root>
@@ -177,7 +178,7 @@ const FindArtwork: React.FC<FindArtworkProps> = ({
             <ArtworksContainer>
               {imagesData.slice((displayIndex + (column * 2)), (displayIndex + 2 + (column * 2))).map((im, i) => (
                 <ArtworkCard
-                  key={im.id}
+                  key={im.id + im.author}
                   artworkData={im}
                   flipped={flippedCards[(column * 2) + i + displayIndex]}
                   status={im.id === stageData.artworkId ?
