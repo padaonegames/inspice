@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import ArtworkCard from '../FindArtwork/ArtworkCard';
 
@@ -143,8 +143,6 @@ const FindArtwork: React.FC<FindArtworkProps> = ({
     onPointsUpdate(-value);
   };
 
-  console.log(imagesData);
-  const displayedArtworks = imagesData.slice(displayIndex, displayIndex + 6);
   return (
     <Root>
       <UpperRowContainer>
@@ -175,7 +173,7 @@ const FindArtwork: React.FC<FindArtworkProps> = ({
         />
         <ArtworkGrid>
           {[0, 1, 2].map(column =>
-            <ArtworksContainer>
+            <ArtworksContainer key={column}>
               {imagesData.slice((displayIndex + (column * 2)), (displayIndex + 2 + (column * 2))).map((im, i) => (
                 <ArtworkCard
                   key={im.id + im.author}

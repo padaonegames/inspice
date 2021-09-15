@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { Spinner2 } from '@styled-icons/icomoon/Spinner2';
+import { useState } from 'react';
 
 const Root = styled.div`
-  top: 0;
-  left: 0;
+  top: 0%;
+  left: 0%;
   width: 100%;
   height: 100%;
   z-index: 1000;
@@ -22,17 +23,19 @@ const SpinAnimation = keyframes`
 `;
 
 const ContentContainer = styled.div`
-  height: 100px;
-  width: 75px;
+  height: 150px;
+  width: 250px;
+  text-align: center;
   position: absolute;
-  top: 7.5%;
-  left: 45%;
+  top: calc(50% - 75px);
+  left: calc(50% - 125px);
 `;
 
 const SpinnerIcon = styled(Spinner2)`
   color: white;
   height: 65px;
   width: auto;
+  align-self: center;
 
   animation: ${SpinAnimation} 2s linear infinite;
 `;
@@ -40,7 +43,7 @@ const SpinnerIcon = styled(Spinner2)`
 const LoadingText = styled.div`
   display: table-cell;
   vertical-align: middle;
-  height: 35px;
+  height: 85px;
   width: 100%;
   font-size: 1em;
   font-weight: 500;
@@ -48,15 +51,30 @@ const LoadingText = styled.div`
   font-family: Raleway;
   color: white;
   text-align: center;
+  align-self: center;
 `;
 
-const LoadingOverlay: React.FC = () => {
+interface LoadingOverlayProps {
+  message?: string;
+};
+
+const LoadingOverlay: React.FC<LoadingOverlayProps> = ({ message = 'Loading' }) => {
+
+  const [numDots, setNumdots] = useState<number>(1);
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setNumdots(prev => (prev + 1) % 4);
+    }, 500);
+
+    return () => clearInterval(intervalId);
+  }, []);
 
   return (
     <Root>
       <ContentContainer>
         <SpinnerIcon />
-        <LoadingText>Loading...</LoadingText>
+        <LoadingText>{message + '.'.repeat(numDots)}</LoadingText>
       </ContentContainer>
     </Root>
   );

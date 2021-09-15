@@ -137,12 +137,12 @@ const SelectArtwork: React.FC<SelectArtworkProps> = ({
         <ArtworkListDottedLine />
         <ArtworkContainer>
           {imagesData.map((img) => (
-            <div key={img.id + '_c'}>
+            <div key={img.id + img.author}>
               <ArtworkListItem>
                 <ArtworkListText
                   onClick={() => onArtworkSelected(img.id)}
                   active={selectedArtwork !== undefined && img.id === selectedArtwork}
-                  key={img.id}
+                  key={img.id + img.author + '_alt'}
                 >
                   {img.title}
                 </ArtworkListText>
@@ -150,7 +150,7 @@ const SelectArtwork: React.FC<SelectArtworkProps> = ({
                   <ArtworkSelectedIcon />
                 }
               </ArtworkListItem>
-              <ArtworkListDottedLine key={img.id + '_d'} />
+              <ArtworkListDottedLine key={img.id + img.author + '_aldl'} />
             </div>
           ))}
         </ArtworkContainer>

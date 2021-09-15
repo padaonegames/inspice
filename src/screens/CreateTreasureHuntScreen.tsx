@@ -12,6 +12,7 @@ import { useAsyncRequest } from '../services/useAsyncRequest';
 import { api, artworksService } from '../services';
 import { useHistory } from 'react-router-dom';
 import InputBasicInformation from '../CreateGame/InputBasicInformation';
+import LoadingOverlay from '../components/LoadingOverlay';
 
 const Root = styled.div`
   display: flex;
@@ -198,11 +199,11 @@ const CreateTreasureHuntScreen: React.FC = () => {
   }, [submitGameStatus]);
 
   if (!(fetchActivityDefinitionStatus.kind === 'success' && fetchActivityDefinitionStatus.result.kind === 'ok')) {
-    return <p>Fetching activity definition...</p>;
+    return <LoadingOverlay message='Fetching activity definition' />;
   }
 
   if (!(fetchActivityArtworksStatus.kind === 'success' && fetchActivityArtworksStatus.result.kind === 'ok')) {
-    return <p>Fetching activity artworks...</p>;
+    return <LoadingOverlay message='Fetching activity artworks' />;
   }
 
   return (

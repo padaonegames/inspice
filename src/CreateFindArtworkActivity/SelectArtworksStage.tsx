@@ -424,7 +424,7 @@ const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSele
             </ResultsFiltersAndArtworks>
 
           </ResultsLowerPanel>
-          {loading && <LoadingOverlay />}
+          {loading && <LoadingOverlay message='Loading'/>}
         </DisplayPanel>
       ) || 'Loading...'}
       <VerticalSeparator />
