@@ -124,7 +124,7 @@ interface ClueHolderProps {
 
 const ClueHolder: React.FC<ClueHolderProps> = ({ clues, onClueOpened }) => {
 
-  const { t, i18n } = useTranslation('app');
+  const { t } = useTranslation('app');
 
   const [selectedClue, setSelectedClue] = useState<number>(0);
   const [openedClues, setOpenedClues] = useState<boolean[]>(() => {

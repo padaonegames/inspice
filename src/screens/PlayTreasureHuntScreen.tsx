@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import FindArtwork from '../FindArtwork/FindArtwork';
 import Fader from '../components/Fader';
 import { useParams } from 'react-router-dom';
 import { api, artworksService } from '../services';
 import { useAsyncRequest } from '../services/useAsyncRequest';
+import LoadingOverlay from '../components/LoadingOverlay';
 
 const Root = styled.div`
   display: flex;
@@ -56,15 +57,15 @@ const PlayTreasureHuntScreen: React.FC = () => {
   };
 
   if (!(fetchTreasureHuntDefinitionStatus.kind === 'success' && fetchTreasureHuntDefinitionStatus.result.kind === 'ok')) {
-    return <p>Fetching treasure hunt definition...</p>;
+    return <LoadingOverlay message='Fetching treasure hunt definition' />;
   }
 
   if (!(fetchActivityDefinitionStatus.kind === 'success' && fetchActivityDefinitionStatus.result.kind === 'ok')) {
-    return <p>Fetching associated activity...</p>;
+    return <LoadingOverlay message='Fetching associated activity' />;
   }
 
   if (!(fetchActivityArtworksStatus.kind === 'success' && fetchActivityArtworksStatus.result.kind === 'ok')) {
-    return <p>Fetching activity artworks...</p>;
+    return <LoadingOverlay message='Fetching activity artworks' />;
   }
 
   return (

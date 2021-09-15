@@ -141,14 +141,14 @@ const RecordAudio: React.FC<RecordAudioProps> = ({
   onNextClicked
 }) => {
 
-  const { t, i18n } = useTranslation('app');
+  const { t } = useTranslation('app');
   let [audioURL, isRecording, startRecording, stopRecording] = useRecorder();
 
   useEffect(() => {
     if (audioURL) {
       onRecordingReady(audioURL);
     }
-  }, [audioURL]);
+  }, [audioURL, onRecordingReady]);
 
   const canAdvance = audioURL !== undefined && !isRecording;
 

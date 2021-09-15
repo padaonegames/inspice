@@ -119,7 +119,7 @@ const FindArtwork: React.FC<FindArtworkProps> = ({
   useEffect(() => {
     setFlippedCards(Array(imagesData.length).fill(false));
     setStageCompleted(false);
-  }, [stageData]);
+  }, [stageData, imagesData.length]);
 
   const handleCardSelected = (id: string, index: number) => {
     if (id === stageData.artworkId) {

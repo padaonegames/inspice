@@ -230,7 +230,7 @@ interface SelectArtworksStageProps {
 const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSelected, onArtworkDeselected, selectedArtworks }) => {
 
   const [page, setPage] = useState<number>(1);
-  const [itemsPerPage, setItemsPerPage] = useState<number>(9);
+  const [itemsPerPage] = useState<number>(9);
   const [appliedFilter, setAppliedFilter] = useState<GetArtworksFilter>({});
   const [lastArtwork, setLastArtwork] = useState<string>('');
 
@@ -355,7 +355,7 @@ const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSele
           <SearchIcon />
         </SearchButton>
       </SearchArea>
-      {(findArtworkStatus.kind === 'success' && findArtworkStatus.result.kind === 'ok') && (
+      {((findArtworkStatus.kind === 'success' && findArtworkStatus.result.kind === 'ok') && (
         <DisplayPanel>
           <ResultsUpperPanel>
             <ResultsWrapper>
@@ -426,7 +426,7 @@ const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSele
           </ResultsLowerPanel>
           {loading && <LoadingOverlay message='Loading'/>}
         </DisplayPanel>
-      ) || 'Loading...'}
+      )) || 'Loading...'}
       <VerticalSeparator />
 
       {(fetchByEmotionStatus.kind === 'success' && fetchByEmotionStatus.result.kind === 'ok') && (

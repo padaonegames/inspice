@@ -1,23 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-import { api } from '../services';
-import { GetArtworksFilter } from '../services/queries';
-import { useAsyncRequest } from '../services/useAsyncRequest';
-import ArtworkSelectionCard from './ArtworkSelectionCard';
-import RecomendationCard from './RecomendationCard';
-import FilterField from './FilterField';
 import NumberIcon from '../components/NumberIcon'
-import { NavigateNext } from '@styled-icons/material/NavigateNext';
-import { NavigateBefore } from '@styled-icons/material/NavigateBefore';
-import { ArrowRight } from '@styled-icons/bootstrap/ArrowRight'
-
-const Root = styled.div`
-  padding-top: 2.5vh;
-  display: flex;
-  flex-direction: column;
-  width: 72.5%;
-  align-self: center;
-`;
 
 const PageNumberGrid = styled.div`
   height: auto;

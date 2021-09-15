@@ -196,7 +196,7 @@ const CreateTreasureHuntScreen: React.FC = () => {
       window.alert('Your treasure hunt was successfully uploaded to the linked data hub.');
       history.push('/consumer/explore/' + id);
     }
-  }, [submitGameStatus]);
+  }, [submitGameStatus, history, id]);
 
   if (!(fetchActivityDefinitionStatus.kind === 'success' && fetchActivityDefinitionStatus.result.kind === 'ok')) {
     return <LoadingOverlay message='Fetching activity definition' />;

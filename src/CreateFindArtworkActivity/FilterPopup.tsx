@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState } from "react";
 import ReactDOM from 'react-dom';
 import styled from 'styled-components';
 import { Search } from '@styled-icons/boxicons-regular/Search';
