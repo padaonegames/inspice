@@ -6,14 +6,15 @@ import { Close } from '@styled-icons/evaicons-solid/Close';
 
 
 const Background = styled.div`
-background-color:rgba(0, 0, 0, 0.5);
-width: 100%;
-height:100%;
-position: fixed;
-top:0;
-left:0;
-z-index:4;
-`
+  background-color: rgba(0, 0, 0, 0.5);
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 4;
+`;
+
 const Root = styled.div`
   width: 70vw;
   height: 70vh;

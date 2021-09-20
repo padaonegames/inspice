@@ -1,4 +1,4 @@
-import { ArtworkFieldMapping } from "./commonDefinitions";
+import { ArtworkFieldMapping } from "./artwork.model";
 
 export interface GetArtworksFilter {
   id?: string; // exact

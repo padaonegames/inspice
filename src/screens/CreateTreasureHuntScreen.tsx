@@ -6,13 +6,14 @@ import RecordAudio from '../CreateGame/RecordAudio';
 import SelectArtwork from '../CreateGame/SelectArtwork';
 import WriteHints from '../CreateGame/WriteHints';
 import WritePrizes from '../CreateGame/WriteGifts';
-import { ArtworkData, CompletedTreasureHuntDefinition, InProgressTreasureHuntDefinition, InProgressTreasureHuntStage } from '../services/commonDefinitions';
 import { useParams } from 'react-router';
 import { useAsyncRequest } from '../services/useAsyncRequest';
 import { api, artworksService } from '../services';
 import { useHistory } from 'react-router-dom';
 import InputBasicInformation from '../CreateGame/InputBasicInformation';
 import LoadingOverlay from '../components/LoadingOverlay';
+import { ArtworkData } from '../services/artwork.model';
+import { InProgressTreasureHuntStage, CompletedTreasureHuntDefinition, InProgressTreasureHuntDefinition } from '../services/findArtworkActivity.model';
 
 const Root = styled.div`
   display: flex;

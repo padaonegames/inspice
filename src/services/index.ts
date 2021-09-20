@@ -1,8 +1,8 @@
-import { Api } from "./api";
-import { ArtworksService } from "./artworksService";
-import { ArtworkFieldMapping } from "./commonDefinitions";
+import { FindArtworkActivityService } from "./findArtworkActivity.service";
+import { ArtworksService } from "./artworks.service";
+import { ArtworkFieldMapping } from "./artwork.model";
 
-export let api: Api;
+export let api: FindArtworkActivityService;
 export let artworksService: ArtworksService;
 
 /**
@@ -27,6 +27,6 @@ export const initializeServices = () => {
     src: process.env.REACT_APP_MAP_SRC?.split(';') || ['src'],
   };
 
-  api = new Api(apiUrl, datasetUuid, activityDefinitionsDatasetUuid, huntDefinitionsDatasetUuid, apiKey, mapping);
+  api = new FindArtworkActivityService(apiUrl, datasetUuid, activityDefinitionsDatasetUuid, huntDefinitionsDatasetUuid, apiKey);
   artworksService = new ArtworksService(apiUrl, datasetUuid, apiKey, mapping);
 };

@@ -9,7 +9,8 @@ import NextPanel from './NextCornerPanel';
 
 import { NavigateNext } from '@styled-icons/material/NavigateNext';
 import { NavigateBefore } from '@styled-icons/material/NavigateBefore';
-import { ArtworkData, StageData } from '../services/commonDefinitions';
+import { ArtworkData } from '../services/artwork.model';
+import { StageData } from '../services/findArtworkActivity.model';
 
 const Root = styled.div`
   margin-top: 1vh;

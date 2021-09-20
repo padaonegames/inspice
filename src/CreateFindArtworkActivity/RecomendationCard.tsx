@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
+import { ArtworkData } from '../services/artwork.model';
 import ArtworkRecomendation from './ArtworkRecomendation';
-import { ArtworkData } from '../services/commonDefinitions';
 
 interface RootProps {
   selected: boolean;

@@ -1,5 +1,5 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
-import { ArtworkData, ArtworkFieldMapping } from './commonDefinitions';
+import { ArtworkData, ArtworkFieldMapping } from './artwork.model';
 import { GetArtworksOptions, retrieveAllArtworksQuery, retrieveArtworksWithAtLeastAnEmotionInCommon, retrieveAvailableArtworksWithEmotions, retrieveDistinctAuthorValuesQuery, retrieveDistinctDateValuesQuery, retrieveDistinctInfoValuesQuery } from './queries';
 
 export type ApiResult<T> =
@@ -23,7 +23,7 @@ export type MappingMode =
   ;
 
 /**
- * The Api is responsible for all communication with the Project's Apis and Backends.
+ * The Api is responsible for all communication with the Project's Apis and Backends. (Artwork-related)
  * Ideally, we should incorporate a schema validator to all requests to ensure that
  * the data that gets fetched from the endpoints strictly matches the structures defined
  * in the specification (which ought to be included as a JSON schema elsewhere in every 

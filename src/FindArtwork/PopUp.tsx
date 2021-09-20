@@ -2,10 +2,10 @@ import React from 'react';
 
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
-import { ArtworkData } from '../services/commonDefinitions';
 import { Medal } from '@styled-icons/remix-line/Medal';
 import { ControllerNext } from '@styled-icons/entypo/ControllerNext';
 import { useState } from 'react';
+import { ArtworkData } from '../services/artwork.model';
 
 
 ///////

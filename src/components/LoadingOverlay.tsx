@@ -25,10 +25,12 @@ const SpinAnimation = keyframes`
 const ContentContainer = styled.div`
   height: 150px;
   width: 250px;
-  text-align: center;
   position: absolute;
   top: calc(50% - 75px);
   left: calc(50% - 125px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
 `;
 
 const SpinnerIcon = styled(Spinner2)`
@@ -43,14 +45,12 @@ const SpinnerIcon = styled(Spinner2)`
 const LoadingText = styled.div`
   display: table-cell;
   vertical-align: middle;
-  height: 85px;
-  width: 100%;
   font-size: 1em;
   font-weight: 500;
   letter-spacing: +0.5px;
   font-family: Raleway;
   color: white;
-  text-align: center;
+  text-align: middle;
   align-self: center;
 `;
 
@@ -64,7 +64,7 @@ const LoadingOverlay: React.FC<LoadingOverlayProps> = ({ message = 'Loading' }) 
 
   useEffect(() => {
     const intervalId = setInterval(() => {
-      setNumdots(prev => (prev + 1) % 4);
+      setNumdots(prev => Math.max((prev + 1) % 4, 1));
     }, 500);
 
     return () => clearInterval(intervalId);

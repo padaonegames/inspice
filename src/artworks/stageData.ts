@@ -1,6 +1,4 @@
-import { StageData, TreasureHuntMutimediaData } from '../services/commonDefinitions';
-//import arachne from './arachne.mp3';
-//import vulcano from './vulcano.mp3';
+import { TreasureHuntMutimediaData, StageData } from "../services/findArtworkActivity.model";
 
 // Ejemplos
 const clues0 = ['clue0_0', 'clue0_1', 'clue0_2'];

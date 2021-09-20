@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import ReactDOM from 'react-dom';
 import styled from 'styled-components';
-import { ArtworkData } from '../services/commonDefinitions';
 import { NavigateNext } from '@styled-icons/material/NavigateNext';
 import { NavigateBefore } from '@styled-icons/material/NavigateBefore';
 import { Cross } from '@styled-icons/entypo/Cross';
 import { Close } from '@styled-icons/evaicons-solid/Close';
+import { ArtworkData } from "../services/artwork.model";
 
 const Root = styled.div`
   width: 100%;
@@ -24,7 +24,7 @@ const Root = styled.div`
 const PopupPanelContent = styled.div`
   position: Static;
   width: 60vw;
-  height: 90vh;
+  height: 75vh;
   background-color: white;
   display: flex;
   flex-direction: column;
@@ -111,8 +111,6 @@ const FieldsContainer = styled.div`
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  
-
 `;
 
 const AuthorText = styled.span`
@@ -146,7 +144,6 @@ const RemoveArtworkIcon = styled(Cross)`
   width: 15px;
   align-self: flex-end;
   color: darkgray;
-
 `;
 
 

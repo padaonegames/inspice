@@ -1,14 +1,5 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
-import { 
-  ArtworkFieldMapping,
-  CompletedFindArtworkActivityDefinition,
-  CompletedTreasureHuntDefinition,
-  FindArtworkActivityDefinition,
-  GetFindArtworkActivityDefinitionByIdResponse,
-  GetTreasureHuntDefinitionByIdResponse,
-  SubmitFindArtworkActivityDefinitionResponse,
-  SubmitTreasureHuntDefinitionResponse
- } from './commonDefinitions';
+import { CompletedFindArtworkActivityDefinition, CompletedTreasureHuntDefinition, FindArtworkActivityDefinition, GetFindArtworkActivityDefinitionByIdResponse, GetTreasureHuntDefinitionByIdResponse, SubmitFindArtworkActivityDefinitionResponse, SubmitTreasureHuntDefinitionResponse } from './findArtworkActivity.model';
 
 export type ApiResult<T> =
   | { kind: 'ok', data: T }
@@ -25,31 +16,21 @@ export type ParseError =
   | 'InvalidJson'
   ;
 
-export type MappingMode =
-  | { mode: 'JSON', mapping: ArtworkFieldMapping }
-  | { mode: 'RDF' }
-  ;
-
 /**
- * The Api is responsible for all communication with the Project's Apis and Backends.
+ * The Api is responsible for all communication with the Project's Apis and Backends. (Artworks)
  * Ideally, we should incorporate a schema validator to all requests to ensure that
  * the data that gets fetched from the endpoints strictly matches the structures defined
  * in the specification (which ought to be included as a JSON schema elsewhere in every 
  * frontend/ backend side).
  */
-export class Api {
+export class FindArtworkActivityService {
 
-  /**
-   * We will eventually need more than just one apiUrl to distinguish between persistence,
-   * recommendation, personalization, user management and so on.
-   */
   public constructor(
     private apiUrl: string,
     private datasetUuid: string,
     private activityDefinitionsDatasetUuid: string,
     private huntDefinitionsDatasetUuid: string,
     private apiKey: string,
-    private mapping: ArtworkFieldMapping,
   ) { }
 
   /**
@@ -123,25 +104,25 @@ export class Api {
   }
 
 
-    /**
- * Retrieve all treasure hunts belonging to a given activity
- */
-     public async getTreasureHuntDefinitionsByActivityId(activityId: string): Promise<ApiResult<GetTreasureHuntDefinitionByIdResponse>> {
-      const url = `${this.apiUrl}/object/${this.huntDefinitionsDatasetUuid}`;
-  
-      const query = `{ "activityId": "${activityId}" }`;
-  
-      const opts: AxiosRequestConfig = {
-        auth: {
-          username: this.apiKey,
-          password: this.apiKey
-        },
-        params: {
-          query: query
-        }
-      };
-      return getApiResult<GetTreasureHuntDefinitionByIdResponse>(url, opts);
-    }
+  /**
+* Retrieve all treasure hunts belonging to a given activity
+*/
+  public async getTreasureHuntDefinitionsByActivityId(activityId: string): Promise<ApiResult<GetTreasureHuntDefinitionByIdResponse>> {
+    const url = `${this.apiUrl}/object/${this.huntDefinitionsDatasetUuid}`;
+
+    const query = `{ "activityId": "${activityId}" }`;
+
+    const opts: AxiosRequestConfig = {
+      auth: {
+        username: this.apiKey,
+        password: this.apiKey
+      },
+      params: {
+        query: query
+      }
+    };
+    return getApiResult<GetTreasureHuntDefinitionByIdResponse>(url, opts);
+  }
 
   /**
    * Submit an Activity Definition to the persistence layer

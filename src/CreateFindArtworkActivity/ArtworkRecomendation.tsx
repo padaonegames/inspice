@@ -1,8 +1,8 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
-import { ArtworkData } from '../services/commonDefinitions';
 import { CheckboxCircle } from '@styled-icons/remix-fill/CheckboxCircle';
 import { CheckboxBlankCircle } from '@styled-icons/remix-fill/CheckboxBlankCircle';
+import { ArtworkData } from '../services/artwork.model';
 
 const expandCorner = keyframes`
   from {

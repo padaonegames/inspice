@@ -1,7 +1,7 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
 import { CheckboxBlankCircle } from '@styled-icons/remix-fill/CheckboxBlankCircle';
-import { ArtworkData } from '../services/commonDefinitions';
+import { ArtworkData } from '../services/artwork.model';
 
 const RevealText = styled.div`
   display: flex;

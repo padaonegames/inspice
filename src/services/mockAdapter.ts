@@ -2,7 +2,7 @@ import axios, { AxiosRequestConfig } from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { sampleActivities } from '../activities/activitiesData';
 import { sampleArtworks } from '../artworks/artworkData';
-import { CompletedFindArtworkActivityDefinition, FindArtworkActivityDefinition, SubmitFindArtworkActivityDefinitionResponse } from './commonDefinitions';
+import { CompletedFindArtworkActivityDefinition, FindArtworkActivityDefinition, SubmitFindArtworkActivityDefinitionResponse } from './findArtworkActivity.model';
 
 export const initMockAdapter = () => {
   // this sets a new mock adapter over the default instance provided by axios

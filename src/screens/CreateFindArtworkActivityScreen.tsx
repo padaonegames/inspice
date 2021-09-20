@@ -5,7 +5,8 @@ import CreateFindArtworkOverviewPanel from '../CreateFindArtworkActivity/CreateF
 import SelectArtworksStage from '../CreateFindArtworkActivity/SelectArtworksStage';
 import SetTitleAuthorDatesStage from '../CreateFindArtworkActivity/SetTitleAuthorDatesStage';
 import { api } from '../services';
-import { AllowedInputs, ArtworkData, CompletedFindArtworkActivityDefinition, InProgressFindArtworkActivityDefinition } from '../services/commonDefinitions';
+import { ArtworkData } from '../services/artwork.model';
+import { InProgressFindArtworkActivityDefinition, CompletedFindArtworkActivityDefinition, AllowedInputs } from '../services/findArtworkActivity.model';
 import { useAsyncRequest } from '../services/useAsyncRequest';
 
 const Root = styled.div`

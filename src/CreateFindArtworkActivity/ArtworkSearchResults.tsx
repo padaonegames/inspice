@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { ArtworkData } from '../services/commonDefinitions';
+import { ArtworkData } from '../services/artwork.model';
 import ArtworkSelectionCard from './ArtworkSelectionCard';
 import PageBar from './PageBar';
 

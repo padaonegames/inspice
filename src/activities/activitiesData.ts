@@ -1,5 +1,5 @@
 import { sampleArtworks } from "../artworks/artworkData";
-import { FindArtworkActivityDefinition } from "../services/commonDefinitions";
+import { FindArtworkActivityDefinition } from "../services/findArtworkActivity.model";
 
 const activityOne: FindArtworkActivityDefinition = {
   _id: '1',

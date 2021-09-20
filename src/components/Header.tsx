@@ -3,20 +3,22 @@ import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 
 const Root = styled.div`
+  position: sticky;
   justify-content: left;
   background-color: white;
   align-content: center;
-  display: flex;
-  flex-direction: row;
+  display: block;
   top: 0;
+  left: 0;
   width: 100%;
-  height: auto;
+  height: 60px;
+  min-width: 320px;
   padding-left: 1.5vw;
   padding-right: 1.5vw;
   padding-top: 3vh;
-  border-style: solid;
-  border-color: lightgrey;
-  border-width: 0px 0px 1px 0px;
+  border-bottom: 1px solid #e5e5e5;
+  box-sizing: inherit;
+  z-index: 9001;
 `;
 
 const AppName = styled.p`

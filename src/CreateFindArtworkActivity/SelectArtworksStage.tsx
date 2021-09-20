@@ -8,12 +8,12 @@ import FilterField from './FilterField';
 import { NavigateNext } from '@styled-icons/material/NavigateNext';
 import { NavigateBefore } from '@styled-icons/material/NavigateBefore';
 import ShowFilters from './ShowFilters'
-import SelectedActivitiesPopup from './SelectedActivitiesPopup';
+import SelectedActivitiesPopup from './SelectedArtworksPopup';
 import LoadingOverlay from '../components/LoadingOverlay';
 import ArtworkSearchResults from './ArtworkSearchResults';
 import { Library } from '@styled-icons/fluentui-system-filled/Library';
 import { Search } from '@styled-icons/boxicons-regular/Search';
-import { ArtworkData } from '../services/commonDefinitions';
+import { ArtworkData } from '../services/artwork.model';
 
 const Root = styled.div`
   padding-top: 2.5vh;
@@ -193,6 +193,7 @@ const SearchBar = styled.input`
   font-size: 0.9em;
   letter-spacing: +1px;
   font-family: Raleway;
+  font-weight: 500;
   color: black;
   resize: none;
   text-align: left;
@@ -230,7 +231,7 @@ interface SelectArtworksStageProps {
 const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSelected, onArtworkDeselected, selectedArtworks }) => {
 
   const [page, setPage] = useState<number>(1);
-  const [itemsPerPage] = useState<number>(9);
+  const [itemsPerPage] = useState<number>(30);
   const [appliedFilter, setAppliedFilter] = useState<GetArtworksFilter>({});
   const [lastArtwork, setLastArtwork] = useState<string>('');
 
@@ -338,7 +339,7 @@ const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSele
     <Root>
       <PromptTitlePanel>
         <TitleText>
-          Select Artworks
+          SELECT ARTWORKS
         </TitleText>
       </PromptTitlePanel>
       <SearchArea>
@@ -424,9 +425,9 @@ const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSele
             </ResultsFiltersAndArtworks>
 
           </ResultsLowerPanel>
-          {loading && <LoadingOverlay message='Loading'/>}
+          {loading && <LoadingOverlay message='Loading' />}
         </DisplayPanel>
-      )) || 'Loading...'}
+      )) || <LoadingOverlay message='Loading' />}
       <VerticalSeparator />
 
       {(fetchByEmotionStatus.kind === 'success' && fetchByEmotionStatus.result.kind === 'ok') && (

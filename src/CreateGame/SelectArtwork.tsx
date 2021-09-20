@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { RadioCircleMarked } from '@styled-icons/boxicons-regular/RadioCircleMarked';
 import NextCornerButton from './NextCornerButton';
 import { useTranslation } from 'react-i18next';
-import { ArtworkData } from '../services/commonDefinitions';
+import { ArtworkData } from '../services/artwork.model';
 
 const Root = styled.div`
   display: flex;
