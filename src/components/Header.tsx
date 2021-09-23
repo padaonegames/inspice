@@ -37,13 +37,17 @@ const LanguageSwitch = styled.div`
 `;
 */
 
-const Header: React.FC = () => {
+interface HeaderProps {
+  activityTitle?: string;
+};
+
+const Header: React.FC<HeaderProps> = ({ activityTitle = '' }) => {
 
   const { t } = useTranslation('app');
 
   return (
     <Root>
-      <AppName>{t('museumHeader')}</AppName>
+      <AppName>{`${t('museumHeader')}${activityTitle && ` - ${activityTitle}`}`}</AppName>
       {/*
       <LanguageSwitch>
         <AppName

@@ -12,6 +12,7 @@ import { GlobalStyles } from './global/global';
 import CreateFindArtworkActivityScreen from './screens/CreateFindArtworkActivityScreen';
 import BrowseDefinitionsScreen from './screens/BrowseDefinitionsScreen';
 import ExploreActivityScreen from './screens/ExploreActivityScreen';
+import ViewpointsScreen from './screens/ViewpointsScreen';
 
 const App: React.FC = () => {
 
@@ -19,25 +20,33 @@ const App: React.FC = () => {
     <Suspense fallback='loading'>
       <Router>
         <GlobalStyles />
-        <Header />
         <Switch>
-          <Route path='/consumer/play/:id'>
+          <Route path='/viewpoints/consumer/browse'>
+            <Header activityTitle='Viewpoints' />
+            <ViewpointsScreen />
+          </Route>
+          <Route path='/find-artwork/consumer/play/:id'>
+            <Header activityTitle='Find Artwork' />
             <PlayTreasureHuntScreen />
           </Route>
-          <Route path='/consumer/create/:id'>
+          <Route path='/find-artwork/consumer/create/:id'>
+            <Header activityTitle='Find Artwork' />
             <CreateTreasureHuntScreen />
           </Route>
-          <Route path='/consumer/explore/:id'>
+          <Route path='/find-artwork/consumer/explore/:id'>
+            <Header activityTitle='Find Artwork' />
             <ExploreActivityScreen />
           </Route>
-          <Route path='/curator/create'>
+          <Route path='/find-artwork/curator/create'>
+            <Header activityTitle='Find Artwork' />
             <CreateFindArtworkActivityScreen />
           </Route>
-          <Route path='/browse'>
-            <BrowseDefinitionsScreen />            
+          <Route path='/find-artwork/browse'>
+            <BrowseDefinitionsScreen />
           </Route>
           <Route>
-            <Redirect to='/consumer/explore/60db0c3c7b4a14179552cb1c' />
+            {/*<Redirect to='/find-artwork/consumer/explore/60db0c3c7b4a14179552cb1c' />*/}
+            <Redirect to='/viewpoints/consumer/browse' />
           </Route>
         </Switch>
       </Router>

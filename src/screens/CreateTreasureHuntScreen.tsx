@@ -195,7 +195,7 @@ const CreateTreasureHuntScreen: React.FC = () => {
   useEffect(() => {
     if (submitGameStatus.kind === 'success' && submitGameStatus.result.kind === 'ok') {
       window.alert('Your treasure hunt was successfully uploaded to the linked data hub.');
-      history.push('/consumer/explore/' + id);
+      history.push('/find-artwork/consumer/explore/' + id);
     }
   }, [submitGameStatus, history, id]);
 

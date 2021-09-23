@@ -1,9 +1,11 @@
 import { FindArtworkActivityService } from "./findArtworkActivity.service";
 import { ArtworksService } from "./artworks.service";
 import { ArtworkFieldMapping } from "./artwork.model";
+import { ViewpointsArtworksService } from "./viewpointsArtworks.service";
 
 export let api: FindArtworkActivityService;
 export let artworksService: ArtworksService;
+export let viewpointsArtworksService: ViewpointsArtworksService;
 
 /**
  * For the time being we fetch the relevant fields from the initialize services function provided here.
@@ -29,4 +31,5 @@ export const initializeServices = () => {
 
   api = new FindArtworkActivityService(apiUrl, datasetUuid, activityDefinitionsDatasetUuid, huntDefinitionsDatasetUuid, apiKey);
   artworksService = new ArtworksService(apiUrl, datasetUuid, apiKey, mapping);
+  viewpointsArtworksService = new ViewpointsArtworksService();
 };
