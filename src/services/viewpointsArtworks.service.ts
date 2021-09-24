@@ -1,7 +1,4 @@
-import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
-import { config } from 'process';
-import { ArtworkData, ArtworkFieldMapping } from './artwork.model';
-import { GetArtworksOptions, retrieveAllArtworksQuery, retrieveArtworksWithAtLeastAnEmotionInCommon, retrieveAvailableArtworksWithEmotions, retrieveDistinctAuthorValuesQuery, retrieveDistinctDateValuesQuery, retrieveDistinctInfoValuesQuery } from './queries';
+import axios, { AxiosResponse } from 'axios';
 import { Artwork } from './viewpointsArtwork.model';
 
 export type ApiResult<T> =
@@ -44,7 +41,8 @@ export class ViewpointsArtworksService {
 
   public async fetchArtwork(id: string): Promise<ApiResult<Artwork>> {
     const artworksPath = '?action=artworkdetails&id=' + id;
-    return getApiResult<Artwork>(this.apiUrl + artworksPath);
+    return getApiResult<Artwork[]>(this.apiUrl + artworksPath)
+      .then(elem => elem.kind === 'ok' ? ({ ...elem, data: elem.data[0] }) : elem);
   };
 
 }

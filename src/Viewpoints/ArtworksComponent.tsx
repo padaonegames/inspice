@@ -4,6 +4,7 @@ import { Artwork } from '../services/viewpointsArtwork.model';
 import { NavigateNext } from '@styled-icons/material/NavigateNext';
 import { NavigateBefore } from '@styled-icons/material/NavigateBefore';
 import ArtworkCard from './ArtworkCard';
+import { useHistory } from 'react-router-dom';
 
 const Root = styled.div`
   width: 100%;
@@ -84,6 +85,7 @@ interface ArtworksComponentProps {
 const ArtworksComponent: React.FC<ArtworksComponentProps> = ({ artworks }) => {
 
   const [displayIndex, setDisplayIndex] = useState<number>(0);
+  let history = useHistory();
   
   return (
     <Root>
@@ -103,7 +105,7 @@ const ArtworksComponent: React.FC<ArtworksComponentProps> = ({ artworks }) => {
                 <ArtworkCard
                   key={im._id}
                   artworkData={im}
-                  onArtworkSelected={() => {}}
+                  onArtworkSelected={() => history.push(`/viewpoints/consumer/answer/${im._id}`)}
                 />
               ))}
             </ArtworksContainer>

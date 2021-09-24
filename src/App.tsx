@@ -13,6 +13,7 @@ import CreateFindArtworkActivityScreen from './screens/CreateFindArtworkActivity
 import BrowseDefinitionsScreen from './screens/BrowseDefinitionsScreen';
 import ExploreActivityScreen from './screens/ExploreActivityScreen';
 import ViewpointsScreen from './screens/ViewpointsScreen';
+import AnswerViewpointsScreen from './screens/AnswerViewpointsScreen';
 
 const App: React.FC = () => {
 
@@ -24,6 +25,10 @@ const App: React.FC = () => {
           <Route path='/viewpoints/consumer/browse'>
             <Header activityTitle='Viewpoints' />
             <ViewpointsScreen />
+          </Route>
+          <Route path='/viewpoints/consumer/answer/:id'>
+            <Header activityTitle='Viewpoints' />
+            <AnswerViewpointsScreen />
           </Route>
           <Route path='/find-artwork/consumer/play/:id'>
             <Header activityTitle='Find Artwork' />
