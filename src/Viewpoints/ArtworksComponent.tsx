@@ -80,9 +80,10 @@ const NavigateBeforeIcon = styled(NavigateBefore) <NavIconProps>`
 
 interface ArtworksComponentProps {
   artworks: Artwork[];
+  onArtworkClicked: (id: string) => void;
 };
 
-const ArtworksComponent: React.FC<ArtworksComponentProps> = ({ artworks }) => {
+const ArtworksComponent: React.FC<ArtworksComponentProps> = ({ artworks, onArtworkClicked }) => {
 
   const [displayIndex, setDisplayIndex] = useState<number>(0);
   let history = useHistory();
@@ -105,7 +106,7 @@ const ArtworksComponent: React.FC<ArtworksComponentProps> = ({ artworks }) => {
                 <ArtworkCard
                   key={im._id}
                   artworkData={im}
-                  onArtworkSelected={() => history.push(`/viewpoints/consumer/answer/${im._id}`)}
+                  onArtworkSelected={() => onArtworkClicked(im._id)}
                 />
               ))}
             </ArtworksContainer>

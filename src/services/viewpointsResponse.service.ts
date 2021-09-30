@@ -50,8 +50,7 @@ export class ViewpointsResponseService {
 
   getApprovedResponses(): Promise<ApiResult<Response[]>> {
     const filterParam = '?action=approvedResponses';
-    const path = '/main.php' + filterParam;
-    return getApiResult<Response[]>(this.apiUrl + path, this.httpOptions);
+    return getApiResult<Response[]>(this.apiUrl + filterParam, this.httpOptions);
   }
 
   generateUserResponseID(length: number): string {

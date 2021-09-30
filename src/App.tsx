@@ -14,6 +14,7 @@ import BrowseDefinitionsScreen from './screens/BrowseDefinitionsScreen';
 import ExploreActivityScreen from './screens/ExploreActivityScreen';
 import ViewpointsScreen from './screens/ViewpointsScreen';
 import AnswerViewpointsScreen from './screens/AnswerViewpointsScreen';
+import ViewpointsResultsScreen from './screens/ViewpointsResultsScreen';
 
 const App: React.FC = () => {
 
@@ -25,6 +26,10 @@ const App: React.FC = () => {
           <Route path='/viewpoints/consumer/browse'>
             <Header activityTitle='Viewpoints' />
             <ViewpointsScreen />
+          </Route>
+          <Route path='/viewpoints/consumer/results'>
+            <Header activityTitle='Viewpoints' />
+            <ViewpointsResultsScreen />
           </Route>
           <Route path='/viewpoints/consumer/answer/:id'>
             <Header activityTitle='Viewpoints' />
