@@ -1,10 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { viewpointsArtworksService } from '../services';
 import { useAsyncRequest } from '../services/useAsyncRequest';
 import LoadingOverlay from '../components/LoadingOverlay';
 import ArtworkDetail from '../Viewpoints/ArtworkDetail';
+import QuestionComponent from '../Viewpoints/QuestionComponent';
+import { ArrowBackCircle } from '@styled-icons/ionicons-sharp/ArrowBackCircle';
 
 const Root = styled.div`
   display: flex;
@@ -15,9 +17,25 @@ const Root = styled.div`
   margin-bottom: 35px;
 `;
 
+const BackIcon = styled(ArrowBackCircle)`
+  color: rgba(15, 15, 15, 0.75);
+  height: 45px;
+  width: auto;
+  position: -webkit-sticky; /* Safari */
+  position: sticky;
+  top: 50%;
+  left: 1%;
+  cursor: pointer;
+
+  &:hover {
+    color: rgba(0, 0, 0, 0.85);
+  }
+`;
+
 const AnswerViewpointScreen: React.FC = () => {
 
   let { id } = useParams<{ id: string }>();
+  let history = useHistory();
 
   const fetchArtwork = async () => {
     return await viewpointsArtworksService.fetchArtwork(id);
@@ -26,13 +44,21 @@ const AnswerViewpointScreen: React.FC = () => {
   const [fetchArtworkStatus] = useAsyncRequest(fetchArtwork, []);
 
   if (!(fetchArtworkStatus.kind === 'success' && fetchArtworkStatus.result.kind === 'ok')) {
-    return <LoadingOverlay message='Fetching artwork data...' />;
+    return <LoadingOverlay message='Fetching artwork data' />;
   }
 
   return (
-    <Root>
-      <ArtworkDetail artworkData={fetchArtworkStatus.result.data} />
-    </Root>
+    <>
+      <BackIcon
+        title='Return to list of artworks'
+        onClick={() => history.push('/viewpoints/consumer/browse')}
+      />
+      <Root>
+        <ArtworkDetail artworkData={fetchArtworkStatus.result.data} />
+        <QuestionComponent artwork={fetchArtworkStatus.result.data} />
+      </Root>
+    </>
+
   );
 }
 

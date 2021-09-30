@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { Artwork } from '../services/viewpointsArtwork.model';
 
@@ -9,10 +9,8 @@ const Root = styled.div`
 
   box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
   padding: 16px;
-  background-color: white;
   width: 85%;
   max-width: 1200px;
-  justify-content: left;
   align-items: left;
   margin-bottom: 15px;
   padding: 0;
@@ -23,7 +21,7 @@ const SelectionPanel = styled.div`
   flex-direction: column;
   background-color: rgba(15, 15, 15, 0.75);
   width: 50%;
-  height: 76.2vh;
+  max-height: 550px;
   margin: 0;
   padding: 1.5%;
   padding-top: 3%;
@@ -109,7 +107,6 @@ const ClickableText = styled.p`
   font-size: 0.9em;
   font-weight: 400;
   font-family: Raleway;
-  color: white;
   color: #FFFF00;
   margin-bottom: 15px;
   text-decoration: underline;
