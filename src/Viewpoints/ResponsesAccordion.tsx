@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { ArtworkResponses } from '../screens/ViewpointsResultsScreen';
+import { ArtworkResponses } from './ViewpointsResultsComponent';
 import AccordionItem from './AccordionItem';
 
 const Root = styled.ul`

@@ -2,14 +2,12 @@ import React, { useState } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { useAsyncRequest } from '../services/useAsyncRequest';
 import { viewpointsArtworksService, viewpointsResponseService } from '../services';
-import { useHistory } from 'react-router-dom';
 import lineBackground from './../components/line-header-point.png';
 import { LoaderCircle } from '@styled-icons/boxicons-regular/LoaderCircle';
-import ResponsesAccordion from '../Viewpoints/ResponsesAccordion';
 import { Response } from '../services/viewpointsResponse.model';
 import { Artwork } from '../services/viewpointsArtwork.model';
-import ArtworksComponent from '../Viewpoints/ArtworksComponent';
-import ResponsesPopup from '../Viewpoints/ResponsesPopUp';
+import ArtworksComponent from './ArtworksComponent';
+import ResponsesPopup from './ResponsesPopUp';
 
 const Root = styled.div`
   display: flex;
@@ -130,7 +128,7 @@ export interface ArtworkResponses {
 const randomCommentCount = 5;
 const recentArtworkCount = 10;
 
-const ViewpointsResultsScreen: React.FC = () => {
+const ViewpointsResultsComponent: React.FC = () => {
 
   const [selectedArtwork, setSelectedArtwork] = useState<string | undefined>(undefined);
 
@@ -206,7 +204,7 @@ const ViewpointsResultsScreen: React.FC = () => {
   );
 }
 
-export default ViewpointsResultsScreen;
+export default ViewpointsResultsComponent;
 
 /*
 <div class="row px-4 rounded">

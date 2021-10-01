@@ -4,8 +4,8 @@ import { useHistory, useParams } from 'react-router-dom';
 import { viewpointsArtworksService } from '../services';
 import { useAsyncRequest } from '../services/useAsyncRequest';
 import LoadingOverlay from '../components/LoadingOverlay';
-import ArtworkDetail from '../Viewpoints/ArtworkDetail';
-import QuestionComponent from '../Viewpoints/QuestionComponent';
+import ArtworkDetail from './ArtworkDetail';
+import QuestionComponent from './QuestionComponent';
 import { ArrowBackCircle } from '@styled-icons/ionicons-sharp/ArrowBackCircle';
 
 const Root = styled.div`
@@ -32,7 +32,7 @@ const BackIcon = styled(ArrowBackCircle)`
   }
 `;
 
-const AnswerViewpointScreen: React.FC = () => {
+const AnswerViewpointComponent: React.FC = () => {
 
   let { id } = useParams<{ id: string }>();
   let history = useHistory();
@@ -62,4 +62,4 @@ const AnswerViewpointScreen: React.FC = () => {
   );
 }
 
-export default AnswerViewpointScreen;
+export default AnswerViewpointComponent;
