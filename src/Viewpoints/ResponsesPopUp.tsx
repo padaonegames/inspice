@@ -27,54 +27,56 @@ const Root = styled.div`
   align-items: center;
   left: 0;
   top: 0;
-  background-color: rgb(255, 253, 253);
+  background-color: ${props => props.theme.bodyBackground};
   z-index:5;
 `;
 
 const CloseIcon = styled(Close)`
-  color: lightgray;
   cursor: pointer;
   top:0;
-  height: 7.5vh;
-  align-self: flex-end;
-  margin-bottom: 1vh;
-  transform: scale(0.7);
-  //transition: transform 0.5s ease;
+  right : 12px;
+  height: 50px;
+  transform: scale(0.5);
   position: absolute;
   &:hover {
-    //transform: scale(1.1);
-    //transition: transform 0.5s ease;
+    transform: scale(0.7);
     color: darkgray;
   }
 `;
 
-const TitleText = styled.h2`
-  margin-top :1rem;
+const TitleText = styled.div`
+  margin-bottom: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-color: ${props => props.theme.headerBackground};
+  text-align: center;
+  color: ${props => props.theme.textColor};
+  width: 100%;
+  height: 15%;
   align-self: center;
-  color: #3f3c2d;
   letter-spacing: +0.5px;
   font-family: Raleway;
 `;
 
 const CardsArea = styled.div`
   width: 100%;
-  height: 75%;
+  height: 85%;
   align-self: center;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  margin-top: 0.5rem;
   padding: 1rem;
   overflow-y:scroll;
-  border-top: 1px solid black;
+  border-top: 1px solid #e5e5e5;
 `;
 
 const CardContainer = styled.div`
   box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
   padding: 0;
-  background-color: white;
+  background-color: ${props => props.theme.cardBackground};
   width: 42.5%;
-  height: 47.5%;
+  height: 46%;
   margin: 10px auto;
 `;
 

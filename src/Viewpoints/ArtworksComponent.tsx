@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { Artwork } from '../services/viewpointsArtwork.model';
 import { NavigateNext } from '@styled-icons/material/NavigateNext';
 import { NavigateBefore } from '@styled-icons/material/NavigateBefore';
 import ArtworkCard from './ArtworkCard';
-import { useHistory } from 'react-router-dom';
 
 const Root = styled.div`
   width: 100%;
@@ -35,7 +34,6 @@ const ArtworksContainer = styled.div`
 `;
 
 const LowerPanelContainer = styled.div`
-  background-color: white;
   height: 100%;
   width: 100%;
   display: flex;
@@ -48,7 +46,7 @@ interface NavIconProps {
   active: boolean;
 };
 
-const NavigateNextIcon = styled(NavigateNext) <NavIconProps>`
+const Icon = css<NavIconProps>`
   color: ${props => props.active ? 'darkgray' : 'lightgray'};
   cursor: ${props => props.active ? 'pointer' : 'default'};
   height: 7.5vh;
@@ -56,6 +54,7 @@ const NavigateNextIcon = styled(NavigateNext) <NavIconProps>`
   margin-bottom: 1vh;
   transform: scale(0.9);
   transition: transform 0.5s ease;
+  opacity: ${props => props.active ? '1' : '0.3'};
 
   &:hover {
     transform: ${props => props.active ? 'scale(1.1)' : 'scale(0.9)'};
@@ -63,19 +62,12 @@ const NavigateNextIcon = styled(NavigateNext) <NavIconProps>`
   }
 `;
 
-const NavigateBeforeIcon = styled(NavigateBefore) <NavIconProps>`
-  color: ${props => props.active ? 'darkgray' : 'lightgray'};
-  cursor: ${props => props.active ? 'pointer' : 'default'};
-  height: 7.5vh;
-  align-self: center;
-  margin-bottom: 1vh;
-  transform: scale(0.9);
-  transition: transform 0.5s ease;
+const NavigateNextIcon = styled(NavigateNext) <NavIconProps>`
+  ${Icon}
+`;
 
-  &:hover {
-    transform: ${props => props.active ? 'scale(1.1)' : 'scale(0.9)'};
-    transition: transform 0.5s ease;
-  }
+const NavigateBeforeIcon = styled(NavigateBefore) <NavIconProps>`
+  ${Icon}
 `;
 
 interface ArtworksComponentProps {
@@ -86,8 +78,7 @@ interface ArtworksComponentProps {
 const ArtworksComponent: React.FC<ArtworksComponentProps> = ({ artworks, onArtworkClicked }) => {
 
   const [displayIndex, setDisplayIndex] = useState<number>(0);
-  let history = useHistory();
-  
+
   return (
     <Root>
       <LowerPanelContainer>

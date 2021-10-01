@@ -8,6 +8,7 @@ import { Response } from '../services/viewpointsResponse.model';
 import { Artwork } from '../services/viewpointsArtwork.model';
 import ArtworksComponent from './ArtworksComponent';
 import ResponsesPopup from './ResponsesPopUp';
+import ContentCard, { CardExplanatoryText } from './ContentCard';
 
 const Root = styled.div`
   display: flex;
@@ -16,19 +17,6 @@ const Root = styled.div`
   justify-content: center;
   align-items: center;
   margin-bottom: 35px;
-`;
-
-const Card = styled.div`
-  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-  padding: 16px;
-  background-color: white;
-  width: 85%;
-  max-width: 1200px;
-  display: flex;
-  flex-direction: column;
-  justify-content: left;
-  align-items: left;
-  margin-bottom: 15px;
 `;
 
 const VerticalSeparator = styled.div`
@@ -40,47 +28,26 @@ const VerticalSeparator = styled.div`
   margin-top: 25px;
 `;
 
-const TitleText = styled.h2`
-  color: #3f3c2d;
-  letter-spacing: +0.5px;
-  font-family: Raleway;
-  margin-top: 10px;
-  text-transform: uppercase;
-  margin-left: 7.5%;
-`;
-
 const LeadText = styled.h3`
   align-self: center;
-  color: #3f3c2d;
   letter-spacing: +0.5px;
   font-family: Raleway;
-  margin-bottom: 40px;
-`;
-
-const ExplanatoryText = styled.p`
-  max-width: 1200px;
-  width: 85%;
-  align-self: center;
-  text-align: justify;
-  font-size: 1em;
-  color: #3f3c2d;
-  letter-spacing: +0.2px;
-  font-family: Raleway;
-  line-height: 25px;
+  font-weight: 500;
+  width: 57.5%;
+  text-align: center;
+  line-height: 1.5;
+  background-color: ${props => props.theme.cardBackground};
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  padding: 15px;
   margin-bottom: 15px;
-  b {
-    font-weight: 700;
-  }
 `;
 
 const ClickableText = styled.span`
   max-width: 1200px;
   align-self: left;
   text-align: justify;
-  font-size: 1em;
-  color: #865600;
+  color: ${props => props.theme.clickableTextFontColor};
   letter-spacing: +0.2px;
-  font-family: Raleway;
   line-height: 25px;
   margin-bottom: 25px;
   text-decoration: underline;
@@ -169,30 +136,30 @@ const ViewpointsResultsComponent: React.FC = () => {
       <LeadText>
         Find out how others have responded to IMMA artworks.
       </LeadText>
-      <Card>
-        <ExplanatoryText>
+      <VerticalSeparator />
+      <ContentCard>
+        <CardExplanatoryText>
           A selection of responses to these artworks are listed below. Read a selection of randomly chosen responses and
           see if you can guess which artworks they relate to, or take a look at some of the recent responses given for each artwork. Do you
           agree with them?
-        </ExplanatoryText>
-        <ExplanatoryText>
+        </CardExplanatoryText>
+        <CardExplanatoryText>
           Follow <ClickableText onClick={() => window.open('https://twitter.com/ImmaViewpoints')}>@IMMAViewpoints</ClickableText> on Twitter to keep track of the responses of others.
-        </ExplanatoryText>
-      </Card>
+        </CardExplanatoryText>
+      </ContentCard>
       {/*(artworksLoading || responsesLoading) &&
         <LoadingIndicator>
           Loading data...
           <LoadingIcon />
       </LoadingIndicator> */}
-
-      <Card>
-        <TitleText>Recent responses</TitleText>
+      <VerticalSeparator />
+      <ContentCard cardTitle='Recent responses'>
         {/* <ResponsesAccordion responsesByArtwork={responsesByArtwork}/> */}
         <ArtworksComponent
           artworks={artworks}
           onArtworkClicked={(id) => setSelectedArtwork(id)}
         />
-      </Card>
+      </ContentCard>
       <VerticalSeparator />
       {selectedArtwork &&
         <ResponsesPopup

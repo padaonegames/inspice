@@ -13,7 +13,7 @@ import Alert from '../components/Alert';
 const Root = styled.div`
   display: flex;
   flex-direction: row;
-  background-color: white;
+  background-color: ${props => props.theme.cardBackground};
 
   box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
   padding: 16px;
@@ -28,7 +28,6 @@ const Root = styled.div`
 const SelectionPanel = styled.div`
   display: flex;
   flex-direction: column;
-  background-color: rgba(15, 15, 15, 0.75);
   width: 100%;
   margin: 0;
   padding: 1.5%;
@@ -57,12 +56,10 @@ const QuestionTitle = styled.p`
   font-style: italic;
   letter-spacing: +0.5px;
   font-family: Raleway;
-  color: white;
   margin-bottom: 0;
 `;
 
 const AnotherQuestionIcon = styled(Loop)`
-  color: white;
   height: 25px;
   width: auto;
   margin-left: 20px;
@@ -75,42 +72,32 @@ const AnotherQuestionText = styled.p`
   font-weight: 500;
   letter-spacing: +0.5px;
   font-family: Raleway;
-  color: white;
   margin-bottom: 0;
   text-decoration: underline;
   cursor: pointer;
 `;
 
 const QuestionText = styled.p`
-  font-size: 1em;
   font-weight: 700;
-  font-style: bold;
+  font-style: italic;
+  text-align: center;
   letter-spacing: +0.5px;
-  font-family: Raleway;
-  color: white;
+  margin-bottom: 10px;
 `;
 
 const QuestionAnswerPrompt = styled.p`
-  font-size: 1em;
   letter-spacing: +0.5px;
-  font-family: Raleway;
-  color: white;
 `;
 
 const TextArea = styled.textarea`
   resize: none;
-  font-size: 0.9em;
-  font-weight: 400;
-  line-height: 1.5;
-  font-family: Raleway;
   margin-bottom: 15px;
+  margin-top: 15px;
 `;
 
 const SubmitResponseButton = styled.div`
-  font-size: 1em;
   font-weight: 400;
-  font-family: Raleway;
-  color: #FFFF00;
+  color: ${props => props.theme.clickableTextFontColor};
   margin: 15px auto;
   text-decoration: underline;
   cursor: pointer;
@@ -125,8 +112,6 @@ const ResponseSubmittingIndicator = styled.div`
   font-size: 1em;
   align-items: center;
   letter-spacing: +0.5px;
-  font-family: Raleway;
-  color: white;
 `;
 
 const SpinAnimation = keyframes`
@@ -139,7 +124,6 @@ const SpinAnimation = keyframes`
 `;
 
 const LoadingIcon = styled(LoaderCircle)`
-  color: white;
   height: 35px;
   width: auto;
 
@@ -148,7 +132,6 @@ const LoadingIcon = styled(LoaderCircle)`
 
 
 interface QuestionComponentProps {
-  theme?: 'dark' | 'light';
   artwork: Artwork;
 };
 
@@ -161,7 +144,7 @@ const defaultResponse: Response = {
   userResponseID: ''
 };
 
-const QuestionComponent: React.FC<QuestionComponentProps> = ({ artwork, theme = 'dark' }) => {
+const QuestionComponent: React.FC<QuestionComponentProps> = ({ artwork }) => {
 
   const [userResponseID, setUserResponseID] = useState<string>('');
   const [responseSubmitting, setResponseSubmitting] = useState<boolean>(false);

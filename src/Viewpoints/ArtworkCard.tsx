@@ -94,6 +94,7 @@ const CardBackground = styled.div<CardBackgroundProps>`
   transform-style: preserve-3d;
   perspective: 1000px;
   background-image: url("https://spice.kmi.open.ac.uk/demos/imma_api/main.php?action=artworkimage&filename=${props => props.backgroundImage}");
+  background-color: black;
   border: 1px solid black;
 
   overflow: hidden;

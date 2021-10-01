@@ -5,7 +5,7 @@ import { Artwork } from '../services/viewpointsArtwork.model';
 const Root = styled.div`
   display: flex;
   flex-direction: row;
-  background-color: white;
+  background-color: ${props => props.theme.cardBackground};
 
   box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
   padding: 16px;
@@ -19,7 +19,6 @@ const Root = styled.div`
 const SelectionPanel = styled.div`
   display: flex;
   flex-direction: column;
-  background-color: rgba(15, 15, 15, 0.75);
   width: 50%;
   max-height: 550px;
   margin: 0;
@@ -45,11 +44,8 @@ const ArtworkDataContainer = styled.div`
 `;
 
 const ArtworkDescription = styled.div`
-  font-size: 1em;
   font-weight: 400;
   line-height: 1.5;
-  font-family: Raleway;
-  color: white;
   transition: color 0.5s ease;
   margin: auto 0 auto 0;
   word-wrap: break-word;
@@ -61,32 +57,25 @@ const ArtworkTitle = styled.p`
   font-weight: 500;
   font-style: italic;
   letter-spacing: +0.5px;
-  font-family: Raleway;
-  color: white;
+  margin-bottom: 5px;
 `;
 
 const ArtworkAuthor = styled.p`
-  font-size: 1em;
   font-weight: 700;
   font-style: bold;
   letter-spacing: +0.5px;
-  font-family: Raleway;
-  color: white;
+  margin-bottom: 5px;
 `;
 
 const ArtworkDate = styled.p`
-  font-size: 1em;
   letter-spacing: +0.5px;
-  font-family: Raleway;
-  color: white;
+  margin-bottom: 5px;
 `;
 
 const ArtworkNotes = styled.p`
   font-size: 0.9em;
   font-weight: 400;
   font-style: italic;
-  font-family: Raleway;
-  color: white;
 `;
 
 interface ArtworkDisplayProps {
@@ -100,25 +89,24 @@ const ArtworkDisplay = styled.div<ArtworkDisplayProps>`
   background-position: 50% 50%;
   background-repeat: no-repeat;
   background-size: auto 100%;
-  background-color: black;
+  background-color: ${props => props.theme.artworkDisplayBackground};
 `;
 
 const ClickableText = styled.p`
   font-size: 0.9em;
   font-weight: 400;
-  font-family: Raleway;
-  color: #FFFF00;
+  color: ${props => props.theme.clickableTextFontColor};
   margin-bottom: 15px;
+  margin-top: 5px;
   text-decoration: underline;
   cursor: pointer;
 `;
 
 interface ArtworkDetailProps {
   artworkData: Artwork;
-  theme?: 'dark' | 'light';
 };
 
-const ArtworkDetail: React.FC<ArtworkDetailProps> = ({ artworkData, theme = 'dark' }) => {
+const ArtworkDetail: React.FC<ArtworkDetailProps> = ({ artworkData }) => {
 
   return (
     <Root>
@@ -156,51 +144,3 @@ const ArtworkDetail: React.FC<ArtworkDetailProps> = ({ artworkData, theme = 'dar
 };
 
 export default ArtworkDetail;
-
-/*
-
-<CardBackground>
-      <CardImage
-        src={`https://spice.kmi.open.ac.uk/demos/imma_api/main.php?action=artworkimage&filename=${artworkData.image}`}
-        alt={artworkData.image}
-      />
-      <NameText>
-        {artworkData.name}
-      </NameText>
-      <InformationText>
-        {artworkData.artist}
-      </InformationText>
-      <InformationText>
-        {artworkData.date}
-      </InformationText>
-      <InformationText>
-        {artworkData.imageLoc}
-      </InformationText>
-    </CardBackground>
-
-
-<div class="row px-4">
-  <div class="col">
-    <div *ngIf="artwork" class="card my-3 shadow-sm rounded">
-    <img src="{{'https://spice.kmi.open.ac.uk/demos/imma_api/main.php?action=artworkimage&filename=' + artwork.image}}" class="card-img-top" alt="{{artwork.name}}">
-      <div class="card-body">
-        <h5 class="card-title fst-italic">{{ artwork.name }}</h5>
-        <p>
-          <span class="fw-bold">{{ artwork.artist }}</span><br />
-          <span>{{ artwork.date }}</span>
-        </p>
-        <audio controls style="width: 100%">
-          <source src="assets/audio/{{artwork.audio}}" type="audio/mp4">
-          Your browser does not support audio.
-        </audio>
-        <p [innerHTML]="artwork.description"></p>
-      <p>
-        <small><em>{{ artwork.notes }}</em></small><br />
-        <span *ngIf="artwork.URL">
-        <a href="{{artwork.URL}}" target="_blank"> <small>Find this work in the IMMA Collection</small></a>
-      </span>
-    </p>
-  </div>
-</div>
-  </div >
-</div >*/
