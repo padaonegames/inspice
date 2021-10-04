@@ -122,7 +122,7 @@ const ArtworkDetail: React.FC<ArtworkDetailProps> = ({ artworkData }) => {
         </ArtworkDate>
         <ArtworkListDottedLine />
         <audio controls>
-          <source src={`/audio/${artworkData.audio}`} type='audio/mp4' />
+          <source src={`${process.env.PUBLIC_URL}/audio/${artworkData.audio}`} type='audio/mp4' />
           Your browser does not support audio.
         </audio>
         <ArtworkDataContainer>
