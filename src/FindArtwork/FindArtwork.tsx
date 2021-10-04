@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import ArtworkCard from '../FindArtwork/ArtworkCard';
 
@@ -9,7 +9,8 @@ import NextPanel from './NextCornerPanel';
 
 import { NavigateNext } from '@styled-icons/material/NavigateNext';
 import { NavigateBefore } from '@styled-icons/material/NavigateBefore';
-import { ArtworkData, StageData } from '../services/commonDefinitions';
+import { ArtworkData } from '../services/artwork.model';
+import { StageData } from '../services/findArtworkActivity.model';
 
 const Root = styled.div`
   margin-top: 1vh;
@@ -119,7 +120,7 @@ const FindArtwork: React.FC<FindArtworkProps> = ({
   useEffect(() => {
     setFlippedCards(Array(imagesData.length).fill(false));
     setStageCompleted(false);
-  }, [stageData]);
+  }, [stageData, imagesData.length]);
 
   const handleCardSelected = (id: string, index: number) => {
     if (id === stageData.artworkId) {
@@ -143,7 +144,6 @@ const FindArtwork: React.FC<FindArtworkProps> = ({
     onPointsUpdate(-value);
   };
 
-  const displayedArtworks = imagesData.slice(displayIndex, displayIndex + 6);
   return (
     <Root>
       <UpperRowContainer>
@@ -174,10 +174,10 @@ const FindArtwork: React.FC<FindArtworkProps> = ({
         />
         <ArtworkGrid>
           {[0, 1, 2].map(column =>
-            <ArtworksContainer>
+            <ArtworksContainer key={column}>
               {imagesData.slice((displayIndex + (column * 2)), (displayIndex + 2 + (column * 2))).map((im, i) => (
                 <ArtworkCard
-                  key={im.id}
+                  key={im.id + im.author}
                   artworkData={im}
                   flipped={flippedCards[(column * 2) + i + displayIndex]}
                   status={im.id === stageData.artworkId ?

@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
+import { useEffect } from 'react';
 import styled from 'styled-components';
+import FilterPopup from './FilterPopup';
 
 interface RootProps {
   bottomBorder: boolean;
@@ -58,9 +60,20 @@ const OptionText = styled.span`
   align-self: center;
   color: #9d9d9d;
   letter-spacing: +0.5px;
-  font-size: 0.6em;
+  font-size: 0.65em;
   font-weight: 1000;
   font-family: Raleway;
+`;
+const OptionSeeAll = styled.span`
+  padding: 3% ;
+  color: #6b6b6b;
+  letter-spacing: +1.5px;
+  font-size: 0.6em;
+  font-weight: 700;
+  font-family: Raleway;
+  :hover{
+    cursor: pointer;
+  }
 `;
 
 const ExpandIcon = styled.span`
@@ -92,6 +105,26 @@ const FilterField: React.FC<FilterFieldProps> = ({
 }) => {
 
   const [opened, setOpened] = useState<boolean>(false);
+  const [filterPopupOpen, setFilterPopupOpen] = useState<boolean>(false);
+
+  useEffect(() => {
+
+    const noScroll = () => {
+      window.scrollTo(0, 0);
+    };
+
+    if (filterPopupOpen) {
+      window.addEventListener("scroll", noScroll);
+      document.body.style.overflow = 'hidden';
+    }
+    else {
+      window.removeEventListener("scroll", noScroll);
+      document.body.style.overflow = 'visible';
+    }
+
+    return () => window.removeEventListener("scroll", noScroll);
+
+  }, [filterPopupOpen]);
 
   return (
     <Root bottomBorder={bottomBorder} key={filterField}>
@@ -107,13 +140,27 @@ const FilterField: React.FC<FilterFieldProps> = ({
         </ExpandIcon>
       </FieldHeader>
       {opened &&
-        filterOptions.sort().slice(0, maxOptionsShown).map((elem, i) =>
+        filterOptions.sort().slice(0, 5).map((elem, i) =>
           <OptionContainer key={elem} onClick={() => onFilterSelected(elem)}>
             <OptionText>
               {elem} ({filterCounts.length > i && filterCounts[i]})
             </OptionText>
           </OptionContainer>
         )}
+      {opened &&
+        <OptionSeeAll
+          onClick={() => setFilterPopupOpen(true)}>
+          SEE ALL ▶
+        </OptionSeeAll>}
+      {filterPopupOpen &&
+        <FilterPopup
+          filterField={filterField}
+          filterOptions={filterOptions}
+          filterCounts={filterCounts}
+          onFilterSelected={onFilterSelected}
+          setFilterPopupOpen={setFilterPopupOpen}
+        />
+      }
     </Root>
   );
 };

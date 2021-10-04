@@ -1,56 +1,61 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
+import { ThemeContext } from '../theme/ThemeStore';
 
 const Root = styled.div`
-  justify-content: left;
-  background-color: white;
+  position: sticky;
+  background-color: ${props => props.theme.headerBackground};
+  color: ${props => props.theme.textColor};
   align-content: center;
+  justify-content: space-between;
   display: flex;
   flex-direction: row;
   top: 0;
+  left: 0;
   width: 100%;
-  height: auto;
-  padding-left: 1.5vw;
-  padding-right: 1.5vw;
-  padding-top: 3vh;
-  border-style: solid;
-  border-color: lightgrey;
-  border-width: 0px 0px 1px 0px;
+  height: 65px;
+  min-width: 320px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-top: 20px;
+  border-bottom: 1px solid #e5e5e5;
+  box-sizing: inherit;
+  z-index: 9001;
 `;
 
-const AppName = styled.p`
-  font-size: 1.2em;
-  letter-spacing: +2px;
-  font-family: 'Anonymous Pro';
+const AppName = styled.span`
+  font-size: ${props => props.theme.titleFontSize};
+  letter-spacing: ${props => props.theme.titleLetterSpacing};
+  font-family: ${props => props.theme.titleFont};
 `;
 
-/*
-const LanguageSwitch = styled.div`
-  margin-left: auto;
-  font-size: 1.1em;
-  letter-spacing: +2px;
-  font-family: 'Anonymous Pro';
+const ThemeSwitch = styled.span`
+  font-size: ${props => props.theme.titleFontSize};
+  letter-spacing: ${props => props.theme.titleLetterSpacing};
+  font-family: ${props => props.theme.titleFont};
   cursor: pointer;
-`;
-*/
 
-const Header: React.FC = () => {
+  &:hover {
+    text-decoration: underline;
+  }
+`;
+
+interface HeaderProps {
+  activityTitle?: string;
+};
+
+const Header: React.FC<HeaderProps> = ({ activityTitle = '' }) => {
 
   const { t } = useTranslation('app');
+  const { theme, switchTheme } = useContext(ThemeContext); 
 
   return (
     <Root>
-      <AppName>{t('museumHeader')}</AppName>
-      {/*
-      <LanguageSwitch>
-        <AppName
-          onClick={() => i18n.changeLanguage(i18n.language === 'en' ? 'es' : 'en')}
-        >
-          {i18n.language === 'en' ? 'ES' : 'EN'}
-        </AppName>
-      </LanguageSwitch>
-      */}
+      <AppName>{`${t('museumHeader')}${activityTitle && ` - ${activityTitle}`}`}</AppName>
+      <ThemeSwitch onClick={() => switchTheme(theme === 'dark' ? 'light' : 'dark')}>
+          {theme === 'dark' ? 'Light' : 'Dark'}
+      </ThemeSwitch>
     </Root>
   );
 }

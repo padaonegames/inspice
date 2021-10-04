@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import ArtworkFront from '../FindArtwork/ArtworkFront';
-import { ArtworkData } from '../services/commonDefinitions';
+import { ArtworkData } from '../services/artwork.model';
 import ArtworkSelectedCard from './ArtworkSelectedCard';
 
 const CardContainer = styled.div`

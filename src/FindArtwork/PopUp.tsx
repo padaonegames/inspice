@@ -2,10 +2,10 @@ import React from 'react';
 
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
-import { ArtworkData } from '../services/commonDefinitions';
 import { Medal } from '@styled-icons/remix-line/Medal';
 import { ControllerNext } from '@styled-icons/entypo/ControllerNext';
 import { useState } from 'react';
+import { ArtworkData } from '../services/artwork.model';
 
 
 ///////
@@ -153,11 +153,10 @@ const RevealText = styled.div`
   justify-content: right;
   align-content: right;
   flex-direction: column-reverse;
-  word-wrap: break-word;
   position: absolute;
   align-self: auto;
   padding: 5%;
-  width: 90%;
+  width: 25%;
   height: 100%;
   left:10px;
 `;
@@ -169,6 +168,7 @@ const NameText = styled.h3`
   font-weight: 850;
   color: white;
   margin-bottom: 2vh;
+  flex-wrap:wrap;
 `;
 
 const InformationText = styled.p`

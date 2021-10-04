@@ -43,7 +43,7 @@ interface NextPanelProps {
 
 const NextPanel: React.FC<NextPanelProps> = ({ onNextClicked }) => {
 
-  const { t, i18n } = useTranslation('app');
+  const { t } = useTranslation('app');
   
   return (
     <NextCorner

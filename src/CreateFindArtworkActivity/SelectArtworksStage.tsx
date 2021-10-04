@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { api } from '../services';
+import { artworksService } from '../services';
 import { GetArtworksFilter } from '../services/queries';
 import { useAsyncRequest } from '../services/useAsyncRequest';
 import RecomendationCard from './RecomendationCard';
@@ -8,12 +8,12 @@ import FilterField from './FilterField';
 import { NavigateNext } from '@styled-icons/material/NavigateNext';
 import { NavigateBefore } from '@styled-icons/material/NavigateBefore';
 import ShowFilters from './ShowFilters'
-import SelectedActivitiesPopup from './SelectedActivitiesPopup';
+import SelectedActivitiesPopup from './SelectedArtworksPopup';
 import LoadingOverlay from '../components/LoadingOverlay';
 import ArtworkSearchResults from './ArtworkSearchResults';
 import { Library } from '@styled-icons/fluentui-system-filled/Library';
 import { Search } from '@styled-icons/boxicons-regular/Search';
-import { ArtworkData } from '../services/commonDefinitions';
+import { ArtworkData } from '../services/artwork.model';
 
 const Root = styled.div`
   padding-top: 2.5vh;
@@ -193,6 +193,7 @@ const SearchBar = styled.input`
   font-size: 0.9em;
   letter-spacing: +1px;
   font-family: Raleway;
+  font-weight: 500;
   color: black;
   resize: none;
   text-align: left;
@@ -230,26 +231,24 @@ interface SelectArtworksStageProps {
 const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSelected, onArtworkDeselected, selectedArtworks }) => {
 
   const [page, setPage] = useState<number>(1);
-  const [itemsPerPage, setItemsPerPage] = useState<number>(6);
+  const [itemsPerPage] = useState<number>(30);
   const [appliedFilter, setAppliedFilter] = useState<GetArtworksFilter>({});
   const [lastArtwork, setLastArtwork] = useState<string>('');
 
   const fetchArtworksFromDataset = async () => {
-    if (fetchAvailableArtworksStatus.kind === 'success' && fetchAvailableArtworksStatus.result.kind === 'ok') {
-      return api.fetchArtworks({ sortingField: 'title', pageNumber: page, pageSize: itemsPerPage, filter: appliedFilter });
-    }
-    else return Promise.reject();
+    /*if (fetchAvailableArtworksStatus.kind === 'success' && fetchAvailableArtworksStatus.result.kind === 'ok') {*/
+    return artworksService.fetchArtworks({ sortingField: 'title', pageNumber: page, pageSize: itemsPerPage, filter: appliedFilter });
   };
 
+  /*
   const fetchArtworksWithEmotionsIds = async () => {
-    return api.fetchAvailableArtworksWithEmotions();
+    return artworksService.fetchAvailableArtworksWithEmotions();
   };
+  */
 
   const fetchUniqueFieldValuesFromDataset = async (field: 'date' | 'author' | 'info') => {
-    if (fetchAvailableArtworksStatus.kind === 'success' && fetchAvailableArtworksStatus.result.kind === 'ok') {
-      return api.fetchUniqueFieldValues(field, fetchAvailableArtworksStatus.result.data);
-    }
-    else return Promise.reject();
+    /*if (fetchAvailableArtworksStatus.kind === 'success' && fetchAvailableArtworksStatus.result.kind === 'ok') {*/
+    return artworksService.fetchUniqueFieldValues(field /*, fetchAvailableArtworksStatus.result.data*/);
   };
 
   const handleApplyFilter = (field: 'date' | 'author' | 'info', filter: string) => {
@@ -270,12 +269,11 @@ const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSele
   };
 
   const handleClearFilters = () => {
-    if (fetchAvailableArtworksStatus.kind === 'success' && fetchAvailableArtworksStatus.result.kind === 'ok') {
+    /*if (fetchAvailableArtworksStatus.kind === 'success' && fetchAvailableArtworksStatus.result.kind === 'ok') {
       setAppliedFilter({ ids: fetchAvailableArtworksStatus.result.data });
     }
-    else {
-      setAppliedFilter({});
-    }
+    else {*/
+    setAppliedFilter({});
   };
 
   const handleApplyKeywordsFilter = (keywords: string) => {
@@ -290,20 +288,19 @@ const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSele
   };
 
   const getRecommendations = () => {
-    console.log('last artwork: ' + lastArtwork);
     if (lastArtwork) {
-      return api.fetchRecommendationsByEmotion(lastArtwork);
+      return artworksService.fetchRecommendationsByEmotion(lastArtwork);
     }
     else {
       return Promise.reject();
     }
-  }
+  };
 
-  const [fetchAvailableArtworksStatus] = useAsyncRequest(fetchArtworksWithEmotionsIds, []);
-  const [findArtworkStatus] = useAsyncRequest(fetchArtworksFromDataset, [fetchAvailableArtworksStatus, appliedFilter, page, itemsPerPage]);
-  const [findUniqueAuthorsStatus] = useAsyncRequest(() => fetchUniqueFieldValuesFromDataset('author'), [fetchAvailableArtworksStatus]);
-  const [findUniqueDatesStatus] = useAsyncRequest(() => fetchUniqueFieldValuesFromDataset('date'), [fetchAvailableArtworksStatus]);
-  const [findUniqueInfoStatus] = useAsyncRequest(() => fetchUniqueFieldValuesFromDataset('info'), [fetchAvailableArtworksStatus]);
+  // const [fetchAvailableArtworksStatus] = useAsyncRequest(fetchArtworksWithEmotionsIds, []);
+  const [findArtworkStatus] = useAsyncRequest(fetchArtworksFromDataset, [/*fetchAvailableArtworksStatus, */appliedFilter, page, itemsPerPage]);
+  const [findUniqueAuthorsStatus] = useAsyncRequest(() => fetchUniqueFieldValuesFromDataset('author'), [/*fetchAvailableArtworksStatus*/]);
+  const [findUniqueDatesStatus] = useAsyncRequest(() => fetchUniqueFieldValuesFromDataset('date'), [/*fetchAvailableArtworksStatus*/]);
+  const [findUniqueInfoStatus] = useAsyncRequest(() => fetchUniqueFieldValuesFromDataset('info'), [/*fetchAvailableArtworksStatus*/]);
   const [fetchByEmotionStatus] = useAsyncRequest(getRecommendations, [lastArtwork]);
 
   const [selectedArtworksOpen, setSelectedArtworksOpen] = useState<boolean>(false);
@@ -313,8 +310,8 @@ const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSele
 
   useEffect(() => {
     if (
-      fetchAvailableArtworksStatus.kind === 'success' &&
-      fetchAvailableArtworksStatus.result.kind === 'ok' &&
+      /*fetchAvailableArtworksStatus.kind === 'success' &&
+      fetchAvailableArtworksStatus.result.kind === 'ok' &&*/
       findArtworkStatus.kind === 'success' &&
       findArtworkStatus.result.kind === 'ok' &&
       findUniqueAuthorsStatus.kind === 'success' &&
@@ -328,20 +325,21 @@ const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSele
     else {
       setLoading(true);
     }
-  }, [fetchAvailableArtworksStatus, findArtworkStatus, findUniqueAuthorsStatus, findUniqueDatesStatus, findUniqueInfoStatus]);
+  }, [/*fetchAvailableArtworksStatus,*/findArtworkStatus, findUniqueAuthorsStatus, findUniqueDatesStatus, findUniqueInfoStatus]);
 
+  /*
   useEffect(() => {
     if (fetchAvailableArtworksStatus.kind === 'success' && fetchAvailableArtworksStatus.result.kind === 'ok') {
       const ids = fetchAvailableArtworksStatus.result.data;
       setAppliedFilter(prev => ({ ...prev, ids }));
     }
-  }, [fetchAvailableArtworksStatus]);
+  }, [fetchAvailableArtworksStatus]);*/
 
   return (
     <Root>
       <PromptTitlePanel>
         <TitleText>
-          Select Artworks
+          SELECT ARTWORKS
         </TitleText>
       </PromptTitlePanel>
       <SearchArea>
@@ -349,7 +347,7 @@ const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSele
           placeholder="Search by title..."
           onChange={(e) => setSearchText(e.target.value)}
           onKeyPress={(event) => {
-            if(event.key === 'Enter') {
+            if (event.key === 'Enter') {
               handleApplyKeywordsFilter(searchText);
             }
           }}
@@ -358,7 +356,7 @@ const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSele
           <SearchIcon />
         </SearchButton>
       </SearchArea>
-      {(findArtworkStatus.kind === 'success' && findArtworkStatus.result.kind === 'ok') && (
+      {((findArtworkStatus.kind === 'success' && findArtworkStatus.result.kind === 'ok') && (
         <DisplayPanel>
           <ResultsUpperPanel>
             <ResultsWrapper>
@@ -427,9 +425,9 @@ const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSele
             </ResultsFiltersAndArtworks>
 
           </ResultsLowerPanel>
-          {loading && <LoadingOverlay />}
+          {loading && <LoadingOverlay message='Loading' />}
         </DisplayPanel>
-      ) || 'Loading...'}
+      )) || <LoadingOverlay message='Loading' />}
       <VerticalSeparator />
 
       {(fetchByEmotionStatus.kind === 'success' && fetchByEmotionStatus.result.kind === 'ok') && (

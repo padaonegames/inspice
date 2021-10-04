@@ -1,7 +1,15 @@
-import { Api } from "./api";
-import { ArtworkFieldMapping } from "./commonDefinitions";
+import { FindArtworkActivityService } from "./findArtworkActivity.service";
+import { ArtworksService } from "./artworks.service";
+import { ArtworkFieldMapping } from "./artwork.model";
+import { ViewpointsArtworksService } from "./viewpointsArtworks.service";
+import { ViewpointsQuestionsService } from "./viewpointsQuestions.service";
+import { ViewpointsResponseService } from "./viewpointsResponse.service";
 
-export let api: Api;
+export let api: FindArtworkActivityService;
+export let artworksService: ArtworksService;
+export let viewpointsArtworksService: ViewpointsArtworksService;
+export let viewpointsQuestionsService: ViewpointsQuestionsService;
+export let viewpointsResponseService: ViewpointsResponseService;
 
 /**
  * For the time being we fetch the relevant fields from the initialize services function provided here.
@@ -12,26 +20,22 @@ export const initializeServices = () => {
   const apiUrl = process.env.REACT_APP_API_URL || 'https://api2.mksmart.org';
   const datasetUuid = process.env.REACT_APP_DATASET_UUID || 'd6a1d487-63bb-4eb4-993c-b707248aeca5';
   const apiKey = process.env.REACT_APP_API_KEY || '';
-  const mappingMode = (process.env.REACT_APP_MAPPING_MODE as 'JSON' | 'RDF') || 'RDF';
   const activityDefinitionsDatasetUuid = process.env.REACT_APP_ACTIVITY_DEFINITIONS_DATASET_UUID || '0f286b7d-87cd-4453-8dc9-b6dc54320429';
   const huntDefinitionsDatasetUuid = process.env.REACT_APP_HUNT_DEFINITIONS_DATASET_UUID || 'a5c0f5fd-7fc7-461f-b276-fddb7ede99d6';
-  
-  if (mappingMode === 'JSON') {
-    const mapping: ArtworkFieldMapping = {
-      author: process.env.REACT_APP_MAP_AUTHOR || 'author',
-      title: process.env.REACT_APP_MAP_TITLE || 'title',
-      location: process.env.REACT_APP_MAP_LOCATION || 'location',
-      id: process.env.REACT_APP_MAP_ID || 'id',
-      date: process.env.REACT_APP_MAP_DATE || 'date',
-      info: process.env.REACT_APP_MAP_INFO || 'info',
-      src: process.env.REACT_APP_MAP_SRC || 'src',
-    };
 
-    api = new Api(apiUrl, datasetUuid, activityDefinitionsDatasetUuid, huntDefinitionsDatasetUuid, apiKey, { mode: 'JSON', mapping });
-  }
+  const mapping: ArtworkFieldMapping = {
+    author: process.env.REACT_APP_MAP_AUTHOR?.split(';') || ['author'],
+    title: process.env.REACT_APP_MAP_TITLE?.split(';') || ['title'],
+    location: process.env.REACT_APP_MAP_LOCATION?.split(';') || ['location'],
+    id: process.env.REACT_APP_MAP_ID?.split(';') || ['id'],
+    date: process.env.REACT_APP_MAP_DATE?.split(';') || ['date'],
+    info: process.env.REACT_APP_MAP_INFO?.split(';') || ['info'],
+    src: process.env.REACT_APP_MAP_SRC?.split(';') || ['src'],
+  };
 
-  else {
-    api = new Api(apiUrl, datasetUuid, activityDefinitionsDatasetUuid, huntDefinitionsDatasetUuid, apiKey, { mode: 'RDF' });
-  }
-  
+  api = new FindArtworkActivityService(apiUrl, datasetUuid, activityDefinitionsDatasetUuid, huntDefinitionsDatasetUuid, apiKey);
+  artworksService = new ArtworksService(apiUrl, datasetUuid, apiKey, mapping);
+  viewpointsArtworksService = new ViewpointsArtworksService();
+  viewpointsQuestionsService = new ViewpointsQuestionsService();
+  viewpointsResponseService = new ViewpointsResponseService();
 };

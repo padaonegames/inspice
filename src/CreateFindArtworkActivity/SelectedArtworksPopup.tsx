@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import ReactDOM from 'react-dom';
 import styled from 'styled-components';
-import { ArtworkData } from '../services/commonDefinitions';
 import { NavigateNext } from '@styled-icons/material/NavigateNext';
 import { NavigateBefore } from '@styled-icons/material/NavigateBefore';
 import { Cross } from '@styled-icons/entypo/Cross';
 import { Close } from '@styled-icons/evaicons-solid/Close';
+import { ArtworkData } from "../services/artwork.model";
 
 const Root = styled.div`
   width: 100%;
@@ -24,7 +24,7 @@ const Root = styled.div`
 const PopupPanelContent = styled.div`
   position: Static;
   width: 60vw;
-  height: 90vh;
+  height: 75vh;
   background-color: white;
   display: flex;
   flex-direction: column;
@@ -85,20 +85,18 @@ const ArtworkItemContainer = styled.div`
 `;
 
 const ArtworksContainer = styled.div`
-  margin: auto;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   width: 20%;
   height: 100%;
   padding-left: 2%;
+  padding-top: 20px;
 `;
 
 const ArtworkColumnContainer = styled.div`
   margin: auto;
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
   width: 100%;
   height: 80%;
   
@@ -113,8 +111,6 @@ const FieldsContainer = styled.div`
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  
-
 `;
 
 const AuthorText = styled.span`
@@ -148,7 +144,6 @@ const RemoveArtworkIcon = styled(Cross)`
   width: 15px;
   align-self: flex-end;
   color: darkgray;
-
 `;
 
 
@@ -238,18 +233,19 @@ const SelectedActivitiesPopup: React.FC<SelectedActivitiesPopupProps> = ({ artwo
           </NavIconContainer>
           {[0, 1, 2, 3].map(column =>
             <ArtworksContainer>
-              {artworks.slice((page + column) * 4, (page + 1 + column) * 4).map(elem => (
-                <ArtworkItemContainer key={elem.id}>
-                  <RemoveArtworkIcon onClick={() => onArtworkRemoved(elem.id)}/>
-                  <ArtworkMiniatureContainer>
-                    <ArtworkMiniature src={elem.src} />
-                  </ArtworkMiniatureContainer>
-                  <FieldsContainer>
-                    <TitleText>{elem.title}</TitleText>
-                    <AuthorText>{elem.author}</AuthorText>
-                  </FieldsContainer>
-                </ArtworkItemContainer>
-              ))}
+              {//artworks.slice((page + column) * 4, (page + 1 + column) * 4).map(elem => (
+                artworks.slice(page + (column * 4), page + 4 + (column * 4)).map(elem => (
+                  <ArtworkItemContainer key={elem.id}>
+                    <RemoveArtworkIcon onClick={() => onArtworkRemoved(elem.id)} />
+                    <ArtworkMiniatureContainer>
+                      <ArtworkMiniature src={elem.src} />
+                    </ArtworkMiniatureContainer>
+                    <FieldsContainer>
+                      <TitleText>{elem.title}</TitleText>
+                      <AuthorText>{elem.author}</AuthorText>
+                    </FieldsContainer>
+                  </ArtworkItemContainer>
+                ))}
             </ArtworksContainer>
           )}
           <NavIconContainer>

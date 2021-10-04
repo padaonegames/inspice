@@ -11,6 +11,19 @@ const Root = styled.div`
   margin-top: 35px;
   justify-content: center;
   align-items: center;
+  margin-bottom: 35px;
+`;
+
+const Card = styled.div`
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  padding: 16px;
+  background-color: white;
+  width: 85%;
+  max-width: 1200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 `;
 
 const VerticalSeparator = styled.div`
@@ -32,7 +45,7 @@ const TitleText = styled.h2`
 `;
 
 const ExplanatoryText = styled.p`
-  max-width: 960px;
+  max-width: 1200px;
   width: 85%;
   align-self: center;
   text-align: justify;
@@ -55,7 +68,7 @@ const TreasureHuntListHeader = styled.h3`
   background: url(${lineBackground}) repeat-x 0 center;
   margin-bottom: 10px;
   span {
-    background: #f9f9f9;
+    background: white;
     padding-left: 10px;
     padding-right: 10px;
   }
@@ -133,43 +146,47 @@ const ExploreActivityScreen: React.FC = () => {
 
   return (
     <Root>
-      <TitleText>Create a Treasure Hunt</TitleText>
-      <ExplanatoryText>
-        The museum is hosting the activity "{fetchActivityDefinitionStatus.result.data[0].activityTitle}", in which visitors may create their own
-        treasure hunts to share with others. To participate in the activity, you may click on the <b>Create new game</b> button bellow, where you will be
-        guided through the process of selecting different artworks from a given art collection, writing hints to help other visitors find your paintings,
-        and adding your personalised messages to the treasure hunt as a reward for completing your game.
-      </ExplanatoryText>
-      <TreasureHuntBox onClick={() => history.push('/consumer/create/' + activities[0]._id)}>
-        <TreasureHuntText>
-          Create new game
-        </TreasureHuntText>
-      </TreasureHuntBox>
+      <Card>
+        <TitleText>Create a Treasure Hunt</TitleText>
+        <ExplanatoryText>
+          The museum is hosting the activity "{fetchActivityDefinitionStatus.result.data[0].activityTitle}", in which visitors may create their own
+          treasure hunts to share with others.To participate in the activity, you may click on the <b>Create new game</b> button bellow, where you will be
+          guided through the process of selecting different artworks from a given art collection, writing hints to help other visitors find your paintings,
+          and adding your personalised messages to the treasure hunt as a reward for completing your game.
+        </ExplanatoryText>
+        <TreasureHuntBox onClick={() => history.push('/find-artwork/consumer/create/' + activities[0]._id)}>
+          <TreasureHuntText>
+            Create new game
+          </TreasureHuntText>
+        </TreasureHuntBox>
+      </Card>
       <VerticalSeparator />
-      <TitleText>Explore other users' treasure hunts</TitleText>
-      <ExplanatoryText>
-        Alternatively, you may choose to play one of the treasure hunts created by other visitors by selecting a game of your choice from the list below.
-        The game will take you through different stages in which you will need to use the provided hints to figure out what artwork the treasure hunt creator
-        was thinking of when picking the piece. The first clue will always be free, but subsequent hints will require you to forfeit some of your points to get
-        them, so do your best to find the correct artworks with as few clues as possible!
-      </ExplanatoryText>
+      <Card>
+        <TitleText>Explore other users' treasure hunts</TitleText>
+        <ExplanatoryText>
+          Alternatively, you may choose to play one of the treasure hunts created by other visitors by selecting a game of your choice from the list below.
+          The game will take you through different stages in which you will need to use the provided hints to figure out what artwork the treasure hunt creator
+          was thinking of when picking the piece.The first clue will always be free, but subsequent hints will require you to forfeit some of your points to get
+          them, so do your best to find the correct artworks with as few clues as possible!
+        </ExplanatoryText>
 
-      <TreasureHuntListHeader>
-        <span>
-          Available hunts
-        </span>
-      </TreasureHuntListHeader>
-      <TreasureHuntGrid>
-        {hunts.map((elem, _) =>
-          <TreasureHuntBox
-            onClick={() => history.push('/consumer/play/' + elem._id)}
-            key={elem._id}
-          >
-            <TreasureHuntText>
-              {elem.treasureHuntTitle || 'Unnamed Game'}
-            </TreasureHuntText>
-          </TreasureHuntBox>)}
-      </TreasureHuntGrid>
+        <TreasureHuntListHeader>
+          <span>
+            Available hunts
+          </span>
+        </TreasureHuntListHeader>
+        <TreasureHuntGrid>
+          {hunts.map((elem, _) =>
+            <TreasureHuntBox
+              onClick={() => history.push('/find-artwork/consumer/play/' + elem._id)}
+              key={elem._id}
+            >
+              <TreasureHuntText>
+                {elem.treasureHuntTitle || 'Unnamed Game'}
+              </TreasureHuntText>
+            </TreasureHuntBox>)}
+        </TreasureHuntGrid>
+      </Card>
     </Root>
   );
 }

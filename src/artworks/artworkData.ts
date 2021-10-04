@@ -23,7 +23,7 @@ import swarms_the_moth_src from "./swarms_the_moth.jpg";
 import la_forma_deforme_src from "./la_forma_deforme.jpg";
 import cape_siren_src from "./cape_siren.jpg";
 import boy_src from "./boy.jpg";
-import { ArtworkData } from "../services/commonDefinitions";
+import { ArtworkData } from "../services/artwork.model";
 
 const vulcano: ArtworkData = {
   src: vulcano_src,

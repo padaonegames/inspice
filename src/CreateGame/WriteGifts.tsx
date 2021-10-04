@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import { Medal } from '@styled-icons/remix-line/Medal';
 import { PlusCircle } from '@styled-icons/boxicons-regular/PlusCircle';
 import { RemoveCircle } from '@styled-icons/material/RemoveCircle';
-import { Clock } from '@styled-icons/evaicons-solid/Clock';
 import NextCornerButton from './NextCornerButton';
 import { useTranslation } from 'react-i18next';
 
@@ -116,15 +115,6 @@ const InfoIconClosed = styled(Medal)`
   width: auto;
   align-self: center;
   color: inherit;
-`;
-
-const ExclamationIcon = styled(Clock)`
-  height: 2.5vh;
-  width: auto;
-  position: absolute;
-  left: 60%;
-  top: 57%;
-  color: #b7625e;
 `;
 
 const RemoveIcon = styled(RemoveCircle)`

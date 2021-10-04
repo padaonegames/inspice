@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import FindArtwork from '../FindArtwork/FindArtwork';
 import Fader from '../components/Fader';
 import { useParams } from 'react-router-dom';
-import { api } from '../services';
+import { api, artworksService } from '../services';
 import { useAsyncRequest } from '../services/useAsyncRequest';
+import LoadingOverlay from '../components/LoadingOverlay';
 
 const Root = styled.div`
   display: flex;
@@ -24,7 +25,8 @@ const PlayTreasureHuntScreen: React.FC = () => {
     if (!(fetchActivityDefinitionStatus.kind === 'success' && fetchActivityDefinitionStatus.result.kind === 'ok')) {
       return Promise.reject();
     }
-    return api.fetchArtworks({ filter: { ids: fetchActivityDefinitionStatus.result.data[0].artworks } });
+    console.log(`Fetch activity artworks from: ${fetchActivityDefinitionStatus.result.data[0].artworks}`);
+    return artworksService.fetchArtworks({ filter: { ids: fetchActivityDefinitionStatus.result.data[0].artworks } });
   };
 
   const fetchActivityDefinition = async () => {
@@ -38,10 +40,6 @@ const PlayTreasureHuntScreen: React.FC = () => {
   const [fetchTreasureHuntDefinitionStatus] = useAsyncRequest(fetchTreasureHuntDefinition, []);
   const [fetchActivityDefinitionStatus] = useAsyncRequest(fetchActivityDefinition, [fetchTreasureHuntDefinitionStatus]);
   const [fetchActivityArtworksStatus] = useAsyncRequest(fetchActivityArtworks, [fetchActivityDefinitionStatus]);
-
-  useEffect(() => {
-    console.log(fetchTreasureHuntDefinitionStatus);
-  }, [fetchTreasureHuntDefinitionStatus]);
 
   const [activeStage, setActiveStage] = useState<number>(0);
   const [showPanel, setShowPanel] = useState<boolean>(true);
@@ -59,15 +57,15 @@ const PlayTreasureHuntScreen: React.FC = () => {
   };
 
   if (!(fetchTreasureHuntDefinitionStatus.kind === 'success' && fetchTreasureHuntDefinitionStatus.result.kind === 'ok')) {
-    return <p>Fetching treasure hunt definition...</p>;
+    return <LoadingOverlay message='Fetching treasure hunt definition' />;
   }
 
   if (!(fetchActivityDefinitionStatus.kind === 'success' && fetchActivityDefinitionStatus.result.kind === 'ok')) {
-    return <p>Fetching associated activity...</p>;
+    return <LoadingOverlay message='Fetching associated activity' />;
   }
 
   if (!(fetchActivityArtworksStatus.kind === 'success' && fetchActivityArtworksStatus.result.kind === 'ok')) {
-    return <p>Fetching activity artworks...</p>;
+    return <LoadingOverlay message='Fetching activity artworks' />;
   }
 
   return (

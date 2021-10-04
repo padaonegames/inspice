@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-import { ArtworkData } from '../services/commonDefinitions';
-import ArtworkCorrect from './ArtworkCorrect';
+import { ArtworkData } from '../services/artwork.model';
 import ArtworkFailed from './ArtworkFailed';
 import ArtworkFront from './ArtworkFront';
 import ArtworkPopup from './ArtworkPopup';
@@ -31,7 +30,6 @@ interface ArtworkCardProps {
 };
 
 const ArtworkCard: React.FC<ArtworkCardProps> = ({ artworkData, flipped, status, onCardSelected }) => {
-  const [modalOpen, setModalOpen] = useState(false);
 
   return (
     <CardContainer>
@@ -41,12 +39,6 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({ artworkData, flipped, status,
         flipped={!flipped}
       />
       {status.status === 'right' ?
-        /* <ArtworkCorrect
-           image={artworkData.src}
-           title={artworkData.title}
-           title_en={artworkData.title_en!}
-           flipped={flipped}       
-         />*/
         <ArtworkPopup
           flipped={flipped}
           prize={status.prizes}

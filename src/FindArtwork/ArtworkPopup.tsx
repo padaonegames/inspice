@@ -1,18 +1,11 @@
 import React from 'react';
-
-import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
-import styled, { keyframes } from 'styled-components';
-import { Mouse } from '@styled-icons/material-outlined/Mouse';
-import { ArtworkData, StageData } from '../services/commonDefinitions';
-import { PlusCircle } from '@styled-icons/boxicons-regular/PlusCircle';
+import styled from 'styled-components';
 import { Medal } from '@styled-icons/remix-line/Medal';
-import { ControllerNext } from '@styled-icons/entypo/ControllerNext';
 import { useState } from 'react';
 import Popup from './PopUp';
 import Modal from '../components/Modal';
-
-
+import { ArtworkData } from '../services/artwork.model';
 
 const RevealText = styled.div`
   display: flex;
@@ -35,22 +28,6 @@ const NameText = styled.h3`
   font-weight: 850;
   color: white;
   margin-bottom: 2vh;
-`;
-
-const InformationText = styled.p`
-  font-family: 'EB Garamond';
-  color: white;
-  font-size: 0.8em;
-  font-weight: 575;
-`;
-
-const DarkLayer = styled.div`
-  background-color: rgba(0, 0, 0, 0.5);
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
 `;
 
 interface CardContentProps {
@@ -114,7 +91,7 @@ type Props = {
 
 const ArtworkPopup: React.FC<Props> = ({ flipped, prize, artworkData }) => {
 
-  const { t, i18n } = useTranslation('app');
+  const { t } = useTranslation('app');
   const [modalOpen, setModalOpen] = useState<boolean>(false);
 
   return (
