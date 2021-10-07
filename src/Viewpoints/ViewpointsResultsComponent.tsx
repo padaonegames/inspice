@@ -8,7 +8,7 @@ import { Response } from '../services/viewpointsResponse.model';
 import { Artwork } from '../services/viewpointsArtwork.model';
 import ArtworksComponent from './ArtworksComponent';
 import ResponsesPopup from './ResponsesPopUp';
-import ContentCard, { CardExplanatoryText } from './ContentCard';
+import ContentCard, { CardExplanatoryText } from '../components/ContentCard';
 
 const Root = styled.div`
   display: flex;

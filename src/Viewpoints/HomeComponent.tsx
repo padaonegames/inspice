@@ -6,7 +6,7 @@ import { useHistory } from 'react-router-dom';
 import lineBackground from './../components/line-header-point.png';
 import ArtworksComponent from '../Viewpoints/ArtworksComponent';
 import ImmaLogo from '../assets/img/IMMA30_LOGO_RGB_small.png';
-import ContentCard, { CardExplanatoryText } from './ContentCard';
+import ContentCard, { CardExplanatoryText } from '../components/ContentCard';
 
 const Root = styled.div`
   display: flex;

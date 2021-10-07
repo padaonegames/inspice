@@ -1,3 +1,5 @@
+import { ThemeStore } from './theme/ThemeStore';
+import Theme from './theme/Theme';
 import React, { Suspense } from 'react';
 import {
   BrowserRouter as Router,
@@ -12,8 +14,6 @@ import CreateFindArtworkActivityScreen from './screens/CreateFindArtworkActivity
 import BrowseDefinitionsScreen from './screens/BrowseDefinitionsScreen';
 import ExploreActivityScreen from './screens/ExploreActivityScreen';
 import ViewpointsScreen from './screens/ViewpointsScreen';
-import { ThemeStore } from './theme/ThemeStore';
-import Theme from './theme/Theme';
 
 const App: React.FC = () => {
 

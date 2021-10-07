@@ -1,6 +1,6 @@
 import { useContext } from "react";
-import { createGlobalStyle, ThemeProvider } from "styled-components";
 import { AvailableThemes, ThemeContext } from "./ThemeStore";
+import { createGlobalStyle, ThemeProvider } from "styled-components";
 
 const themes: AvailableThemes = {
   dark: {

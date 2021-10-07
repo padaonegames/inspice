@@ -31,10 +31,10 @@ const ContentContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-around;
+  color: white;
 `;
 
 const SpinnerIcon = styled(Spinner2)`
-  color: white;
   height: 65px;
   width: auto;
   align-self: center;
@@ -49,7 +49,6 @@ const LoadingText = styled.div`
   font-weight: 500;
   letter-spacing: +0.5px;
   font-family: Raleway;
-  color: white;
   text-align: middle;
   align-self: center;
 `;
