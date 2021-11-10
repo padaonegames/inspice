@@ -103,15 +103,46 @@ const ArtworkContainer = styled.div`
   height: 37.5vh;
 `;
 
-interface SelectArtworkProps {
+export interface SelectArtworkProps {
+  /**
+   * array of objects adhering to the ArtworkData interface, each of them containing at
+   * least an artwork’s id, author, title, and image source. Image source will be used
+   * to render the selected artwork’s preview.
+   */
   imagesData: ArtworkData[];
+  /**
+   * id of the currently selected artwork, or undefined if none of them is selected at the time.
+   * Must match the id of one of the artworks declared in imagesData (otherwise behaviour will
+   * be the same as when passing in undefined in this prop).
+   */
   selectedArtwork: string | undefined;
+  /**
+   * callback that will be used whenever an artwork is selected in the list of available artworks,
+   * with the id of the selected artwork as a parameter.
+   * @param artworkId unique identifier of selected artwork within imagesData.
+   */
   onArtworkSelected: (artworkId: string) => void;
+  /**
+   * callback that will be triggered when the continue button on the panel is clicked.
+   */
   onNextClicked: () => void;
+  /**
+   * title to display on top of the list of available artworks.
+   */
   titleText: string;
 };
 
-const SelectArtwork: React.FC<SelectArtworkProps> = ({
+/**
+ * Panel used to display a list of available artworks to choose from, as well as to provide a full-size
+ * display of the selected item’s image. This list is provided to the user in the form of a scrollable
+ * sequence of artworks’ titles, which may be clicked on to select the artwork and trigger a callback
+ * with its id as parameter to notify the component’s parent of the performed selection. Only one artwork
+ * may be selected at any given time, and the image pointed at by its source will be displayed on the
+ * right sub-panel of this component. Selecting an artwork will NOT change the currently selected item
+ * unless selectedArtwork prop is modified in parent (component is not stateful).
+ * @author Pablo Gutiérrez, 2021
+ */
+export const SelectArtwork: React.FC<SelectArtworkProps> = ({
   imagesData,
   selectedArtwork,
   onArtworkSelected,

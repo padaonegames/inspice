@@ -40,7 +40,7 @@ export function useAsyncRequest<ResultType, ErrorType>(
     if(triggerOnStart || deps.length > 0) {
       triggerRequest();
     }
-  }, []);
+  }, deps);
 
   const triggerRequest = async () => {
     setState({ kind: 'running' });

@@ -33,7 +33,12 @@ const isStageCompleted = (stage: InProgressTreasureHuntStage): boolean => {
 
 type StageStatus = 'input-basic-information' | 'select-artwork' | 'write-hints' | 'record-audio' | 'write-prizes' | 'none';
 
-const CreateTreasureHuntScreen: React.FC = () => {
+/**
+ * Screen used to manage a treasure hunt creation flow. When loaded, component will attempt to extract
+ * an activity id from the browser's active url parameters and, if sucessful, will perform subsequent API
+ * calls to the activity and treasure hunt backends to retrieve all relevant information to render the page.
+ */
+export const CreateTreasureHuntScreen: React.FC = () => {
 
   let { id } = useParams<{ id: string }>();
   let history = useHistory();
@@ -51,7 +56,9 @@ const CreateTreasureHuntScreen: React.FC = () => {
   };
 
   const fetchActivityArtworks = async () => {
+    console.log("fetchActivityArtworks");
     if (!(fetchActivityDefinitionStatus.kind === 'success' && fetchActivityDefinitionStatus.result.kind === 'ok')) {
+      console.log("rejecting promise");
       return Promise.reject();
     }
     return artworksService.fetchArtworks({ filter: { ids: fetchActivityDefinitionStatus.result.data[0].artworks } });

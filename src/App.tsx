@@ -15,7 +15,11 @@ import BrowseDefinitionsScreen from './screens/BrowseDefinitionsScreen';
 import ExploreActivityScreen from './screens/ExploreActivityScreen';
 import ViewpointsScreen from './screens/ViewpointsScreen';
 
-const App: React.FC = () => {
+/**
+ * Main entrypoint for our React application within which all other components
+ * will be rendered. 
+ */
+export const App: React.FC = () => {
 
   return (
     <Suspense fallback='loading'>

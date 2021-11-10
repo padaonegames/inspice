@@ -22,5 +22,12 @@
   },
   "include": [
     "src"
-  ]
+  ],
+  "typedocOptions": {
+    "entryPoints": [
+      "src/index.tsx",
+      "src/CreateGame/index.ts"
+    ],
+    "out": "docs"
+  }
 }
