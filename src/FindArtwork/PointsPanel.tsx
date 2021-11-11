@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 const PointsCornerScore = styled.p`
-  color: black;
   font-size: 2.2em;
   font-weight: 500;
   letter-spacing: +1px;

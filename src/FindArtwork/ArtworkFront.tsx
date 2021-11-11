@@ -155,7 +155,7 @@ const CardBackground = styled.div<CardBackgroundProps>`
   overflow: hidden;
   background-position: 50% 50%;
   background-repeat: no-repeat;
-  background-size: auto 95%;
+  background-size: auto 110%;
   
   ${GoCorner} {
     animation: ${shrinkCorner} 0.5s linear;

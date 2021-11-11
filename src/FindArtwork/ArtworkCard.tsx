@@ -11,11 +11,11 @@ const CardContainer = styled.div`
   display: block;
   position: relative;
   width: 95%;
-  height: 30vh;
+  height: 29vh;
   transform-style: preserve-3d;
   perspective: 1000px;
-  background-color: transparent;
-  border: 5px solid black;
+  background-color: black;
+  border: 1px solid black;
 `;
 
 export type ArtworkCardStatus =

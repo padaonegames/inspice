@@ -55,6 +55,7 @@ interface StageNumberProps {
 };
 
 const StageNumber = styled.div<StageNumberProps>`
+  color: black;
   border-radius: 50%;
   background-color: ${props => props.completed ? '#f49997' : 'darkgray'};
   width: 5.5vh;

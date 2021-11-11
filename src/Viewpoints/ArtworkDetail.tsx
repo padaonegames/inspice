@@ -35,7 +35,6 @@ const ArtworkListDottedLine = styled.div`
   margin-bottom: 2.5%;
 `;
 
-
 const ArtworkDataContainer = styled.div`
   margin-top: 15px;
   margin-bottom: 15px;
@@ -43,7 +42,7 @@ const ArtworkDataContainer = styled.div`
   height: auto;
 `;
 
-const ArtworkDescription = styled.div`
+const ArtworkDescription = styled.p`
   font-weight: 400;
   line-height: 1.5;
   transition: color 0.5s ease;

@@ -25,6 +25,8 @@ const themes: AvailableThemes = {
     clickableTextFontSize: '1em',
     clickableTextFontColor: '#FFFF00',
     artworkDisplayBackground: 'black',
+    selectArtworkChoicesBackground: '#0b0b0b',
+    fadedContentColor: 'lightgray',
   },
   light: {
     bodyBackground: '#F3F3F3',
@@ -48,6 +50,8 @@ const themes: AvailableThemes = {
     clickableTextFontSize: '1em',
     clickableTextFontColor: 'brown',
     artworkDisplayBackground: '#474747',
+    selectArtworkChoicesBackground: 'white',
+    fadedContentColor: 'lightgray',
   },
 };
 
@@ -60,10 +64,6 @@ const GlobalStyle = createGlobalStyle`
     line-height: 1;
     box-sizing: border-box;
     transition: all 0.5s;
-    font-family: ${props => props.theme.contentFont};
-    font-size: ${props => props.theme.contentFontSize};
-    color: ${props => props.theme.textColor};
-    letter-spacing: ${props => props.theme.contentLetterSpacing};
   }
   body {
     background-color: ${props => props.theme.bodyBackground};
@@ -77,6 +77,12 @@ const GlobalStyle = createGlobalStyle`
     background-color: ${props => props.theme.textAreaBackground};
     border: 1px solid ${props => props.theme.textAreaFontColor};
     padding: 10px;
+  }
+  p, h1, h2, h3, h4, h5 {
+    font-family: ${props => props.theme.contentFont};
+    font-size: ${props => props.theme.contentFontSize};
+    color: ${props => props.theme.textColor};
+    letter-spacing: ${props => props.theme.contentLetterSpacing};
   }
 `;
 

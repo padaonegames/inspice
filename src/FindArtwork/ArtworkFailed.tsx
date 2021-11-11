@@ -38,6 +38,7 @@ const FailedIcon = styled(Block)`
   height: 25%;
   width: 25%;
   align-self: center;
+  margin-top: 10px;
 `;
 
 const DarkLayer = styled.div`

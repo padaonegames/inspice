@@ -5,10 +5,10 @@ import { NextPlan } from '@styled-icons/material-outlined/NextPlan';
 import { useTranslation } from 'react-i18next';
 
 const NextCornerIcon = styled(NextPlan)`
-  color: black;
-  height: 10vh;
+  color: ${props => props.theme.textColor};
+  height: 60px;
   align-self: center;
-  margin-bottom: 4vh;
+  margin-bottom: 15px;
 `;
 
 const NextCornerText = styled.p`

@@ -71,14 +71,17 @@ const PrizeBox = styled(Medal)`
   align-self: center;
 `;
 
-const PrizeContainer = styled.button`
+const PrizeContainer = styled.div`
   position: relative;
   margin-left: 0.2vw;
   margin-right: 0.2vw;
-  color:rgb(255, 255, 255);
+  cursor: pointer;
+  color: white;
+  transform: scale(0.9);
+  transition: transform 0.5s ease;
 
   &:hover {
-    color: rgb(207, 207, 207);
+    transform: scale(1.1);
   }
 `;
 

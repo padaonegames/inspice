@@ -9,8 +9,18 @@ const Root = styled.div`
   width: 100%;
   height: 100%;
   z-index: 1000;
-  background-color: rgba(0, 0, 0, 0.5);
   position: absolute;
+`;
+
+const Background = styled.div`
+  width: 100%;
+  height: 100%;
+  background-color: ${props => props.theme.cardBackground};
+  filter: alpha(opacity=60);
+  /* IE */
+  -moz-opacity: 0.6;
+  /* Mozilla */
+  opacity: 0.6;
 `;
 
 const SpinAnimation = keyframes`
@@ -31,7 +41,7 @@ const ContentContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-around;
-  color: white;
+  color: ${props => props.theme.textColor};
 `;
 
 const SpinnerIcon = styled(Spinner2)`
@@ -71,6 +81,7 @@ const LoadingOverlay: React.FC<LoadingOverlayProps> = ({ message = 'Loading' }) 
 
   return (
     <Root>
+      <Background />
       <ContentContainer>
         <SpinnerIcon />
         <LoadingText>{message + '.'.repeat(numDots)}</LoadingText>

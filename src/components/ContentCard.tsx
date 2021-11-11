@@ -38,15 +38,17 @@ export const CardExplanatoryText = styled.p<CardExplanatoryTextProps>`
 
 interface CardPanelProps {
   width: string;
+  maxWidth: string;
+  flexDirection: 'row' | 'column';
 };
 const CardPanel = styled.div<CardPanelProps>`
   box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
   padding: 24px 16px 24px 16px;
   background-color: ${props => props.theme.cardBackground};
   width: ${props => props.width};
-  max-width: 1200px;
+  max-width: ${props => props.maxWidth};
   display: flex;
-  flex-direction: column;
+  flex-direction: ${props => props.flexDirection};
   margin-bottom: 15px;
 `;
 
@@ -54,13 +56,17 @@ interface CardProps {
   cardTitle?: string;
   titleAlign?: 'left' | 'right' | 'center' | 'justify';
   width?: string;
+  maxWidth?: string;
+  flexDirection?: 'row' | 'column';
 };
 
-const ContentCard: React.FC<CardProps> = ({ cardTitle, width = '80%', titleAlign = 'left', children }) => {
+const ContentCard: React.FC<CardProps> = ({ cardTitle, width = '80%', maxWidth = '1200px', flexDirection = 'column', titleAlign = 'left', children }) => {
 
   return (
     <CardPanel
       width={width}
+      maxWidth={maxWidth}
+      flexDirection={flexDirection}
     >
       {cardTitle &&
         <CardTitleText textAlign={titleAlign}>

@@ -27,7 +27,7 @@ const Clue = styled.p`
   font-size: 1em;
   letter-spacing: +1px;
   font-family: 'EB Garamond';
-  font-color: darkgray;
+  margin-bottom: 5px;
 `;
 
 const HintsText = styled.p`
@@ -37,7 +37,7 @@ const HintsText = styled.p`
   font-family: 'EB Garamond';
   align-self: center;
   margin-top: 0;
-  margin-bottom: 1vh;
+  margin-bottom: 5px;
 `;
 
 const QuestionWrapper = styled.div`
@@ -53,6 +53,7 @@ const Question = styled.p`
   font-weight: 750;
   letter-spacing: +1px;
   font-family: 'EB Garamond';
+  margin-bottom: 5px;
 `;
 
 const DotsWrapper = styled.div`
@@ -70,32 +71,32 @@ interface ClueProps {
 };
 
 const InfoIconOpened = styled(EnvelopeOpen) <ClueProps>`
-  color: ${props => props.selected ? 'black' : 'lightgray'};
+  color: ${props => props.selected ? props.theme.textColor : props.theme.fadedContentColor};
   height: 4vh;
   width: auto;
   margin-left: 0.2vw;
   margin-right: 0.2vw;
   cursor: ${props => props.selected ? 'default' : 'pointer'};
   &:hover {
-    color: ${props => props.selected ? 'black' : 'darkgray'};
+    color: ${props => props.theme.textColor};
   }
 `;
 
 const InfoIconClosed = styled(Envelope)`
-  color: lightgray;
+  color: ${props => props.theme.fadedContentColor};
   height: 4.25vh;
   width: auto;
 `;
 
 const InfoPoints = styled.span`
   position: absolute;
-  left: 50%;
-  top: 50%;
+  left: 55%;
+  top: 55%;
   font-size: 0.7em;
   font-weight: 700;
   letter-spacing: +1px;
   font-family: 'EB Garamond';
-  color: darkgray;
+  color: ${props => props.theme.textColor};
 `;
 
 const InfoIconWrapper = styled.div`
@@ -108,11 +109,10 @@ const InfoIconWrapper = styled.div`
 
   &:hover {
     ${InfoIconClosed} {
-      color: darkgray;
+      color: ${props => props.theme.textColor};
     }
-
     ${InfoPoints} {
-      color: black;
+      color: ${props => props.theme.fadedContentColor};
     }
   }
 `;

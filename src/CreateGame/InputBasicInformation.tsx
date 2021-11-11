@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import ContentCard from '../components/ContentCard';
 import TextInputFieldWithTag from '../components/TextInputFieldWithTag';
 import NextCornerButton from './NextCornerButton';
 
@@ -11,11 +12,8 @@ const Root = styled.div`
   align-items: center;
 `;
 
-const TitleText = styled.h2`
+const CardContent = styled.div`
   align-self: center;
-  color: #3f3c2d;
-  letter-spacing: +0.5px;
-  font-family: Raleway;
 `;
 
 const VerticalMargin = styled.div`
@@ -42,25 +40,31 @@ const InputBasicInformation: React.FC<InputBasicInformationProps> = ({
 }) => {
   return (
     <Root>
-      <TitleText>Input Basic Information</TitleText>
-      <TextInputFieldWithTag
-        initialValue={initialTitle}
-        placeholder='Treasure Hunt name...'
-        fieldName={`Choose a name for your treasure hunt`.toUpperCase()}
-        onChange={(val) => onTitleChange(val)}
-      />
-      <TextInputFieldWithTag
-        initialValue={initialAuthor}
-        placeholder='Treasure Hunt author...'
-        fieldName={`Specify the treasure hunt's author`.toUpperCase()}
-        onChange={(val) => onAuthorChange(val)}
-      />
-      <VerticalMargin />
-      <NextCornerButton
-        active={enabled}
-        color='#3f3c2d'
-        onNextClicked={() => { if (enabled) onNextClicked(); }}
-      />
+      <ContentCard
+        cardTitle='Input Basic Information'
+        titleAlign='center'
+        width='900px'
+      >
+        <CardContent>
+          <TextInputFieldWithTag
+            initialValue={initialTitle}
+            placeholder='Treasure Hunt name...'
+            fieldName={`Choose a name for your treasure hunt`.toUpperCase()}
+            onChange={(val) => onTitleChange(val)}
+          />
+          <TextInputFieldWithTag
+            initialValue={initialAuthor}
+            placeholder='Treasure Hunt author...'
+            fieldName={`Specify the treasure hunt's author`.toUpperCase()}
+            onChange={(val) => onAuthorChange(val)}
+          />
+        </CardContent>
+        <VerticalMargin />
+        <NextCornerButton
+          active={enabled}
+          onNextClicked={() => { if (enabled) onNextClicked(); }}
+        />
+      </ContentCard>
     </Root>
   );
 }

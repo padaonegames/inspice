@@ -8,18 +8,26 @@ import { ArtworkData } from '../services/artwork.model';
 const Root = styled.div`
   display: flex;
   flex-direction: row;
-  background-color: black;
+  background-color: ${props => props.theme.artworkDisplayBackground};
+
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  padding: 16px;
+  width: 98%;
+  align-items: left;
+  margin: auto;
+  margin-top: 12px;
+  padding: 0;
 `;
 
 const SelectionPanel = styled.div`
   display: flex;
   flex-direction: column;
-  background-color: rgba(15, 15, 15, 0.75);
   width: 28%;
   height: 76.2vh;
   margin: 0;
   padding: 1.5%;
   padding-top: 3%;
+  background-color: ${props => props.theme.selectArtworkChoicesBackground};
 `;
 
 const ArtworkListDottedLine = styled.div`
@@ -40,13 +48,13 @@ const ArtworkListText = styled.p<ArtworkListTextProps>`
   font-size: 0.75em;
   font-weight: 600;
   font-family: Raleway;
-  color: ${props => props.active ? 'white' : 'darkgray'};
+  color: ${props => props.active ? props.theme.textColor : 'darkgray'};
   transition: color 0.5s ease;
   margin: auto 0 auto 0;
 
   &:hover {
     cursor: pointer;
-    color: white;
+    color: ${props => props.theme.textColor};
     transition: color 0.5s ease;
   }
 `;
@@ -56,7 +64,8 @@ const ArtworkListHeader = styled.p`
   font-weight: 700;
   letter-spacing: +0.5px;
   font-family: Raleway;
-  color: white;
+  color: ${props => props.theme.textColor};
+  margin-top: 10px;
 `;
 
 const ArtworkListItem = styled.div`
@@ -66,7 +75,7 @@ const ArtworkListItem = styled.div`
 `;
 
 const ArtworkSelectedIcon = styled(RadioCircleMarked)`
-  color: #F3F3F3;
+  color: ${props => props.theme.textColor};
   height: 4vh;
   width: auto;
   margin-right: 2vw;
@@ -84,6 +93,7 @@ const ArtworkDisplay = styled.div<ArtworkDisplayProps>`
   background-position: 50% 50%;
   background-repeat: no-repeat;
   background-size: auto 90%;
+  background-color: ${props => props.theme.artworkDisplayBackground};
 `;
 
 const HelpText = styled.div`

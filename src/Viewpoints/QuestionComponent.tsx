@@ -97,6 +97,8 @@ const TextArea = styled.textarea`
 
 const SubmitResponseButton = styled.div`
   font-weight: 400;
+  font-family: ${props => props.theme.contentFont};
+  font-size: ${props => props.theme.contentFontSize};
   color: ${props => props.theme.clickableTextFontColor};
   margin: 15px auto;
   text-decoration: underline;
