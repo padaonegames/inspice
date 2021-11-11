@@ -11,7 +11,6 @@ const FieldContainer = styled.div`
 
 const FieldNameLabel = styled.h3`
   align-self: center;
-  color: #3f3c2d;
   font-weight: 700;
   letter-spacing: +0.5px;
   font-family: Raleway;

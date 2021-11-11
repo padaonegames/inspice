@@ -14,13 +14,15 @@ import ArtworkSearchResults from './ArtworkSearchResults';
 import { Library } from '@styled-icons/fluentui-system-filled/Library';
 import { Search } from '@styled-icons/boxicons-regular/Search';
 import { ArtworkData } from '../services/artwork.model';
+import ContentCard from '../components/ContentCard';
 
 const Root = styled.div`
   padding-top: 2.5vh;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   width: 100%;
   align-self: center;
+  justify-content: center;
 `;
 
 const VerticalSeparator = styled.div`
@@ -176,10 +178,6 @@ const ShoppingCartIcon = styled(Library)`
 `;
 
 const SearchArea = styled.div`
-  background-color: #f3f3f3;
-  border-style: solid;
-  border-color: #cccccc;
-  border-width: 1px 0px 1px 0px;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -199,8 +197,9 @@ const SearchBar = styled.input`
   text-align: left;
   padding-left: 10px;
   display: table-cell;
-  width: 540px;
-  height: 34px;
+  border: 1px solid #e5e5e5;
+  width: 600px;
+  height: 39px;
 `;
 
 const SearchButton = styled.div`
@@ -337,146 +336,147 @@ const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSele
 
   return (
     <Root>
-      <PromptTitlePanel>
-        <TitleText>
-          SELECT ARTWORKS
-        </TitleText>
-      </PromptTitlePanel>
-      <SearchArea>
-        <SearchBar
-          placeholder="Search by title..."
-          onChange={(e) => setSearchText(e.target.value)}
-          onKeyPress={(event) => {
-            if (event.key === 'Enter') {
-              handleApplyKeywordsFilter(searchText);
-            }
-          }}
-        />
-        <SearchButton onClick={() => handleApplyKeywordsFilter(searchText)}>
-          <SearchIcon />
-        </SearchButton>
-      </SearchArea>
-      {((findArtworkStatus.kind === 'success' && findArtworkStatus.result.kind === 'ok') && (
-        <DisplayPanel>
-          <ResultsUpperPanel>
-            <ResultsWrapper>
-              <Results>
-                Showing results {(page - 1) * itemsPerPage + 1}-{(page - 1) * itemsPerPage + findArtworkStatus.result.data.artworks.length}
-              </Results>
-            </ResultsWrapper>
-            <ShoppingCartContainer>
-              <ShoppingCartIcon
-                onClick={() => setSelectedArtworksOpen(true)}
-              />
-            </ShoppingCartContainer>
-          </ResultsUpperPanel>
-          <VerticalSeparator />
-
-          <ResultsLowerPanel>
-
-            <FilterPanel>
-              {(findUniqueDatesStatus.kind === 'success' && findUniqueDatesStatus.result.kind === 'ok') && (
-                <FilterField
-                  filterField='DATE'
-                  filterOptions={findUniqueDatesStatus.result.data.map(elem => elem.value)}
-                  filterCounts={findUniqueDatesStatus.result.data.map(elem => elem.count)}
-                  bottomBorder={false}
-                  maxOptionsShown={10}
-                  onFilterSelected={(filter: string) => handleApplyFilter('date', filter)}
+      <ContentCard
+        cardTitle='Select Artworks'
+        titleAlign='center'
+        width='60%'
+      >
+        <SearchArea>
+          <SearchBar
+            placeholder="Search by title..."
+            onChange={(e) => setSearchText(e.target.value)}
+            onKeyPress={(event) => {
+              if (event.key === 'Enter') {
+                handleApplyKeywordsFilter(searchText);
+              }
+            }}
+          />
+          <SearchButton onClick={() => handleApplyKeywordsFilter(searchText)}>
+            <SearchIcon />
+          </SearchButton>
+        </SearchArea>
+        {((findArtworkStatus.kind === 'success' && findArtworkStatus.result.kind === 'ok') && (
+          <DisplayPanel>
+            <ResultsUpperPanel>
+              <ResultsWrapper>
+                <Results>
+                  Showing results {(page - 1) * itemsPerPage + 1}-{(page - 1) * itemsPerPage + findArtworkStatus.result.data.artworks.length}
+                </Results>
+              </ResultsWrapper>
+              <ShoppingCartContainer>
+                <ShoppingCartIcon
+                  onClick={() => setSelectedArtworksOpen(true)}
                 />
-              )}
-              {(findUniqueAuthorsStatus.kind === 'success' && findUniqueAuthorsStatus.result.kind === 'ok') && (
-                <FilterField
-                  filterField='AUTHOR'
-                  filterOptions={findUniqueAuthorsStatus.result.data.map(elem => elem.value)}
-                  filterCounts={findUniqueAuthorsStatus.result.data.map(elem => elem.count)}
-                  bottomBorder={false}
-                  maxOptionsShown={10}
-                  onFilterSelected={(filter: string) => handleApplyFilter('author', filter)}
+              </ShoppingCartContainer>
+            </ResultsUpperPanel>
+            <VerticalSeparator />
+
+            <ResultsLowerPanel>
+
+              <FilterPanel>
+                {(findUniqueDatesStatus.kind === 'success' && findUniqueDatesStatus.result.kind === 'ok') && (
+                  <FilterField
+                    filterField='DATE'
+                    filterOptions={findUniqueDatesStatus.result.data.map(elem => elem.value)}
+                    filterCounts={findUniqueDatesStatus.result.data.map(elem => elem.count)}
+                    bottomBorder={false}
+                    maxOptionsShown={10}
+                    onFilterSelected={(filter: string) => handleApplyFilter('date', filter)}
+                  />
+                )}
+                {(findUniqueAuthorsStatus.kind === 'success' && findUniqueAuthorsStatus.result.kind === 'ok') && (
+                  <FilterField
+                    filterField='AUTHOR'
+                    filterOptions={findUniqueAuthorsStatus.result.data.map(elem => elem.value)}
+                    filterCounts={findUniqueAuthorsStatus.result.data.map(elem => elem.count)}
+                    bottomBorder={false}
+                    maxOptionsShown={10}
+                    onFilterSelected={(filter: string) => handleApplyFilter('author', filter)}
+                  />
+                )}
+                {(findUniqueInfoStatus.kind === 'success' && findUniqueInfoStatus.result.kind === 'ok') && (
+                  <FilterField
+                    filterField='MATERIAL'
+                    filterOptions={findUniqueInfoStatus.result.data.map(elem => elem.value)}
+                    filterCounts={findUniqueInfoStatus.result.data.map(elem => elem.count)}
+                    bottomBorder={true}
+                    maxOptionsShown={10}
+                    onFilterSelected={(filter: string) => handleApplyFilter('info', filter)}
+                  />
+                )}
+              </FilterPanel>
+
+              <ResultsFiltersAndArtworks>
+                <ShowFilters
+                  onFilterDelete={handleRemoveFilter} //this should change with the delete function
+                  onClear={handleClearFilters}
+                  filterName={Object.keys(appliedFilter).filter(elem => elem !== 'ids').map(elem => appliedFilter[elem as keyof GetArtworksFilter] as string)}
                 />
-              )}
-              {(findUniqueInfoStatus.kind === 'success' && findUniqueInfoStatus.result.kind === 'ok') && (
-                <FilterField
-                  filterField='MATERIAL'
-                  filterOptions={findUniqueInfoStatus.result.data.map(elem => elem.value)}
-                  filterCounts={findUniqueInfoStatus.result.data.map(elem => elem.count)}
-                  bottomBorder={true}
-                  maxOptionsShown={10}
-                  onFilterSelected={(filter: string) => handleApplyFilter('info', filter)}
+                <ArtworkSearchResults
+                  artworks={findArtworkStatus.result.data.artworks}
+                  onArtworkDeselected={onArtworkDeselected}
+                  onArtworkSelected={handleArtworkSelected}
+                  selectedArtworks={selectedArtworks.map(elem => elem.id)}
+                  page={page}
+                  pageTotal={~~(findArtworkStatus.result.data.count / itemsPerPage) + 1}
+                  onPageChange={setPage}
                 />
-              )}
-            </FilterPanel>
+              </ResultsFiltersAndArtworks>
 
-            <ResultsFiltersAndArtworks>
-              <ShowFilters
-                onFilterDelete={handleRemoveFilter} //this should change with the delete function
-                onClear={handleClearFilters}
-                filterName={Object.keys(appliedFilter).filter(elem => elem !== 'ids').map(elem => appliedFilter[elem as keyof GetArtworksFilter] as string)}
-              />
-              <ArtworkSearchResults
-                artworks={findArtworkStatus.result.data.artworks}
-                onArtworkDeselected={onArtworkDeselected}
-                onArtworkSelected={handleArtworkSelected}
-                selectedArtworks={selectedArtworks.map(elem => elem.id)}
-                page={page}
-                pageTotal={~~(findArtworkStatus.result.data.count / itemsPerPage) + 1}
-                onPageChange={setPage}
-              />
-            </ResultsFiltersAndArtworks>
+            </ResultsLowerPanel>
+            {loading && <LoadingOverlay message='Loading' />}
+          </DisplayPanel>
+        )) || <LoadingOverlay message='Loading' />}
+        <VerticalSeparator />
 
-          </ResultsLowerPanel>
-          {loading && <LoadingOverlay message='Loading' />}
-        </DisplayPanel>
-      )) || <LoadingOverlay message='Loading' />}
-      <VerticalSeparator />
-
-      {(fetchByEmotionStatus.kind === 'success' && fetchByEmotionStatus.result.kind === 'ok') && (
-        <>
-          <ResultsUpperPanel>
-            <ResultsWrapper>
-              <Results>
-                Artworks triggering similar or opposite emotions:
-              </Results>
-            </ResultsWrapper>
-          </ResultsUpperPanel>
-          <RecomendationGrid>
-            <NavigateBeforeIcon
-              active={displayRecom > 0}
-              onClick={() => {
-                if (displayRecom > 0) {
-                  setDisplayRecom(prev => prev - 1);
-                }
-              }}
-            />
-            {fetchByEmotionStatus.result.data.artworks.slice(displayRecom, displayRecom + 3).map((im, i) => (
-              <RecomendationCard
-                key={im.id}
-                artworkData={im}
-                selected={selectedArtworks.some(elem => elem.id === im.id)}
-                onCardSelected={() => handleArtworkSelected(im)}
-                onCardDeselected={() => onArtworkDeselected(im.id)}
+        {(fetchByEmotionStatus.kind === 'success' && fetchByEmotionStatus.result.kind === 'ok') && (
+          <>
+            <ResultsUpperPanel>
+              <ResultsWrapper>
+                <Results>
+                  Artworks triggering similar or opposite emotions:
+                </Results>
+              </ResultsWrapper>
+            </ResultsUpperPanel>
+            <RecomendationGrid>
+              <NavigateBeforeIcon
+                active={displayRecom > 0}
+                onClick={() => {
+                  if (displayRecom > 0) {
+                    setDisplayRecom(prev => prev - 1);
+                  }
+                }}
               />
-            ))
-            }
-            <NavigateNextIcon
-              active={displayRecom + 3 < fetchByEmotionStatus.result.data.artworks.length}
-              onClick={() => {
-                if ((fetchByEmotionStatus.kind === 'success' && fetchByEmotionStatus.result.kind === 'ok') &&
-                  displayRecom + 3 < fetchByEmotionStatus.result.data.artworks.length) {
-                  setDisplayRecom(prev => prev + 1);
-                }
-              }}
-            />
-          </RecomendationGrid>
-        </>
-      )}
-      {selectedArtworksOpen && (findArtworkStatus.kind === 'success' && findArtworkStatus.result.kind === 'ok') &&
-        <SelectedActivitiesPopup
-          artworks={selectedArtworks}
-          onArtworkRemoved={(id) => onArtworkDeselected(id)}
-          setPopupOpen={setSelectedArtworksOpen}
-        />
-      }
+              {fetchByEmotionStatus.result.data.artworks.slice(displayRecom, displayRecom + 3).map((im, i) => (
+                <RecomendationCard
+                  key={im.id}
+                  artworkData={im}
+                  selected={selectedArtworks.some(elem => elem.id === im.id)}
+                  onCardSelected={() => handleArtworkSelected(im)}
+                  onCardDeselected={() => onArtworkDeselected(im.id)}
+                />
+              ))
+              }
+              <NavigateNextIcon
+                active={displayRecom + 3 < fetchByEmotionStatus.result.data.artworks.length}
+                onClick={() => {
+                  if ((fetchByEmotionStatus.kind === 'success' && fetchByEmotionStatus.result.kind === 'ok') &&
+                    displayRecom + 3 < fetchByEmotionStatus.result.data.artworks.length) {
+                    setDisplayRecom(prev => prev + 1);
+                  }
+                }}
+              />
+            </RecomendationGrid>
+          </>
+        )}
+        {selectedArtworksOpen && (findArtworkStatus.kind === 'success' && findArtworkStatus.result.kind === 'ok') &&
+          <SelectedActivitiesPopup
+            artworks={selectedArtworks}
+            onArtworkRemoved={(id) => onArtworkDeselected(id)}
+            setPopupOpen={setSelectedArtworksOpen}
+          />
+        }
+      </ContentCard>
     </Root>
   );
 };

@@ -30,13 +30,16 @@ const PanelContainer = styled.div`
 
 const FieldNameSpan = styled.h3`
   align-self: center;
-  color: #3f3c2d;
   font-weight: 700;
   letter-spacing: +0.5px;
   font-family: Raleway;
 `;
 
 const ResetButton = styled.button`
+  background-color: transparent;
+  color: ${props => props.theme.clickableTextFontColor};
+  text-decoration: underline;
+  cursor: pointer;
   top: 0;
   right: 2px;
   position: absolute;
@@ -46,11 +49,10 @@ const ResetButton = styled.button`
   text-align: center;
   &:hover{
     font-weight: 700;
-    text-decoration: underline;
   }
 `;
 
-const RangeText = styled.div`
+const RangeText = styled.p`
   margin: auto;
   font-size: 0.85em;
   letter-spacing: +0.5px;

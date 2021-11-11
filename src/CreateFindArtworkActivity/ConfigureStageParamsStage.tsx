@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import CheckBoxGroupInput from '../components/CheckBoxGroupInput';
+import ContentCard from '../components/ContentCard';
 import IntegerRangeInputFieldWithTag from '../components/IntegerRangeInputFieldWithTag';
 
 
@@ -11,11 +12,8 @@ const Root = styled.div`
   margin-top: 4.5vh;
 `;
 
-const TitleText = styled.h2`
+const CardContent = styled.div`
   align-self: center;
-  color: #3f3c2d;
-  letter-spacing: +0.5px;
-  font-family: Raleway;
 `;
 
 interface ConfigureStageParamsStageProps {
@@ -46,35 +44,40 @@ const ConfigureStageParamsStage: React.FC<ConfigureStageParamsStageProps> = ({
 
   return (
     <Root>
-      <TitleText>
-        Stage Settings
-      </TitleText>
-      <IntegerRangeInputFieldWithTag
-        min={1}
-        max={10}
-        step={1}
-        initialMin={initialMinStages}
-        initialMax={initialMaxStages}
-        onMinValueChange={onMinStagesChange}
-        onMaxValueChange={onMaxStagesChange}
-        fieldText='SPECIFY THE REQUIRED NUMBER OF ARTWORKS TO PICK'
-      />
-      <IntegerRangeInputFieldWithTag
-        min={1}
-        max={10}
-        step={1}
-        initialMin={initialMinClues}
-        initialMax={initialMaxClues}
-        onMinValueChange={onMinCluesChange}
-        onMaxValueChange={onMaxCluesChange}
-        fieldText='SPECIFY THE REQUIRED NUMBER OF HINTS PER ARTWORK'
-      />
-      <CheckBoxGroupInput
-        fieldText='SPECIFY ALLOWED MEDIA INPUT TYPES'
-        labelList={['Text', 'Audio', 'Image']}
-        onCheckBoxToggled={onInputTypeToggle}
-        initialAllowedInputTypes={initialAllowedInputTypes}
-      />
+      <ContentCard
+        cardTitle='Stage Settings'
+        titleAlign='center'
+        width='60%'
+      >
+        <CardContent>
+          <IntegerRangeInputFieldWithTag
+            min={1}
+            max={10}
+            step={1}
+            initialMin={initialMinStages}
+            initialMax={initialMaxStages}
+            onMinValueChange={onMinStagesChange}
+            onMaxValueChange={onMaxStagesChange}
+            fieldText='SPECIFY THE REQUIRED NUMBER OF ARTWORKS TO PICK'
+          />
+          <IntegerRangeInputFieldWithTag
+            min={1}
+            max={10}
+            step={1}
+            initialMin={initialMinClues}
+            initialMax={initialMaxClues}
+            onMinValueChange={onMinCluesChange}
+            onMaxValueChange={onMaxCluesChange}
+            fieldText='SPECIFY THE REQUIRED NUMBER OF HINTS PER ARTWORK'
+          />
+          <CheckBoxGroupInput
+            fieldText='SPECIFY ALLOWED MEDIA INPUT TYPES'
+            labelList={['Text', 'Audio', 'Image']}
+            onCheckBoxToggled={onInputTypeToggle}
+            initialAllowedInputTypes={initialAllowedInputTypes}
+          />
+        </CardContent>
+      </ContentCard>
     </Root>
   );
 }

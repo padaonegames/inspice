@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import SelectDatePanel from '../CreateFindArtworkActivity/SelectDatePanel';
 import TextInputFieldWithTag from '../components/TextInputFieldWithTag';
+import ContentCard from '../components/ContentCard';
 
 const Root = styled.div`
   display: flex;
@@ -11,11 +12,8 @@ const Root = styled.div`
   align-items: center;
 `;
 
-const TitleText = styled.h2`
+const CardContent = styled.div`
   align-self: center;
-  color: #3f3c2d;
-  letter-spacing: +0.5px;
-  font-family: Raleway;
 `;
 
 interface SetTitleAuthorDatesStageProps {
@@ -39,24 +37,32 @@ const SetTitleAuthorDatesStage: React.FC<SetTitleAuthorDatesStageProps> = ({
 }) => {
   return (
     <Root>
-      <TitleText>Basic Information</TitleText>
-        <TextInputFieldWithTag
-          initialValue={initialTitle}
-          placeholder='Activity name...'
-          fieldName={`Choose a name for your activity`.toUpperCase()}
-          onChange={(val) => onTitleChange(val)}
-        />
-        <TextInputFieldWithTag
-          initialValue={initialAuthor}
-          placeholder='Activity author...'
-          fieldName={`Specify the activity's author`.toUpperCase()}
-          onChange={(val) => onAuthorChange(val)}
-        />
-      <SelectDatePanel
-        onRangeSelected={(from, to) => handleDateRangeSelected(from, to)}
-        initialFrom={initialFrom}
-        initialTo={initialTo}
-      />
+      <ContentCard
+        titleAlign='center'
+        cardTitle='Basic Information'
+        width='60%'
+      >
+        <CardContent>
+          <TextInputFieldWithTag
+            initialValue={initialTitle}
+            placeholder='Activity name...'
+            fieldName={`Choose a name for your activity`.toUpperCase()}
+            onChange={(val) => onTitleChange(val)}
+          />
+          <TextInputFieldWithTag
+            initialValue={initialAuthor}
+            placeholder='Activity author...'
+            fieldName={`Specify the activity's author`.toUpperCase()}
+            onChange={(val) => onAuthorChange(val)}
+          />
+          <SelectDatePanel
+            onRangeSelected={(from, to) => handleDateRangeSelected(from, to)}
+            initialFrom={initialFrom}
+            initialTo={initialTo}
+          />
+        </CardContent>
+      </ContentCard>
+
     </Root>
   );
 }

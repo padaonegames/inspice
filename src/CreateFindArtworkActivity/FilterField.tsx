@@ -35,7 +35,7 @@ const FieldHeader = styled.div<FieldHeaderProps>`
 
 const FieldText = styled.span`
   align-self: center;
-  color: #525252;
+  color: ${props => props.theme.textColor};
   letter-spacing: +0.5px;
   font-size: 0.75em;
   font-weight: 1000;
@@ -51,8 +51,10 @@ const OptionContainer = styled.div`
   display: flex;
   flex-direction: row;
   cursor: pointer;
+  text-decoration-color: ${props => props.theme.fadedContentColor};
   &:hover {
     text-decoration: underline;
+    text-decoration-color: ${props => props.theme.fadedContentColor};
   }
 `;
 
@@ -66,7 +68,7 @@ const OptionText = styled.span`
 `;
 const OptionSeeAll = styled.span`
   padding: 3% ;
-  color: #6b6b6b;
+  color: #9d9d9d;
   letter-spacing: +1.5px;
   font-size: 0.6em;
   font-weight: 700;
