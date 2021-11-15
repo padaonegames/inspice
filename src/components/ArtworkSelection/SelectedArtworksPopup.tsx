@@ -5,7 +5,7 @@ import { NavigateNext } from '@styled-icons/material/NavigateNext';
 import { NavigateBefore } from '@styled-icons/material/NavigateBefore';
 import { Cross } from '@styled-icons/entypo/Cross';
 import { Close } from '@styled-icons/evaicons-solid/Close';
-import { ArtworkData } from "../services/artwork.model";
+import { ArtworkData } from "../../services/artwork.model";
 
 const Root = styled.div`
   width: 100%;
@@ -193,13 +193,13 @@ const CloseIcon = styled(Close)`
   }
 `;
 
-interface SelectedActivitiesPopupProps {
+export interface SelectedArtworksPopupProps {
   artworks: ArtworkData[];
   onArtworkRemoved: (artworkId: string) => void;
   setPopupOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const SelectedActivitiesPopup: React.FC<SelectedActivitiesPopupProps> = ({ artworks, onArtworkRemoved, setPopupOpen }) => {
+export const SelectedArtworksPopup: React.FC<SelectedArtworksPopupProps> = ({ artworks, onArtworkRemoved, setPopupOpen }) => {
 
   const [page, setPage] = useState<number>(0);
 
@@ -264,4 +264,4 @@ const SelectedActivitiesPopup: React.FC<SelectedActivitiesPopupProps> = ({ artwo
     document.body);
 };
 
-export default SelectedActivitiesPopup;
+export default SelectedArtworksPopup;

@@ -51,7 +51,10 @@ const sample: InProgressFindArtworkActivityDefinition = {
 
 type ActivityDefinitionStatus = 'set-title-author-dates' | 'configure-stage-params' | 'select-artworks' | 'none';
 
-const CreateFindArtworkActivityScreen: React.FC = () => {
+/**
+ * Screen to encapsulate the creation flow of a treasure hunt creation activity.
+ */
+export const CreateFindArtworkActivityScreen: React.FC = () => {
 
   const [activityDefinition, setActivityDefinition] =
     useState<InProgressFindArtworkActivityDefinition>(sample);

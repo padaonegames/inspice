@@ -70,28 +70,55 @@ const CloseAll = styled.button`
   border: 1px solid #e0e0e0;
 `;
 
-interface ShowFiltersProps {
-  filterName: string[];
-  onFilterDelete: (filterName: string) => void;
-  onClear: () => void;
+export interface ShowFiltersProps {
+  /**
+   * currently applied filters. each entry must contain the name of the field
+   * over which the corresponding filter is applied, and the value of the filter
+   * itself. Fields will not be displayed, but they are needed to notify the parent component
+   * about the removal of a given filter.
+   */
+  filters: { field: string, filter: string }[];
+  /**
+   * Callback to notify parent component of the deselection of a filter within this component.
+   * Receives two arguments as parameters, namely field and filter, to denote the name of 
+   * the field for which a filter was deselected (e.g. 'Date') and the value of the filter removed
+   * (e.g. '1997'), respectively.
+   */
+  onFilterDelete?: (field: string, filter: string) => void;
+  /**
+   * Callback to notify parent component of the deselection of all filters within this component.
+   */
+  onClear?: () => void;
 };
 
-const ShowFilters: React.FC<ShowFiltersProps> = ({ filterName, onFilterDelete, onClear }) => {
+/**
+ * Component to display an array of applied filters for a given artwork search.
+ * Provides an option to remove any given filter from the array, as well as a button
+ * to clear all filters simultaneously.
+ */
+export const ShowFilters: React.FC<ShowFiltersProps> = ({
+  filters,
+  onFilterDelete,
+  onClear
+}) => {
 
   return (
     <Root>
-      {filterName.map((im, i) => (
-        <FilterGrid key={i}>
+      {filters.map((elem) => (
+        <FilterGrid key={`${elem.field}-${elem.filter}`}>
           <FiltersName>
-            {im}
+            {elem.filter}
           </FiltersName>
           <FiltersClose
-            onClick={() => onFilterDelete(im)}>
+            onClick={() => {
+              if (onFilterDelete)
+                onFilterDelete(elem.field, elem.filter)
+            }}>
             ×
           </FiltersClose>
         </FilterGrid>
       ))}
-      {filterName.length > 0 &&
+      {filters.length > 0 &&
         <CloseAll onClick={onClear}>
           Clear all
         </CloseAll>
