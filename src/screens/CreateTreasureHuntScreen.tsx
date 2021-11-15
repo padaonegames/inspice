@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Fader from '../components/Layout/Fader';
 import GameOverviewPanel from '../CreateGame/GameOverviewPanel';
-import RecordAudio from '../components/Audio/RecordAudio';
 import SelectArtwork from '../components/ArtworkSelection/SelectArtwork';
 import WriteHints from '../CreateGame/WriteHints';
 import WritePrizes from '../CreateGame/WriteGifts';
@@ -14,6 +13,7 @@ import InputBasicInformation from '../CreateGame/InputBasicInformation';
 import LoadingOverlay from '../components/Layout/LoadingOverlay';
 import { ArtworkData } from '../services/artwork.model';
 import { InProgressTreasureHuntStage, CompletedTreasureHuntDefinition, InProgressTreasureHuntDefinition } from '../services/findArtworkActivity.model';
+import RecordAudio from '../components/Audio/RecordAudio';
 
 const Root = styled.div`
   display: flex;
