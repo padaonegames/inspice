@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import SelectDatePanel from '../CreateFindArtworkActivity/SelectDatePanel';
-import TextInputFieldWithTag from '../components/TextInputFieldWithTag';
-import ContentCard from '../components/ContentCard';
+import SelectDatePanel from '../components/Forms/SelectDatePanel';
+import TextInputFieldWithTag from '../components/Forms/TextInputFieldWithTag';
+import ContentCard from '../components/Layout/ContentCard';
 
 const Root = styled.div`
   display: flex;

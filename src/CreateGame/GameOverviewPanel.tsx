@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
-import ProgressLine from '../CreateFindArtworkActivity/ProgressLine';
+import ProgressLine from '../components/Navigation/ProgressLine';
 
 import AddStagePanel from './AddStagePanel';
 

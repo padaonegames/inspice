@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { ArtworkData } from '../../services/artwork.model';
-import ArtworkSelectionCard from '../../CreateFindArtworkActivity/ArtworkSelectionCard';
-import PageBar from '../../CreateFindArtworkActivity/PageBar';
+import ArtworkSelectionCard from './ArtworkSelectionCard';
+import PageBar from '../Navigation/PageBar';
 
 const ArtworkGrid = styled.div`
   position: relative;

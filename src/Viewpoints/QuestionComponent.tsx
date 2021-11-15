@@ -8,7 +8,7 @@ import { Response } from '../services/viewpointsResponse.model';
 import { Question } from '../services/viewpointsQuestion.model';
 import { ApiResult } from '../services/viewpointsQuestions.service';
 import { LoaderCircle } from '@styled-icons/boxicons-regular/LoaderCircle';
-import Alert from '../components/Alert';
+import Alert from '../components/Layout/Alert';
 
 const Root = styled.div`
   display: flex;

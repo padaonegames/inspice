@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { useTranslation } from 'react-i18next';
 
-import NextCornerButton from './NextCornerButton';
+import NextCornerButton from '../../CreateGame/NextCornerButton';
 import useRecorder from './useRecorder';
 
 import { Microphone } from '@styled-icons/fa-solid/Microphone';

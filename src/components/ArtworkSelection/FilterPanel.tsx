@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import FilterField from '../../CreateFindArtworkActivity/FilterField';
+import FilterField from './FilterField';
 
 const FilterPanelDiv = styled.div`
   width: 25%;

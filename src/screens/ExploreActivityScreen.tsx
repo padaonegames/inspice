@@ -4,8 +4,8 @@ import { useAsyncRequest } from '../services/useAsyncRequest';
 import { api } from '../services';
 import { useHistory, useParams } from 'react-router-dom';
 import lineBackground from './../components/line-header-point.png'
-import LoadingOverlay from '../components/LoadingOverlay';
-import ContentCard, { CardExplanatoryText } from '../components/ContentCard';
+import LoadingOverlay from '../components/Layout/LoadingOverlay';
+import ContentCard, { CardExplanatoryText } from '../components/Layout/ContentCard';
 
 const Root = styled.div`
   display: flex;

@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import NumberIcon from '../components/NumberIcon'
+import NumberIcon from '../NumberIcon'
 
 const PageNumberGrid = styled.div`
   height: auto;

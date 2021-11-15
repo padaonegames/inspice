@@ -9,7 +9,7 @@ import {
 } from 'react-router-dom';
 import PlayTreasureHuntScreen from './screens/PlayTreasureHuntScreen';
 import CreateTreasureHuntScreen from './screens/CreateTreasureHuntScreen';
-import Header from './components/Header';
+import Header from './components/Layout/Header';
 import CreateFindArtworkActivityScreen from './screens/CreateFindArtworkActivityScreen';
 import BrowseDefinitionsScreen from './screens/BrowseDefinitionsScreen';
 import ExploreActivityScreen from './screens/ExploreActivityScreen';

@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Artwork } from '../services/viewpointsArtwork.model';
+import { Artwork } from '../../services/viewpointsArtwork.model';
 
 const Root = styled.div`
   display: flex;

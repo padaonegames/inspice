@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import ArtworkCard from '../FindArtwork/ArtworkCard';
 
 import ClueHolder from './ClueHolder';
-import Fader from '../components/Fader';
+import Fader from '../components/Layout/Fader';
 import PointsPanel from './PointsPanel';
 import NextPanel from './NextCornerPanel';
 
@@ -11,7 +11,7 @@ import { NavigateNext } from '@styled-icons/material/NavigateNext';
 import { NavigateBefore } from '@styled-icons/material/NavigateBefore';
 import { ArtworkData } from '../services/artwork.model';
 import { StageData } from '../services/findArtworkActivity.model';
-import ContentCard from '../components/ContentCard';
+import ContentCard from '../components/Layout/ContentCard';
 
 const Root = styled.div`
   margin-top: 1vh;

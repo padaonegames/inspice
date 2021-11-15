@@ -6,12 +6,12 @@ import { ArtworkData } from '../../services/artwork.model';
 import { GetArtworksFilter } from '../../services/queries';
 
 // components
-import ContentCard from "../ContentCard";
-import SearchBar from '../SearchBar';
+import ContentCard from "../Layout/ContentCard";
+import SearchBar from '../Forms/SearchBar';
 import FilterPanel from './FilterPanel';
 import ShowFilters from './ShowFilters';
 import ArtworkSearchResults from './ArtworkSearchResults';
-import LoadingOverlay from '../LoadingOverlay';
+import LoadingOverlay from '../Layout/LoadingOverlay';
 import SelectedArtworksPopup from './SelectedArtworksPopup';
 
 // icon imports

@@ -1,7 +1,7 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
 import { CheckboxCircle } from '@styled-icons/remix-fill/CheckboxCircle';
-import { ArtworkData } from '../services/artwork.model';
+import { ArtworkData } from '../../services/artwork.model';
 
 const RemoveCornerIcon = styled(CheckboxCircle)`
   color: white;

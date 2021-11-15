@@ -3,8 +3,8 @@ import styled from 'styled-components';
 import { useHistory, useParams } from 'react-router-dom';
 import { viewpointsArtworksService } from '../services';
 import { useAsyncRequest } from '../services/useAsyncRequest';
-import LoadingOverlay from '../components/LoadingOverlay';
-import ArtworkDetail from './ArtworkDetail';
+import LoadingOverlay from '../components/Layout/LoadingOverlay';
+import ArtworkDetail from '../components/ArtworkDisplay/ArtworkDetail';
 import QuestionComponent from './QuestionComponent';
 import { ArrowBackCircle } from '@styled-icons/ionicons-sharp/ArrowBackCircle';
 

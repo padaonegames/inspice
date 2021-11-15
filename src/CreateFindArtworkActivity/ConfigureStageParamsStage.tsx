@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import CheckBoxGroupInput from '../components/CheckBoxGroupInput';
-import ContentCard from '../components/ContentCard';
-import IntegerRangeInputFieldWithTag from '../components/IntegerRangeInputFieldWithTag';
+import CheckBoxGroupInput from '../components/Forms/CheckBoxGroupInput';
+import ContentCard from '../components/Layout/ContentCard';
+import IntegerRangeInputFieldWithTag from '../components/Forms/IntegerRangeInputFieldWithTag';
 
 
 const Root = styled.div`

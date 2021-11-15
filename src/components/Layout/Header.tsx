@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
-import { ThemeContext } from '../theme/ThemeStore';
+import { ThemeContext } from '../../theme/ThemeStore';
 
 const Root = styled.div`
   position: sticky;

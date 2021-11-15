@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import ContentCard from '../components/ContentCard';
-import TextInputFieldWithTag from '../components/TextInputFieldWithTag';
+import ContentCard from '../components/Layout/ContentCard';
+import TextInputFieldWithTag from '../components/Forms/TextInputFieldWithTag';
 import NextCornerButton from './NextCornerButton';
 
 const Root = styled.div`

@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import FindArtwork from '../FindArtwork/FindArtwork';
-import Fader from '../components/Fader';
+import Fader from '../components/Layout/Fader';
 import { useParams } from 'react-router-dom';
 import { api, artworksService } from '../services';
 import { useAsyncRequest } from '../services/useAsyncRequest';
-import LoadingOverlay from '../components/LoadingOverlay';
+import LoadingOverlay from '../components/Layout/LoadingOverlay';
 
 const Root = styled.div`
   display: flex;

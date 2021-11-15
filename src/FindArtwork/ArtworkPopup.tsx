@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { Medal } from '@styled-icons/remix-line/Medal';
 import { useState } from 'react';
 import Popup from './PopUp';
-import Modal from '../components/Modal';
+import Modal from '../components/Layout/Modal';
 import { ArtworkData } from '../services/artwork.model';
 
 const RevealText = styled.div`

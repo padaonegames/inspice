@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
-import ProgressLine from './ProgressLine';
+import ProgressLine from '../components/Navigation/ProgressLine';
 
 const Root = styled.div`
   padding-top: 10px;
