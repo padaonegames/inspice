@@ -24,6 +24,12 @@ interface ArtworkSearchResultsProps {
   pageTotal?: number;
   onArtworkSelected?: (artwork: ArtworkData) => void;
   onArtworkDeselected?: (artworkId: string) => void;
+  /**
+   * Callback to the parent of this panel indicating that an artwork has been clicked from the panel.
+   * Note that this is different from selection, as clicking on an artwork just means that the user wishes
+   * to explore it (e.g. to get more information about it).
+   */
+  onArtworkClicked?: (artworkId: string) => void;
   onPageChange?: (page: number) => void;
 };
 
@@ -34,6 +40,7 @@ const ArtworkSearchResults: React.FC<ArtworkSearchResultsProps> = ({
   onPageChange,
   onArtworkDeselected,
   onArtworkSelected,
+  onArtworkClicked,
   selectedArtworks,
 }) => {
 
@@ -51,6 +58,10 @@ const ArtworkSearchResults: React.FC<ArtworkSearchResultsProps> = ({
           onCardDeselected={() => {
             if (onArtworkDeselected)
               onArtworkDeselected(im.id);
+          }}
+          onCardClicked={() => {
+            if (onArtworkClicked)
+              onArtworkClicked(im.id);
           }}
         />
       ))}

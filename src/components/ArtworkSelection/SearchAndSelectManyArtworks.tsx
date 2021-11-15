@@ -142,6 +142,12 @@ export interface SearchAndSelectManyArtworksProps {
    */
   onArtworkDeselected?: (artworkId: string) => void;
   /**
+   * Callback to the parent of this panel indicating that an artwork has been clicked from the panel.
+   * Note that this is different from selection, as clicking on an artwork just means that the user wishes
+   * to explore it (e.g. to get more information about it).
+   */
+  onArtworkClicked?: (artworkId: string) => void;
+  /**
    * Filter applied in this search, if any. This is used to render a list of filters on top of 
    * the current search display and allow users to see which filters have been applied until now
    * and remove them if needed. Trying to remove a filter will trigger the onFilterRemoved callback,
@@ -199,6 +205,7 @@ export const SearchAndSelectManyArtworks: React.FC<SearchAndSelectManyArtworksPr
   selectedArtworks,
   onArtworkSelected,
   onArtworkDeselected,
+  onArtworkClicked,
   appliedFilter,
   onSearchPerformed,
   uniqueFilterFields,
@@ -270,6 +277,7 @@ export const SearchAndSelectManyArtworks: React.FC<SearchAndSelectManyArtworksPr
                 artworks={displayedArtworks}
                 onArtworkDeselected={onArtworkDeselected}
                 onArtworkSelected={onArtworkSelected}
+                onArtworkClicked={onArtworkClicked}
                 selectedArtworks={selectedArtworks.map(elem => elem.id)}
                 page={pageData?.currentPage}
                 pageTotal={pageData?.itemsPerPage ? ~~(displayedArtworks.length / pageData?.itemsPerPage) + 1 : undefined}

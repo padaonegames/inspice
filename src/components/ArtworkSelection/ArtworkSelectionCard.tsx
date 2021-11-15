@@ -19,25 +19,48 @@ const Dummy = styled.div`
   margin-top: 100%;
 `;
 
-interface ArtworkSelectionCardProps {
+export interface ArtworkSelectionCardProps {
   artworkData: ArtworkData;
   selected: boolean;
-  onCardSelected: () => void;
-  onCardDeselected: () => void;
+  onCardSelected?: () => void;
+  onCardDeselected?: () => void;
+  /**
+   * Callback to the parent of this panel indicating that this card has been clicked.
+   * Note that this is different from selection, as clicking on an artwork just means that the user wishes
+   * to explore it (e.g. to get more information about it).
+   */
+  onCardClicked?: () => void;
 };
 
-const ArtworkSelectionCard: React.FC<ArtworkSelectionCardProps> = ({ artworkData, selected, onCardSelected, onCardDeselected }) => {
+export const ArtworkSelectionCard: React.FC<ArtworkSelectionCardProps> = ({
+  artworkData,
+  selected,
+  onCardSelected,
+  onCardDeselected,
+  onCardClicked,
+}) => {
+
   return (
     <CardContainer>
       <Dummy />
       <ArtworkFront
-        onArtworkSelected={onCardSelected}
+        onArtworkSelected={() => {
+          if (onCardSelected)
+            onCardSelected();
+        }}
+        onArtworkClicked={() => {
+          if (onCardClicked)
+            onCardClicked();
+        }}
         artworkData={artworkData}
         flipped={!selected}
       />
       <ArtworkSelectedCard
         artworkData={artworkData}
-        onArtworkDeselected={onCardDeselected}
+        onArtworkDeselected={() => {
+          if (onCardDeselected)
+            onCardDeselected();
+        }}
         flipped={selected}
       />
     </CardContainer>

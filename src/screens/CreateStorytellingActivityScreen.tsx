@@ -6,7 +6,8 @@ import SelectArtworksStage from '../CreateFindArtworkActivity/SelectArtworksStag
 import SetTitleAuthorDatesStage from '../CreateFindArtworkActivity/SetTitleAuthorDatesStage';
 import { api } from '../services';
 import { ArtworkData } from '../services/artwork.model';
-import { InProgressFindArtworkActivityDefinition, CompletedFindArtworkActivityDefinition, AllowedInputs } from '../services/findArtworkActivity.model';
+import { AllowedInputs } from '../services/findArtworkActivity.model';
+import { InProgressStorytellingActivityDefinition, CompletedStorytellingActivityDefinition } from '../services/storytellingActivity.model';
 import { useAsyncRequest } from '../services/useAsyncRequest';
 
 const Root = styled.div`
@@ -14,14 +15,14 @@ const Root = styled.div`
   flex-direction: column;
 `;
 
-const isStageOneCompleted = (definition: InProgressFindArtworkActivityDefinition): boolean => {
+const isStageOneCompleted = (definition: InProgressStorytellingActivityDefinition): boolean => {
   return definition.activityAuthor !== undefined && definition.activityAuthor.length > 0 &&
     definition.activityTitle !== undefined && definition.activityTitle.length > 0 &&
     definition.beginsOn !== undefined &&
     definition.endsOn !== undefined;
 }
 
-const isStageTwoCompleted = (definition: InProgressFindArtworkActivityDefinition): boolean => {
+const isStageTwoCompleted = (definition: InProgressStorytellingActivityDefinition): boolean => {
   return definition.minCluesPerStage !== undefined &&
     definition.maxCluesPerStage !== undefined &&
     definition.minStages !== undefined &&
@@ -29,11 +30,11 @@ const isStageTwoCompleted = (definition: InProgressFindArtworkActivityDefinition
     definition.allowedInputs.length > 0;
 }
 
-const isStageThreeCompleted = (definition: InProgressFindArtworkActivityDefinition): boolean => {
+const isStageThreeCompleted = (definition: InProgressStorytellingActivityDefinition): boolean => {
   return definition.artworks.length > 0;
 }
 
-const sample: InProgressFindArtworkActivityDefinition = {
+const sample: InProgressStorytellingActivityDefinition = {
   activityTitle: undefined,
   activityAuthor: undefined,
   beginsOn: undefined,
@@ -43,7 +44,7 @@ const sample: InProgressFindArtworkActivityDefinition = {
   minCluesPerStage: 1,
   maxCluesPerStage: 5,
   allowedInputs: [],
-  huntDefinitionsDatasetUuid: process.env.REACT_APP_HUNT_DEFINITIONS_DATASET_UUID || '',
+  storyDefinitionsDatasetUuid: process.env.REACT_APP_HUNT_DEFINITIONS_DATASET_UUID || '',
   activityDefinitionsDatasetUuid: process.env.REACT_APP_ACTIVITY_DEFINITIONS_DATASET_UUID || '',
   artworksDatasetUuid: process.env.REACT_APP_DATASET_UUID || '',
   artworks: []
@@ -52,12 +53,12 @@ const sample: InProgressFindArtworkActivityDefinition = {
 type ActivityDefinitionStatus = 'set-title-author-dates' | 'configure-stage-params' | 'select-artworks' | 'none';
 
 /**
- * Screen to encapsulate the creation flow of a treasure hunt creation activity.
+ * Screen to encapsulate the creation flow of a storytelling creation activity.
  */
-export const CreateFindArtworkActivityScreen: React.FC = () => {
+export const CreateStorytellingActivityScreen: React.FC = () => {
 
   const [activityDefinition, setActivityDefinition] =
-    useState<InProgressFindArtworkActivityDefinition>(sample);
+    useState<InProgressStorytellingActivityDefinition>(sample);
   const [activeActivityDefinitionStatus, setActiveActivityDefinitionStatus] =
     useState<ActivityDefinitionStatus>('set-title-author-dates');
   const [submitGame, setSubmitGame] = useState<boolean>(false);
@@ -66,12 +67,13 @@ export const CreateFindArtworkActivityScreen: React.FC = () => {
   const submitDefinition = () => {
     if (!submitGame) return Promise.reject();
     setSubmitGame(false);
-    return api.submitFindArtworkActivityDefinition({ ...(activityDefinition as CompletedFindArtworkActivityDefinition) });
+    // return api.submitFindArtworkActivityDefinition({ ...(activityDefinition as CompletedStorytellingActivityDefinition) });
+    return Promise.reject();
   };
   const [submitDefinitionStatus] = useAsyncRequest(submitDefinition, [submitGame]);
 
   useEffect(() => {
-    if (submitDefinitionStatus.kind === 'success' && submitDefinitionStatus.result.kind === 'ok') {
+    if (submitDefinitionStatus.kind === 'success' /*&& submitDefinitionStatus.result.kind === 'ok'*/) {
       window.alert('Your activity was successfully uploaded to the linked data hub.');
     }
   }, [submitDefinitionStatus]);
@@ -140,11 +142,6 @@ export const CreateFindArtworkActivityScreen: React.FC = () => {
     setSelectedArtworks(prev => prev.filter(elem => elem.id !== artworkId));
   };
 
-  useEffect(() => {
-    console.log(submitDefinitionStatus);
-  }, [submitDefinitionStatus]);
-
-
   return (
     <Root>
       <ActivityCreationOverviewPanel
@@ -200,4 +197,4 @@ export const CreateFindArtworkActivityScreen: React.FC = () => {
   );
 }
 
-export default CreateFindArtworkActivityScreen;
+export default CreateStorytellingActivityScreen;

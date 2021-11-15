@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
-import ProgressLine from '../components/Navigation/ProgressLine';
+import ProgressLine from './ProgressLine';
 
 const Root = styled.div`
   padding-top: 10px;
@@ -27,14 +27,14 @@ const UpperRowContainer = styled.div`
   border-width: 0px 0px 1px 0px;
 `;
 
-interface CreateFindArtworkOverviewPanelProps {
+export interface ActivityCreationOverviewPanelProps {
   activeStage: number;
   stages: { name: string, completed: boolean }[];
   onSubmitGame: () => void;
   onStageSelected: (index: number) => void;
 };
 
-const CreateFindArtworkOverviewPanel: React.FC<CreateFindArtworkOverviewPanelProps> = ({
+export const ActivityCreationOverviewPanel: React.FC<ActivityCreationOverviewPanelProps> = ({
   activeStage,
   stages,
   onSubmitGame,
@@ -58,4 +58,4 @@ const CreateFindArtworkOverviewPanel: React.FC<CreateFindArtworkOverviewPanelPro
   );
 }
 
-export default CreateFindArtworkOverviewPanel;
+export default ActivityCreationOverviewPanelProps;

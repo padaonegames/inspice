@@ -7,13 +7,18 @@ import {
   Route,
   Redirect
 } from 'react-router-dom';
+
+// screen imports
 import PlayTreasureHuntScreen from './screens/PlayTreasureHuntScreen';
 import CreateTreasureHuntScreen from './screens/CreateTreasureHuntScreen';
-import Header from './components/Layout/Header';
 import CreateFindArtworkActivityScreen from './screens/CreateFindArtworkActivityScreen';
 import BrowseDefinitionsScreen from './screens/BrowseDefinitionsScreen';
 import ExploreActivityScreen from './screens/ExploreActivityScreen';
 import ViewpointsScreen from './screens/ViewpointsScreen';
+
+// components
+import Header from './components/Layout/Header';
+import CreateStorytellingActivityScreen from './screens/CreateStorytellingActivityScreen';
 
 /**
  * Main entrypoint for our React application within which all other components
@@ -30,6 +35,10 @@ export const App: React.FC = () => {
               <Route path='/viewpoints'>
                 <Header activityTitle='Viewpoints' />
                 <ViewpointsScreen />
+              </Route>
+              <Route path='/storytelling'>
+                <Header activityTitle='Storytelling' />
+                <CreateStorytellingActivityScreen />
               </Route>
               <Route path='/find-artwork/consumer/play/:id'>
                 <Header activityTitle='Find Artwork' />
