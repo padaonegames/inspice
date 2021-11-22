@@ -4,6 +4,8 @@
   "goForward": "CONTINUE",
   "museumHeader": "IMMA",
   "newPhase": "NEW PHASE",
+  "editItems": "EDIT ITEMS",
+  "cancelEditing": "CANCEL EDITING",
   "endPhase": "END",
   "phase": "PHASE",
   "availableArtworks": "AVAILABLE ARTWORKS",

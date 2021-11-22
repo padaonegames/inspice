@@ -152,7 +152,7 @@ export const CreateStorytellingActivityScreen: React.FC = () => {
           { name: 'Artwork Selection'.toUpperCase(), completed: isStageThreeCompleted(activityDefinition) }
         ]}
         onStageSelected={(index) => setActiveActivityDefinitionStatus(indexToActiveStage(index))}
-        onSubmitGame={() => setSubmitGame(true)}
+        onSubmitActivity={() => setSubmitGame(true)}
       />
 
       {activeActivityDefinitionStatus === 'set-title-author-dates' &&

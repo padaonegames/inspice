@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 import { ActivityCreationOverviewPanel } from '../components/Navigation/ActivityCreationOverviewPanel';
 import ConfigureStageParamsStage from '../CreateFindArtworkActivity/ConfigureStageParamsStage';
@@ -55,6 +56,8 @@ type ActivityDefinitionStatus = 'set-title-author-dates' | 'configure-stage-para
  * Screen to encapsulate the creation flow of a treasure hunt creation activity.
  */
 export const CreateFindArtworkActivityScreen: React.FC = () => {
+
+  const { t } = useTranslation('app');
 
   const [activityDefinition, setActivityDefinition] =
     useState<InProgressFindArtworkActivityDefinition>(sample);
@@ -155,7 +158,8 @@ export const CreateFindArtworkActivityScreen: React.FC = () => {
           { name: 'Artwork Selection'.toUpperCase(), completed: isStageThreeCompleted(activityDefinition) }
         ]}
         onStageSelected={(index) => setActiveActivityDefinitionStatus(indexToActiveStage(index))}
-        onSubmitGame={() => setSubmitGame(true)}
+        onSubmitActivity={() => setSubmitGame(true)}
+        finaItemCaption={t('submitActivity')}
       />
 
       {activeActivityDefinitionStatus === 'set-title-author-dates' &&

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Fader from '../components/Layout/Fader';
-import GameOverviewPanel from '../CreateGame/GameOverviewPanel';
 import SelectArtwork from '../components/ArtworkSelection/SelectArtwork';
 import WriteHints from '../CreateGame/WriteHints';
 import WritePrizes from '../CreateGame/WriteGifts';
@@ -14,6 +13,8 @@ import LoadingOverlay from '../components/Layout/LoadingOverlay';
 import { ArtworkData } from '../services/artwork.model';
 import { InProgressTreasureHuntStage, CompletedTreasureHuntDefinition, InProgressTreasureHuntDefinition } from '../services/findArtworkActivity.model';
 import RecordAudio from '../components/Audio/RecordAudio';
+import { ActivityCreationOverviewPanel } from '../components/Navigation';
+import { useTranslation } from 'react-i18next';
 
 const Root = styled.div`
   display: flex;
@@ -43,6 +44,8 @@ export const CreateTreasureHuntScreen: React.FC = () => {
   let { id } = useParams<{ id: string }>();
   let history = useHistory();
 
+  const { t } = useTranslation('app');
+
   const fetchActivityDefinition = async () => {
     return await api.getFindArtworkActivityDefinitionById(id);
   };
@@ -67,6 +70,7 @@ export const CreateTreasureHuntScreen: React.FC = () => {
   const [fetchActivityDefinitionStatus] = useAsyncRequest(fetchActivityDefinition, []);
   const [fetchActivityArtworksStatus] = useAsyncRequest(fetchActivityArtworks, [fetchActivityDefinitionStatus]);
   const [submitGameStatus] = useAsyncRequest(submitDefinition, [submitGame]);
+
   const [activeStage, setActiveStage] = useState<number>(-1);
   const [treasureHuntDefinition, setTreasureHuntDefinition] = useState<InProgressTreasureHuntDefinition>({
     treasureHuntTitle: '',
@@ -92,6 +96,19 @@ export const CreateTreasureHuntScreen: React.FC = () => {
           multimediaData: [{ kind: 'Text', text: '' }]
         }]
       }));
+    }
+  };
+
+  const handleRemoveStage = (index: number) => {
+    // index here is stage index (not counting basic information)
+    setTreasureHuntDefinition(prev => {
+      let aux: InProgressTreasureHuntStage[] = JSON.parse(JSON.stringify(prev.stages));
+      const filtStages = aux.filter((_, ind) => ind !== index);
+      return { ...prev, stages: filtStages };
+    });
+    if (index === activeStage) {
+      // we are removing our current stage, set it to the previous one
+      handleSelectStage(activeStage - 1);
     }
   };
 
@@ -214,16 +231,40 @@ export const CreateTreasureHuntScreen: React.FC = () => {
     return <LoadingOverlay message='Fetching activity artworks' />;
   }
 
+  const computeStageData = (): {
+    name: string;
+    completed: boolean;
+    canBeRemoved?: boolean;
+  }[] => {
+    return [
+      {
+        name: 'Basic Information'.toUpperCase(),
+        completed: isBasicInformationCompleted(),
+      },
+      ...treasureHuntDefinition.stages.map((stage, i) => ({
+        name: `Phase ${i + 1}`.toUpperCase(),
+        completed: isStageCompleted(stage),
+        canBeRemoved: true
+      }))
+    ];
+  };
+
   return (
     <Root>
-      <GameOverviewPanel
-        activeStage={activeStage}
-        stagesCompleted={[isBasicInformationCompleted(), ...treasureHuntDefinition.stages.map(isStageCompleted)]}
+      <ActivityCreationOverviewPanel
+        activeStage={activeStage + 1}
+        stages={computeStageData()}
         minStages={fetchActivityDefinitionStatus.result.data[0].minStages}
         maxStages={fetchActivityDefinitionStatus.result.data[0].maxStages}
         onAddNewStage={handleAddStage}
-        onStageSelected={handleSelectStage}
-        onSubmitGame={() => setSubmitGame(true)}
+        onRemoveStage={(index) => handleRemoveStage(index - 1)}
+        onStageSelected={(index) => handleSelectStage(index - 1)}
+        onSubmitActivity={() => setSubmitGame(true)}
+        addStagePanelText={t('newPhase')}
+        editStagesPanelText={t('editItems')}
+        cancelEditStagesPanelText={t('cancelEditing')}
+        finaItemCaption={t('submitGame')}
+        enableStageAddition
       />
 
       {displayedState === 'input-basic-information' &&
