@@ -7,7 +7,7 @@ import WritePrizes from '../CreateGame/WriteGifts';
 import { useParams } from 'react-router';
 import { useAsyncRequest } from '../services/useAsyncRequest';
 import { api, artworksService } from '../services';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import InputBasicInformation from '../CreateGame/InputBasicInformation';
 import LoadingOverlay from '../components/Layout/LoadingOverlay';
 import { ArtworkData } from '../services/artwork.model';
@@ -41,8 +41,8 @@ type StageStatus = 'input-basic-information' | 'select-artwork' | 'write-hints' 
  */
 export const CreateTreasureHuntScreen: React.FC = () => {
 
-  let { id } = useParams<{ id: string }>();
-  let history = useHistory();
+  let { id } = useParams() as { id: string };
+  let navigate = useNavigate();
 
   const { t } = useTranslation('app');
 
@@ -219,9 +219,9 @@ export const CreateTreasureHuntScreen: React.FC = () => {
   useEffect(() => {
     if (submitGameStatus.kind === 'success' && submitGameStatus.result.kind === 'ok') {
       window.alert('Your treasure hunt was successfully uploaded to the linked data hub.');
-      history.push('/find-artwork/consumer/explore/' + id);
+      navigate('/find-artwork/consumer/explore/' + id);
     }
-  }, [submitGameStatus, history, id]);
+  }, [submitGameStatus, navigate, id]);
 
   if (!(fetchActivityDefinitionStatus.kind === 'success' && fetchActivityDefinitionStatus.result.kind === 'ok')) {
     return <LoadingOverlay message='Fetching activity definition' />;

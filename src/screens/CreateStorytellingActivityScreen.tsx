@@ -4,10 +4,9 @@ import { ActivityCreationOverviewPanel } from '../components/Navigation/Activity
 import ConfigureStageParamsStage from '../CreateFindArtworkActivity/ConfigureStageParamsStage';
 import SelectArtworksStage from '../CreateFindArtworkActivity/SelectArtworksStage';
 import SetTitleAuthorDatesStage from '../CreateFindArtworkActivity/SetTitleAuthorDatesStage';
-import { api } from '../services';
 import { ArtworkData } from '../services/artwork.model';
 import { AllowedInputs } from '../services/findArtworkActivity.model';
-import { InProgressStorytellingActivityDefinition, CompletedStorytellingActivityDefinition } from '../services/storytellingActivity.model';
+import { InProgressStorytellingActivityDefinition } from '../services/storytellingActivity.model';
 import { useAsyncRequest } from '../services/useAsyncRequest';
 
 const Root = styled.div`

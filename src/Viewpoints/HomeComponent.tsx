@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { useAsyncRequest } from '../services/useAsyncRequest';
 import { viewpointsArtworksService } from '../services';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import lineBackground from './../components/line-header-point.png';
 import ArtworksComponent from '../Viewpoints/ArtworksComponent';
 import ImmaLogo from '../assets/img/IMMA30_LOGO_RGB_small.png';
@@ -71,7 +71,7 @@ const LogoImage = styled.img`
 
 const HomeComponent: React.FC = () => {
 
-  let history = useHistory();
+  let navigate = useNavigate();
 
   const fetchArtworks = async () => {
     return await viewpointsArtworksService.fetchArtworks();
@@ -120,12 +120,12 @@ const HomeComponent: React.FC = () => {
 
         <ArtworksComponent
           artworks={artworks}
-          onArtworkClicked={(id) => history.push(`/viewpoints/consumer/answer/${id}`)}
+          onArtworkClicked={(id) => navigate(`/viewpoints/consumer/answer/${id}`)}
         />
       </ContentCard>
       <VerticalSeparator />
       <ContentCard cardTitle='Other People'>
-        <ClickableText onClick={() => history.push('/viewpoints/consumer/results')}>Find out how others have responded to these artworks.</ClickableText>
+        <ClickableText onClick={() => navigate('/viewpoints/consumer/results')}>Find out how others have responded to these artworks.</ClickableText>
       </ContentCard>
     </Root>
   );

@@ -1,12 +1,7 @@
 import { ThemeStore } from './theme/ThemeStore';
 import Theme from './theme/Theme';
 import React, { Suspense } from 'react';
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Redirect
-} from 'react-router-dom';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 
 // screen imports
 import PlayTreasureHuntScreen from './screens/PlayTreasureHuntScreen';
@@ -14,11 +9,13 @@ import CreateTreasureHuntScreen from './screens/CreateTreasureHuntScreen';
 import CreateFindArtworkActivityScreen from './screens/CreateFindArtworkActivityScreen';
 import BrowseDefinitionsScreen from './screens/BrowseDefinitionsScreen';
 import ExploreActivityScreen from './screens/ExploreActivityScreen';
-import ViewpointsScreen from './screens/ViewpointsScreen';
+import { ActivityScreen } from './screens/ActivityScreen';
 
 // components
-import Header from './components/Layout/Header';
 import CreateStorytellingActivityScreen from './screens/CreateStorytellingActivityScreen';
+import HomeComponent from './Viewpoints/HomeComponent';
+import ViewpointsResultsComponent from './Viewpoints/ViewpointsResultsComponent';
+import AnswerViewpointComponent from './Viewpoints/AnswerViewpointComponent';
 
 /**
  * Main entrypoint for our React application within which all other components
@@ -30,41 +27,33 @@ export const App: React.FC = () => {
     <Suspense fallback='loading'>
       <ThemeStore>
         <Theme>
-          <Router>
-            <Switch>
-              <Route path='/viewpoints'>
-                <Header activityTitle='Viewpoints' />
-                <ViewpointsScreen />
+          <BrowserRouter>
+            <Routes>
+              <Route path='viewpoints' element={<ActivityScreen activityTitle='Viewpoints' />}>
+                <Route path='consumer'>
+                  <Route path='browse' element={<HomeComponent />} />
+                  <Route path='results' element={<ViewpointsResultsComponent />} />
+                  <Route path='answer/:id' element={<AnswerViewpointComponent />} />
+                  <Route path='' element={<Navigate replace to='browse' />} />
+                </Route>
+                <Route path='' element={<Navigate replace to='consumer' />} />
               </Route>
-              <Route path='/storytelling'>
-                <Header activityTitle='Storytelling' />
-                <CreateStorytellingActivityScreen />
+              <Route path='storytelling' element={<CreateStorytellingActivityScreen />} />
+              <Route path='find-artwork' element={<ActivityScreen activityTitle='Find Artworks' />}>
+                <Route path='consumer'>
+                  <Route path='play/:id' element={<PlayTreasureHuntScreen />} />
+                  <Route path='create/:id' element={<CreateTreasureHuntScreen />} />
+                  <Route path='explore/:id' element={<ExploreActivityScreen />} />
+                </Route>
+                <Route path='curator'>
+                  <Route path='create' element={<CreateFindArtworkActivityScreen />} />
+                </Route>
+                <Route path='browse' element={<BrowseDefinitionsScreen />} />
+                <Route path='' element={<Navigate replace to='browse' />} />
               </Route>
-              <Route path='/find-artwork/consumer/play/:id'>
-                <Header activityTitle='Find Artwork' />
-                <PlayTreasureHuntScreen />
-              </Route>
-              <Route path='/find-artwork/consumer/create/:id'>
-                <Header activityTitle='Find Artwork' />
-                <CreateTreasureHuntScreen />
-              </Route>
-              <Route path='/find-artwork/consumer/explore/:id'>
-                <Header activityTitle='Find Artwork' />
-                <ExploreActivityScreen />
-              </Route>
-              <Route path='/find-artwork/curator/create'>
-                <Header activityTitle='Find Artwork' />
-                <CreateFindArtworkActivityScreen />
-              </Route>
-              <Route path='/find-artwork/browse'>
-                <BrowseDefinitionsScreen />
-              </Route>
-              <Route>
-                {/*<Redirect to='/find-artwork/consumer/explore/60db0c3c7b4a14179552cb1c' />*/}
-                <Redirect to='/viewpoints/consumer/browse' />
-              </Route>
-            </Switch>
-          </Router>
+              <Route path='/' element={<Navigate replace to='/viewpoints/consumer/browse' />} />
+            </Routes>
+          </BrowserRouter>
         </Theme>
       </ThemeStore>
     </Suspense>

@@ -14,8 +14,7 @@ const Root = styled.div`
 
 const PlayTreasureHuntScreen: React.FC = () => {
 
-  let { id } = useParams<{ id: string }>();
-  console.log(id);
+  let { id } = useParams() as { id: string };
 
   const fetchTreasureHuntDefinition = async () => {
     return await api.getTreasureHuntDefinitionById(id);

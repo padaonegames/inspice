@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { useAsyncRequest } from '../services/useAsyncRequest';
 import { api } from '../services';
-import { useHistory, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import lineBackground from './../components/line-header-point.png'
 import LoadingOverlay from '../components/Layout/LoadingOverlay';
 import ContentCard, { CardExplanatoryText } from '../components/Layout/ContentCard';
@@ -89,8 +89,8 @@ const TreasureHuntBox = styled.div`
 
 const ExploreActivityScreen: React.FC = () => {
 
-  let { id } = useParams<{ id: string }>();
-  let history = useHistory();
+  let { id } = useParams() as { id: string };
+  let navigate = useNavigate();
 
   const fetchActivityDefinition = async () => {
     return await api.getFindArtworkActivityDefinitionById(id);
@@ -105,11 +105,11 @@ const ExploreActivityScreen: React.FC = () => {
 
 
   if (!(fetchActivityDefinitionStatus.kind === 'success' && fetchActivityDefinitionStatus.result.kind === 'ok')) {
-    return <LoadingOverlay message='Fetching activity definition...'/>;
+    return <LoadingOverlay message='Fetching activity definition...' />;
   }
 
   if (!(fetchTreasureHuntDefinitionsStatus.kind === 'success' && fetchTreasureHuntDefinitionsStatus.result.kind === 'ok')) {
-    return <LoadingOverlay message='Fetching treasure hunt definitions...'/>;
+    return <LoadingOverlay message='Fetching treasure hunt definitions...' />;
   }
 
   const activities = fetchActivityDefinitionStatus.result.data;
@@ -124,7 +124,7 @@ const ExploreActivityScreen: React.FC = () => {
           guided through the process of selecting different artworks from a given art collection, writing hints to help other visitors find your paintings,
           and adding your personalised messages to the treasure hunt as a reward for completing your game.
         </CardExplanatoryText>
-        <TreasureHuntBox onClick={() => history.push('/find-artwork/consumer/create/' + activities[0]._id)}>
+        <TreasureHuntBox onClick={() => navigate('/find-artwork/consumer/create/' + activities[0]._id)}>
           <TreasureHuntText>
             Create new game
           </TreasureHuntText>
@@ -147,7 +147,7 @@ const ExploreActivityScreen: React.FC = () => {
         <TreasureHuntGrid>
           {hunts.map((elem, _) =>
             <TreasureHuntBox
-              onClick={() => history.push('/find-artwork/consumer/play/' + elem._id)}
+              onClick={() => navigate('/find-artwork/consumer/play/' + elem._id)}
               key={elem._id}
             >
               <TreasureHuntText>
