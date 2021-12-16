@@ -54,6 +54,31 @@ type ActivityDefinitionStatus = 'set-title-author-dates' | 'configure-stage-para
 
 /**
  * Screen to encapsulate the creation flow of a treasure hunt creation activity.
+ * 
+ * + Input basic information:
+ * 
+ * <img src="media://FindArtwork-curator-create-dark-01.PNG" alt="FindArtwork [curator-create-dark-01]">
+ * 
+ * + Date range:
+ * 
+ * <img src="media://FindArtwork-curator-create-dark-02.PNG" alt="FindArtwork [curator-create-dark-02]">
+ * 
+ * + Stage Settings:
+ * 
+ * <img src="media://FindArtwork-curator-create-dark-03.PNG" alt="FindArtwork [curator-create-dark-03]">
+ * 
+ * + Select Artworks:
+ * 
+ * <img src="media://FindArtwork-curator-create-dark-04.PNG" alt="FindArtwork [curator-create-dark-04]">
+ * 
+ * + Search Results:
+ * 
+ * <img src="media://FindArtwork-curator-create-dark-05.PNG" alt="FindArtwork [curator-create-dark-05]">
+ * 
+ * + Activity Uploaded:
+ * 
+ * <img src="media://FindArtwork-curator-create-dark-06.PNG" alt="FindArtwork [curator-create-dark-06]">
+ * 
  */
 export const CreateFindArtworkActivityScreen: React.FC = () => {
 

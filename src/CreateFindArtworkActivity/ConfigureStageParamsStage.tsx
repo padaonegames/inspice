@@ -16,7 +16,7 @@ const CardContent = styled.div`
   align-self: center;
 `;
 
-interface ConfigureStageParamsStageProps {
+export interface ConfigureStageParamsStageProps {
   onMinStagesChange: (minStages: number) => void;
   onMaxStagesChange: (maxStages: number) => void;
   onMinCluesChange: (minClues: number) => void;
@@ -29,7 +29,10 @@ interface ConfigureStageParamsStageProps {
   initialAllowedInputTypes?: string[];
 };
 
-const ConfigureStageParamsStage: React.FC<ConfigureStageParamsStageProps> = ({
+/**
+ * <img src="media://ConfigureStageParamsStage.PNG" alt="ConfigureStageParamsStage">
+ */
+export const ConfigureStageParamsStage: React.FC<ConfigureStageParamsStageProps> = ({
   onMinStagesChange,
   onMaxStagesChange,
   onMinCluesChange,

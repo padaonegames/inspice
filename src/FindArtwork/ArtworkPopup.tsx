@@ -85,14 +85,14 @@ const PrizeContainer = styled.div`
   }
 `;
 
-type Props = {
+export type Props = {
   flipped: boolean;
   prize: string[];
   artworkData: ArtworkData;
 };
 
 
-const ArtworkPopup: React.FC<Props> = ({ flipped, prize, artworkData }) => {
+export const ArtworkPopup: React.FC<Props> = ({ flipped, prize, artworkData }) => {
 
   const { t } = useTranslation('app');
   const [modalOpen, setModalOpen] = useState<boolean>(false);

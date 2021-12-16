@@ -41,11 +41,14 @@ const ThemeSwitch = styled.span`
   }
 `;
 
-interface HeaderProps {
+export interface HeaderProps {
   activityTitle?: string;
 };
 
-const Header: React.FC<HeaderProps> = ({ activityTitle = '' }) => {
+/**
+ * <img src="media://Header.PNG" alt="Header">
+ */
+export const Header: React.FC<HeaderProps> = ({ activityTitle = '' }) => {
 
   const { t } = useTranslation('app');
   const { theme, switchTheme } = useContext(ThemeContext); 

@@ -89,6 +89,19 @@ export interface StageButtonPanelProps {
   onButtonClicked?: () => void;
 };
 
+/**
+ * + Add
+ * 
+ * <img src="media://StageButtonAdd.PNG" alt="StageButtonAdd">
+ * 
+ * + Cancel
+ * 
+ * <img src="media://StageButtonCancel.PNG" alt="StageButtonCancel">
+ * 
+ * + Edit
+ * 
+ * <img src="media://StageButtonEdit.PNG" alt="StageButtonEdit">
+ */
 export const StageButtonPanel: React.FC<StageButtonPanelProps> = ({
   onButtonClicked,
   enabled,

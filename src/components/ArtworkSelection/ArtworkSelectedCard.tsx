@@ -149,13 +149,16 @@ const CardBackground = styled.div<CardBackgroundProps>`
 `;
 
 
-interface ArtworkSelectedCardProps {
+export interface ArtworkSelectedCardProps {
   flipped: boolean;
   artworkData: ArtworkData;
   onArtworkDeselected: () => void;
 };
 
-const ArtworkSelectedCard: React.FC<ArtworkSelectedCardProps> = ({ flipped, artworkData, onArtworkDeselected }) => {
+/**
+ * <img src="media://ArtworkSelectedCard.PNG" alt="ArtworkSelectedCard">
+ */
+export const ArtworkSelectedCard: React.FC<ArtworkSelectedCardProps> = ({ flipped, artworkData, onArtworkDeselected }) => {
 
   return (
     <CardContent

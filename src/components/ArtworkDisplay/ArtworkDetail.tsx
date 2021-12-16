@@ -101,11 +101,14 @@ const ClickableText = styled.p`
   cursor: pointer;
 `;
 
-interface ArtworkDetailProps {
+export interface ArtworkDetailProps {
   artworkData: Artwork;
 };
 
-const ArtworkDetail: React.FC<ArtworkDetailProps> = ({ artworkData }) => {
+/**
+ * <img src="media://ArtworkDetail.PNG" alt="ArtworkDetail">
+ */
+export const ArtworkDetail: React.FC<ArtworkDetailProps> = ({ artworkData }) => {
 
   return (
     <Root>

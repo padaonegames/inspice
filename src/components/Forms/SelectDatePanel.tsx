@@ -87,13 +87,16 @@ month[9] = 'October';
 month[10] = 'November';
 month[11] = 'December';
 
-interface SelectDatePanelProps {
+export interface SelectDatePanelProps {
   onRangeSelected: (from: Date | undefined, to: Date | undefined) => void;
   initialFrom?: Date;
   initialTo?: Date;
 };
 
-const SelectDatePanel: React.FC<SelectDatePanelProps> = ({
+/**
+ * <img src="media://SelectDatePanel.PNG" alt="SelectDatePanel">
+ */
+export const SelectDatePanel: React.FC<SelectDatePanelProps> = ({
   onRangeSelected,
   initialFrom,
   initialTo

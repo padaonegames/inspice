@@ -258,6 +258,15 @@ export interface ProgressLineProps {
   onSubmit?: () => void;
 };
 
+/**
+ * + Not editing, no removal or addition enabled.
+ * 
+ * <img src="media://ProgressLineNoEdit.PNG" alt="ProgressLineNoEdit">
+ * 
+ * + Not editing, no removal or addition enabled.
+ * 
+ * <img src="media://ProgressLineEditing.PNG" alt="ProgressLineEditing">
+ */
 export const ProgressLine: React.FC<ProgressLineProps> = ({
   currentItem,
   items,

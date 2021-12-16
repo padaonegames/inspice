@@ -26,12 +26,12 @@ const CloseBtn = styled.span`
   }
 `;
 
-interface AlertProps {
+export interface AlertProps {
   onClose?: () => void;
   color?: string;
 };
 
-const Alert: React.FC<AlertProps> = ({ onClose = () => { }, color = '#2eb885', children }) => {
+export const Alert: React.FC<AlertProps> = ({ onClose = () => { }, color = '#2eb885', children }) => {
 
   return (
     <Root color={color}>

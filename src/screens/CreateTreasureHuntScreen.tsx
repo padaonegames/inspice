@@ -13,8 +13,8 @@ import LoadingOverlay from '../components/Layout/LoadingOverlay';
 import { ArtworkData } from '../services/artwork.model';
 import { InProgressTreasureHuntStage, CompletedTreasureHuntDefinition, InProgressTreasureHuntDefinition } from '../services/findArtworkActivity.model';
 import RecordAudio from '../components/Audio/RecordAudio';
-import { ActivityCreationOverviewPanel } from '../components/Navigation';
 import { useTranslation } from 'react-i18next';
+import ActivityCreationOverviewPanel from '../components/Navigation/ActivityCreationOverviewPanel';
 
 const Root = styled.div`
   display: flex;
@@ -38,6 +38,23 @@ type StageStatus = 'input-basic-information' | 'select-artwork' | 'write-hints' 
  * Screen used to manage a treasure hunt creation flow. When loaded, component will attempt to extract
  * an activity id from the browser's active url parameters and, if sucessful, will perform subsequent API
  * calls to the activity and treasure hunt backends to retrieve all relevant information to render the page.
+ * 
+ * + Input basic information:
+ * 
+ * <img src="media://FindArtwork-consumer-create-dark-01.PNG" alt="FindArtwork [consumer-create-dark-01]">
+ * 
+ * + Select Artwork:
+ * 
+ * <img src="media://FindArtwork-consumer-create-dark-02.PNG" alt="FindArtwork [consumer-create-dark-02]">
+ * 
+ * + Write Hints:
+ * 
+ * <img src="media://FindArtwork-consumer-create-dark-03.PNG" alt="FindArtwork [consumer-create-dark-03]">
+ * 
+ * + Write Prizes:
+ * 
+ * <img src="media://FindArtwork-consumer-create-dark-04.PNG" alt="FindArtwork [consumer-create-dark-04]">
+ * 
  */
 export const CreateTreasureHuntScreen: React.FC = () => {
 

@@ -150,6 +150,9 @@ export interface SelectArtworkProps {
  * may be selected at any given time, and the image pointed at by its source will be displayed on the
  * right sub-panel of this component. Selecting an artwork will NOT change the currently selected item
  * unless selectedArtwork prop is modified in parent (component is not stateful).
+ * 
+ * <img src="media://SelectArtwork.PNG" alt="SelectArtwork">
+ * 
  * @author Pablo Gutiérrez, 2021
  */
 export const SelectArtwork: React.FC<SelectArtworkProps> = ({

@@ -31,6 +31,9 @@ export interface FilterPanelProps {
   onFilterApplied?: (field: string, filter: string) => void;
 };
 
+/**
+ * <img src="media://FilterPanel.PNG" alt="FilterPanel">
+ */
 export const FilterPanel: React.FC<FilterPanelProps> = ({
   uniqueFilterFields,
   maxOptionsShown,

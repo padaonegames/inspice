@@ -136,7 +136,7 @@ const OptionText = styled.span`
   font-family: Raleway;
 `;
 
-interface FilterPopupProps {
+export interface FilterPopupProps {
   filterField: string;
   filterOptions: string[];
   filterCounts: number[];
@@ -144,7 +144,10 @@ interface FilterPopupProps {
   setFilterPopupOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const FilterPopup: React.FC<FilterPopupProps> = ({
+/**
+ * <img src="media://FilterPopup.PNG" alt="FilterPopup">
+ */
+export const FilterPopup: React.FC<FilterPopupProps> = ({
   filterField,
   filterOptions,
   filterCounts,

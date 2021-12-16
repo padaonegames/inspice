@@ -28,6 +28,9 @@ export interface SelectArtworksStageProps {
   onArtworkDeselected: (artworkId: string) => void;
 };
 
+/**
+ * <img src="media://SelectArtworksStage.PNG" alt="SelectArtworksStage">
+ */
 export const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSelected, onArtworkDeselected, selectedArtworks }) => {
 
   //--------------------------------------------------

@@ -24,13 +24,19 @@ const PageNumberGrid = styled.div`
   cursor: default;
   }
 `;
-interface PageBarProps {
+export interface PageBarProps {
     currentPage: number;
     numberOfPages: number;
     onPageSelected: (page: number) => void;
 
 };
-const PageBar: React.FC<PageBarProps> = ({ currentPage, numberOfPages, onPageSelected }) => {
+
+/**
+ * WIP
+ * 
+ * <img src="media://PageBar.PNG" alt="PageBar">
+ */
+export const PageBar: React.FC<PageBarProps> = ({ currentPage, numberOfPages, onPageSelected }) => {
     const testArray: number[] = Array.from(Array(numberOfPages).keys());
 
     return (

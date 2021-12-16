@@ -196,6 +196,8 @@ export interface SearchAndSelectManyArtworksProps {
  * Component to display a collection of artworks and allow for basic selection, filtering, 
  * search and navigation functionalities.
  * 
+ * <img src="media://SearchAndSelectManyArtworks.PNG" alt="SearchAndSelectManyArtworks">
+ * 
  * @author Pablo Gutiérrez, 2021
  */
 export const SearchAndSelectManyArtworks: React.FC<SearchAndSelectManyArtworksProps> = ({

@@ -95,6 +95,8 @@ export interface ShowFiltersProps {
  * Component to display an array of applied filters for a given artwork search.
  * Provides an option to remove any given filter from the array, as well as a button
  * to clear all filters simultaneously.
+ * 
+ * <img src="media://ShowFilters.PNG" alt="ShowFilters">
  */
 export const ShowFilters: React.FC<ShowFiltersProps> = ({
   filters,

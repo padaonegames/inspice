@@ -95,7 +95,7 @@ const NavigateBeforeIcon = styled(NavigateBefore) <NavIconProps>`
   }
 `;
 
-interface FindArtworkProps {
+export interface FindArtworkProps {
   stageData: StageData;
   imagesData: ArtworkData[];
   onStageCompleted: () => void;
@@ -103,7 +103,10 @@ interface FindArtworkProps {
   score: number;
 };
 
-const FindArtwork: React.FC<FindArtworkProps> = ({
+/**
+ * <img src="media://FindArtwork.PNG" alt="FindArtwork">
+ */
+export const FindArtwork: React.FC<FindArtworkProps> = ({
   stageData,
   imagesData,
   onStageCompleted,

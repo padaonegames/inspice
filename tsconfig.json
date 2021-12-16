@@ -26,8 +26,17 @@
   "typedocOptions": {
     "entryPoints": [
       "src/index.tsx",
-      "src/CreateGame/index.ts"
+      "src/CreateGame/index.ts",
+      "src/CreateFindArtworkActivity/index.ts",
+      "src/FindArtwork/index.ts",
+      "src/screens/index.ts",
+      "src/components/Navigation/index.ts",
+      "src/components/Layout/index.ts",
+      "src/components/Forms/index.ts",
+      "src/components/ArtworkSelection/index.ts",
+      "src/components/ArtworkDisplay/index.ts"
     ],
+    "media": "media/",
     "out": "docs"
   }
 }

@@ -117,12 +117,15 @@ const InfoIconWrapper = styled.div`
   }
 `;
 
-interface ClueHolderProps {
+export interface ClueHolderProps {
   clues: string[];
   onClueOpened: (points: number) => void;
 };
 
-const ClueHolder: React.FC<ClueHolderProps> = ({ clues, onClueOpened }) => {
+/**
+ * <img src="media://ClueHolder.PNG" alt="ClueHolder">
+ */
+export const ClueHolder: React.FC<ClueHolderProps> = ({ clues, onClueOpened }) => {
 
   const { t } = useTranslation('app');
 

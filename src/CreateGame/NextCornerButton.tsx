@@ -72,7 +72,7 @@ const NextCorner = styled.div<CornerProps>`
   }
 `;
 
-interface NextCornerButtonProps {
+export interface NextCornerButtonProps {
   onNextClicked: () => void;
   type?: 'next' | 'previous';
   size?: 'small' | 'medium';
@@ -82,7 +82,11 @@ interface NextCornerButtonProps {
   active?: boolean;
 };
 
-const NextCornerButton: React.FC<NextCornerButtonProps> = ({
+
+/**
+ * <img src="media://NextCornerButton.PNG" alt="NextCornerButton">
+ */
+export const NextCornerButton: React.FC<NextCornerButtonProps> = ({
   onNextClicked,
   type = 'next',
   size = 'medium',

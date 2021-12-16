@@ -16,7 +16,7 @@ const CardContent = styled.div`
   align-self: center;
 `;
 
-interface SetTitleAuthorDatesStageProps {
+export interface SetTitleAuthorDatesStageProps {
   handleDateRangeSelected: (from: Date | undefined, to: Date | undefined) => void;
   onTitleChange: (title: string) => void;
   onAuthorChange: (author: string) => void;
@@ -26,7 +26,10 @@ interface SetTitleAuthorDatesStageProps {
   initialTo?: Date;
 };
 
-const SetTitleAuthorDatesStage: React.FC<SetTitleAuthorDatesStageProps> = ({
+/**
+ * <img src="media://SetTitleAuthorDatesStage.PNG" alt="SetTitleAuthorDatesStage">
+ */
+export const SetTitleAuthorDatesStage: React.FC<SetTitleAuthorDatesStageProps> = ({
   handleDateRangeSelected,
   onAuthorChange,
   onTitleChange,

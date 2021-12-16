@@ -171,7 +171,7 @@ const PrizesText = styled.p`
   color: white;
 `;
 
-interface WritePrizesProps {
+export interface WritePrizesProps {
   prizes: string[];
   imageSrc: string;
   onAddNewPrize: () => void;
@@ -182,7 +182,10 @@ interface WritePrizesProps {
   onBackClicked: () => void;
 };
 
-const WritePrizes: React.FC<WritePrizesProps> = ({
+/**
+ * <img src="media://WriteGifts.PNG" alt="WritePrizes">
+ */
+export const WritePrizes: React.FC<WritePrizesProps> = ({
   prizes,
   imageSrc,
   onAddNewPrize,

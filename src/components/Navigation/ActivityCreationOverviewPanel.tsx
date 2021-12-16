@@ -96,6 +96,15 @@ export interface ActivityCreationOverviewPanelProps {
   onRemoveStage?: (index: number) => void;
 };
 
+/**
+ * + Not editing
+ * 
+ * <img src="media://ActivityCreationOverviewPanelRegular.PNG" alt="ActivityCreationOverviewPanelRegular">
+ * 
+ * + Editing, removal and addition enabled
+ * 
+ * <img src="media://ActivityCreationOverviewPanelEditing.PNG" alt="ActivityCreationOverviewPanelEditing">
+ */
 export const ActivityCreationOverviewPanel: React.FC<ActivityCreationOverviewPanelProps> = ({
   minStages,
   maxStages,

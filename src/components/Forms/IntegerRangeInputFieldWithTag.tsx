@@ -29,7 +29,7 @@ const PanelContainer = styled.div`
   width: 100%;
 `;
 
-interface IntegerRangeInputFieldWithTagProps {
+export interface IntegerRangeInputFieldWithTagProps {
   min: number;
   max: number;
   step?: number;
@@ -40,7 +40,10 @@ interface IntegerRangeInputFieldWithTagProps {
   fieldText: string;
 };
 
-const IntegerRangeInputFieldWithTag: React.FC<IntegerRangeInputFieldWithTagProps> = ({
+/**
+ * <img src="media://IntegerRangeInputFieldWithTag.PNG" alt="IntegerRangeInputFieldWithTag">
+ */
+export const IntegerRangeInputFieldWithTag: React.FC<IntegerRangeInputFieldWithTagProps> = ({
   min,
   max,
   step = 1,

@@ -63,11 +63,14 @@ const LoadingText = styled.div`
   align-self: center;
 `;
 
-interface LoadingOverlayProps {
+export interface LoadingOverlayProps {
   message?: string;
 };
 
-const LoadingOverlay: React.FC<LoadingOverlayProps> = ({ message = 'Loading' }) => {
+/**
+ * <img src="media://LoadingOverlay.PNG" alt="LoadingOverlay">
+ */
+export const LoadingOverlay: React.FC<LoadingOverlayProps> = ({ message = 'Loading' }) => {
 
   const [numDots, setNumdots] = useState<number>(1);
 

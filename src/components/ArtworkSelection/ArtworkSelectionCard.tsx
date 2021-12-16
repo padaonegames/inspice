@@ -32,6 +32,19 @@ export interface ArtworkSelectionCardProps {
   onCardClicked?: () => void;
 };
 
+/**
+ * + Unselected Version:
+ * 
+ * <img src="media://ArtworkSelectionCardUnselected.PNG" alt="ArtworkSelectionCardUnselected">
+ * 
+ * + Unselected Version (Hover):
+ * 
+ * <img src="media://ArtworkSelectionCardHover.PNG" alt="ArtworkSelectionCardHover">
+ * 
+ * + Selected Version:
+ * 
+ * <img src="media://ArtworkSelectedCard.PNG" alt="ArtworkSelectedCard">
+ */
 export const ArtworkSelectionCard: React.FC<ArtworkSelectionCardProps> = ({
   artworkData,
   selected,

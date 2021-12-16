@@ -14,11 +14,11 @@ const Wrapper = styled.div`
   background: transparent;
 `;
 
-type Props = {
+export type Props = {
     modalOpen: boolean;
 };
 
-const Modal: React.FC<Props> = ({ modalOpen, children }) => {
+export const Modal: React.FC<Props> = ({ modalOpen, children }) => {
     if (!modalOpen) return null;
 
     return createPortal(

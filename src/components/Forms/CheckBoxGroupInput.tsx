@@ -39,14 +39,17 @@ const CheckBoxContainer = styled.div`
   align-items: center;
 `;
 
-interface CheckBoxGroupInputProps {
+export interface CheckBoxGroupInputProps {
   fieldText: string;
   labelList: string[];
   initialAllowedInputTypes?: string[];
   onCheckBoxToggled: (label: string) => void;
 };
 
-const CheckBoxGroupInput: React.FC<CheckBoxGroupInputProps> = ({
+/**
+ * <img src="media://CheckBoxGroupInput.PNG" alt="CheckBoxGroupInput">
+ */
+export const CheckBoxGroupInput: React.FC<CheckBoxGroupInputProps> = ({
   fieldText,
   labelList,
   onCheckBoxToggled,

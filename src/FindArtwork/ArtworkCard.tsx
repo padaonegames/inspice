@@ -22,14 +22,17 @@ export type ArtworkCardStatus =
   | { status: 'wrong' }
   | { status: 'right', prizes: string[] };
 
-interface ArtworkCardProps {
+export interface ArtworkCardProps {
   artworkData: ArtworkData;
   status: ArtworkCardStatus;
   flipped: boolean;
   onCardSelected: () => void;
 };
 
-const ArtworkCard: React.FC<ArtworkCardProps> = ({ artworkData, flipped, status, onCardSelected }) => {
+/**
+ * <img src="media://ArtworkCard.PNG" alt="ArtworkCard">
+ */
+export const ArtworkCard: React.FC<ArtworkCardProps> = ({ artworkData, flipped, status, onCardSelected }) => {
 
   return (
     <CardContainer>

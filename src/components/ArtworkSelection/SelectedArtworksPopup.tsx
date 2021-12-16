@@ -199,6 +199,11 @@ export interface SelectedArtworksPopupProps {
   setPopupOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
+/**
+ * WIP
+ * 
+ * <img src="media://SelectedArtworksPopup.PNG" alt="SelectedArtworksPopup">
+ */
 export const SelectedArtworksPopup: React.FC<SelectedArtworksPopupProps> = ({ artworks, onArtworkRemoved, setPopupOpen }) => {
 
   const [page, setPage] = useState<number>(0);

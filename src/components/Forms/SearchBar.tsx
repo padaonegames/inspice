@@ -57,6 +57,9 @@ export interface SearchBarProps {
    onSearchPerformed?: (searchText: string) => void;
 };
 
+/**
+ * <img src="media://SearchBar.PNG" alt="SearchBar">
+ */
 export const SearchBar: React.FC<SearchBarProps> = ({
   onSearchPerformed
 }) => {

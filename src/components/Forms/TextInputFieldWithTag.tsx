@@ -35,7 +35,7 @@ const FieldNameLabel = styled.h3`
   font-family: Raleway;
 `;
 
-interface TextInputFieldWithTagProps {
+export interface TextInputFieldWithTagProps {
   initialValue?: string;
   placeholder?: string;
   icon?: JSX.Element;
@@ -45,7 +45,10 @@ interface TextInputFieldWithTagProps {
   maxLength?: number;
 };
 
-const TextInputFieldWithTag: React.FC<TextInputFieldWithTagProps> = ({
+/**
+ * <img src="media://TextInputFieldWithTag.PNG" alt="TextInputFieldWithTag">
+ */
+export const TextInputFieldWithTag: React.FC<TextInputFieldWithTagProps> = ({
   onEnterPress,
   initialValue,
   placeholder,

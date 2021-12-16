@@ -128,7 +128,7 @@ const Marker = styled.div<MarkerProps>`
 `;
 
 
-interface IntegerRangeSliderProps {
+export interface IntegerRangeSliderProps {
   min: number;
   max: number;
   step?: number;
@@ -138,7 +138,10 @@ interface IntegerRangeSliderProps {
   onMaxValueChange: (max: number) => void;
 };
 
-const IntegerRangeSlider: React.FC<IntegerRangeSliderProps> = ({
+/**
+ * <img src="media://IntegerRangeSlider.PNG" alt="IntegerRangeSlider">
+ */
+export const IntegerRangeSlider: React.FC<IntegerRangeSliderProps> = ({
   min,
   max,
   step = 1,

@@ -52,7 +52,7 @@ const CardPanel = styled.div<CardPanelProps>`
   margin-bottom: 15px;
 `;
 
-interface CardProps {
+export interface CardProps {
   cardTitle?: string;
   titleAlign?: 'left' | 'right' | 'center' | 'justify';
   width?: string;
@@ -60,7 +60,12 @@ interface CardProps {
   flexDirection?: 'row' | 'column';
 };
 
-const ContentCard: React.FC<CardProps> = ({ cardTitle, width = '80%', maxWidth = '1200px', flexDirection = 'column', titleAlign = 'left', children }) => {
+/**
+ * Examples of content cards:
+ * 
+ * <img src="media://ContentCard.PNG" alt="ContentCard">
+ */
+export const ContentCard: React.FC<CardProps> = ({ cardTitle, width = '80%', maxWidth = '1200px', flexDirection = 'column', titleAlign = 'left', children }) => {
 
   return (
     <CardPanel

@@ -12,7 +12,19 @@ const Root = styled.div`
   flex-direction: column;
 `;
 
-const PlayTreasureHuntScreen: React.FC = () => {
+/**
+ * 
+ * + Search:
+ * 
+ * <img src="media://FindArtwork-consumer-play-dark-01.PNG" alt="FindArtwork [consumer-play-dark-01]">
+ * 
+ * + Reward:
+ * 
+ * <img src="media://FindArtwork-consumer-play-dark-02.PNG" alt="FindArtwork [consumer-play-dark-02]">
+ * 
+ */
+
+export const PlayTreasureHuntScreen: React.FC = () => {
 
   let { id } = useParams() as { id: string };
 

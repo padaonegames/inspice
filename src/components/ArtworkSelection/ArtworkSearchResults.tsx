@@ -17,7 +17,7 @@ const ArtworkGrid = styled.div`
   justify-content: left;
 `;
 
-interface ArtworkSearchResultsProps {
+export interface ArtworkSearchResultsProps {
   artworks: ArtworkData[];
   selectedArtworks: string[];
   page?: number;
@@ -33,7 +33,10 @@ interface ArtworkSearchResultsProps {
   onPageChange?: (page: number) => void;
 };
 
-const ArtworkSearchResults: React.FC<ArtworkSearchResultsProps> = ({
+/**
+ * <img src="media://ArtworkSearchResults.PNG" alt="ArtworkSearchResults">
+ */
+export const ArtworkSearchResults: React.FC<ArtworkSearchResultsProps> = ({
   artworks,
   page,
   pageTotal,

@@ -56,13 +56,16 @@ const CheckMark = styled.span<CheckMarkProps>`
 `;
 
 
-interface CheckBoxInputProps {
+export interface CheckBoxInputProps {
   initialChecked?: boolean;
   labelText: string;
   onCheckedChange: (checked: boolean) => void;
 };
 
-const CheckBoxInput: React.FC<CheckBoxInputProps> = ({
+/**
+ * <img src="media://CheckBoxInput.PNG" alt="CheckBoxInput">
+ */
+export const CheckBoxInput: React.FC<CheckBoxInputProps> = ({
   initialChecked = false,
   labelText,
   onCheckedChange,

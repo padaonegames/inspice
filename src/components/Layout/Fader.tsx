@@ -28,13 +28,13 @@ const FaderContainer = styled.div<FaderContainerProps>`
   animation: ${props => props.show ? fadeIn : fadeOut} ${props => props.transitionTime}s ease;
 `;
 
-interface FaderProps {
+export interface FaderProps {
   show: boolean;
   transitionTime: number;
   onAnimationCompleted?: () => void;
 };
 
-const Fader: React.FC<FaderProps> = ({ show, transitionTime, onAnimationCompleted, children }) => {
+export const Fader: React.FC<FaderProps> = ({ show, transitionTime, onAnimationCompleted, children }) => {
 
   const [shouldRender, setShouldRender] = useState<boolean>(show);
 

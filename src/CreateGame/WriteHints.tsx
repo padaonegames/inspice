@@ -181,7 +181,7 @@ const HintsText = styled.p`
 
 
 
-interface WriteHintsProps {
+export interface WriteHintsProps {
   hints: string[];
   imageSrc: string;
   minHints: number;
@@ -193,7 +193,10 @@ interface WriteHintsProps {
   onBackClicked: () => void;
 };
 
-const WriteHints: React.FC<WriteHintsProps> = ({
+/**
+ * <img src="media://WriteHints.PNG" alt="WriteHints">
+ */
+export const WriteHints: React.FC<WriteHintsProps> = ({
   hints,
   imageSrc,
   minHints,

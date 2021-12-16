@@ -87,7 +87,7 @@ const ExpandIcon = styled.span`
   font-family: Raleway;
 `;
 
-interface FilterFieldProps {
+export interface FilterFieldProps {
   filterField: string;
   filterOptions: string[];
   filterCounts: number[];
@@ -97,7 +97,10 @@ interface FilterFieldProps {
   // TODO: show button
 };
 
-const FilterField: React.FC<FilterFieldProps> = ({
+/**
+ * <img src="media://FilterField.PNG" alt="FilterField">
+ */
+export const FilterField: React.FC<FilterFieldProps> = ({
   filterField,
   filterOptions,
   filterCounts,

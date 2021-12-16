@@ -85,13 +85,16 @@ const CardBackground = styled.div<CardBackgroundProps>`
   overflow: hidden;
 `;
 
-interface ArtworkFailedProps {
+export interface ArtworkFailedProps {
   flipped: boolean;
   image: string;
   title: string;
 };
 
-const ArtworkFailed: React.FC<ArtworkFailedProps> = ({ flipped, image, title }) => {
+/**
+ * <img src="media://ArtworkFailed.PNG" alt="ArtworkFailed">
+ */
+export const ArtworkFailed: React.FC<ArtworkFailedProps> = ({ flipped, image, title }) => {
   
   const { t } = useTranslation('app');
   

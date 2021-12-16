@@ -21,7 +21,7 @@ const VerticalMargin = styled.div`
   width: 100%;
 `;
 
-interface InputBasicInformationProps {
+export interface InputBasicInformationProps {
   onTitleChange: (title: string) => void;
   onAuthorChange: (author: string) => void;
   initialTitle?: string;
@@ -30,7 +30,10 @@ interface InputBasicInformationProps {
   enabled?: boolean;
 };
 
-const InputBasicInformation: React.FC<InputBasicInformationProps> = ({
+/**
+ * <img src="media://InputBasicInformation.PNG" alt="InputBasicInformation">
+ */
+export const InputBasicInformation: React.FC<InputBasicInformationProps> = ({
   onAuthorChange,
   onTitleChange,
   initialAuthor,
