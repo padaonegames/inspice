@@ -6,6 +6,10 @@
  * para ajustarlo a nuestras necesidades (por ejemplo para modificar de forma más
  * conveniente los tipos de datos de los formularios asociados), y disponer de una 
  * versión "comentada" donde se explique cómo funciona internamente el módulo.
+ * 
+ * El mayor cambio incluído aquí está destinado a reubicar el estado del formulario
+ * en el componente padre (donde se declaran los pasos), y de este modo permitir el 
+ * acceso al mismo desde un nivel superior al ámbito del contexto de pasos que se define aquí.
  */
 
 import React, { useContext, useEffect, useState } from "react";
@@ -21,6 +25,10 @@ import { ComponentType, createContext, ReactElement } from "react";
  * de pasos o etapas de nuestro formulario. Notamos que una buena parte de los tipos
  * descritos a continuación hacen referencia al contexto global al que todo
  * paso tendrá acceso al estar declarado dentro de `Steps`.
+ * 
+ * Si se declara un paso fuera de un entorno `Steps`, el contexto recibido
+ * será el que establezcamos por defecto más abajo, esencialmente un objeto
+ * con un montón de valores dummies por defecto.
  */
 
 /**
@@ -54,14 +62,19 @@ type StepEntry = {
  * con un callback opcional en `onStepLoaded` que permite especificar lógica adicional a 
  * ejecutar antes de realizar un cambio desde otro paso al paso actual (será llamado al entrar en él). 
  */
-export interface StepProps {
+export interface BasicStepProps<T extends StepComponentProps> {
   /** Title of this step */
   title?: string;
   /** Component to be rendered as a step */
-  component: ComponentType<StepComponentProps>;
+  component: ComponentType<T>;
   /** A callback function to run before step change occurs */
   onStepLoaded?: () => void;
 };
+
+export type StepProps<T extends StepComponentProps> = BasicStepProps<T> & ExclusiveStepProps<T>;
+
+type ExclusiveStepProps<T> = Omit<T, keyof StepComponentProps>;
+
 
 /**
  * + `StepComponentProps` representa la base mínima de props que deben incluir los componentes
@@ -72,6 +85,11 @@ export interface StepProps {
  * ```
  * `MyStepComponent` deberá ser un componente de React que tome como props un tipo o interfaz que 
  * contenga, como mínimo, todos los campos especificados en la definición de `StepComponentProps`.
+ * 
+ * En realidad esto no supone un esfuerzo de implementación adicional desde el punto de vista de la
+ * generación de pasos, puesto que basta con establecer un tipo derivado de `StepComponentProps`
+ * como base de los props empleados para el paso a crear, y todas estas propiedades serán pobladas
+ * automáticamente simplemente por el hecho de estar en un entorno `Steps`.
  */
 export interface StepComponentProps {
   /** Order number of the current step component */
@@ -97,11 +115,9 @@ export interface StepComponentProps {
   /** Combined state value of all steps */
   state: State;
   /** Function to set/update state by key */
-  setState: (key: string, value: unknown) => void;
+  setState: <T>(key: string, setValue: React.SetStateAction<T>, initialValue: T) => void;
   /** Function to retrieve a state value by key */
-  getState: (key: string, deafultValue: unknown) => unknown;
-  /** `onChange` event handler for form elements */
-  handleChange: ValueChangedHandler;
+  getState: <T>(key: string, defaultValue: T) => T;
 };
 
 /**
@@ -124,21 +140,16 @@ export interface NavigationComponentProps extends StepsContext {
 const StepContext = createContext<StepContext>({ order: 0 });
 
 /**
- * No hay forma de hacer const Step: React.FC<T extends StepProps>, puesto que
- * los componentes funcionales de react sólo admiten tipos no genéricos, pero podemos
- * seguir utilizando una función sin que esto modifique verdaderamente nada.
- */
-/**
  * Wrapper component for each individual step.
  */
-function Step<T extends StepProps>(props: T) {
+function Step<T extends StepComponentProps>(props: StepProps<T>) {
 
   // obtención de la posición en la lista a partir del contexto
   // OJO: Aquí se asume que este contexto existirá por estar el paso
   // incluído dentro de algún `Steps`.
   const { order }: StepContext = useContext(StepContext);
   // obtención de los elementos garantizados en los props
-  const { title, component: Component, onStepLoaded } = props;
+  const { title, component, onStepLoaded } = props;
   // obtención del resto del contexto general
   const stepsContextValue: StepsContext = useContext(StepsContext);
 
@@ -148,10 +159,10 @@ function Step<T extends StepProps>(props: T) {
   // comprobaciones que serán inyectadas como props en el componente de paso
   // y que le servirán para saber su posición en la lista y si tiene más elementos
   // antes o después.
-  const isFirst: () => boolean = () => order === 1;
+  const isFirst: () => boolean = () => order === 0;
   const isLast: () => boolean = () => order === stepCount;
   const hasNext: () => boolean = () => order < stepCount;
-  const hasPrev: () => boolean = () => order > 1;
+  const hasPrev: () => boolean = () => order > 0;
 
   // si acabamos de cargar este paso, y hemos especificado una acción a realizar en
   // dicho momento, la ejecutamos.
@@ -164,14 +175,18 @@ function Step<T extends StepProps>(props: T) {
   // SÓLO se renderizan aquellos pasos cuyo orden coincida con el paso
   // actual del contexto general.
   if (order === currentStep) {
-    const newProps: Partial<T> = Object.assign({}, props);
-    delete newProps.component;
+    const exclusiveProps: ExclusiveStepProps<T> = { ...props };
 
     const defaultTitle = "Step " + order;
 
+    // Forzamos el tipo para calmar al type checker. De esta forma le aseguramos que
+    // nunca vamos a tener un componente que tenga más parámetros que los básicos
+    // más posiblemente un listado de campos exclusivos.
+    const Component = component as ComponentType<StepComponentProps & ExclusiveStepProps<T>>;
+
     return (
       <Component
-        {...newProps}
+        {...exclusiveProps}
         {...stepsContextValue}
         title={title || defaultTitle}
         order={order}
@@ -193,22 +208,7 @@ function Step<T extends StepProps>(props: T) {
  * Una vez disponemos de las definiciones de un paso concreto, podemos 
  * pasar a definir el gestor general que mantendrá el estado global de 
  * los pasos y ejecutará la lógica de carga y descarga de cada uno de ellos.
- * 
- * Inicialmente podemos definir eventos (callbacks) a utilizar cuando un campo
- * sea modificado en alguno de los pasos.
  */
-/**
- * Definition of an event describing a change within one of the fields
- * of our context state. This is done by specifying the key of the state 
- * to be modified and the new value that was assigned to it in one of the steps.
- */
-type ValueChangedEvent = {
-  key: string;
-  value: unknown;
-};
-
-/** General handler type for events that change the current state of our context */
-type ValueChangedHandler = (event: ValueChangedEvent) => void;
 
 /**
  * En vez de un estado que sólo permita como valores los tipos clásicos de formularios
@@ -221,9 +221,9 @@ type ValueChangedHandler = (event: ValueChangedEvent) => void;
  */
 /**
  * Definition of a (general) state to be handled by our context.
- * Values are always of type unkown to ensure that we can store anything within a dictionary entry.
+ * Values are always of type unknown to ensure that we can store anything within a dictionary entry.
  */
-type State = {
+export type State = {
   [key: string]: unknown;
 };
 
@@ -246,11 +246,9 @@ interface StepsContext {
   /** General state to be worked on throughout the different steps in the context */
   state: State;
   /** Function to set/update state by key */
-  setState: (key: string, value: unknown) => void;
+  setState: <T>(key: string, setValue: React.SetStateAction<T>, initialValue: T) => void;
   /** Function to retrieve a state value by key */
-  getState: (key: string, deafultValue: unknown) => unknown;
-  /** Callback specifiying how to react to a change in one of the state's values from a step */
-  handleChange: ValueChangedHandler;
+  getState: <T>(key: string, deafultValue: T) => T;
   /** Callback describing how to move on to the next step in the sequence */
   next: () => void;
   /** Callback describing how to move back to the previous step in the sequence */
@@ -271,12 +269,11 @@ const StepsContext = createContext<StepsContext>({
   // Dummy values for satisfying the type checker
   // Gets updated before being passed down
   stepCount: 0,
-  currentStep: 1,
+  currentStep: 0,
   stepList: [],
   state: {},
-  handleChange: (_) => { },
   setState: (_, __) => { },
-  getState: (_, __) => "",
+  getState: (_, __) => __,
   next: () => { },
   prev: () => { },
   jump: (_) => { },
@@ -296,8 +293,10 @@ const StepsContext = createContext<StepsContext>({
  * after (que van antes y después del cuerpo principal, respectivamente).
  */
 export interface StepsProps {
-  children: ReactElement<StepProps> | ReactElement<StepProps>[];
+  children: ReactElement<StepProps<StepComponentProps>> | ReactElement<StepProps<StepComponentProps>>[];
   config?: StepsConfig;
+  genState: State;
+  setGenState: React.Dispatch<React.SetStateAction<State>>;
 };
 
 /**
@@ -310,8 +309,6 @@ export interface StepsProps {
  * + `navigation`: contiene tanto un componente general de navegación (generalmente para listar los
  * pasos y permitir saltar de uno a otro de forma explícita) como la ubicación relativa al contenido 
  * del paso donde deberá colocarse.
- * 
- * Notamos que aquí estamos usando `any` para los props en lugar de `unknown`. TODO: ¿podemos usar otra cosa?
  */
 export type StepsConfig = {
   before?: (props: any) => JSX.Element;
@@ -331,7 +328,7 @@ export type StepsConfig = {
 /**
  * Wrapper component for `Step` components.
  */
-const Steps: React.FC<StepsProps> = ({ children, config }) => {
+function Steps({ children, config, genState, setGenState }: StepsProps) {
   // referencia a cada uno de los hijos del componente en formato array
   // esto servirá para poblar la lista de elementos que podrá ser consumida
   // por los pasos individuales a partir del contexto general.
@@ -365,8 +362,8 @@ const Steps: React.FC<StepsProps> = ({ children, config }) => {
   const stepList: StepEntry[] = childSteps.map((child, order) => {
     return {
       name:
-        (child as { props: StepProps }).props.title || "Step " + (order + 1),
-      order: order + 1,
+        (child as { props: StepProps<StepComponentProps> }).props.title || "Step " + (order + 1),
+      order: order,
     };
   });
 
@@ -377,64 +374,79 @@ const Steps: React.FC<StepsProps> = ({ children, config }) => {
   const stepCount = childSteps.length;
 
   // paso actual (renderizándose en este momento)
-  const _currentStep = useState<number>(1);
+  const _currentStep = useState<number>(0);
   const currentStep = _currentStep[0];
   const setCurrentStep = _currentStep[1];
 
-  // estado global formado por las partes de cada uno de los estados parciales
-  const _stepState = useState<State>({});
-  const stepState = _stepState[0];
-  const setStepState = _stepState[1];
-
   // gestionar el avance al siguiente paso
   const next: () => void = () => {
-    if (currentStep < stepCount) {
+    if (currentStep + 1 < stepCount) {
       setCurrentStep(currentStep + 1);
     }
   };
 
   // gestionar el retroceso al paso previo
   const prev: () => void = () => {
-    if (currentStep > 1) {
+    if (currentStep > 0) {
       setCurrentStep(currentStep - 1);
     }
   };
 
   // gestionar un salto a un paso concreto
   const jump: (step: number) => void = (step) => {
-    if (step >= 1 && step <= stepCount) {
+    if (step >= 0 && step < stepCount) {
       setCurrentStep(step);
     }
   };
 
   // obtener un campo del estado por clave
-  const getState: (key: string, deafultValue: unknown) => unknown = (key, defaultValue) => {
-    if (key in stepState) {
-      return stepState[key];
+  function getState<T>(key: string, defaultValue: T): T {
+    if (key in genState) {
+      return genState[key] as T;
     }
     return defaultValue;
   };
 
   // sobrescribir un campo del estado por clave
-  const setState: (key: string, value: unknown) => void = (key, value) => {
-    const newState = Object.assign({}, stepState);
-    newState[key] = value;
-    setStepState(newState);
-  };
-
-  // gestionar un cambio de valor en una clave
-  const handleChange: ValueChangedHandler = (event) => {
-    const newState = Object.assign({}, stepState);
-    newState[event.key] = event.value;
-    setStepState(newState);
+  function setState<T>(key: string, setValue: React.SetStateAction<T>, initialValue: T): void {
+    if (typeof setValue === "function" && setValue.length === 1) {
+      /**
+       * Este tipo de asignación resulta fundamental para evitar conflictos a la hora de modificar el estado.
+       * Cuando se hacen múltiples setState sobre una propiedad mantenida por medio de un useState (y en nuestro
+       * caso esto va a estar ocurriendo a menudo, puesto que modificar dos o más propiedades en un mismo render
+       * va a llevar a que se modifique el mismo estado general varias veces), SÓLO se mantiene el último cambio,
+       * lo cual quiere decir que si modificamos los campos A y B, sólo se mantendrá el valor al asignar el campo B,
+       * quedando la asignación a A ignorada. Para evitar esto, se puede utilizar el patrón de actualización sobre
+       * el valor previo (prev => ...) que SÍ que se combina con sucesivas asignaciones (se encadena).
+       */
+      setGenState(prevState => {
+        // setValue es un método ((prevState: S) => S)
+        const newState = Object.assign({}, prevState);
+        if (newState[key]) {
+          newState[key] = (setValue as (((prevState: T) => T)))(newState[key] as T);
+        }
+        else {
+          newState[key] = (setValue as (((prevState: T) => T)))(initialValue);
+        }
+        return newState;
+      });
+    }
+    else {
+      const pureValue = setValue as T;
+      setGenState(prevState => {
+        // setValue es un valor sin más => asignación directa
+        const newState = Object.assign({}, prevState);
+        newState[key] = pureValue;
+        return newState;
+      });
+    }
   };
 
   const context = {
     stepCount,
     currentStep,
     stepList,
-    state: stepState,
-    handleChange,
+    state: genState,
     setState,
     getState,
     next,
@@ -448,7 +460,7 @@ const Steps: React.FC<StepsProps> = ({ children, config }) => {
       {config?.navigation?.location === "before" &&
         NavigationComponent(context)}
       {React.Children.map(children, (child, order) => (
-        <StepContext.Provider value={{ order: order + 1 }}>
+        <StepContext.Provider value={{ order: order }}>
           {child}
         </StepContext.Provider>
       ))}

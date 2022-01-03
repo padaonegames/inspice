@@ -73,7 +73,7 @@ const NextCorner = styled.div<CornerProps>`
 `;
 
 export interface NextCornerButtonProps {
-  onNextClicked: () => void;
+  onNextClicked?: () => void;
   type?: 'next' | 'previous';
   size?: 'small' | 'medium';
   fontSize?: string;

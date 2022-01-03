@@ -58,6 +58,7 @@ export interface CardProps {
   width?: string;
   maxWidth?: string;
   flexDirection?: 'row' | 'column';
+  children?: React.ReactNode;
 };
 
 /**
@@ -65,7 +66,14 @@ export interface CardProps {
  * 
  * <img src="media://ContentCard.PNG" alt="ContentCard">
  */
-export const ContentCard: React.FC<CardProps> = ({ cardTitle, width = '80%', maxWidth = '1200px', flexDirection = 'column', titleAlign = 'left', children }) => {
+export const ContentCard = ({
+  cardTitle,
+  width = '80%',
+  maxWidth = '1200px',
+  flexDirection = 'column',
+  titleAlign = 'left',
+  children
+}: CardProps): JSX.Element => {
 
   return (
     <CardPanel

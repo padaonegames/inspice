@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
-import { Medal } from '@styled-icons/remix-line/Medal';
+import { Envelope } from '@styled-icons/boxicons-solid/Envelope';
 import { PlusCircle } from '@styled-icons/boxicons-regular/PlusCircle';
 import { RemoveCircle } from '@styled-icons/material/RemoveCircle';
-import NextCornerButton from './NextCornerButton';
+import NextCornerButton from './../NextCornerButton';
 import { useTranslation } from 'react-i18next';
+import { StepComponentProps } from '../../../../components/Navigation/Steps';
 
 interface RootProps {
   backgroundImage: string;
@@ -43,7 +44,7 @@ const ClueWrapper = styled.div`
   height: auto;
 `;
 
-const PrizeStyle = styled.textarea`
+const Clue = styled.textarea`
   font-size: 0.9em;
   letter-spacing: +1px;
   font-family: Raleway;
@@ -86,7 +87,7 @@ const ControlsWrapper = styled.div`
   margin: auto;
 `;
 
-const PrizePanelWrapper = styled.div`
+const CluePanelWrapper = styled.div`
   justify-content: center;
   align-content: center;
   display: flex;
@@ -110,7 +111,7 @@ interface IconProps {
   selected: boolean;
 };
 
-const InfoIconClosed = styled(Medal)`
+const InfoIconClosed = styled(Envelope)`
   height: 6vh;
   width: auto;
   align-self: center;
@@ -121,7 +122,7 @@ const RemoveIcon = styled(RemoveCircle)`
   height: 2.5vh;
   width: auto;
   position: absolute;
-  left: 55%;
+  left: 60%;
   top: 57%;
   color: #b7625e;
   transform: scale(0.9);
@@ -133,12 +134,13 @@ const RemoveIcon = styled(RemoveCircle)`
     transition: transform 0.5s ease;
   }
 `;
-const PrizeWrapper = styled.div`
+const EnvelopeWrapper = styled.div`
   position: relative;
   margin-left: 0.2vw;
   margin-right: 0.2vw;
 `;
-const PrizeContainer = styled.div<IconProps>`
+
+const EnvelopeContainer = styled.div<IconProps>`
   position: relative;
   cursor: ${props => props.selected ? 'default' : 'pointer'};
   color: ${props => props.selected ? 'white' : 'darkgray'};
@@ -148,20 +150,27 @@ const PrizeContainer = styled.div<IconProps>`
   }
 `;
 
-const AddPrizeIcon = styled(PlusCircle)`
+interface AddHintIconProps {
+  enabled: boolean
+};
+
+const AddHintIcon = styled(PlusCircle) <AddHintIconProps>`
   color: darkgray;
   height: 5vh;
   align-self: center;
   margin-left: 0.5vw;
   width: auto;
 
+  ${props => props.enabled &&
+    `
   &:hover {
     color: lightgray;
     cursor: pointer;
   }
+  `}
 `;
 
-const PrizesText = styled.p`
+const HintsText = styled.p`
   font-size: 0.7em;
   font-weight: 500;
   letter-spacing: +1px;
@@ -171,95 +180,115 @@ const PrizesText = styled.p`
   color: white;
 `;
 
-export interface WritePrizesProps {
-  prizes: string[];
+
+
+export interface WriteHintsStepProps extends StepComponentProps {
   imageSrc: string;
-  onAddNewPrize: () => void;
-  onRemovePrize: (index: number) => void;
-  onUpdatePrize: (index: number, content: string) => void;
-  canClickNext: boolean;
-  onNextClicked: () => void;
-  onBackClicked: () => void;
+  minHints: number;
+  maxHints: number;
 };
 
 /**
- * <img src="media://WriteGifts.PNG" alt="WritePrizes">
+ * <img src="media://WriteHints.PNG" alt="WriteHints">
  */
-export const WritePrizes: React.FC<WritePrizesProps> = ({
-  prizes,
-  imageSrc,
-  onAddNewPrize,
-  onRemovePrize,
-  onUpdatePrize,
-  canClickNext,
-  onBackClicked,
-  onNextClicked
-}) => {
+export const WriteHintsStep = (props: WriteHintsStepProps): JSX.Element => {
+
+  const {
+    imageSrc,
+    minHints,
+    maxHints,
+  } = props;
 
   const { t } = useTranslation('app');
 
-  const [selectedPrize, setSelectedPrize] = useState<number>(0);
+  const [selectedHint, setSelectedHint] = useState<number>(0);
 
-  const placeholder = selectedPrize > 0 ?
-    t('WhatIsYourPrizeForThePlayer') :
-    t('WriteAMessage');
+  const hints = props.getState<string[]>('clues', []);
 
-  const canAdvance = prizes.every(h => h.length > 0);
+  const placeholder = selectedHint > 0 ?
+    t('typeYourNextHint') :
+    t('writeHintToHelpFindSelectedArtwork');
+
+  const canAdvance = hints.length >= minHints && hints.length <= maxHints && hints.every(h => h.length > 0);
+
+  const updateHint = (index: number, value: string) => {
+    props.setState<string[]>('clues', (prev => {
+      if (index < prev.length && index >= 0)
+        prev[index] = value;
+      return prev;
+    }), []);
+  };
+
+  const removeHint = (index: number) => {
+    props.setState<string[]>('clues', (prev => {
+      if (index < prev.length && index >= 0)
+        prev = prev.filter((_, i) => i !== index);
+      return prev;
+    }), []);
+  };
+
+  const addHint = () => {
+    props.setState<string[]>('clues', (prev => {
+      prev = [...prev, ""];
+      return prev;
+    }), []);
+  };
 
   return (
-
     <Root
       backgroundImage={imageSrc}
     >
       <ReferencePanel>
         <QuestionWrapper>
           <Question>
-            {t('WhatIsYourPrizeForThePlayer')}
+            {t('whatArtworkAreWeTalkingAbout')}
           </Question>
         </QuestionWrapper>
         <ClueWrapper>
-          <PrizeStyle
+          <Clue
             maxLength={400}
             placeholder={placeholder}
-            onChange={(e) => onUpdatePrize(selectedPrize, e.target.value)}
-            value={prizes[selectedPrize]}
+            onChange={(e) => updateHint(selectedHint, e.target.value)}
+            value={hints[selectedHint]}
           />
         </ClueWrapper>
-        <PrizePanelWrapper>
+        <CluePanelWrapper>
           <DotsWrapper>
-            {prizes.map((_, i) =>
-              <PrizeWrapper>
-                <PrizeContainer
-                  selected={i === selectedPrize}
-                  onClick={() => setSelectedPrize(i)}
+            {hints.map((_, i) =>
+              <EnvelopeWrapper>
+                <EnvelopeContainer
+                  selected={i === selectedHint}
+                  onClick={() => setSelectedHint(i)}
                   key={'env' + i}
                 >
                   <InfoIconClosed />
-                </PrizeContainer>
-                {i >= 1 &&
-                  <RemoveIcon onClick={() => {
-                    onRemovePrize(i);
-                    setSelectedPrize(i - 1)
-                  }} />
 
+                </EnvelopeContainer>
+                {i >= minHints &&
+                  <RemoveIcon
+                    onClick={() => {
+                      removeHint(i);
+                      setSelectedHint(i - 1);
+                    }} />
                 }
-              </PrizeWrapper>
+              </EnvelopeWrapper>
             )}
-            {prizes.length < 5 &&
-              <AddPrizeIcon
+            {hints.length < maxHints &&
+              <AddHintIcon
+                enabled={hints.length < maxHints}
                 onClick={() => {
-                  if (prizes.length < 5) {
-                    onAddNewPrize();
-                    setSelectedPrize(prizes.length);
+                  if (hints.length < maxHints) {
+                    addHint();
+                    setSelectedHint(hints.length);
                   }
                 }}
               />
             }
           </DotsWrapper>
-          <PrizesText>
-            {t('PRIZES')}
-          </PrizesText>
-        </PrizePanelWrapper>
+          <HintsText>
+            {t('hints')}
+          </HintsText>
+        </CluePanelWrapper>
 
         <ControlsWrapper>
           <NextCornerButton
@@ -268,27 +297,25 @@ export const WritePrizes: React.FC<WritePrizesProps> = ({
             fontSize='0.65em'
             alignSelf='flex-start'
             margin='0'
-            onNextClicked={onBackClicked}
+            onNextClicked={props.prev}
           />
-          {canClickNext &&
-            <NextCornerButton
-              size='small'
-              //type='next'
-              fontSize='0.65em'
-              alignSelf='flex-end'
-              margin='0'
-              active={canAdvance}
-              onNextClicked={() => {
-                if (canAdvance) {
-                  onNextClicked();
-                }
-              }}
-            />
-          }
+          <NextCornerButton
+            size='small'
+            type='next'
+            fontSize='0.65em'
+            alignSelf='flex-end'
+            margin='0'
+            active={canAdvance}
+            onNextClicked={() => {
+              if (canAdvance) {
+                props.next();
+              }
+            }}
+          />
         </ControlsWrapper>
       </ReferencePanel>
     </Root>
   );
 }
 
-export default WritePrizes;
+export default WriteHintsStep;

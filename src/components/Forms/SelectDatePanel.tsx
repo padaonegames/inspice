@@ -88,37 +88,32 @@ month[10] = 'November';
 month[11] = 'December';
 
 export interface SelectDatePanelProps {
-  onRangeSelected: (from: Date | undefined, to: Date | undefined) => void;
-  initialFrom?: Date;
-  initialTo?: Date;
+  onFromSelected?: (from: Date | undefined | null) => void;
+  onToSelected?: (to: Date | undefined | null) => void;
+  from: Date | undefined | null;
+  to: Date | undefined | null;
 };
 
 /**
  * <img src="media://SelectDatePanel.PNG" alt="SelectDatePanel">
  */
-export const SelectDatePanel: React.FC<SelectDatePanelProps> = ({
-  onRangeSelected,
-  initialFrom,
-  initialTo
-}) => {
+export const SelectDatePanel = (props: SelectDatePanelProps) => {
 
-  const [range, setRange] = useState<RangeModifier>({ from: initialFrom, to: initialTo });
+  const { onFromSelected, onToSelected, from, to } = props;
 
   const handleResetClick = () => {
-    setRange({ from: undefined, to: undefined });
-    onRangeSelected(undefined, undefined);
+    if (onFromSelected) onFromSelected(undefined);
+    if (onToSelected) onToSelected(undefined);
   };
 
   const handleDayClick = (day: Date) => {
-    const newRange = DateUtils.addDayToRange(day, range);
-    setRange(newRange);
-    if (newRange.from && newRange.to) {
-      onRangeSelected(newRange.from, newRange.to);
-    }
+    const newRange = DateUtils.addDayToRange(day, { from: from, to: to });
+    if (onFromSelected) onFromSelected(newRange.from);
+    if (onToSelected) onToSelected(newRange.to);
   };
 
-  const { from, to } = range;
   const modifiers = { start: from, end: to };
+  const range = { from: from, to: to };
 
   return (
     <Root>

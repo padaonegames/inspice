@@ -102,7 +102,7 @@ export interface ActivityCreationOverviewPanelProps extends NavigationComponentP
  * 
  * <img src="media://ActivityCreationOverviewPanelEditing.PNG" alt="ActivityCreationOverviewPanelEditing">
  */
-export const ActivityCreationOverviewPanel = (props: ActivityCreationOverviewPanelProps): JSX.Element => {
+export const ActivityCreationOverviewPanel = (props : ActivityCreationOverviewPanelProps): JSX.Element => {
 
   const {
     minStages,
@@ -117,8 +117,7 @@ export const ActivityCreationOverviewPanel = (props: ActivityCreationOverviewPan
     onSubmitActivity,
     onStageSelected,
     onAddNewStage,
-    onRemoveStage,
-    currentStep,
+    onRemoveStage
   } = props;
 
   // enable edition if addition is enabled or if any item can be removed.
@@ -131,9 +130,13 @@ export const ActivityCreationOverviewPanel = (props: ActivityCreationOverviewPan
     <Root>
       <UpperRowContainer>
         <ProgressLine
-          currentItem={currentStep}
+          currentItem={props.currentStep}
           items={stages}
-          onItemSelected={onStageSelected ?? props.jump}
+          onItemSelected={(index) => {
+            props.jump(index);
+            if (onStageSelected)
+              onStageSelected(index);
+          }}
           onSubmit={onSubmitActivity}
           onRemoveItem={onRemoveStage}
           finalItemCaption={finaItemCaption}

@@ -2,11 +2,11 @@ import React, { useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { useTranslation } from 'react-i18next';
 
-import NextCornerButton from '../../CreateGame/NextCornerButton';
 import useRecorder from './useRecorder';
 
 import { Microphone } from '@styled-icons/fa-solid/Microphone';
 import { StopCircle } from '@styled-icons/boxicons-regular/StopCircle';
+import NextCornerButton from '../../screens/CreateTreasureHunt/Steps/NextCornerButton';
 
 interface RootProps {
   backgroundImage: string;

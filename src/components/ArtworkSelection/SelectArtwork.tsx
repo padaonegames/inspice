@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import { RadioCircleMarked } from '@styled-icons/boxicons-regular/RadioCircleMarked';
-import NextCornerButton from '../../CreateGame/NextCornerButton';
 import { useTranslation } from 'react-i18next';
 import { ArtworkData } from '../../services/artwork.model';
+import NextCornerButton from '../../screens/CreateTreasureHunt/Steps/NextCornerButton';
 
 const Root = styled.div`
   display: flex;
@@ -135,7 +135,7 @@ export interface SelectArtworkProps {
   /**
    * callback that will be triggered when the continue button on the panel is clicked.
    */
-  onNextClicked: () => void;
+  onNextClicked?: () => void;
   /**
    * title to display on top of the list of available artworks.
    */

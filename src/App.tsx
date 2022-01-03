@@ -5,14 +5,13 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 
 // screen imports
 import PlayTreasureHuntScreen from './screens/PlayTreasureHuntScreen';
-import CreateTreasureHuntScreen from './screens/CreateTreasureHuntScreen';
-import CreateFindArtworkActivityScreen from './screens/CreateFindArtworkActivityScreen';
+import CreateTreasureHuntScreen from './screens/CreateTreasureHunt/Screen';
+import CreateFindArtworkActivityScreen from './screens/CreateFindArtworkActivity/Screen';
 import BrowseDefinitionsScreen from './screens/BrowseDefinitionsScreen';
 import ExploreActivityScreen from './screens/ExploreActivityScreen';
 import { ActivityScreen } from './screens/ActivityScreen';
 
 // components
-import CreateStorytellingActivityScreen from './screens/CreateStorytellingActivityScreen';
 import HomeComponent from './Viewpoints/HomeComponent';
 import ViewpointsResultsComponent from './Viewpoints/ViewpointsResultsComponent';
 import AnswerViewpointComponent from './Viewpoints/AnswerViewpointComponent';
@@ -38,7 +37,6 @@ export const App: React.FC = () => {
                 </Route>
                 <Route path='' element={<Navigate replace to='consumer' />} />
               </Route>
-              <Route path='storytelling' element={<CreateStorytellingActivityScreen />} />
               <Route path='find-artwork' element={<ActivityScreen activityTitle='Find Artworks' />}>
                 <Route path='consumer'>
                   <Route path='play/:id' element={<PlayTreasureHuntScreen />} />

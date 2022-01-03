@@ -1,16 +1,11 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-
-// services
-import { artworksService } from '../services';
-import { useAsyncRequest } from '../services/useAsyncRequest';
-
-// model
-import { ArtworkData } from '../services/artwork.model';
-import { GetArtworksFilter } from '../services/queries';
-
-// components
-import SearchAndSelectManyArtworks from '../components/ArtworkSelection/SearchAndSelectManyArtworks';
+import SearchAndSelectManyArtworks from '../../../components/ArtworkSelection/SearchAndSelectManyArtworks';
+import { StepComponentProps } from '../../../components/Navigation/Steps';
+import { artworksService } from '../../../services';
+import { ArtworkData } from '../../../services/artwork.model';
+import { GetArtworksFilter } from '../../../services/queries';
+import { useAsyncRequest } from '../../../services/useAsyncRequest';
 
 
 const Root = styled.div`
@@ -22,23 +17,17 @@ const Root = styled.div`
   justify-content: center;
 `;
 
-export interface SelectArtworksStageProps {
-  selectedArtworks: ArtworkData[];
-  onArtworkSelected: (artwork: ArtworkData) => void;
-  onArtworkDeselected: (artworkId: string) => void;
-};
-
 /**
- * <img src="media://SelectArtworksStage.PNG" alt="SelectArtworksStage">
+ * <img src="media://SelectArtworksStep.PNG" alt="SelectArtworksStep">
  */
-export const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtworkSelected, onArtworkDeselected, selectedArtworks }) => {
+export const SelectArtworksStep = (props: StepComponentProps) => {
 
   //--------------------------------------------------
   //              PAGINATION AND FILTERS
   //--------------------------------------------------
-  const [page, setPage] = useState<number>(1);
-  const [itemsPerPage] = useState<number>(30);
-  const [appliedFilter, setAppliedFilter] = useState<GetArtworksFilter>({});
+  const page: number = props.getState('page', 1);
+  const itemsPerPage: number = props.getState('itemsPerPage', 30);
+  const appliedFilter: GetArtworksFilter = props.getState('appliedFilter', {});
 
   const handleApplyFilter = (field: string, filter: string) => {
     // only support specific types
@@ -47,9 +36,9 @@ export const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtw
     // make a copy of current filter, add new filter and save result
     let newFilter: GetArtworksFilter = JSON.parse(JSON.stringify(appliedFilter));
     newFilter[field] = filter;
-    setAppliedFilter(newFilter);
+    props.setState('appliedFilter', newFilter, {});
 
-    setPage(1);
+    props.setState('page', 1, 1);
   };
 
   const handleRemoveFilter = (field: string, filter: string) => {
@@ -60,21 +49,21 @@ export const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtw
     let newFilter: GetArtworksFilter = JSON.parse(JSON.stringify(appliedFilter));
     newFilter[field] = undefined;
     delete newFilter[field];
-    setAppliedFilter(newFilter);
+    props.setState('appliedFilter', newFilter, {});
 
-    setPage(1);
+    props.setState('page', 1, 1);
   };
 
   const handleClearFilters = () => {
-    setAppliedFilter({});
-    setPage(1);
+    props.setState('appliedFilter', {}, {});
+    props.setState('page', 1, 1);
   };
 
   const handleApplyKeywordsFilter = (keywords: string) => {
     let newFilter: GetArtworksFilter = JSON.parse(JSON.stringify(appliedFilter));
     newFilter.titleKeywords = keywords;
-    setAppliedFilter(newFilter);
-    setPage(1);
+    props.setState('appliedFilter', newFilter, {});
+    props.setState('page', 1, 1);
   };
 
   //--------------------------------------------------
@@ -89,7 +78,7 @@ export const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtw
   };
 
   // API Requests to fetch artworks and unique filtering fields
-  const [findArtworkStatus] = useAsyncRequest(fetchArtworksFromDataset, [appliedFilter, page, itemsPerPage]);
+  const [findArtworkStatus] = useAsyncRequest(fetchArtworksFromDataset, [page, itemsPerPage, appliedFilter]);
   const [findUniqueAuthorsStatus] = useAsyncRequest(() => fetchUniqueFieldValuesFromDataset('author'), []);
   const [findUniqueDatesStatus] = useAsyncRequest(() => fetchUniqueFieldValuesFromDataset('date'), []);
   const [findUniqueInfoStatus] = useAsyncRequest(() => fetchUniqueFieldValuesFromDataset('info'), []);
@@ -123,7 +112,7 @@ export const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtw
   /**
    * Returns memoized version of computed page data.
    */
-  const getPageData = useCallback((): { currentPage: number, pageTotal: number, itemsPerPage: number } | undefined => {
+  const getPageData = (): { currentPage: number, pageTotal: number, itemsPerPage: number } | undefined => {
     if (findArtworkStatus.kind === 'success' && findArtworkStatus.result.kind === 'ok') {
       const count = findArtworkStatus.result.data.count; // total number of artworks
       return {
@@ -133,25 +122,25 @@ export const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtw
       };
     }
     else return undefined;
-  }, [findArtworkStatus, page, itemsPerPage]);
+  };
 
 
   /**
    * Returns memoized version of displayed artworks from API. 
    */
-  const getDisplayedArtworks = useCallback((): ArtworkData[] => {
+  const getDisplayedArtworks = () => {
     if (findArtworkStatus.kind === 'success' && findArtworkStatus.result.kind === 'ok') {
       return findArtworkStatus.result.data.artworks; // result artworks
     }
     else return [];
-  }, [findArtworkStatus]);
+  };
 
 
   /**
    * Returns a memoized version of unique filtering fields based on API call results (partial:
    * will return the results of all completed calls, even if there are still some running ones)
    */
-  const getUniqueFilterFields = useCallback((): Map<string, { value: string; count: number; }[]> => {
+  const getUniqueFilterFields = (): Map<string, { value: string; count: number; }[]> => {
     let uniqueFilterFields = new Map<string, { value: string; count: number; }[]>();
 
     if (findUniqueAuthorsStatus.kind === 'success' && findUniqueAuthorsStatus.result.kind === 'ok') {
@@ -167,21 +156,20 @@ export const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtw
     }
 
     return uniqueFilterFields;
-  }, [findUniqueAuthorsStatus, findUniqueDatesStatus, findUniqueInfoStatus]);
+  };
 
   //--------------------------------------------------
   //                  RENDERING
   //--------------------------------------------------
-
   return (
     <Root>
       <SearchAndSelectManyArtworks
         displayedArtworks={getDisplayedArtworks()}
         pageData={getPageData()}
-        onPageChanged={setPage}
-        selectedArtworks={selectedArtworks}
-        onArtworkSelected={onArtworkSelected}
-        onArtworkDeselected={onArtworkDeselected}
+        onPageChanged={(newPage) => props.setState<number>('page', newPage, 1)}
+        selectedArtworks={props.getState<ArtworkData[]>('selectedArtworks', [])}
+        onArtworkSelected={(artwork) => props.setState<ArtworkData[]>('selectedArtworks', prev => [...prev, artwork], [])}
+        onArtworkDeselected={(artworkId) => props.setState<ArtworkData[]>('selectedArtworks', prev => prev.filter(e => e.id !== artworkId), [])}
         appliedFilter={appliedFilter}
         onSearchPerformed={handleApplyKeywordsFilter}
         uniqueFilterFields={getUniqueFilterFields()}
@@ -194,60 +182,4 @@ export const SelectArtworksStage: React.FC<SelectArtworksStageProps> = ({ onArtw
   );
 };
 
-export default SelectArtworksStage;
-
-/*
-  const [lastArtwork, setLastArtwork] = useState<string>('');
-  const getRecommendations = () => {
-    if (lastArtwork) {
-      return artworksService.fetchRecommendationsByEmotion(lastArtwork);
-    }
-    else {
-      return Promise.reject();
-    }
-  };
-
-  const [fetchAvailableArtworksStatus] = useAsyncRequest(fetchArtworksWithEmotionsIds, []);
-  const [displayRecom, setDisplayRecom] = useState<number>(0);
-    const [fetchByEmotionStatus] = useAsyncRequest(getRecommendations, [lastArtwork]);
-      {(fetchByEmotionStatus.kind === 'success' && fetchByEmotionStatus.result.kind === 'ok') && (
-        <>
-          <ResultsUpperPanel>
-            <ResultsWrapper>
-              <Results>
-                Artworks triggering similar or opposite emotions:
-              </Results>
-            </ResultsWrapper>
-          </ResultsUpperPanel>
-          <RecomendationGrid>
-            <NavigateBeforeIcon
-              active={displayRecom > 0}
-              onClick={() => {
-                if (displayRecom > 0) {
-                  setDisplayRecom(prev => prev - 1);
-                }
-              }}
-            />
-            {fetchByEmotionStatus.result.data.artworks.slice(displayRecom, displayRecom + 3).map((im, i) => (
-              <RecomendationCard
-                key={im.id}
-                artworkData={im}
-                selected={selectedArtworks.some(elem => elem.id === im.id)}
-                onCardSelected={() => handleArtworkSelected(im)}
-                onCardDeselected={() => onArtworkDeselected(im.id)}
-              />
-            ))
-            }
-            <NavigateNextIcon
-              active={displayRecom + 3 < fetchByEmotionStatus.result.data.artworks.length}
-              onClick={() => {
-                if ((fetchByEmotionStatus.kind === 'success' && fetchByEmotionStatus.result.kind === 'ok') &&
-                  displayRecom + 3 < fetchByEmotionStatus.result.data.artworks.length) {
-                  setDisplayRecom(prev => prev + 1);
-                }
-              }}
-            />
-          </RecomendationGrid>
-        </>
-      )}
-*/
+export default SelectArtworksStep;

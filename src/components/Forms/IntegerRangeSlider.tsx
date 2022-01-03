@@ -173,7 +173,7 @@ export const IntegerRangeSlider: React.FC<IntegerRangeSliderProps> = ({
   const renderMarkers = () => {
     let markers = [];
     for (let i = min; i <= max; i += step) {
-      markers.push(<Marker percent={100 * (i - min) / (max - min)}>{i}</Marker>);
+      markers.push(<Marker key={i} percent={100 * (i - min) / (max - min)}>{i}</Marker>);
     }
     return markers;
   };
@@ -185,6 +185,7 @@ export const IntegerRangeSlider: React.FC<IntegerRangeSliderProps> = ({
     <Root>
       <SliderContainer>
         <RangeInput
+          key='minInput'
           type='range'
           min={min}
           max={max}
@@ -193,6 +194,7 @@ export const IntegerRangeSlider: React.FC<IntegerRangeSliderProps> = ({
           onChange={handleMinValueChange}
         />
         <RangeInput
+          key='maxInput'
           type='range'
           min={min}
           step={step}
@@ -204,8 +206,8 @@ export const IntegerRangeSlider: React.FC<IntegerRangeSliderProps> = ({
         <Slider>
           <Track />
           <Range left={leftPercent} right={rightPercent} />
-          <Thumb side='left' percent={leftPercent} />
-          <Thumb side='right' percent={rightPercent} />
+          <Thumb key='leftThumb' side='left' percent={leftPercent} />
+          <Thumb key='rightThumb' side='right' percent={rightPercent} />
         </Slider>
 
         {renderMarkers()}
