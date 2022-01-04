@@ -9,13 +9,14 @@ const SearchArea = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  width: 100%;
+  width: 90%;
+  max-width: 560px;
   height: 64px;
-  margin-bottom: 20px;
+  align-self: center;
 `;
 
 const SearchBarInput = styled.input`
-  font-size: 0.9em;
+  font-size: 14px;
   letter-spacing: +1px;
   font-family: Raleway;
   font-weight: 500;
@@ -26,13 +27,12 @@ const SearchBarInput = styled.input`
   display: table-cell;
   border: 1px solid #e5e5e5;
   width: 600px;
-  height: 39px;
+  height: 45px;
 `;
 
 const SearchButton = styled.div`
-  margin-left: -1px;
-  width: 39px;
-  height: 39px;
+  width: 45px;
+  height: 45px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -54,22 +54,26 @@ export interface SearchBarProps {
    * the text introduced in the searchbox when requesting the search. Searchbox text IS stateful, and will 
    * be kept in the internal state of the component.
    */
-   onSearchPerformed?: (searchText: string) => void;
+  onSearchPerformed?: (searchText: string) => void;
+  placeholder?: string;
 };
 
 /**
  * <img src="media://SearchBar.PNG" alt="SearchBar">
  */
-export const SearchBar: React.FC<SearchBarProps> = ({
-  onSearchPerformed
-}) => {
+export const SearchBar = (props: SearchBarProps): JSX.Element => {
+
+  const {
+    onSearchPerformed,
+    placeholder = "Search by title..."
+  } = props;
 
   const [searchText, setSearchText] = useState<string>('');
-  
+
   return (
     <SearchArea>
       <SearchBarInput
-        placeholder="Search by title..."
+        placeholder={placeholder}
         onChange={(e) => setSearchText(e.target.value)}
         onKeyPress={(event) => {
           if (event.key === 'Enter') {

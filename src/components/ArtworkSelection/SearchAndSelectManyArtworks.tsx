@@ -26,12 +26,11 @@ const ResultsUpperPanel = styled.div`
   background-color: #F3F3F3;
   width: 95%;
   max-width: 960px;
-  min-width: 770px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-direction: row;
-  height: 10vh;
+  height: 65px;
   margin-left: auto;
   margin-right: auto;
   padding-left: 24px;
@@ -42,9 +41,17 @@ const ResultsLowerPanel = styled.div`
   width: 95%;
   max-width: 960px;
   display: flex;
-  flex-direction: row;
   height: auto;
   align-self: center;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+  }
 `;
 
 const ResultsWrapper = styled.div`
@@ -66,7 +73,8 @@ const Results = styled.span`
 
 const DisplayPanel = styled.div`
   position: relative;
-  width: auto;
+  width: 100%;
+  max-width: 1024px;
   height: auto;
   display: flex;
   flex-direction: column;
@@ -226,7 +234,7 @@ export const SearchAndSelectManyArtworks: React.FC<SearchAndSelectManyArtworksPr
     <ContentCard
       cardTitle='Select Artworks'
       titleAlign='center'
-      width='60%'
+      width='95%'
     >
       <SearchBar
         onSearchPerformed={onSearchPerformed}

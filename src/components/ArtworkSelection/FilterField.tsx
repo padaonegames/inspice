@@ -19,11 +19,13 @@ interface FieldHeaderProps {
   bottomBorder: boolean;
 };
 
-const FieldHeader = styled.div<FieldHeaderProps>`
+const FieldHeader = styled.h2<FieldHeaderProps>`
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  font-size: 18px;
   width: 100%;
-  height: 5vh;
-  padding-left: 3.5%;
-  padding-right: 1.5%;
+  padding: 17px 0;
+  text-align: left !important;
   align-self: center;
   display: flex;
   flex-direction: row;
@@ -44,8 +46,7 @@ const FieldText = styled.span`
 
 const OptionContainer = styled.div`
   width: 100%;
-  height: 4vh;
-  padding-left: 3.5%;
+  height: 30px;
   padding-right: 1.5%;
   align-self: center;
   display: flex;
@@ -62,15 +63,16 @@ const OptionText = styled.span`
   align-self: center;
   color: #9d9d9d;
   letter-spacing: +0.5px;
-  font-size: 0.65em;
+  font-size: 0.85em;
   font-weight: 1000;
   font-family: Raleway;
 `;
 const OptionSeeAll = styled.span`
-  padding: 3% ;
+  padding-top: 3%;
+  padding-bottom: 4%;
   color: #9d9d9d;
   letter-spacing: +1.5px;
-  font-size: 0.6em;
+  font-size: 0.75em;
   font-weight: 700;
   font-family: Raleway;
   :hover{

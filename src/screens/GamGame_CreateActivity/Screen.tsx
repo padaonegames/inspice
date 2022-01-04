@@ -28,13 +28,11 @@ const sample: State = {
   activityAuthor: undefined,
   beginsOn: undefined,
   endsOn: undefined,
-  minStages: 1,
-  maxStages: 5,
-  minCluesPerStage: 1,
-  maxCluesPerStage: 5,
+  minArtworks: 1,
+  maxArtworks: 5,
   allowedInputs: [],
-  huntDefinitionsDatasetUuid: process.env.REACT_APP_HUNT_DEFINITIONS_DATASET_UUID || '',
-  activityDefinitionsDatasetUuid: process.env.REACT_APP_ACTIVITY_DEFINITIONS_DATASET_UUID || '',
+  gamGameDefinitionsDatasetUuid: process.env.REACT_APP_GAM_GAME_DEFINITIONS_DATASET_UUID || '',
+  gamGameActivityDefinitionsDatasetUuid: process.env.REACT_APP_GAM_GAMES_ACTIVITY_DEFINITIONS_DATASET_UUID || '',
   artworksDatasetUuid: process.env.REACT_APP_DATASET_UUID || '',
   artworks: [],
 
@@ -51,10 +49,8 @@ const isStageOneCompleted = (definition: State): boolean => {
 }
 
 const isStageTwoCompleted = (definition: State): boolean => {
-  return definition['minCluesPerStage'] as number !== undefined &&
-    definition['maxCluesPerStage'] as number !== undefined &&
-    definition['minStages'] as number !== undefined &&
-    definition['maxStages'] as number !== undefined &&
+  return definition['minArtworks'] as number !== undefined &&
+    definition['maxArtworks'] as number !== undefined &&
     (definition['allowedInputs'] as AllowedInputs).length > 0;
 }
 
@@ -63,34 +59,9 @@ const isStageThreeCompleted = (definition: State): boolean => {
 }
 
 /**
- * Screen to encapsulate the creation flow of a treasure hunt creation activity.
- * 
- * + Input basic information:
- * 
- * <img src="media://FindArtwork-curator-create-dark-01.PNG" alt="FindArtwork [curator-create-dark-01]">
- * 
- * + Date range:
- * 
- * <img src="media://FindArtwork-curator-create-dark-02.PNG" alt="FindArtwork [curator-create-dark-02]">
- * 
- * + Stage Settings:
- * 
- * <img src="media://FindArtwork-curator-create-dark-03.PNG" alt="FindArtwork [curator-create-dark-03]">
- * 
- * + Select Artworks:
- * 
- * <img src="media://FindArtwork-curator-create-dark-04.PNG" alt="FindArtwork [curator-create-dark-04]">
- * 
- * + Search Results:
- * 
- * <img src="media://FindArtwork-curator-create-dark-05.PNG" alt="FindArtwork [curator-create-dark-05]">
- * 
- * + Activity Uploaded:
- * 
- * <img src="media://FindArtwork-curator-create-dark-06.PNG" alt="FindArtwork [curator-create-dark-06]">
- * 
+ * Screen to encapsulate the creation flow of a Gam Game creation activity.
  */
-export const CreateFindArtworkActivityScreen = () => {
+export const CreateGamGameActivityScreen = () => {
 
   const [activityDefinition, setActivityDefinition] =
     useState<State>(sample);
@@ -142,4 +113,4 @@ export const CreateFindArtworkActivityScreen = () => {
   );
 }
 
-export default CreateFindArtworkActivityScreen;
+export default CreateGamGameActivityScreen;

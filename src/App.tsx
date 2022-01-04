@@ -15,6 +15,7 @@ import { ActivityScreen } from './screens/ActivityScreen';
 import HomeComponent from './Viewpoints/HomeComponent';
 import ViewpointsResultsComponent from './Viewpoints/ViewpointsResultsComponent';
 import AnswerViewpointComponent from './Viewpoints/AnswerViewpointComponent';
+import CreateGamGameActivityScreen from './screens/GamGame_CreateActivity/Screen';
 
 /**
  * Main entrypoint for our React application within which all other components
@@ -45,6 +46,17 @@ export const App: React.FC = () => {
                 </Route>
                 <Route path='curator'>
                   <Route path='create' element={<CreateFindArtworkActivityScreen />} />
+                </Route>
+                <Route path='browse' element={<BrowseDefinitionsScreen />} />
+                <Route path='' element={<Navigate replace to='browse' />} />
+              </Route>
+              <Route path='gam-game' element={<ActivityScreen activityTitle='GAM Game' />}>
+                <Route path='consumer'>
+                  <Route path='create/:id' element={<CreateTreasureHuntScreen />} />
+                  <Route path='explore/:id' element={<ExploreActivityScreen />} />
+                </Route>
+                <Route path='curator'>
+                  <Route path='create' element={<CreateGamGameActivityScreen />} />
                 </Route>
                 <Route path='browse' element={<BrowseDefinitionsScreen />} />
                 <Route path='' element={<Navigate replace to='browse' />} />

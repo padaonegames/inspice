@@ -3,7 +3,6 @@ import CheckBoxGroupInput from '../../../components/Forms/CheckBoxGroupInput';
 import IntegerRangeInputFieldWithTag from '../../../components/Forms/IntegerRangeInputFieldWithTag';
 import ContentCard from '../../../components/Layout/ContentCard';
 import { StepComponentProps } from '../../../components/Navigation/Steps';
-import { AllowedInputs } from '../../../services/findArtworkActivity.model';
 
 const Root = styled.div`
   display: flex;
@@ -26,7 +25,7 @@ export const ConfigureStageParamsStep = (props: StepComponentProps) => {
       <ContentCard
         cardTitle='Stage Settings'
         titleAlign='center'
-        width='95%'
+        width='60%'
       >
         <CardContent>
           <IntegerRangeInputFieldWithTag
@@ -39,21 +38,11 @@ export const ConfigureStageParamsStep = (props: StepComponentProps) => {
             onMaxValueChange={(val) => props.setState('maxStages', val, 1)}
             fieldText='SPECIFY THE REQUIRED NUMBER OF ARTWORKS TO PICK'
           />
-          <IntegerRangeInputFieldWithTag
-            min={1}
-            max={10}
-            step={1}
-            initialMin={props.getState('minCluesPerStage', 1)}
-            initialMax={props.getState('maxCluesPerStage', 1)}
-            onMinValueChange={(val) => props.setState('minCluesPerStage', val, 1)}
-            onMaxValueChange={(val) => props.setState('maxCluesPerStage', val, 1)}
-            fieldText='SPECIFY THE REQUIRED NUMBER OF HINTS PER ARTWORK'
-          />
           <CheckBoxGroupInput
-            fieldText='SPECIFY ALLOWED MEDIA INPUT TYPES'
-            labelList={['Text', 'Audio', 'Image']}
-            onCheckBoxToggled={(elem) => props.setState<AllowedInputs[]>('allowedInputs', (prev: AllowedInputs[]) => {
-              const cElem = elem as AllowedInputs;
+            fieldText='SPECIFY ALLOWED RESPONSE INPUT TYPES'
+            labelList={['Tags', 'Emojis']}
+            onCheckBoxToggled={(elem) => props.setState<string[]>('allowedInputs', (prev: string[]) => {
+              const cElem = elem as string;
               if (!prev || !cElem) return [];
               if(prev.some(e => e === cElem)) {
                 return prev.filter(e => e !== cElem);

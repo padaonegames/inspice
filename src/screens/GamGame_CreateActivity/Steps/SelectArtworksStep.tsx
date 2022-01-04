@@ -131,11 +131,11 @@ export const SelectArtworksStep = (props: StepComponentProps) => {
 
     if (fetchDataStatus.kind === 'success') {
       if (fetchDataStatus.result[1].kind === 'ok') {
-        uniqueFilterFields.set('date', fetchDataStatus.result[1].data);
+        uniqueFilterFields.set('author', fetchDataStatus.result[1].data);
       }
 
       if (fetchDataStatus.result[2].kind === 'ok') {
-        uniqueFilterFields.set('author', fetchDataStatus.result[2].data);
+        uniqueFilterFields.set('date', fetchDataStatus.result[2].data);
       }
 
       if (fetchDataStatus.result[3].kind === 'ok') {

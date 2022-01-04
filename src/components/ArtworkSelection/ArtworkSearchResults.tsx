@@ -9,12 +9,18 @@ const ArtworkGrid = styled.div`
   height: fit-content;
   width: 100%;
   max-width: 730px;
-  min-width: 580px;
-  padding-left: 15px;
   display: flex;
   flex-wrap: wrap;
   align-self: top;
-  justify-content: left;
+
+  @media (max-width: 768px) {
+    justify-content: center;
+  }
+
+  @media (min-width: 768px) {
+    justify-content: left;
+    padding-left: 15px;
+  }
 `;
 
 export interface ArtworkSearchResultsProps {

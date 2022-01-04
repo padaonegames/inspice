@@ -15,8 +15,6 @@ const Root = styled.div`
 
 const CardContent = styled.div`
   align-self: center;
-  width: 100%;
-  height: auto;
 `;
 
 /**
@@ -28,7 +26,7 @@ export const BasicInformationStep = (props: StepComponentProps): JSX.Element => 
       <ContentCard
         titleAlign='center'
         cardTitle='Basic Information'
-        width='95%'
+        width='60%'
       >
         <CardContent>
           <TextInputFieldWithTag

@@ -9,11 +9,19 @@ const CardTitleText = styled.h2<CardTitleTextProps>`
   letter-spacing: +0.5px;
   font-family: Raleway;
   line-height: 1;
-  font-size: 1.05em;
+  text-transform: uppercase;
   margin-bottom: 12px;
   width: ${props => (props.width || '90%')};
   align-self: center;
   text-align: ${props => props.textAlign || 'justify'};
+
+  @media (max-width: 768px) {
+    font-size: 1.35em;
+  }
+
+  @media (min-width: 768px) {
+    font-size: 1.75em;
+  }
 `;
 
 interface CardExplanatoryTextProps {
@@ -68,8 +76,8 @@ export interface CardProps {
  */
 export const ContentCard = ({
   cardTitle,
-  width = '80%',
-  maxWidth = '1200px',
+  width = '95%',
+  maxWidth = '1024px',
   flexDirection = 'column',
   titleAlign = 'left',
   children

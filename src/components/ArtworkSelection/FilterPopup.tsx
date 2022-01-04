@@ -1,139 +1,180 @@
 import React, { useState } from "react";
 import ReactDOM from 'react-dom';
-import styled from 'styled-components';
-import { Search } from '@styled-icons/boxicons-regular/Search';
+import styled, { css } from 'styled-components';
+import { ChevronBackCircle } from '@styled-icons/ionicons-sharp/ChevronBackCircle';
+import { ChevronForwardCircle } from '@styled-icons/ionicons-sharp/ChevronForwardCircle';
 import { Close } from '@styled-icons/evaicons-solid/Close';
-
+import { ArrowBack } from '@styled-icons/evaicons-solid/ArrowBack';
+import MediaQuery from "react-responsive";
+import SearchBar from "../Forms/SearchBar";
 
 const Background = styled.div`
-  background-color: rgba(0, 0, 0, 0.5);
+  @media (max-width: 768px) {
+    background-color: ${props => props.theme.cardBackground};
+  }
+
+  @media (min-width: 768px) {
+    background-color: rgba(0, 0, 0, 0.5);
+    align-items: center;
+  }
   width: 100%;
   height: 100%;
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 4;
+  z-index: 10;
 `;
 
 const Root = styled.div`
-  width: 70vw;
-  height: 70vh;
-  margin-top: 15vh;
-  margin-left: 15vw;
+
   position: fixed;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
-  left: 0;
-  top: 0;
-  background-color: rgb(255, 253, 253);
-  z-index:5;
+
+  @media (max-width: 768px) {
+    width: 100%;
+    height: 100%;
+    overflow: scroll;
+    margin-top: 65px;
+    left: 0;
+    top: 0;
+  }
+
+  @media (min-width: 768px) {
+    background-color: ${props => props.theme.cardBackground};
+    max-width: 740px;
+    width: 80%;
+    top: 200px;
+    left: 50%;
+    transform: translate(-50%, 0%);
+    justify-content: center;
+  }
+
+  z-index: 11;
 `;
 
 const CloseIcon = styled(Close)`
   color: lightgray;
   cursor: pointer;
-  top:0;
-  height: 7.5vh;
+  top: 1.35em;
+  right: 0.65em;
+  height: 35px;
   align-self: flex-end;
-  margin-bottom: 1vh;
-  transform: scale(0.7);
-  //transition: transform 0.5s ease;
   position: absolute;
   &:hover {
-    //transform: scale(1.1);
-    //transition: transform 0.5s ease;
     color: darkgray;
   }
 `;
 
-const TitleText = styled.h2`
-margin-top:1rem;
-  align-self: center;
-  color: #3f3c2d;
+const BackIcon = styled(ArrowBack)`
+  color: ${props => props.theme.textColor};
+  cursor: pointer;
+  top: 25px;
+  left: 20px;
+  height: 30px;
+  align-self: flex-start;
+  position: absolute;
+`;
+
+const TitleText = styled.h1`
+  color: ${props => props.theme.textColor};
   letter-spacing: +0.5px;
   font-family: Raleway;
+  text-transform: uppercase;
+  padding: 1.35em 0 0.65em 0;
+  width: 90%;
+  align-self: center;
+  text-align: center;
+
+  font-size: 1.35em;
 `;
 
-const SearchArea = styled.div`
-  background-color: #f3f3f3;
-  border-style: solid;
-  border-color: #cccccc;
-  border-width: 1px 0px 1px 0px;
+const SearchContainer = styled.div`
+  background-color: #F3F3F3;
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
-  height: 64px;
 `;
 
-const SearchBar = styled.input`
-  font-size: 0.9em;
-  letter-spacing: +1px;
-  font-family: Raleway;
-  color: black;
-  resize: none;
-  text-align: left;
-  padding-left: 10px;
-  display: table-cell;
-  width: 540px;
-  height: 34px;
-`;
+interface OptionAreaProps {
+  oneColumn: boolean;
+};
 
-const SearchButton = styled.div`
-  margin-left: -1px;
-  width: 39px;
-  height: 39px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: #c44c49;
-  &:hover{
-    cursor:pointer;
-  }
-`;
-
-const SearchIcon = styled(Search)`
-  width: 25px;
-  height: 25px;
-  color: white;
-`;
-const OptionArea = styled.div`
-  width: 100%;
-  height: 75%;
+const OptionArea = styled.div<OptionAreaProps>`
+  width: ${props => props.oneColumn ? '95%' : '600px'};
+  height: ${props => props.oneColumn ? 'auto' : '320px'};
   align-self: center;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  margin-top:1rem;
-  padding: 1rem;
-  overflow-y:scroll;
+  margin: 0.5em 2em 2em 2em;
+  padding: 2em;
+  overflow-y: hidden;
+  border-bottom: 1px solid #dcdcdc;
 `;
 
-const OptionContainer = styled.div`
-  width: 33%;
-  height: 6vh;
-  padding-left: 3.5%;
-  padding-right: 1.5%;
+interface OptionContainerProps {
+  oneColumn: boolean;
+};
+
+const OptionContainer = styled.ul<OptionContainerProps>`
+  width: ${props => props.oneColumn ? '85%' : '40%'};
+  height: 100%;
+  margin-left:  ${props => props.oneColumn ? '0' : '20px'};
+  margin-right: 0;
+  text-align:  ${props => props.oneColumn ? 'center' : 'left'};
+  position: relative;
+  left:  ${props => props.oneColumn ? '0' : '8%'};
   align-self: center;
-  display: flex;
-  flex-direction: column;
-  flex-wrap: wrap;
   overflow: hidden;
+`;
+
+const OptionText = styled.li`
+  align-self: left;
+  color: ${props => props.theme.textColor};
+  letter-spacing: +0.6px;
+  font-size: 0.8em;
+  font-weight: 500;
+  font-family: Raleway;
   cursor: pointer;
+  line-height: 1.65em;
+  list-style: none;
   &:hover {
     text-decoration: underline;
   }
 `;
 
-const OptionText = styled.span`
-  align-self: left;
-  color: #000000;
-  letter-spacing: +0.6px;
-  font-size: 0.7em;
-  font-weight: 1000;
-  font-family: Raleway;
+const NavigationStyle = css`
+  padding: 0;
+  cursor: pointer;
+  height: 40px;
+  width: 40px;
+  margin: auto;
+  opacity: 0.4;
+  transition: opacity 0.4s;
+  display: block;
+  color: ${props => props.theme.textColor};
+  &:hover {
+    opacity: 0.6;
+  }
+`;
+
+const NavBack = styled(ChevronBackCircle)`
+  ${NavigationStyle}
+`;
+
+const NavForward = styled(ChevronForwardCircle)`
+  ${NavigationStyle}
+`;
+
+const NavContainer = styled.div`
+  height: 100%;
+  width: 7.5%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 `;
 
 export interface FilterPopupProps {
@@ -154,9 +195,10 @@ export const FilterPopup: React.FC<FilterPopupProps> = ({
   onFilterSelected,
   setFilterPopupOpen,
 }) => {
-  const [searchText, setSearchText] = useState<string>('');
+
   const [filters, setFilters] = useState<string[]>(filterOptions);
   const [counts, setCounts] = useState<number[]>(filterCounts);
+  const [page, setPage] = useState<number>(0);
 
   const handleSearch = (keywords: string) => {
     setFilters([]);
@@ -175,6 +217,8 @@ export const FilterPopup: React.FC<FilterPopupProps> = ({
     })
   };
 
+  const sortedFilters = filters.sort();
+
   return ReactDOM.createPortal(
     <>
       <Background onClick={() => setFilterPopupOpen(false)} />
@@ -182,35 +226,48 @@ export const FilterPopup: React.FC<FilterPopupProps> = ({
         <TitleText>
           {filterField}
         </TitleText>
-        <CloseIcon onClick={() => setFilterPopupOpen(false)} />
-        <SearchArea>
+
+        <MediaQuery maxWidth={768}>
+          <BackIcon onClick={() => setFilterPopupOpen(false)} />
+        </MediaQuery>
+
+        <MediaQuery minWidth={768}>
+          <CloseIcon onClick={() => setFilterPopupOpen(false)} />
+        </MediaQuery>
+
+        <SearchContainer>
           <SearchBar
             placeholder="Search by value..."
-            onChange={(e) => setSearchText(e.target.value)}
-            onKeyPress={(event) => {
-              if (event.key === 'Enter') {
-                handleSearch(searchText);
-              }
-            }}
+            onSearchPerformed={handleSearch}
           />
-          <SearchButton>
-            <SearchIcon onClick={() => handleSearch(searchText)} />
-          </SearchButton>
-        </SearchArea>
-        <OptionArea>
-          {
-            filters.sort().map((elem, i) =>
-              <OptionContainer key={elem} onClick={() => onFilterSelected(elem)}>
-                <OptionText>
-                  {elem.length > 50 ? elem.slice(0, 50).concat(' ...') : elem} ({counts.length > i && counts[i]})
-                </OptionText>
-              </OptionContainer>
-            )}
-          {
-            (filters.length === 0 &&
-              <OptionText>No Record Found</OptionText>
-            )
-          }
+        </SearchContainer>
+
+        <OptionArea oneColumn>
+          <NavContainer>
+            <NavBack onClick={() => {
+              if (page > 0)
+                setPage(prev => prev - 1);
+            }} />
+          </NavContainer>
+          <OptionContainer oneColumn>
+            {
+              (filters.length === 0 &&
+                <OptionText>No Record Found</OptionText>
+              )
+            }
+            {sortedFilters.slice(page * 22, (page + 1) * 22).map((elem, i) => (
+              <OptionText>
+                {elem.length > 50 ? elem.slice(0, 50).concat(' ...') : elem} ({counts.length > i && counts[i]})
+              </OptionText>
+            ))}
+          </OptionContainer>
+
+          <NavContainer>
+            <NavForward onClick={() => {
+              if ((page + 1) * 22 < sortedFilters.length)
+                setPage(prev => prev + 1);
+            }} />
+          </NavContainer>
         </OptionArea>
       </Root>
     </>

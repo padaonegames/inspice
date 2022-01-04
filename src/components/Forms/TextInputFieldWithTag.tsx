@@ -2,10 +2,15 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 
 const FieldContainer = styled.div`
-  margin-top: 35px;
   flex-direction: column;
   display: flex;
-  width: 600px;
+  width: 100%;
+  margin: 35px auto;
+
+  @media (max-width: 768px) {
+    max-width: 760px;
+    min-width: 370px;
+  }
 `;
 
 const TextInputField = styled.input`
@@ -33,6 +38,14 @@ const FieldNameLabel = styled.h3`
   font-weight: 700;
   letter-spacing: +0.5px;
   font-family: Raleway;
+
+  @media (max-width: 768px) {
+    font-size: 0.9em;
+  }
+
+  @media (min-width: 768px) {
+    font-size: 1.1em;
+  }
 `;
 
 export interface TextInputFieldWithTagProps {

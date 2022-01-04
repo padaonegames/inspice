@@ -5,10 +5,20 @@ import { ArtworkData } from '../../services/artwork.model';
 import ArtworkSelectedCard from './ArtworkSelectedCard';
 
 const CardContainer = styled.div`
-  margin: 0.5%;
+
+  @media (max-width: 768px) {
+    width: 95%;
+    align-self: center;
+    margin: 2%;
+  }
+
+  @media (min-width: 768px) {
+    width: 32%;
+    max-width: 240px;
+    margin: 0.5%;
+  }
   position: relative;
-  width: 32%;
-  max-width: 240px;
+
   transform-style: preserve-3d;
   perspective: 1000px;
   background-color: ${props => props.theme.artworkDisplayBackground};

@@ -1,18 +1,25 @@
-import { useState } from 'react';
-import DayPicker, { DateUtils, Modifier, Modifiers, RangeModifier } from 'react-day-picker';
+import DayPicker, { DateUtils, Modifier, Modifiers } from 'react-day-picker';
 import 'react-day-picker/lib/style.css';
 import styled from 'styled-components';
 import './DateStyles.css';
 
 const Root = styled.div`
   position: relative;
-  margin-top: 30px;
-  margin-bottom: 30px;
+  margin: 30px auto;
   display: flex;
   flex-direction: column;
   align-items: center;
   align-self: center;
-  width: 585px;
+  width: 95%;
+
+  @media (max-width: 768px) {
+    max-width: 375px;
+    min-width: 350px;
+  }
+
+  @media (min-width: 768px) {
+    max-width: 585px;
+  }
 `;
 
 const PanelContainer = styled.div`
@@ -33,6 +40,14 @@ const FieldNameSpan = styled.h3`
   font-weight: 700;
   letter-spacing: +0.5px;
   font-family: Raleway;
+
+  @media (max-width: 768px) {
+    font-size: 0.9em;
+  }
+
+  @media (min-width: 768px) {
+    font-size: 1.1em;
+  }
 `;
 
 const ResetButton = styled.button`
