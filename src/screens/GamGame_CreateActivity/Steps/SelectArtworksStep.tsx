@@ -131,11 +131,11 @@ export const SelectArtworksStep = (props: StepComponentProps) => {
 
     if (fetchDataStatus.kind === 'success') {
       if (fetchDataStatus.result[1].kind === 'ok') {
-        uniqueFilterFields.set('author', fetchDataStatus.result[1].data);
+        uniqueFilterFields.set('date', fetchDataStatus.result[1].data);
       }
 
       if (fetchDataStatus.result[2].kind === 'ok') {
-        uniqueFilterFields.set('date', fetchDataStatus.result[2].data);
+        uniqueFilterFields.set('author', fetchDataStatus.result[2].data);
       }
 
       if (fetchDataStatus.result[3].kind === 'ok') {
@@ -144,6 +144,16 @@ export const SelectArtworksStep = (props: StepComponentProps) => {
     }
 
     return uniqueFilterFields;
+  };
+
+  const handleArtworkSelected = (artwork: ArtworkData) => {
+    props.setState<ArtworkData[]>('selectedArtworks', prev => [...prev, artwork], []);
+    props.setState<string[]>('artworks', prev => [...prev, artwork.id], []);
+  };
+
+  const handleArtworkDeselected = (artworkId: string) => {
+    props.setState<ArtworkData[]>('selectedArtworks', prev => prev.filter(e => e.id !== artworkId), [])
+    props.setState<string[]>('artworks', prev => prev.filter(e => e !== artworkId), [])
   };
 
   //--------------------------------------------------
@@ -156,8 +166,8 @@ export const SelectArtworksStep = (props: StepComponentProps) => {
         pageData={getPageData()}
         onPageChanged={(newPage) => props.setState<number>('page', newPage, 1)}
         selectedArtworks={props.getState<ArtworkData[]>('selectedArtworks', [])}
-        onArtworkSelected={(artwork) => props.setState<ArtworkData[]>('selectedArtworks', prev => [...prev, artwork], [])}
-        onArtworkDeselected={(artworkId) => props.setState<ArtworkData[]>('selectedArtworks', prev => prev.filter(e => e.id !== artworkId), [])}
+        onArtworkSelected={handleArtworkSelected}
+        onArtworkDeselected={handleArtworkDeselected}
         appliedFilter={appliedFilter}
         onSearchPerformed={handleApplyKeywordsFilter}
         uniqueFilterFields={getUniqueFilterFields()}

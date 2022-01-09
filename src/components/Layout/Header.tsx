@@ -52,10 +52,10 @@ export const Header: React.FC<HeaderProps> = ({ activityTitle = '' }) => {
 
   const { t } = useTranslation('app');
   const { theme, switchTheme } = useContext(ThemeContext); 
-
+  // ${t('museumHeader')} - 
   return (
     <Root>
-      <AppName>{`${t('museumHeader')}${activityTitle && ` - ${activityTitle}`}`}</AppName>
+      <AppName>{`${activityTitle && `${activityTitle}`}`}</AppName>
       <ThemeSwitch onClick={() => switchTheme(theme === 'dark' ? 'light' : 'dark')}>
           {theme === 'dark' ? 'Light' : 'Dark'}
       </ThemeSwitch>

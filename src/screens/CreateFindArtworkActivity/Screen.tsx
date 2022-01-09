@@ -7,7 +7,7 @@ import ActivityCreationOverviewPanel, { ActivityCreationOverviewPanelProps } fro
 // services
 import { api } from '../../services';
 import { useAsyncRequest } from '../../services/useAsyncRequest';
-import { CompletedFindArtworkActivityDefinition, AllowedInputs } from '../../services/findArtworkActivity.model';
+import { CompletedFindArtworkActivityDefinition, AllowedInputs, InProgressFindArtworkActivityDefinition } from '../../services/findArtworkActivity.model';
 
 // steps
 import { State, Step, Steps, StepsConfig } from '../../components/Navigation/Steps';
@@ -23,7 +23,7 @@ const Root = styled.div`
 //-------------------------------------------------------
 //                 State Definition
 //-------------------------------------------------------
-const sample: State = {
+const sample_base: InProgressFindArtworkActivityDefinition = {
   activityTitle: undefined,
   activityAuthor: undefined,
   beginsOn: undefined,
@@ -37,10 +37,14 @@ const sample: State = {
   activityDefinitionsDatasetUuid: process.env.REACT_APP_ACTIVITY_DEFINITIONS_DATASET_UUID || '',
   artworksDatasetUuid: process.env.REACT_APP_DATASET_UUID || '',
   artworks: [],
+};
 
+const sample: State = {
+  ...sample_base,
   page: 1,
   itemsPerPage: 30,
-  appliedFilter: {}
+  appliedFilter: {},
+  selectedArtworks: []
 };
 
 const isStageOneCompleted = (definition: State): boolean => {
@@ -99,7 +103,22 @@ export const CreateFindArtworkActivityScreen = () => {
   const submitDefinition = () => {
     if (!submitGame) return Promise.reject();
     setSubmitGame(false);
-    return api.submitFindArtworkActivityDefinition({ ...(activityDefinition as CompletedFindArtworkActivityDefinition) });
+    const def: CompletedFindArtworkActivityDefinition = {
+      activityAuthor: activityDefinition['activityAuthor'] as string,
+      activityTitle: activityDefinition['activityTitle'] as string,
+      allowedInputs: activityDefinition['allowedInputs'] as AllowedInputs[],
+      artworks: activityDefinition['artworks'] as string[],
+      beginsOn: activityDefinition['beginsOn'] as Date,
+      endsOn: activityDefinition['endsOn'] as Date,
+      minStages: activityDefinition['minStages'] as number,
+      maxStages: activityDefinition['maxStages'] as number,
+      minCluesPerStage: activityDefinition['minCluesPerStage'] as number,
+      maxCluesPerStage: activityDefinition['maxCluesPerStage'] as number,
+      huntDefinitionsDatasetUuid: activityDefinition['huntDefinitionsDatasetUuid'] as string,
+      activityDefinitionsDatasetUuid: activityDefinition['activityDefinitionsDatasetUuid'] as string,
+      artworksDatasetUuid: activityDefinition['artworksDatasetUuid'] as string
+    };
+    return api.submitFindArtworkActivityDefinition(def);
   };
   const [submitDefinitionStatus] = useAsyncRequest(submitDefinition, [submitGame]);
 
@@ -108,7 +127,6 @@ export const CreateFindArtworkActivityScreen = () => {
       window.alert('Your activity was successfully uploaded to the linked data hub.');
     }
   }, [submitDefinitionStatus]);
-
 
   const config: StepsConfig = {
     navigation: {

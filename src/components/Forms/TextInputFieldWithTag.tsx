@@ -9,7 +9,6 @@ const FieldContainer = styled.div`
 
   @media (max-width: 768px) {
     max-width: 760px;
-    min-width: 370px;
   }
 `;
 

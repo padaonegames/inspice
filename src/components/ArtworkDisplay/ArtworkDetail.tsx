@@ -123,10 +123,10 @@ export const ArtworkDetail: React.FC<ArtworkDetailProps> = ({ artworkData }) => 
           {artworkData.date}
         </ArtworkDate>
         <ArtworkListDottedLine />
-        <audio controls>
+        {artworkData.audio.length && <audio controls>
           <source src={`${process.env.PUBLIC_URL}/audio/${artworkData.audio}`} type='audio/mp4' />
           Your browser does not support audio.
-        </audio>
+        </audio>}
         <ArtworkDataContainer>
           <ArtworkDescription dangerouslySetInnerHTML={{ __html: artworkData.description }} />
         </ArtworkDataContainer>

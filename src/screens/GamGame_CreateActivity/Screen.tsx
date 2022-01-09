@@ -1,19 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 // navigation
 import ActivityCreationOverviewPanel, { ActivityCreationOverviewPanelProps } from '../../components/Navigation/ActivityCreationOverviewPanel copy';
 
 // services
-import { api } from '../../services';
+import { gamGameApi } from '../../services';
 import { useAsyncRequest } from '../../services/useAsyncRequest';
-import { CompletedFindArtworkActivityDefinition, AllowedInputs } from '../../services/findArtworkActivity.model';
 
 // steps
 import { State, Step, Steps, StepsConfig } from '../../components/Navigation/Steps';
 import BasicInformationStep from './Steps/BasicInformationStep';
 import ConfigureStageParamsStep from './Steps/ConfigureStageParamsStep';
 import SelectArtworksStep from './Steps/SelectArtworksStep';
+import { AllowedResponseType, CompletedGamGameActivityDefinition, InProgressGamGameActivityDefinition } from '../../services/gamGameActivity.model';
 
 const Root = styled.div`
   display: flex;
@@ -23,22 +23,26 @@ const Root = styled.div`
 //-------------------------------------------------------
 //                 State Definition
 //-------------------------------------------------------
-const sample: State = {
+const sample_base: InProgressGamGameActivityDefinition = {
   activityTitle: undefined,
   activityAuthor: undefined,
   beginsOn: undefined,
   endsOn: undefined,
   minArtworks: 1,
   maxArtworks: 5,
-  allowedInputs: [],
-  gamGameDefinitionsDatasetUuid: process.env.REACT_APP_GAM_GAME_DEFINITIONS_DATASET_UUID || '',
-  gamGameActivityDefinitionsDatasetUuid: process.env.REACT_APP_GAM_GAMES_ACTIVITY_DEFINITIONS_DATASET_UUID || '',
+  allowedResponseTypes: [],
+  storyDefinitionsDatasetUuid: process.env.REACT_APP_GAM_GAME_STORY_DEFINITIONS_DATASET_UUID || '',
+  activityDefinitionsDatasetUuid: process.env.REACT_APP_GAM_GAME_ACTIVITY_DEFINITIONS_DATASET_UUID || '',
   artworksDatasetUuid: process.env.REACT_APP_DATASET_UUID || '',
   artworks: [],
+};
 
+const sample: State = {
+  ...sample_base,
   page: 1,
   itemsPerPage: 30,
-  appliedFilter: {}
+  appliedFilter: {},
+  selectedArtworks: [],
 };
 
 const isStageOneCompleted = (definition: State): boolean => {
@@ -51,7 +55,7 @@ const isStageOneCompleted = (definition: State): boolean => {
 const isStageTwoCompleted = (definition: State): boolean => {
   return definition['minArtworks'] as number !== undefined &&
     definition['maxArtworks'] as number !== undefined &&
-    (definition['allowedInputs'] as AllowedInputs).length > 0;
+    (definition['allowedResponseTypes'] as AllowedResponseType[]).length > 0;
 }
 
 const isStageThreeCompleted = (definition: State): boolean => {
@@ -59,7 +63,7 @@ const isStageThreeCompleted = (definition: State): boolean => {
 }
 
 /**
- * Screen to encapsulate the creation flow of a Gam Game creation activity.
+ * Screen to encapsulate the creation flow of a GAM Game activity.
  */
 export const CreateGamGameActivityScreen = () => {
 
@@ -70,7 +74,20 @@ export const CreateGamGameActivityScreen = () => {
   const submitDefinition = () => {
     if (!submitGame) return Promise.reject();
     setSubmitGame(false);
-    return api.submitFindArtworkActivityDefinition({ ...(activityDefinition as CompletedFindArtworkActivityDefinition) });
+    const def: CompletedGamGameActivityDefinition = {
+      activityAuthor: activityDefinition['activityAuthor'] as string,
+      activityTitle: activityDefinition['activityTitle'] as string,
+      allowedResponseTypes: activityDefinition['allowedResponseTypes'] as AllowedResponseType[],
+      artworks: activityDefinition['artworks'] as string[],
+      beginsOn: activityDefinition['beginsOn'] as Date,
+      endsOn: activityDefinition['endsOn'] as Date,
+      minArtworks: activityDefinition['minArtworks'] as number,
+      maxArtworks: activityDefinition['maxArtworks'] as number,
+      storyDefinitionsDatasetUuid: activityDefinition['storyDefinitionsDatasetUuid'] as string,
+      activityDefinitionsDatasetUuid: activityDefinition['activityDefinitionsDatasetUuid'] as string,
+      artworksDatasetUuid: activityDefinition['artworksDatasetUuid'] as string
+    };
+    return gamGameApi.submitGamGameActivityDefinition(def);
   };
   const [submitDefinitionStatus] = useAsyncRequest(submitDefinition, [submitGame]);
 

@@ -31,7 +31,7 @@ const SearchBarInput = styled.input`
 `;
 
 const SearchButton = styled.div`
-  width: 45px;
+  width: 80px;
   height: 45px;
   display: flex;
   justify-content: center;

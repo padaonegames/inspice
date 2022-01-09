@@ -14,7 +14,6 @@ const Root = styled.div`
 
   @media (max-width: 768px) {
     max-width: 375px;
-    min-width: 350px;
   }
 
   @media (min-width: 768px) {
