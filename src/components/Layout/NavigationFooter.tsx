@@ -4,6 +4,7 @@ import { Home } from '@styled-icons/boxicons-regular/Home';
 import { Gallery } from '@styled-icons/remix-line/Gallery';
 import { Books } from '@styled-icons/icomoon/Books';
 import { NavigationComponentProps } from '../Navigation/Steps';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const Root = styled.div`
   position: fixed;
@@ -68,40 +69,39 @@ const BooksIcon = styled(Books)`
   ${IconStyle}
 `;
 
-export interface NavigationFooterProps extends NavigationComponentProps {
+export const NavigationFooter = () => {
 
-};
-
-export const NavigationFooter = (props: NavigationFooterProps) => {
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
 
   return (
     <Root>
       <NavigationElem
-        selected={props.currentStep == 0}
-        onClick={() => props.jump(0)}
+        selected={pathname.includes('home')}
+        onClick={() => navigate('home')}
       >
-        <HomeIcon selected={props.currentStep == 0} />
+        <HomeIcon selected={pathname.includes('home')} />
         Home
       </NavigationElem>
       <NavigationElem
-        selected={props.currentStep == 1}
-        onClick={() => props.jump(1)}
+        selected={pathname.includes('collection')}
+        onClick={() => navigate('collection')}
       >
-        <GalleryIcon selected={props.currentStep == 1} />
+        <GalleryIcon selected={pathname.includes('collection')} />
         Collection
       </NavigationElem>
       <NavigationElem
-        selected={props.currentStep == 2}
-        onClick={() => props.jump(2)}
+        selected={pathname.includes('scan-qr')}
+        onClick={() => navigate('scan-qr')}
       >
-        <QrIcon selected={props.currentStep == 2} />
+        <QrIcon selected={pathname.includes('scan-qr')} />
         Scan QR
       </NavigationElem>
       <NavigationElem
-        selected={props.currentStep == 3}
-        onClick={() => props.jump(3)}
+        selected={pathname.includes('my-stories')}
+        onClick={() => navigate('my-stories')}
       >
-        <BooksIcon selected={props.currentStep == 3} />
+        <BooksIcon selected={pathname.includes('my-stories')} />
         My Stories
       </NavigationElem>
     </Root>

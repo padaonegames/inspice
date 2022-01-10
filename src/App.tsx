@@ -53,7 +53,7 @@ export const App: React.FC = () => {
               </Route>
               <Route path='gam-game' element={<ActivityScreen activityTitle='GAM - GAM Game' />}>
                 <Route path='consumer'>
-                  <Route path='visit/:id' element={<GamGameUserMenuScreen />} />
+                  <Route path='visit/:id/*' element={<GamGameUserMenuScreen />} />
                 </Route>
                 <Route path='curator'>
                   <Route path='create' element={<CreateGamGameActivityScreen />} />

@@ -1,8 +1,8 @@
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import ArtworkColumnElement from '../../../components/ArtworkSelection/ArtworkColumnElement';
 import SearchBar from '../../../components/Forms/SearchBar';
 import ContentCard, { CardExplanatoryText } from '../../../components/Layout/ContentCard';
-import { StepComponentProps } from '../../../components/Navigation/Steps';
 import { ArtworkData } from '../../../services/artwork.model';
 import lineBackground from './../../../components/line-header-point.png';
 
@@ -45,11 +45,14 @@ const ArtworkGrid = styled.div`
   }
 `;
 
-export interface CollectionStepProps extends StepComponentProps {
+export interface CollectionStepProps {
   artworks: ArtworkData[];
 };
 
 export const CollectionStep = (props: CollectionStepProps): JSX.Element => {
+
+  const navigate = useNavigate();
+
   return (
     <Root>
       <SearchBar />
@@ -68,8 +71,7 @@ export const CollectionStep = (props: CollectionStepProps): JSX.Element => {
               artworkData={elem}
               key={elem.id}
               onCardClicked={() => {
-                props.setState<string | undefined>('artworkId', elem.id, elem.id);
-                props.jump(4); // TODO: this is very hacky... maybe a popup would be better?
+                navigate(`${elem.id}`);
               }}
             />
           ))}

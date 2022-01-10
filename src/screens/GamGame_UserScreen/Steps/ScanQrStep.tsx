@@ -8,8 +8,9 @@ import { Html5QrcodeScanner } from "html5-qrcode";
 // To use Html5Qrcode (more info below)
 // https://github.com/mebjas/html5-qrcode
 import { Html5Qrcode } from "html5-qrcode";
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { Html5QrcodeResult, QrcodeSuccessCallback } from 'html5-qrcode/esm/core';
+import { useNavigate } from 'react-router-dom';
 
 const Root = styled.div`
   display: flex;
@@ -20,8 +21,9 @@ const Root = styled.div`
   margin-bottom: 65px;
 `;
 
-export const ScanQrStep = (props: StepComponentProps): JSX.Element => {
+export const ScanQrStep = (): JSX.Element => {
 
+  const navigate = useNavigate();
   const scannerRef = useRef<HTMLDivElement>(null);
 
   const onScanSuccess: QrcodeSuccessCallback = (decodedText: string, decodedResult: Html5QrcodeResult) => {
@@ -30,9 +32,7 @@ export const ScanQrStep = (props: StepComponentProps): JSX.Element => {
 
     if (decodedText.startsWith('artworkId:')) {
       const artworkId = decodedText.slice('artworkId:'.length);
-      props.setState<string | undefined>('artworkId', artworkId, artworkId);
-      props.jump(4);
-      // TODO: Redirect to page with that artworkId
+      navigate(`artwork/${artworkId}`);
     }
   };
 

@@ -1,7 +1,5 @@
 import styled from 'styled-components';
 import ContentCard, { CardExplanatoryText } from '../../../components/Layout/ContentCard';
-import { StepComponentProps } from '../../../components/Navigation/Steps';
-
 
 const Root = styled.div`
   display: flex;
@@ -12,7 +10,7 @@ const Root = styled.div`
   margin-bottom: 65px;
 `;
 
-export const GeneralInformationStep = (props: StepComponentProps): JSX.Element => {
+export const GeneralInformationStep = (): JSX.Element => {
   return (
     <Root>
       <ContentCard

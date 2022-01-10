@@ -1,7 +1,9 @@
-import React from 'react';
 import styled from 'styled-components';
-import { Artwork } from '../../services/viewpointsArtwork.model';
-import { FeatherAlt } from '@styled-icons/fa-solid/FeatherAlt';
+import { Image } from '@styled-icons/ionicons-solid/Image';
+import { GamGameStoryDefinition } from '../../../services/gamGameActivity.model';
+import StoryListDisplay from './StoryListDisplay';
+import { ArtworkData } from '../../../services/artwork.model';
+import { useParams, useNavigate } from 'react-router-dom';
 
 const Root = styled.div`
   display: flex;
@@ -37,7 +39,7 @@ const MainInfoPanel = styled.div`
   width: 80%;
 `;
 
-const StoriesPanel = styled.div`
+const DetailsPanel = styled.div`
   width: 20%;
   display: flex;
   flex-direction: column;
@@ -54,7 +56,7 @@ const StoriesPanel = styled.div`
   cursor: pointer;
 `;
 
-const StoryIcon = styled(FeatherAlt)`
+const DetailsIcon = styled(Image)`
   color: ${props => props.theme.textColor};
   width : 28px;
   height: 28px;
@@ -95,15 +97,6 @@ const ArtworkDataContainer = styled.div`
   height: auto;
 `;
 
-const ArtworkDescription = styled.p`
-  font-weight: 400;
-  line-height: 1.5;
-  transition: color 0.5s ease;
-  margin: auto 0 auto 0;
-  word-wrap: break-word;
-  padding-right: 15px;
-`;
-
 const ArtworkTitle = styled.p`
   font-size: 1.25em;
   font-weight: 500;
@@ -124,94 +117,63 @@ const ArtworkDate = styled.p`
   margin-bottom: 5px;
 `;
 
-const ArtworkNotes = styled.p`
-  font-size: 0.9em;
-  font-weight: 400;
-  font-style: italic;
-`;
-
-interface ArtworkDisplayProps {
-  backgroundImage: string;
+export interface ArtworkStoriesPanelProps {
+  artworks: ArtworkData[];
+  stories: GamGameStoryDefinition[];
+  onDetailsClicked?: () => void;
 };
 
-const ArtworkDisplay = styled.div<ArtworkDisplayProps>`
+export const ArtworkStoriesPanel = (props: ArtworkStoriesPanelProps): JSX.Element => {
 
-  @media (max-width: 768px) {
-    width: 100vw;
-    height: 100vw;
-    object-fit: contain;
+  const { artworks, stories } = props;
+  const { artworkId } = useParams();
+  const navigate = useNavigate();
+
+  const artworkData = artworks.find(elem => elem.id === artworkId);
+
+  if (!artworkData) {
+    return (
+      <Root>
+        No artwork found.
+      </Root>
+    );
   }
 
-  @media (min-width: 768px) {
-    width: 50%;
-  }
-
-  background-image: ${props => `url(${props.backgroundImage})`};
-  overflow: hidden;
-  background-position: 50% 50%;
-  background-repeat: no-repeat;
-  background-size: auto 100%;
-  background-color: ${props => props.theme.artworkDisplayBackground};
-`;
-
-const ClickableText = styled.p`
-  font-size: 0.9em;
-  font-weight: 400;
-  color: ${props => props.theme.clickableTextFontColor};
-  margin-bottom: 15px;
-  margin-top: 5px;
-  text-decoration: underline;
-  cursor: pointer;
-`;
-
-export interface GeneralArtworkDetailProps {
-  artworkData: Artwork;
-};
-
-/**
- * <img src="media://GeneralArtworkDetail.PNG" alt="GeneralArtworkDetail">
- */
-export const GeneralArtworkDetail: React.FC<GeneralArtworkDetailProps> = ({ artworkData }) => {
   return (
     <Root>
       <SelectionPanel>
         <UpperPanel>
           <MainInfoPanel>
             <ArtworkTitle>
-              {artworkData.name}
+              {artworkData.title}
             </ArtworkTitle>
             <ArtworkAuthor>
-              {artworkData.artist}
+              {artworkData.author}
             </ArtworkAuthor>
             <ArtworkDate>
-              {artworkData.date.toDateString()}
+              {artworkData.date}
             </ArtworkDate>
           </MainInfoPanel>
-          <StoriesPanel>
-            <StoryIcon />
-            Stories
-          </StoriesPanel>
+          <DetailsPanel>
+            <DetailsIcon onClick={() => navigate('../detail')} />
+            Details
+          </DetailsPanel>
         </UpperPanel>
 
         <ArtworkListDottedLine />
+        
         <ArtworkDataContainer>
-          <ArtworkDescription>
-            {artworkData.description}
-          </ArtworkDescription>
+          {stories.map(elem => (
+            <StoryListDisplay
+              storyData={elem}
+              artworkData={artworkData}
+            />
+          ))}
         </ArtworkDataContainer>
-        <ArtworkNotes>
-          {artworkData.notes}
-        </ArtworkNotes>
-        <ClickableText onClick={() => window.open(artworkData.imageLoc)}>
-          Find this work in the IMMA Collection
-        </ClickableText>
       </SelectionPanel>
-      <ArtworkDisplay
-        backgroundImage={artworkData.image}
-      />
     </Root>
 
   );
 };
 
-export default GeneralArtworkDetail;
+export default ArtworkStoriesPanel;

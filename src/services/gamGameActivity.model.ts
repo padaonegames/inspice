@@ -6,15 +6,15 @@ export interface InProgressGamGameStoryDefinition {
   GamGameStoryAuthor: string | undefined;
   GamGameStoryTitle: string | undefined;
   activityId: string | undefined;
-  stages: InProgressGamGameStoryStage[];
 }
 
 export interface GamGameStoryDefinition {
   _id: string;
   GamGameStoryAuthor: string;
-  GamGameStoryTitle?: string;
+  GamGameStoryTitle: string;
   activityId: string;
-  stages: StageData[];
+  artworkId: string;
+  multimediaData: GamGameStoryMutimediaData;
 }
 
 export type CompletedGamGameStoryDefinition = Omit<
@@ -22,30 +22,35 @@ export type CompletedGamGameStoryDefinition = Omit<
   "_id"
 >;
 
-export interface StageData {
-  artworkId: string; // id del artwork seleccionado
-  //recordingPath: string; // path de la grabación a emplear
-  clues: string[]; // pistas a mostrar al jugador
-  multimediaData: GamGameStoryMutimediaData[]; //rewards to show after finding the art
+export interface GamGameStoryMutimediaData { 
+  text?: string;
+  emojis?: StoryEmoji[];
+  tags?: StoryTag[];
 }
 
-export type GamGameStoryMutimediaData =
-  | { kind: 'Text', text: string }
-  | { kind: 'Audio', src: string }
-  | { kind: 'Image', src: string }
+export interface StoryOverlayElement {
+  locationX: number; // in [0, 1]
+  locationY: number; // in [0, 1]
+}
+
+export interface StoryTag extends StoryOverlayElement {
+  tag: string;
+}
+
+export interface StoryEmoji extends StoryOverlayElement {
+  emoji: Emoji;
+}
+
+export type Emoji =
+  | '🤩'
+  | '🥰'
+  | '😱'
+  | '😴'
+  | '🤢'
+  | '😢'
+  | '😌'
+  | '🧐'
   ;
-
-export interface InProgressGamGameStoryStage {
-  clues: string[];
-  multimediaData: GamGameStoryMutimediaData[];
-  artworkId: string | undefined;
-}
-
-export const defaultGamGameStoryStage: InProgressGamGameStoryStage = {
-  clues: [""],
-  multimediaData: [],
-  artworkId: undefined,
-};
 
 export interface SubmitGamGameStoryDefinitionRequest {
   GamGameStoryDefinition: InProgressGamGameStoryDefinition;

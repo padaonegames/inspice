@@ -1,10 +1,9 @@
+import { Outlet, Route, Routes, useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import ArtworkDetail from '../../../components/ArtworkDisplay/ArtworkDetail';
-import GeneralArtworkDetail from '../../../components/ArtworkDisplay/GeneralArtworkDetail';
-import ContentCard, { CardExplanatoryText } from '../../../components/Layout/ContentCard';
-import { StepComponentProps } from '../../../components/Navigation/Steps';
+import ArtworkStoriesPanel from '../components/ArtworkStoriesPanel';
 import { ArtworkData } from '../../../services/artwork.model';
-import { Artwork } from '../../../services/viewpointsArtwork.model';
+import { GamGameStoryDefinition } from '../../../services/gamGameActivity.model';
+import GeneralArtworkDetail from '../components/GeneralArtworkDetail';
 
 
 const Root = styled.div`
@@ -16,13 +15,36 @@ const Root = styled.div`
   margin-bottom: 65px;
 `;
 
-export interface InspectArtworkStepProps extends StepComponentProps {
-  artworkData: ArtworkData | undefined;
+export interface InspectArtworkStepProps {
+  artworks: ArtworkData[];
+};
+
+const story: GamGameStoryDefinition = {
+  _id: '',
+  GamGameStoryAuthor: 'Pablo Gutiérrez',
+  GamGameStoryTitle: 'Mi nueva historia de prueba',
+  activityId: '',
+  artworkId: '',
+  multimediaData: {
+    tags: [
+      { tag: '#divertido', locationX: 0.15, locationY: 0.15 },
+      { tag: '#guay', locationX: 0.85, locationY: 0.85 },
+    ],
+    emojis: [
+      { emoji: '🤩', locationX: 0.25, locationY: 0.25 },
+      { emoji: '🥰', locationX: 0.5, locationY: 0.25 }
+    ],
+    text: 'Me ha gustado mucho esta obra'
+  }
 };
 
 export const InspectArtworkStep = (props: InspectArtworkStepProps): JSX.Element => {
 
-  const { artworkData } = props;
+  const { artworks } = props;
+  const { artworkId } = useParams();
+  const navigate = useNavigate();
+
+  const artworkData = artworks.find(elem => elem.id === artworkId);
 
   if (!artworkData) {
     return (
@@ -32,24 +54,12 @@ export const InspectArtworkStep = (props: InspectArtworkStepProps): JSX.Element 
     );
   }
 
-  const mappedData: Artwork = {
-    _id: artworkData.id,
-    name: artworkData.title,
-    artist: artworkData.author,
-    description: artworkData.info,
-    imageLoc: artworkData.location,
-    image: artworkData.src,
-    audio: '',
-    notes: '',
-    date: new Date(artworkData.date),
-    URL: ''
-  };
-
   return (
     <Root>
-      <GeneralArtworkDetail
-        artworkData={mappedData}
-      />
+      <Routes>
+
+      </Routes>
+      <Outlet />
     </Root>
   );
 }
