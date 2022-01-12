@@ -1,14 +1,12 @@
-import React, { ReactElement, useEffect, useState } from 'react';
+import { createContext } from 'react';
 import styled from 'styled-components';
-import { Outlet, useParams } from 'react-router';
+import { useParams } from 'react-router';
 import { useAsyncRequest } from '../../services/useAsyncRequest';
 import { artworksService, gamGameApi } from '../../services';
 import LoadingOverlay from '../../components/Layout/LoadingOverlay';
 import { ArtworkData } from '../../services/artwork.model';
-import { GamGameActivityDefinition, GamGameStoryDefinition } from '../../services/gamGameActivity.model';
+import { GamGameActivityDefinition } from '../../services/gamGameActivity.model';
 import NavigationFooter from '../../components/Layout/NavigationFooter';
-import { State, Step, Steps, StepsConfig } from '../../components/Navigation/Steps';
-import BasicInformationStep from '../CreateTreasureHunt/Steps/BasicInformationStep';
 import GeneralInformationStep from './Steps/GeneralInformationStep';
 import CollectionStep from './Steps/CollectionStep';
 import ScanQrStep from './Steps/ScanQrStep';
@@ -16,6 +14,8 @@ import InspectArtworkStep from './Steps/InspectArtworkStep';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import GeneralArtworkDetail from './components/GeneralArtworkDetail';
 import ArtworkStoriesPanel from './components/ArtworkStoriesPanel';
+import ArtworkStoryView from './components/ArtworkStoriesPanel/ArtworkStoryView';
+import ArtworkStoriesList from './components/ArtworkStoriesPanel/ArtworkStoriesList';
 
 const Root = styled.div`
   display: flex;
@@ -103,43 +103,34 @@ interface GamGameUserFlowProps {
   artworkCount: number;
 };
 
-const story: GamGameStoryDefinition = {
-  _id: '',
-  GamGameStoryAuthor: 'Pablo Gutiérrez',
-  GamGameStoryTitle: 'Mi nueva historia de prueba',
-  activityId: '',
-  artworkId: '',
-  multimediaData: {
-    tags: [
-      { tag: '#divertido', locationX: 0.15, locationY: 0.15 },
-      { tag: '#guay', locationX: 0.85, locationY: 0.85 },
-    ],
-    emojis: [
-      { emoji: '🤩', locationX: 0.25, locationY: 0.25 },
-      { emoji: '🥰', locationX: 0.5, locationY: 0.25 }
-    ],
-    text: 'Me ha gustado mucho esta obra'
-  }
-};
+export interface ArtworksContext {
+  artworks: ArtworkData[];
+}
+
+export const ArtworksContext = createContext<ArtworksContext>({ artworks: [] });
 
 const GamGameUserFlow = ({ activityDefinition, artworks, artworkCount }: GamGameUserFlowProps): JSX.Element => {
 
   return (
     <Root>
-      <Routes>
-        <Route path='home' element={<GeneralInformationStep />} />
-        <Route path='collection' element={<CollectionStep artworks={artworks} />} />
-        <Route path='collection/:artworkId' element={<InspectArtworkStep artworks={artworks} />}>
-          <Route path='detail' element={
-            <GeneralArtworkDetail artworks={artworks} />} />
-          <Route path='stories' element={
-            <ArtworkStoriesPanel artworks={artworks} stories={[story, story, story]} />} />
-          <Route path='' element={<Navigate replace to='detail' />} />
-        </Route>
-        <Route path='scan-qr' element={<ScanQrStep />} />
-        <Route path='my-stories' element={<GeneralInformationStep />} />
-        <Route path='' element={<Navigate replace to='home' />} />
-      </Routes>
+      <ArtworksContext.Provider value={{ artworks }}>
+        <Routes>
+          <Route path='home' element={<GeneralInformationStep />} />
+          <Route path='collection' element={<CollectionStep />} />
+          <Route path='collection/:artworkId/*' element={<InspectArtworkStep />}>
+            <Route path='detail' element={<GeneralArtworkDetail artworks={artworks} />} />
+            <Route path='stories/*' element={<ArtworkStoriesPanel />}>
+              <Route path='all' element={<ArtworkStoriesList />} />
+              <Route path=':storyId' element={<ArtworkStoryView />} />
+              <Route path='' element={<Navigate replace to='all' />} />
+            </Route>
+            <Route path='' element={<Navigate replace to='detail' />} />
+          </Route>
+          <Route path='scan-qr' element={<ScanQrStep />} />
+          <Route path='my-stories' element={<GeneralInformationStep />} />
+          <Route path='' element={<Navigate replace to='home' />} />
+        </Routes>
+      </ArtworksContext.Provider>
       <NavigationFooter />
     </Root>
   );

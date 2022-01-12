@@ -35,6 +35,7 @@ const MainInfoPanel = styled.div`
   display: flex;
   flex-direction: column;
   width: 80%;
+  margin-bottom: 10px;
 `;
 
 const StoriesPanel = styled.div`
@@ -200,7 +201,7 @@ export const GeneralArtworkDetail = (props: GeneralArtworkDetailProps): JSX.Elem
             </ArtworkDate>
           </MainInfoPanel>
           <StoriesPanel>
-            <StoryIcon onClick={() => navigate('../stories')}/>
+            <StoryIcon onClick={() => navigate('../stories/all')}/>
             Stories
           </StoriesPanel>
         </UpperPanel>

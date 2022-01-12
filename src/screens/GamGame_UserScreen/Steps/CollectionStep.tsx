@@ -1,9 +1,11 @@
+import { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import ArtworkColumnElement from '../../../components/ArtworkSelection/ArtworkColumnElement';
 import SearchBar from '../../../components/Forms/SearchBar';
 import ContentCard, { CardExplanatoryText } from '../../../components/Layout/ContentCard';
 import { ArtworkData } from '../../../services/artwork.model';
+import { ArtworksContext } from '../MenuScreen';
 import lineBackground from './../../../components/line-header-point.png';
 
 const VerticalSeparator = styled.div`
@@ -45,13 +47,10 @@ const ArtworkGrid = styled.div`
   }
 `;
 
-export interface CollectionStepProps {
-  artworks: ArtworkData[];
-};
-
-export const CollectionStep = (props: CollectionStepProps): JSX.Element => {
+export const CollectionStep = (): JSX.Element => {
 
   const navigate = useNavigate();
+  const { artworks } = useContext(ArtworksContext);
 
   return (
     <Root>
@@ -66,7 +65,7 @@ export const CollectionStep = (props: CollectionStepProps): JSX.Element => {
         </CardExplanatoryText>
         <VerticalSeparator />
         <ArtworkGrid>
-          {props.artworks.map(elem => (
+          {artworks.map(elem => (
             <ArtworkColumnElement
               artworkData={elem}
               key={elem.id}

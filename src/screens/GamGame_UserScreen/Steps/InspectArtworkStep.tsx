@@ -4,6 +4,8 @@ import ArtworkStoriesPanel from '../components/ArtworkStoriesPanel';
 import { ArtworkData } from '../../../services/artwork.model';
 import { GamGameStoryDefinition } from '../../../services/gamGameActivity.model';
 import GeneralArtworkDetail from '../components/GeneralArtworkDetail';
+import { useContext } from 'react';
+import { ArtworksContext } from '../MenuScreen';
 
 
 const Root = styled.div`
@@ -14,10 +16,6 @@ const Root = styled.div`
   align-items: center;
   margin-bottom: 65px;
 `;
-
-export interface InspectArtworkStepProps {
-  artworks: ArtworkData[];
-};
 
 const story: GamGameStoryDefinition = {
   _id: '',
@@ -38,9 +36,9 @@ const story: GamGameStoryDefinition = {
   }
 };
 
-export const InspectArtworkStep = (props: InspectArtworkStepProps): JSX.Element => {
+export const InspectArtworkStep = (): JSX.Element => {
 
-  const { artworks } = props;
+  const { artworks } = useContext(ArtworksContext);
   const { artworkId } = useParams();
   const navigate = useNavigate();
 

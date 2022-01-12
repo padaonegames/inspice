@@ -1,9 +1,11 @@
 import styled from 'styled-components';
 import { Image } from '@styled-icons/ionicons-solid/Image';
-import { GamGameStoryDefinition } from '../../../services/gamGameActivity.model';
-import StoryListDisplay from './StoryListDisplay';
-import { ArtworkData } from '../../../services/artwork.model';
+import { GamGameStoryDefinition } from '../../../../services/gamGameActivity.model';
+import StoryListDisplay from './../StoryListDisplay';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useContext } from 'react';
+import { ArtworksContext } from '../../MenuScreen';
+import { StoriesContext } from './StoriesContext';
 
 const Root = styled.div`
   display: flex;
@@ -31,6 +33,7 @@ const Root = styled.div`
 const UpperPanel = styled.div`
   display: flex;
   flex-direction: row;
+  margin-bottom: 10px;
 `;
 
 const MainInfoPanel = styled.div`
@@ -66,7 +69,6 @@ const DetailsIcon = styled(Image)`
 const SelectionPanel = styled.div`
   display: flex;
   flex-direction: column;
-  max-height: 550px;
   margin: 0;
 
   @media (max-width: 768px) {
@@ -117,15 +119,14 @@ const ArtworkDate = styled.p`
   margin-bottom: 5px;
 `;
 
-export interface ArtworkStoriesPanelProps {
-  artworks: ArtworkData[];
-  stories: GamGameStoryDefinition[];
+export interface ArtworkStoriesListProps {
   onDetailsClicked?: () => void;
 };
 
-export const ArtworkStoriesPanel = (props: ArtworkStoriesPanelProps): JSX.Element => {
+export const ArtworkStoriesList = (props: ArtworkStoriesListProps): JSX.Element => {
 
-  const { artworks, stories } = props;
+  const { stories } = useContext(StoriesContext);
+  const { artworks } = useContext(ArtworksContext);
   const { artworkId } = useParams();
   const navigate = useNavigate();
 
@@ -161,12 +162,12 @@ export const ArtworkStoriesPanel = (props: ArtworkStoriesPanelProps): JSX.Elemen
         </UpperPanel>
 
         <ArtworkListDottedLine />
-        
         <ArtworkDataContainer>
           {stories.map(elem => (
             <StoryListDisplay
               storyData={elem}
               artworkData={artworkData}
+              onCardClicked={() => navigate(`../${elem._id}`)}
             />
           ))}
         </ArtworkDataContainer>
@@ -176,4 +177,4 @@ export const ArtworkStoriesPanel = (props: ArtworkStoriesPanelProps): JSX.Elemen
   );
 };
 
-export default ArtworkStoriesPanel;
+export default ArtworkStoriesList;

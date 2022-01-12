@@ -1,14 +1,11 @@
 import styled from 'styled-components';
 import ContentCard, { CardExplanatoryText } from '../../../components/Layout/ContentCard';
-import { StepComponentProps } from '../../../components/Navigation/Steps';
 
 // To use Html5QrcodeScanner (more info below)
+// https://github.com/mebjas/html5-qrcode
 import { Html5QrcodeScanner } from "html5-qrcode";
 
-// To use Html5Qrcode (more info below)
-// https://github.com/mebjas/html5-qrcode
-import { Html5Qrcode } from "html5-qrcode";
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { Html5QrcodeResult, QrcodeSuccessCallback } from 'html5-qrcode/esm/core';
 import { useNavigate } from 'react-router-dom';
 
@@ -26,7 +23,7 @@ export const ScanQrStep = (): JSX.Element => {
   const navigate = useNavigate();
   const scannerRef = useRef<HTMLDivElement>(null);
 
-  const onScanSuccess: QrcodeSuccessCallback = (decodedText: string, decodedResult: Html5QrcodeResult) => {
+  const onScanSuccess: QrcodeSuccessCallback = useCallback((decodedText: string, decodedResult: Html5QrcodeResult) => {
     // handle the scanned code as you like, for example:
     console.log(`Code matched = ${decodedText}`, decodedResult);
 
@@ -34,13 +31,13 @@ export const ScanQrStep = (): JSX.Element => {
       const artworkId = decodedText.slice('artworkId:'.length);
       navigate(`artwork/${artworkId}`);
     }
-  };
+  }, [navigate]);
 
-  const onScanFailure = (error: any) => {
+  const onScanFailure = useCallback((error: any) => {
     // handle scan failure, usually better to ignore and keep scanning.
     // for example:
     console.warn(`Code scan error = ${error}`);
-  };
+  }, []);
 
   useEffect(() => {
 
@@ -56,7 +53,7 @@ export const ScanQrStep = (): JSX.Element => {
     return () => {
       html5QrcodeScanner.clear();
     }
-  }, [scannerRef]);
+  }, [scannerRef, onScanFailure, onScanSuccess]);
 
   return (
     <Root>
