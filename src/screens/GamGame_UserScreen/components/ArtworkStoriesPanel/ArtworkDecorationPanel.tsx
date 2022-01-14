@@ -3,7 +3,7 @@ import { availableEmoji, Emoji, StoryEmoji, StoryTag } from '../../../../service
 import { Type } from '@styled-icons/bootstrap/Type';
 import { Sticker } from '@styled-icons/fluentui-system-filled/Sticker';
 import Draggable, { Position } from './Draggable';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 interface StoryDisplayProps {
   backgroundImage: string;
@@ -142,6 +142,7 @@ const TagTypingInput = styled.input`
 `;
 
 export interface ArtworkDecorationPanelProps {
+  editEnabled?: boolean;
   artworkSrc: string;
   emojis: StoryEmoji[];
   tags: StoryTag[];
@@ -160,6 +161,7 @@ export interface ArtworkDecorationPanelProps {
 export const ArtworkDecorationPanel = (props: ArtworkDecorationPanelProps): JSX.Element => {
 
   const {
+    editEnabled = true,
     artworkSrc,
     emojis,
     tags,
@@ -174,7 +176,7 @@ export const ArtworkDecorationPanel = (props: ArtworkDecorationPanelProps): JSX.
 
   const [newTag, setNewTag] = useState<string>('');
 
-  const imageContainerRef = useRef<HTMLDivElement>(null);
+  const [imageContainerRef, setImageContainerRef] = useState<HTMLDivElement | null>(null);
 
   const handleAddEmoji = (emoji: Emoji) => {
     setStickersOpen(false);
@@ -185,7 +187,7 @@ export const ArtworkDecorationPanel = (props: ArtworkDecorationPanelProps): JSX.
 
   const handleEmojiEndDragging = (pos: Position, index: number) => {
     if (onMoveEmoji) {
-      const rect = imageContainerRef.current?.getBoundingClientRect();
+      const rect = imageContainerRef?.getBoundingClientRect();
       if (!rect) return;
 
       const relX = pos.x / rect.width;
@@ -210,7 +212,7 @@ export const ArtworkDecorationPanel = (props: ArtworkDecorationPanelProps): JSX.
 
   const handleTagEndDragging = (pos: Position, index: number) => {
     if (onMoveTag) {
-      const rect = imageContainerRef.current?.getBoundingClientRect();
+      const rect = imageContainerRef?.getBoundingClientRect();
       if (!rect) return;
 
       const relX = pos.x / rect.width;
@@ -220,29 +222,41 @@ export const ArtworkDecorationPanel = (props: ArtworkDecorationPanelProps): JSX.
     }
   };
 
+  const proportionToPixels = (dimension: 'x' | 'y', proportion: number): number | undefined => {
+    const rect = imageContainerRef?.getBoundingClientRect();
+    if (!rect) return undefined;
+    return proportion * (dimension === 'x' ? rect.width : rect.height);
+  };
+
+  const computeDefaultPosition = (locationX: number, locationY: number): Position => {
+    return { x: proportionToPixels('x', locationX) ?? 0, y: proportionToPixels('y', locationY) ?? 0 };
+  };
+
   return (
     <StoryDisplay
-      ref={imageContainerRef}
+      ref={newRef => setImageContainerRef(newRef)}
       backgroundImage={artworkSrc}
     >
-      <ToolsRow>
-        <ToolContainer onClick={() => setTagsOpen(prev => !prev)} >
-          <TypeIcon />
-        </ToolContainer>
-        <ToolContainer onClick={() => setStickersOpen(prev => !prev)} >
-          <StickerIcon />
-          {stickersOpen &&
-            <StickerSelectorContainer>
-              {availableEmoji.map(elem =>
-                <SelectionEmoji key={elem} onClick={() => handleAddEmoji(elem)}>
-                  {elem}
-                </SelectionEmoji>
-              )}
-            </StickerSelectorContainer>
-          }
-        </ToolContainer>
-      </ToolsRow>
-      {tagsOpen &&
+      {editEnabled && (
+        <ToolsRow>
+          <ToolContainer onClick={() => setTagsOpen(prev => !prev)} >
+            <TypeIcon />
+          </ToolContainer>
+          <ToolContainer onClick={() => setStickersOpen(prev => !prev)} >
+            <StickerIcon />
+            {stickersOpen &&
+              <StickerSelectorContainer>
+                {availableEmoji.map(elem =>
+                  <SelectionEmoji key={elem} onClick={() => handleAddEmoji(elem)}>
+                    {elem}
+                  </SelectionEmoji>
+                )}
+              </StickerSelectorContainer>
+            }
+          </ToolContainer>
+        </ToolsRow>
+      )}
+      {editEnabled && tagsOpen &&
         <TagTypingContainer
           onKeyPress={(e) => {
             if (e.key === 'Enter')
@@ -257,10 +271,11 @@ export const ArtworkDecorationPanel = (props: ArtworkDecorationPanelProps): JSX.
           />
         </TagTypingContainer>
       }
-      {emojis.map((emoji, i) => (
+      {imageContainerRef && emojis.map((emoji, i) => (
         <Draggable
+          canDrag={editEnabled}
           key={emoji.emoji + '_' + i}
-          defaultPosition={{ x: emoji.locationX, y: emoji.locationY }}
+          defaultPosition={computeDefaultPosition(emoji.locationX, emoji.locationY)}
           onEndDragging={(pos) => handleEmojiEndDragging(pos, i)}
           parentRef={imageContainerRef}
         >
@@ -269,10 +284,11 @@ export const ArtworkDecorationPanel = (props: ArtworkDecorationPanelProps): JSX.
           </StoryEmojiSpan>
         </Draggable>
       ))}
-      {tags.map((tag, i) => (
+      {imageContainerRef && tags.map((tag, i) => (
         <Draggable
+          canDrag={editEnabled}
           key={tag.tag + '_' + i}
-          defaultPosition={{ x: tag.locationX, y: tag.locationY }}
+          defaultPosition={computeDefaultPosition(tag.locationX, tag.locationY)}
           onEndDragging={(pos) => handleTagEndDragging(pos, i)}
           parentRef={imageContainerRef}
         >

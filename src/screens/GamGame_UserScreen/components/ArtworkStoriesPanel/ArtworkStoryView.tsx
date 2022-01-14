@@ -2,6 +2,8 @@ import styled from 'styled-components';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useContext } from 'react';
 import { StoriesContext } from './StoriesContext';
+import { Cross } from '@styled-icons/entypo/Cross';
+import ArtworkDecorationPanel from './ArtworkDecorationPanel';
 
 const Root = styled.div`
   display: flex;
@@ -34,8 +36,9 @@ const UpperPanel = styled.div`
 const MainInfoPanel = styled.div`
   display: flex;
   flex-direction: column;
+  align-items: center;
   width: 80%;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
 `;
 
 const SelectionPanel = styled.div`
@@ -62,12 +65,11 @@ const StoryListDottedLine = styled.div`
   border-style: dotted;
   border-color: lightgray;
   border-width: 0px 0px 1px 0px;
-  margin-bottom: 2.5%;
+  margin-bottom: 5px;
 `;
 
 const StoryDataContainer = styled.div`
-  margin-top: 15px;
-  margin-bottom: 15px;
+  margin-bottom: 5px;
   overflow-y: scroll;
   height: auto;
 `;
@@ -78,7 +80,7 @@ const StoryDescription = styled.p`
   transition: color 0.5s ease;
   margin: auto 0 auto 0;
   word-wrap: break-word;
-  padding-right: 15px;
+  padding: 5px 15px;
 `;
 
 const StoryTitle = styled.p`
@@ -148,6 +150,15 @@ const StoryTag = styled.span`
   color: white;
 `;
 
+const QuitIcon = styled(Cross)`
+  color: ${props => props.theme.textColor};
+  height: 28px;
+  width: 35px;
+  cursor: pointer;
+  margin-right: 10px;
+  align-self: center;
+`;
+
 export const ArtworkStoryView = (): JSX.Element => {
 
   const { stories, artwork } = useContext(StoriesContext);
@@ -155,6 +166,8 @@ export const ArtworkStoryView = (): JSX.Element => {
   const navigate = useNavigate();
 
   const storyData = stories.find(elem => elem._id === storyId);
+
+  console.log(stories)
 
   if (!storyData) {
     return (
@@ -168,6 +181,7 @@ export const ArtworkStoryView = (): JSX.Element => {
     <Root>
       <SelectionPanel>
         <UpperPanel>
+          <QuitIcon onClick={() => navigate('..')} />
           <MainInfoPanel>
             <StoryTitle>
               {storyData.GamGameStoryTitle}
@@ -187,20 +201,12 @@ export const ArtworkStoryView = (): JSX.Element => {
           )}
         </StoryDataContainer>
       </SelectionPanel>
-      <StoryDisplay
-        backgroundImage={artwork.src}
-      >
-        {storyData.multimediaData.emojis?.map(emoji => (
-          <StoryEmojiContainer key={emoji.emoji} locX={emoji.locationX} locY={emoji.locationY}>
-            <StoryEmoji>{emoji.emoji}</StoryEmoji>
-          </StoryEmojiContainer>
-        ))}
-        {storyData.multimediaData.tags?.map(tag => (
-          <StoryEmojiContainer key={tag.tag} locX={tag.locationX} locY={tag.locationY}>
-            <StoryTag>{tag.tag}</StoryTag>
-          </StoryEmojiContainer>
-        ))}
-      </StoryDisplay>
+      <ArtworkDecorationPanel
+        editEnabled={false}
+        artworkSrc={artwork.src}
+        emojis={storyData.multimediaData.emojis ?? []}
+        tags={storyData.multimediaData.tags ?? []}
+      />
     </Root>
 
   );

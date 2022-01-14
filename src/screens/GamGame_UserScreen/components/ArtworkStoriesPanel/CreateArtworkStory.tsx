@@ -1,11 +1,14 @@
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { StoriesContext } from './StoriesContext';
-import { Emoji, InProgressGamGameStoryDefinition } from '../../../../services/gamGameActivity.model';
+import { CompletedGamGameStoryDefinition, Emoji, InProgressGamGameStoryDefinition } from '../../../../services/gamGameActivity.model';
 import { ArtworksContext } from '../../MenuScreen';
 import { ArtworkDecorationPanel } from './ArtworkDecorationPanel';
 import { Position } from './Draggable';
+import { Cross } from '@styled-icons/entypo/Cross';
+import { useAsyncRequest } from '../../../../services/useAsyncRequest';
+import { gamGameApi } from '../../../../services';
 
 const Root = styled.div`
   display: flex;
@@ -69,7 +72,6 @@ const StoryListDottedLine = styled.div`
 `;
 
 const StoryDataContainer = styled.div`
-  margin-top: 15px;
   margin-bottom: 15px;
   overflow-y: scroll;
   height: auto;
@@ -106,6 +108,34 @@ const StoryAuthor = styled.input`
   width: 100%;
 `;
 
+const HeaderRow = styled.div`
+  display: flex;
+  flex-direction: row;
+  padding: 5px 12px;
+  align-items: center;
+  justify-content: space-between;
+  margin: 5px 0 5px 0;
+`;
+
+const QuitIcon = styled(Cross)`
+  color: ${props => props.theme.textColor};
+  height: 28px;
+  width: 35px;
+  cursor: pointer;
+`;
+
+interface SubmitStoryButtonProps {
+  enabled?: boolean;
+}
+const SubmitStoryButton = styled.button<SubmitStoryButtonProps>`
+  border-radius: 15px;
+  background-color: ${props => props.enabled ? 'rgb(196, 76, 73)' : 'rgba(196, 76, 73, 0.5)'};
+  color: ${props => props.enabled ? 'white' : 'lightgray'};
+  font-weight: 700;
+  padding: 6px 10px;
+  cursor: ${props => props.enabled ? 'pointer' : 'default'};
+`;
+
 export const CreateArtworkStory = (): JSX.Element => {
 
   const { artwork } = useContext(StoriesContext);
@@ -119,6 +149,30 @@ export const CreateArtworkStory = (): JSX.Element => {
     artworkId: artwork.id,
     multimediaData: {}
   });
+
+  const [triggerSubmitStory, setTriggerSubmitStory] = useState<boolean>(false);
+
+  const handleSubmitStory = async () => {
+    if (!canSubmitStory() || !triggerSubmitStory) return Promise.reject();
+
+    const completedStory = storyDefinition as CompletedGamGameStoryDefinition
+    return gamGameApi.submitGamGameStoryDefinition(completedStory);
+  };
+
+  const canSubmitStory = () => {
+    return !!storyDefinition.GamGameStoryAuthor && storyDefinition.GamGameStoryAuthor.length > 0 &&
+      !!storyDefinition.GamGameStoryTitle && storyDefinition.GamGameStoryTitle.length > 0 &&
+      !!storyDefinition.multimediaData?.text && storyDefinition.multimediaData.text.length > 0;
+  }
+
+  const [submitStoryRequest] = useAsyncRequest(handleSubmitStory, [triggerSubmitStory]);
+
+  useEffect(() => {
+    if (submitStoryRequest.kind === 'success') {
+      window.confirm('Story uploaded succesfully');
+      navigate(-1);
+    }
+  }, [submitStoryRequest]);
 
   const handleAddEmoji = (emoji: Emoji) => {
     setStoryDefinition(prev => ({
@@ -161,6 +215,7 @@ export const CreateArtworkStory = (): JSX.Element => {
         copy.multimediaData.emojis[index].locationX = pos.x;
         copy.multimediaData.emojis[index].locationY = pos.y;
       }
+      console.log(copy, pos)
       return copy;
     });
   };
@@ -171,6 +226,7 @@ export const CreateArtworkStory = (): JSX.Element => {
       if (copy.multimediaData?.tags && index >= 0 && index < copy.multimediaData.tags.length) {
         copy.multimediaData.tags[index].locationX = pos.x;
         copy.multimediaData.tags[index].locationY = pos.y;
+        console.log(copy, pos)
       }
       return copy;
     });
@@ -179,6 +235,19 @@ export const CreateArtworkStory = (): JSX.Element => {
   return (
     <Root>
       <SelectionPanel>
+        <HeaderRow>
+          <QuitIcon onClick={() => navigate(-1)} />
+          <SubmitStoryButton
+            onClick={() => {
+              if (submitStoryRequest.kind !== 'running' && !triggerSubmitStory) {
+                setTriggerSubmitStory(true);
+              }
+            }}
+            enabled={canSubmitStory()}
+          >
+            Submit
+          </SubmitStoryButton>
+        </HeaderRow>
         <StoryDataContainer>
           <UpperPanel>
             <MainInfoPanel>

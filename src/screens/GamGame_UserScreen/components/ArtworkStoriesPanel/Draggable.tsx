@@ -1,34 +1,44 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import styled, { FlattenSimpleInterpolation } from "styled-components";
 
 interface ContainerProps {
   css?: FlattenSimpleInterpolation;
   pos?: Position;
+  canDrag?: boolean;
 }
-const Container = styled.div<ContainerProps>`
+const Container = styled.div.attrs<ContainerProps>(({
+  pos
+}) => ({
+  style: {
+    left: `${pos?.x}px`,
+    top: `${pos?.y}px`,
+  },
+})) <ContainerProps>`
   ${props => props.css && props.css}
+  ${props => props.canDrag && `
   cursor: move; /* fallback if grab cursor is unsupported */
   cursor: grab;
   cursor: -moz-grab;
   cursor: -webkit-grab;
+  `}
 
   position: absolute;
-  ${props => props.pos && `left: ${props.pos.x}px;`}
-  ${props => props.pos && `top: ${props.pos.y}px;`}
-
   touch-action: none;
 `;
 
+//  ${props => props.pos && `left: ${props.pos.x}px;`}
+//  ${props => props.pos && `top: ${props.pos.y}px;`}
 export interface Position {
-  x: number; // %
-  y: number; // %
+  x: number; // px
+  y: number; // px
 }
 
 export interface DraggableProps {
+  canDrag?: boolean;
   children: React.ReactNode;
   defaultPosition: Position;
   css?: FlattenSimpleInterpolation;
-  parentRef: React.RefObject<HTMLDivElement>;
+  parentRef: HTMLDivElement;
   onStartDragging?: () => void;
   onEndDragging?: (endPosition: Position) => void;
 }
@@ -36,6 +46,7 @@ export interface DraggableProps {
 export const Draggable = (props: DraggableProps): JSX.Element => {
 
   const {
+    canDrag = true,
     children,
     defaultPosition,
     css,
@@ -53,9 +64,9 @@ export const Draggable = (props: DraggableProps): JSX.Element => {
   const [isDown, setIsDown] = useState<boolean>(false);
 
   const divOverlayRef = useRef<HTMLDivElement>(null);
-  const [rect, _] = useState<DOMRect | undefined>(parentRef.current?.getBoundingClientRect());
+  const [rect, _] = useState<DOMRect | undefined>(parentRef.getBoundingClientRect());
 
-  const handleMouseMove = (event: MouseEvent) => {
+  const handleMouseMove = useCallback((event: MouseEvent) => {
     if (!isDown) return;
     if (!rect) return;
 
@@ -64,9 +75,9 @@ export const Draggable = (props: DraggableProps): JSX.Element => {
 
     event.stopPropagation();
     event.preventDefault();
-  };
+  }, [refX, refY, isDown, rect]);
 
-  const handleTouchMove = (event: TouchEvent) => {
+  const handleTouchMove = useCallback((event: TouchEvent) => {
     if (!isDown) return;
     if (!rect) return;
 
@@ -75,9 +86,9 @@ export const Draggable = (props: DraggableProps): JSX.Element => {
 
     event.stopPropagation();
     event.preventDefault();
-  };
+  }, [refX, refY, isDown, rect]);
 
-  const handleMouseUp = (event: MouseEvent) => {
+  const handleMouseUp = useCallback((event: MouseEvent) => {
     event.preventDefault();
     setIsDown(false);
 
@@ -86,18 +97,21 @@ export const Draggable = (props: DraggableProps): JSX.Element => {
 
     event.stopPropagation();
     event.preventDefault();
-  };
+  }, [posX, posY, onEndDragging]);
 
-  const handleTouchUp = (event: TouchEvent) => {
+  const handleTouchUp = useCallback((event: TouchEvent) => {
     event.preventDefault();
     setIsDown(false);
+    
+    if (onEndDragging)
+      onEndDragging({ x: posX, y: posY });
 
     event.stopPropagation();
     event.preventDefault();
-  };
+  }, [posX, posY, onEndDragging]);
 
-  const handleMouseDown = (event: React.MouseEvent<HTMLDivElement>) => {
-    if (!divOverlayRef.current) return;
+  const handleMouseDown = useCallback((event: React.MouseEvent<HTMLDivElement>) => {
+    if (!divOverlayRef.current || !canDrag) return;
 
     setIsDown(true);
 
@@ -106,11 +120,10 @@ export const Draggable = (props: DraggableProps): JSX.Element => {
 
     event.stopPropagation();
     event.preventDefault();
-  };
+  }, [canDrag, divOverlayRef]);
 
-  const handleTouchDown = (event: React.TouchEvent<HTMLDivElement>) => {
-    if (!divOverlayRef.current) return;
-
+  const handleTouchDown = useCallback((event: React.TouchEvent<HTMLDivElement>) => {
+    if (!divOverlayRef.current || !canDrag) return;
     setIsDown(true);
 
     setRefX(event.changedTouches[0].pageX - divOverlayRef.current.offsetLeft);
@@ -118,7 +131,7 @@ export const Draggable = (props: DraggableProps): JSX.Element => {
 
     event.stopPropagation();
     event.preventDefault();
-  };
+  }, [canDrag, divOverlayRef]);
 
   useEffect(() => {
     if (isDown) {
@@ -134,10 +147,11 @@ export const Draggable = (props: DraggableProps): JSX.Element => {
       document.removeEventListener('touchmove', handleTouchMove);
       document.removeEventListener('touchend', handleTouchUp);
     }
-  }, [isDown]);
+  }, [isDown, handleMouseMove, handleMouseUp, handleTouchMove, handleTouchUp]);
 
   return (
     <Container
+      canDrag={canDrag}
       onMouseDown={handleMouseDown}
       onTouchStart={handleTouchDown}
       css={css}

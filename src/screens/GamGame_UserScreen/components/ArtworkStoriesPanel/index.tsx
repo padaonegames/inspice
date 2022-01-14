@@ -3,6 +3,8 @@ import { useParams, Outlet } from 'react-router-dom';
 import { useContext } from 'react';
 import { ArtworksContext } from '../../MenuScreen';
 import { sampleStory, StoriesContext } from './StoriesContext';
+import { useAsyncRequest } from '../../../../services/useAsyncRequest';
+import { gamGameApi } from '../../../../services';
 
 const Root = styled.div`
   display: flex;
@@ -34,6 +36,13 @@ export const ArtworkStoriesPanel = (): JSX.Element => {
 
   const artworkData = artworks.find(elem => elem.id === artworkId);
 
+  const fetchArtworkStories = async () => {
+    if (!artworkId) return Promise.reject();
+    return gamGameApi.getGamGameStoryDefinitionsByArtworkId(artworkId);
+  };
+
+  const [fetchStoriesRequest] = useAsyncRequest(fetchArtworkStories, []);
+
   if (!artworkData) {
     return (
       <Root>
@@ -42,11 +51,17 @@ export const ArtworkStoriesPanel = (): JSX.Element => {
     );
   }
 
-  const stories = [sampleStory, sampleStory, sampleStory];
+  if (!(fetchStoriesRequest.kind === 'success' && fetchStoriesRequest.result.kind === 'ok')) {
+    return (
+      <Root>
+        There was a problem while fetching this artwork's stories.
+      </Root>
+    );
+  }
 
   return (
     <Root>
-      <StoriesContext.Provider value={{ stories, artwork: artworkData }}>
+      <StoriesContext.Provider value={{ stories: fetchStoriesRequest.result.data, artwork: artworkData }}>
         <Outlet />
       </StoriesContext.Provider>
     </Root>

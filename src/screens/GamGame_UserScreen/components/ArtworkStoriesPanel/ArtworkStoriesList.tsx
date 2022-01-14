@@ -1,11 +1,11 @@
 import styled from 'styled-components';
 import { Image } from '@styled-icons/ionicons-solid/Image';
-import { GamGameStoryDefinition } from '../../../../services/gamGameActivity.model';
 import StoryListDisplay from './../StoryListDisplay';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useContext } from 'react';
 import { ArtworksContext } from '../../MenuScreen';
 import { StoriesContext } from './StoriesContext';
+import { PlusCircleFill } from '@styled-icons/bootstrap/PlusCircleFill';
 
 const Root = styled.div`
   display: flex;
@@ -68,6 +68,7 @@ const DetailsIcon = styled(Image)`
 
 const SelectionPanel = styled.div`
   display: flex;
+  position: relative;
   flex-direction: column;
   margin: 0;
 
@@ -119,11 +120,31 @@ const ArtworkDate = styled.p`
   margin-bottom: 5px;
 `;
 
-export interface ArtworkStoriesListProps {
-  onDetailsClicked?: () => void;
-};
+const AddStoryButton = styled.div`
+  position: fixed;
+  z-index: 999;
+  bottom: 85px;
+  right: 20px;
+`;
 
-export const ArtworkStoriesList = (props: ArtworkStoriesListProps): JSX.Element => {
+const AddStoryButtonBackground = styled.div`
+  background-color: white;
+  border-radius: 50%;
+  height: 41px;
+  width: 42px;
+`;
+
+const AddStoryIcon = styled(PlusCircleFill)`
+  color: #c44c49;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 42px;
+  width: 42px;
+  cursor: pointer;
+`;
+
+export const ArtworkStoriesList = (): JSX.Element => {
 
   const { stories } = useContext(StoriesContext);
   const { artworks } = useContext(ArtworksContext);
@@ -143,6 +164,13 @@ export const ArtworkStoriesList = (props: ArtworkStoriesListProps): JSX.Element 
   return (
     <Root>
       <SelectionPanel>
+        <AddStoryButton
+          title='Add a new story'
+          onClick={() => navigate('../create')}
+        >
+          <AddStoryButtonBackground />
+          <AddStoryIcon />
+        </AddStoryButton>
         <UpperPanel>
           <MainInfoPanel>
             <ArtworkTitle>
@@ -156,7 +184,7 @@ export const ArtworkStoriesList = (props: ArtworkStoriesListProps): JSX.Element 
             </ArtworkDate>
           </MainInfoPanel>
           <DetailsPanel>
-            <DetailsIcon onClick={() => navigate('../detail')} />
+            <DetailsIcon onClick={() => navigate('../../detail')} />
             Details
           </DetailsPanel>
         </UpperPanel>
@@ -173,7 +201,6 @@ export const ArtworkStoriesList = (props: ArtworkStoriesListProps): JSX.Element 
         </ArtworkDataContainer>
       </SelectionPanel>
     </Root>
-
   );
 };
 

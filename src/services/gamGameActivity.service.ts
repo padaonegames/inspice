@@ -132,6 +132,28 @@ export class GamGameActivityService {
     return getApiResult<GetGamGameStoryDefinitionByIdResponse>(url, opts);
   }
 
+
+  /**
+* Retrieve all treasure hunts belonging to a given activity
+*/
+  public async getGamGameStoryDefinitionsByArtworkId(artworkId: string): Promise<ApiResult<GetGamGameStoryDefinitionByIdResponse>> {
+    const url = `${this.apiUrl}/object/${this.storyDefinitionsDatasetUuid}`;
+
+    const query = `{ "artworkId": "${artworkId}" }`;
+
+    const opts: AxiosRequestConfig = {
+      auth: {
+        username: this.apiKey,
+        password: this.apiKey
+      },
+      params: {
+        query: query
+      }
+    };
+    return getApiResult<GetGamGameStoryDefinitionByIdResponse>(url, opts);
+  }
+
+
   /**
    * Submit an Activity Definition to the persistence layer
    */
