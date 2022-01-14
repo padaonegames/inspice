@@ -16,6 +16,7 @@ import GeneralArtworkDetail from './components/GeneralArtworkDetail';
 import ArtworkStoriesPanel from './components/ArtworkStoriesPanel';
 import ArtworkStoryView from './components/ArtworkStoriesPanel/ArtworkStoryView';
 import ArtworkStoriesList from './components/ArtworkStoriesPanel/ArtworkStoriesList';
+import CreateArtworkStory from './components/ArtworkStoriesPanel/CreateArtworkStory';
 
 const Root = styled.div`
   display: flex;
@@ -104,16 +105,33 @@ interface GamGameUserFlowProps {
 };
 
 export interface ArtworksContext {
+  activity: GamGameActivityDefinition;
   artworks: ArtworkData[];
 }
 
-export const ArtworksContext = createContext<ArtworksContext>({ artworks: [] });
+export const ArtworksContext = createContext<ArtworksContext>({
+  artworks: [],
+  activity: {
+    _id: '',
+    activityTitle: '',
+    activityAuthor: '',
+    activityDefinitionsDatasetUuid: '',
+    artworksDatasetUuid: '',
+    storyDefinitionsDatasetUuid: '',
+    beginsOn: new Date(),
+    endsOn: new Date(),
+    minArtworks: 0,
+    maxArtworks: 0,
+    artworks: [],
+    allowedResponseTypes: []
+  }
+});
 
 const GamGameUserFlow = ({ activityDefinition, artworks, artworkCount }: GamGameUserFlowProps): JSX.Element => {
 
   return (
     <Root>
-      <ArtworksContext.Provider value={{ artworks }}>
+      <ArtworksContext.Provider value={{ artworks, activity: activityDefinition }}>
         <Routes>
           <Route path='home' element={<GeneralInformationStep />} />
           <Route path='collection' element={<CollectionStep />} />
@@ -121,6 +139,7 @@ const GamGameUserFlow = ({ activityDefinition, artworks, artworkCount }: GamGame
             <Route path='detail' element={<GeneralArtworkDetail artworks={artworks} />} />
             <Route path='stories/*' element={<ArtworkStoriesPanel />}>
               <Route path='all' element={<ArtworkStoriesList />} />
+              <Route path='create' element={<CreateArtworkStory />} />
               <Route path=':storyId' element={<ArtworkStoryView />} />
               <Route path='' element={<Navigate replace to='all' />} />
             </Route>

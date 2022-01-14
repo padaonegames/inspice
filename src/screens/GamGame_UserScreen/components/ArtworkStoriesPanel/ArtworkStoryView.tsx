@@ -131,7 +131,7 @@ const StoryEmojiContainer = styled.div<StoryEmojiProps>`
   position: absolute;
   z-index: 1;
   left: ${props => props.locX * 100}%;
-  bottom: ${props => props.locY * 100}%;
+  top: ${props => props.locY * 100}%;
 `;
 
 const StoryEmoji = styled.span`

@@ -6,6 +6,8 @@ export interface InProgressGamGameStoryDefinition {
   GamGameStoryAuthor: string | undefined;
   GamGameStoryTitle: string | undefined;
   activityId: string | undefined;
+  artworkId: string | undefined;
+  multimediaData: GamGameStoryMutimediaData | undefined;
 }
 
 export interface GamGameStoryDefinition {
@@ -41,16 +43,18 @@ export interface StoryEmoji extends StoryOverlayElement {
   emoji: Emoji;
 }
 
-export type Emoji =
-  | '🤩'
-  | '🥰'
-  | '😱'
-  | '😴'
-  | '🤢'
-  | '😢'
-  | '😌'
-  | '🧐'
-  ;
+export const availableEmoji = [
+  '🤩',
+  '🥰',
+  '😱',
+  '😴',
+  '🤢',
+  '😢',
+  '😌',
+  '🧐'
+] as const;
+
+export type Emoji = typeof availableEmoji[number];
 
 export interface SubmitGamGameStoryDefinitionRequest {
   GamGameStoryDefinition: InProgressGamGameStoryDefinition;

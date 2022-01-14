@@ -21,7 +21,7 @@ const Root = styled.div`
   padding-top: 20px;
   border-bottom: 1px solid #e5e5e5;
   box-sizing: inherit;
-  z-index: 9001;
+  z-index: 999999;
 `;
 
 const AppName = styled.span`
