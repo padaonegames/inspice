@@ -27,6 +27,7 @@ const themes: AvailableThemes = {
     artworkDisplayBackground: 'black',
     selectArtworkChoicesBackground: '#0b0b0b',
     fadedContentColor: 'lightgray',
+    textReadableLuminosity: 30,
   },
   light: {
     bodyBackground: '#F3F3F3',
@@ -52,6 +53,7 @@ const themes: AvailableThemes = {
     artworkDisplayBackground: '#474747',
     selectArtworkChoicesBackground: 'white',
     fadedContentColor: 'lightgray',
+    textReadableLuminosity: 80,
   },
 };
 
@@ -67,6 +69,8 @@ const GlobalStyle = createGlobalStyle`
   }
   body {
     background-color: ${props => props.theme.bodyBackground};
+    min-height: 100% !important;
+    height: 100%;
   }
   textarea {
     font-family: ${props => props.theme.textAreaFont};
@@ -83,6 +87,10 @@ const GlobalStyle = createGlobalStyle`
     font-size: ${props => props.theme.contentFontSize};
     color: ${props => props.theme.textColor};
     letter-spacing: ${props => props.theme.contentLetterSpacing};
+  }
+  html {
+    min-height: 100% !important;
+    height: 100%;
   }
 `;
 

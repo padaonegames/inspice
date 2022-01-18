@@ -1,7 +1,9 @@
 import React, { useContext } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from '../../theme/ThemeStore';
+import { LightMode } from '@styled-icons/material-sharp/LightMode';
+import { DarkMode } from '@styled-icons/material-sharp/DarkMode';
 
 const Root = styled.div`
   position: sticky;
@@ -35,10 +37,31 @@ const ThemeSwitch = styled.span`
   letter-spacing: ${props => props.theme.titleLetterSpacing};
   font-family: ${props => props.theme.titleFont};
   cursor: pointer;
+  padding-right: 15px;
 
   &:hover {
     text-decoration: underline;
   }
+`;
+
+const modeStyle = css`
+  color: ${props => props.theme.textColor};
+  cursor: pointer;
+  height: 27px;
+  width: 27px;
+  margin: auto;
+
+  &:hover {
+    transform: scale(1.2);
+  }
+`;
+
+const LightModeIcon = styled(LightMode)`
+  ${modeStyle}
+`;
+
+const DarkModeIcon = styled(DarkMode)`
+  ${modeStyle}
 `;
 
 export interface HeaderProps {
@@ -51,13 +74,13 @@ export interface HeaderProps {
 export const Header: React.FC<HeaderProps> = ({ activityTitle = '' }) => {
 
   const { t } = useTranslation('app');
-  const { theme, switchTheme } = useContext(ThemeContext); 
+  const { theme, switchTheme } = useContext(ThemeContext);
   // ${t('museumHeader')} - 
   return (
     <Root>
       <AppName>{`${activityTitle && `${activityTitle}`}`}</AppName>
       <ThemeSwitch onClick={() => switchTheme(theme === 'dark' ? 'light' : 'dark')}>
-          {theme === 'dark' ? 'Light' : 'Dark'}
+        {theme === 'dark' ? <LightModeIcon /> : <DarkModeIcon />}
       </ThemeSwitch>
     </Root>
   );
