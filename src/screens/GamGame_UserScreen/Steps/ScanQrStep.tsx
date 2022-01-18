@@ -29,7 +29,7 @@ export const ScanQrStep = (): JSX.Element => {
 
     if (decodedText.startsWith('artworkId:')) {
       const artworkId = decodedText.slice('artworkId:'.length);
-      navigate(`artwork/${artworkId}`);
+      navigate(`../collection/${artworkId}`);
     }
   }, [navigate]);
 

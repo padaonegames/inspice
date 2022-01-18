@@ -17,6 +17,7 @@ import ViewpointsResultsComponent from './Viewpoints/ViewpointsResultsComponent'
 import AnswerViewpointComponent from './Viewpoints/AnswerViewpointComponent';
 import CreateGamGameActivityScreen from './screens/GamGame_CreateActivity/Screen';
 import GamGameUserMenuScreen from './screens/GamGame_UserScreen/MenuScreen';
+import { TemplateDashboard } from './screens/TemplateDashboard/TemplateDashboard';
 
 /**
  * Main entrypoint for our React application within which all other components
@@ -30,6 +31,9 @@ export const App: React.FC = () => {
         <Theme>
           <BrowserRouter>
             <Routes>
+              <Route path='dashboard' element={<ActivityScreen activityTitle='InSpice - Dashboard' />}>
+                <Route path='' element={<TemplateDashboard />} />
+              </Route>
               <Route path='viewpoints' element={<ActivityScreen activityTitle='IMMA - Viewpoints' />}>
                 <Route path='consumer'>
                   <Route path='browse' element={<HomeComponent />} />
@@ -61,7 +65,7 @@ export const App: React.FC = () => {
                 <Route path='browse' element={<BrowseDefinitionsScreen />} />
                 <Route path='' element={<Navigate replace to='browse' />} />
               </Route>
-              <Route path='/' element={<Navigate replace to='/viewpoints/consumer/browse' />} />
+              <Route path='/' element={<Navigate replace to='/dashboard' />} />
             </Routes>
           </BrowserRouter>
         </Theme>

@@ -2,6 +2,8 @@
 //       GAM GAME DEFINITIONS
 //------------------------------------------
 
+import { ActivityInstance } from "./activity.model";
+
 export interface InProgressGamGameStoryDefinition {
   GamGameStoryAuthor: string | undefined;
   GamGameStoryTitle: string | undefined;
@@ -102,17 +104,11 @@ export const defaultGamGameActivityDefinition: InProgressGamGameActivityDefiniti
   artworks: [],
 };
 
-export interface GamGameActivityDefinition {
-  _id: string;
-  activityTitle: string;
-  activityAuthor: string;
-  beginsOn: Date;
-  endsOn: Date;
+export interface GamGameActivityDefinition extends ActivityInstance {
   minArtworks: number;
   maxArtworks: number;
   allowedResponseTypes: AllowedResponseType[];
   storyDefinitionsDatasetUuid: string;
-  activityDefinitionsDatasetUuid: string;
   artworksDatasetUuid: string;
   artworks: string[];
 }
