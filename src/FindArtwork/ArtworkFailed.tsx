@@ -38,6 +38,7 @@ const FailedIcon = styled(Block)`
   height: 25%;
   width: 25%;
   align-self: center;
+  margin-top: 10px;
 `;
 
 const DarkLayer = styled.div`
@@ -84,13 +85,16 @@ const CardBackground = styled.div<CardBackgroundProps>`
   overflow: hidden;
 `;
 
-interface ArtworkFailedProps {
+export interface ArtworkFailedProps {
   flipped: boolean;
   image: string;
   title: string;
 };
 
-const ArtworkFailed: React.FC<ArtworkFailedProps> = ({ flipped, image, title }) => {
+/**
+ * <img src="media://ArtworkFailed.PNG" alt="ArtworkFailed">
+ */
+export const ArtworkFailed: React.FC<ArtworkFailedProps> = ({ flipped, image, title }) => {
   
   const { t } = useTranslation('app');
   

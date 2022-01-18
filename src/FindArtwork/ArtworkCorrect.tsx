@@ -1,7 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
-import AudioPlayer from '../components/AudioPlayer';
 
 const RevealText = styled.div`
   display: flex;
@@ -77,13 +76,16 @@ const CardBackground = styled.div<CardBackgroundProps>`
   overflow: hidden;
 `;
 
-interface ArtworkCorrectProps {
+export interface ArtworkCorrectProps {
   flipped: boolean;
   image: string;
   title: string;
 };
 
-const ArtworkCorrect: React.FC<ArtworkCorrectProps> = ({ flipped, image, title }) => {
+/**
+ * <img src="media://ArtworkCorrect.PNG" alt="ArtworkCorrect">
+ */
+export const ArtworkCorrect: React.FC<ArtworkCorrectProps> = ({ flipped, image, title }) => {
 
   const { t } = useTranslation('app');
 

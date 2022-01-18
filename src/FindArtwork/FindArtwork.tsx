@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import ArtworkCard from '../FindArtwork/ArtworkCard';
 
 import ClueHolder from './ClueHolder';
-import Fader from '../components/Fader';
+import Fader from '../components/Layout/Fader';
 import PointsPanel from './PointsPanel';
 import NextPanel from './NextCornerPanel';
 
@@ -11,6 +11,7 @@ import { NavigateNext } from '@styled-icons/material/NavigateNext';
 import { NavigateBefore } from '@styled-icons/material/NavigateBefore';
 import { ArtworkData } from '../services/artwork.model';
 import { StageData } from '../services/findArtworkActivity.model';
+import ContentCard from '../components/Layout/ContentCard';
 
 const Root = styled.div`
   margin-top: 1vh;
@@ -47,19 +48,17 @@ const UpperRowContainer = styled.div`
   display: inline-flex;
   flex-direction: row;
   align-content: center;
-  border-style: solid;
-  border-color: darkgrey;
-  border-width: 0px 0px 1px 0px;
+  border-bottom: 1px solid #e5e5e5;
 `;
 
 const LowerPanelContainer = styled.div`
-  background-color: #F3F3F3;
   height: 100%;
   width: 100%;
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
+  padding-top: 20px;
 `;
 
 interface NavIconProps {
@@ -96,7 +95,7 @@ const NavigateBeforeIcon = styled(NavigateBefore) <NavIconProps>`
   }
 `;
 
-interface FindArtworkProps {
+export interface FindArtworkProps {
   stageData: StageData;
   imagesData: ArtworkData[];
   onStageCompleted: () => void;
@@ -104,7 +103,10 @@ interface FindArtworkProps {
   score: number;
 };
 
-const FindArtwork: React.FC<FindArtworkProps> = ({
+/**
+ * <img src="media://FindArtwork.PNG" alt="FindArtwork">
+ */
+export const FindArtwork: React.FC<FindArtworkProps> = ({
   stageData,
   imagesData,
   onStageCompleted,
@@ -164,40 +166,46 @@ const FindArtwork: React.FC<FindArtworkProps> = ({
         </Fader>
       </UpperRowContainer>
       <LowerPanelContainer>
-        <NavigateBeforeIcon
-          active={displayIndex > 0}
-          onClick={() => {
-            if (displayIndex > 0) {
-              setDisplayIndex(prev => prev - 2);
-            }
-          }}
-        />
-        <ArtworkGrid>
-          {[0, 1, 2].map(column =>
-            <ArtworksContainer key={column}>
-              {imagesData.slice((displayIndex + (column * 2)), (displayIndex + 2 + (column * 2))).map((im, i) => (
-                <ArtworkCard
-                  key={im.id + im.author}
-                  artworkData={im}
-                  flipped={flippedCards[(column * 2) + i + displayIndex]}
-                  status={im.id === stageData.artworkId ?
-                    { status: 'right', prizes: stageData.multimediaData.map(elem => elem.kind === 'Text' ? elem.text : elem.src) } :
-                    { status: 'wrong' }
-                  }
-                  onCardSelected={() => handleCardSelected(im.id, ((column * 2) + i + displayIndex))}
-                />
-              ))}
-            </ArtworksContainer>
-          )}
-        </ArtworkGrid>
-        <NavigateNextIcon
-          active={displayIndex + 6 < imagesData.length}
-          onClick={() => {
-            if (displayIndex + 6 < imagesData.length) {
-              setDisplayIndex(prev => prev + 2);
-            }
-          }}
-        />
+        <ContentCard
+          width='95%'
+          maxWidth='100%'
+          flexDirection='row'
+        >
+          <NavigateBeforeIcon
+            active={displayIndex > 0}
+            onClick={() => {
+              if (displayIndex > 0) {
+                setDisplayIndex(prev => prev - 2);
+              }
+            }}
+          />
+          <ArtworkGrid>
+            {[0, 1, 2].map(column =>
+              <ArtworksContainer key={column}>
+                {imagesData.slice((displayIndex + (column * 2)), (displayIndex + 2 + (column * 2))).map((im, i) => (
+                  <ArtworkCard
+                    key={im.id + im.author}
+                    artworkData={im}
+                    flipped={flippedCards[(column * 2) + i + displayIndex]}
+                    status={im.id === stageData.artworkId ?
+                      { status: 'right', prizes: stageData.multimediaData.map(elem => elem.kind === 'Text' ? elem.text : elem.src) } :
+                      { status: 'wrong' }
+                    }
+                    onCardSelected={() => handleCardSelected(im.id, ((column * 2) + i + displayIndex))}
+                  />
+                ))}
+              </ArtworksContainer>
+            )}
+          </ArtworkGrid>
+          <NavigateNextIcon
+            active={displayIndex + 6 < imagesData.length}
+            onClick={() => {
+              if (displayIndex + 6 < imagesData.length) {
+                setDisplayIndex(prev => prev + 2);
+              }
+            }}
+          />
+        </ContentCard>
       </LowerPanelContainer>
     </Root>
   );

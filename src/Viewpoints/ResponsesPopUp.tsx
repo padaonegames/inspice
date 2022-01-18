@@ -28,6 +28,7 @@ const Root = styled.div`
   left: 0;
   top: 0;
   background-color: ${props => props.theme.bodyBackground};
+  border: solid 1px ${props => props.theme.textColor};
   z-index:5;
 `;
 
@@ -160,7 +161,9 @@ const ResponsesPopup: React.FC<ResponsesPopupProps> = ({
                     {elem.questionAsked}
                   </QuestionPanel>
                   <AnswerPanel>
-                    {`"${elem.response}"`}
+                    <p>
+                      {`"${elem.response}"`}
+                    </p>
                   </AnswerPanel>
                 </OptionText>
               </CardContainer>

@@ -2,6 +2,8 @@
 //       TREASURE HUNT DEFINITIONS
 //------------------------------------------
 
+import { ActivityInstance } from "./activity.model";
+
 export interface InProgressTreasureHuntDefinition {
   treasureHuntAuthor: string | undefined;
   treasureHuntTitle: string | undefined;
@@ -97,19 +99,13 @@ export const defaultFindArtworkActivityDefinition: InProgressFindArtworkActivity
   artworks: [],
 };
 
-export interface FindArtworkActivityDefinition {
-  _id: string;
-  activityTitle: string;
-  activityAuthor: string;
-  beginsOn: Date;
-  endsOn: Date;
+export interface FindArtworkActivityDefinition extends ActivityInstance {
   minStages: number;
   maxStages: number;
   minCluesPerStage: number;
   maxCluesPerStage: number;
   allowedInputs: AllowedInputs[];
   huntDefinitionsDatasetUuid: string;
-  activityDefinitionsDatasetUuid: string;
   artworksDatasetUuid: string;
   artworks: string[];
 }

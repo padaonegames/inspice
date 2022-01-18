@@ -155,7 +155,7 @@ const CardBackground = styled.div<CardBackgroundProps>`
   overflow: hidden;
   background-position: 50% 50%;
   background-repeat: no-repeat;
-  background-size: auto 95%;
+  background-size: auto 110%;
   
   ${GoCorner} {
     animation: ${shrinkCorner} 0.5s linear;
@@ -193,20 +193,31 @@ const CardBackground = styled.div<CardBackgroundProps>`
   }
 `;
 
-interface ArtworkFrontProps {
+export interface ArtworkFrontProps {
   artworkData: ArtworkData;
   flipped: boolean;
   onArtworkSelected: () => void;
+  /**
+   * Callback to the parent of this panel indicating that an artwork has been clicked from the panel.
+   * Note that this is different from selection, as clicking on an artwork just means that the user wishes
+   * to explore it (e.g. to get more information about it).
+   */
+  onArtworkClicked?: () => void;
 };
 
-const ArtworkFront: React.FC<ArtworkFrontProps> = ({ artworkData, flipped, onArtworkSelected }) => {
+export const ArtworkFront: React.FC<ArtworkFrontProps> = ({
+  artworkData,
+  flipped,
+  onArtworkSelected,
+  onArtworkClicked,
+}) => {
 
   return (
     <CardBackground
       backgroundImage={artworkData.src}
       flipped={flipped}
     >
-      <DarkLayer>
+      <DarkLayer onClick={onArtworkClicked}>
         <RevealText>
           <NameText>
             {artworkData.title}

@@ -2,11 +2,11 @@ import React from 'react';
 import styled from 'styled-components';
 import { useAsyncRequest } from '../services/useAsyncRequest';
 import { viewpointsArtworksService } from '../services';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import lineBackground from './../components/line-header-point.png';
 import ArtworksComponent from '../Viewpoints/ArtworksComponent';
 import ImmaLogo from '../assets/img/IMMA30_LOGO_RGB_small.png';
-import ContentCard, { CardExplanatoryText } from './ContentCard';
+import ContentCard, { CardExplanatoryText } from '../components/Layout/ContentCard';
 
 const Root = styled.div`
   display: flex;
@@ -31,13 +31,20 @@ const LeadText = styled.h3`
   letter-spacing: +0.5px;
   font-family: Raleway;
   font-weight: 500;
-  width: 57.5%;
   text-align: center;
   line-height: 1.5;
   background-color: ${props => props.theme.cardBackground};
   box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
   padding: 15px;
   margin-bottom: 15px;
+
+  @media (max-width: 768px) {
+    width: 90%;
+  }
+
+  @media (min-width: 768px) {
+    width: 57.5%;
+  }
 `;
 
 const ClickableText = styled.p`
@@ -71,7 +78,7 @@ const LogoImage = styled.img`
 
 const HomeComponent: React.FC = () => {
 
-  let history = useHistory();
+  let navigate = useNavigate();
 
   const fetchArtworks = async () => {
     return await viewpointsArtworksService.fetchArtworks();
@@ -120,12 +127,12 @@ const HomeComponent: React.FC = () => {
 
         <ArtworksComponent
           artworks={artworks}
-          onArtworkClicked={(id) => history.push(`/viewpoints/consumer/answer/${id}`)}
+          onArtworkClicked={(id) => navigate(`/viewpoints/consumer/answer/${id}`)}
         />
       </ContentCard>
       <VerticalSeparator />
       <ContentCard cardTitle='Other People'>
-        <ClickableText onClick={() => history.push('/viewpoints/consumer/results')}>Find out how others have responded to these artworks.</ClickableText>
+        <ClickableText onClick={() => navigate('/viewpoints/consumer/results')}>Find out how others have responded to these artworks.</ClickableText>
       </ContentCard>
     </Root>
   );

@@ -11,25 +11,28 @@ const CardContainer = styled.div`
   display: block;
   position: relative;
   width: 95%;
-  height: 30vh;
+  height: 29vh;
   transform-style: preserve-3d;
   perspective: 1000px;
-  background-color: transparent;
-  border: 5px solid black;
+  background-color: black;
+  border: 1px solid black;
 `;
 
 export type ArtworkCardStatus =
   | { status: 'wrong' }
   | { status: 'right', prizes: string[] };
 
-interface ArtworkCardProps {
+export interface ArtworkCardProps {
   artworkData: ArtworkData;
   status: ArtworkCardStatus;
   flipped: boolean;
   onCardSelected: () => void;
 };
 
-const ArtworkCard: React.FC<ArtworkCardProps> = ({ artworkData, flipped, status, onCardSelected }) => {
+/**
+ * <img src="media://ArtworkCard.PNG" alt="ArtworkCard">
+ */
+export const ArtworkCard: React.FC<ArtworkCardProps> = ({ artworkData, flipped, status, onCardSelected }) => {
 
   return (
     <CardContainer>

@@ -1,10 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useHistory, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { viewpointsArtworksService } from '../services';
 import { useAsyncRequest } from '../services/useAsyncRequest';
-import LoadingOverlay from '../components/LoadingOverlay';
-import ArtworkDetail from './ArtworkDetail';
+import LoadingOverlay from '../components/Layout/LoadingOverlay';
+import ArtworkDetail from '../components/ArtworkDisplay/ArtworkDetail';
 import QuestionComponent from './QuestionComponent';
 import { ArrowBackCircle } from '@styled-icons/ionicons-sharp/ArrowBackCircle';
 
@@ -34,8 +34,8 @@ const BackIcon = styled(ArrowBackCircle)`
 
 const AnswerViewpointComponent: React.FC = () => {
 
-  let { id } = useParams<{ id: string }>();
-  let history = useHistory();
+  let { id } = useParams() as { id: string };
+  let navigate = useNavigate();
 
   const fetchArtwork = async () => {
     return await viewpointsArtworksService.fetchArtwork(id);
@@ -51,7 +51,7 @@ const AnswerViewpointComponent: React.FC = () => {
     <>
       <BackIcon
         title='Return to list of artworks'
-        onClick={() => history.push('/viewpoints/consumer/browse')}
+        onClick={() => navigate('/viewpoints/consumer/browse')}
       />
       <Root>
         <ArtworkDetail artworkData={fetchArtworkStatus.result.data} />

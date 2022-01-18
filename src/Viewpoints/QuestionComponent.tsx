@@ -8,7 +8,7 @@ import { Response } from '../services/viewpointsResponse.model';
 import { Question } from '../services/viewpointsQuestion.model';
 import { ApiResult } from '../services/viewpointsQuestions.service';
 import { LoaderCircle } from '@styled-icons/boxicons-regular/LoaderCircle';
-import Alert from '../components/Alert';
+import Alert from '../components/Layout/Alert';
 
 const Root = styled.div`
   display: flex;
@@ -97,6 +97,8 @@ const TextArea = styled.textarea`
 
 const SubmitResponseButton = styled.div`
   font-weight: 400;
+  font-family: ${props => props.theme.contentFont};
+  font-size: ${props => props.theme.contentFontSize};
   color: ${props => props.theme.clickableTextFontColor};
   margin: 15px auto;
   text-decoration: underline;

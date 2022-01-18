@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { Medal } from '@styled-icons/remix-line/Medal';
 import { useState } from 'react';
 import Popup from './PopUp';
-import Modal from '../components/Modal';
+import Modal from '../components/Layout/Modal';
 import { ArtworkData } from '../services/artwork.model';
 
 const RevealText = styled.div`
@@ -71,25 +71,28 @@ const PrizeBox = styled(Medal)`
   align-self: center;
 `;
 
-const PrizeContainer = styled.button`
+const PrizeContainer = styled.div`
   position: relative;
   margin-left: 0.2vw;
   margin-right: 0.2vw;
-  color:rgb(255, 255, 255);
+  cursor: pointer;
+  color: white;
+  transform: scale(0.9);
+  transition: transform 0.5s ease;
 
   &:hover {
-    color: rgb(207, 207, 207);
+    transform: scale(1.1);
   }
 `;
 
-type Props = {
+export type Props = {
   flipped: boolean;
   prize: string[];
   artworkData: ArtworkData;
 };
 
 
-const ArtworkPopup: React.FC<Props> = ({ flipped, prize, artworkData }) => {
+export const ArtworkPopup: React.FC<Props> = ({ flipped, prize, artworkData }) => {
 
   const { t } = useTranslation('app');
   const [modalOpen, setModalOpen] = useState<boolean>(false);

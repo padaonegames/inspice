@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 const PointsCornerScore = styled.p`
-  color: black;
   font-size: 2.2em;
   font-weight: 500;
   letter-spacing: +1px;
@@ -34,11 +33,14 @@ const PointsCorner = styled.div`
   }
 `;
 
-interface PointsPanelProps {
+export interface PointsPanelProps {
   points: number
 };
 
-const PointsPanel: React.FC<PointsPanelProps> = ({ points }) => {
+/**
+ * <img src="media://PointsPanel.PNG" alt="PointsPanel">
+ */
+export const PointsPanel: React.FC<PointsPanelProps> = ({ points }) => {
 
   const { t } = useTranslation('app');
 

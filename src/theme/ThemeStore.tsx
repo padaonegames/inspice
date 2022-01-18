@@ -24,9 +24,12 @@ const ThemeContext = React.createContext<IThemeContext>({
 });
 
 const ThemeStore: React.FC = ({ children }) => {
-  const [theme, setTheme] = useState<keyof AvailableThemes>('dark');
+  const [theme, setTheme] = useState<keyof AvailableThemes>(localStorage.getItem('theme') as keyof AvailableThemes || 'dark');
 
-  const switchTheme = (theme: keyof AvailableThemes) => setTheme(theme);
+  const switchTheme = (theme: keyof AvailableThemes) => {
+    setTheme(theme);
+    localStorage.setItem('theme', theme);
+  };
 
   return (
     <ThemeContext.Provider value={{ switchTheme, theme }}>

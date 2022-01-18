@@ -25,5 +25,7 @@ declare module 'styled-components' {
     clickableTextFontSize: string;
     clickableTextFontColor: string;
     artworkDisplayBackground: string;
+    selectArtworkChoicesBackground: string;
+    fadedContentColor: string;
   }
 }

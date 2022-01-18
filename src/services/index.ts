@@ -4,12 +4,14 @@ import { ArtworkFieldMapping } from "./artwork.model";
 import { ViewpointsArtworksService } from "./viewpointsArtworks.service";
 import { ViewpointsQuestionsService } from "./viewpointsQuestions.service";
 import { ViewpointsResponseService } from "./viewpointsResponse.service";
+import { GamGameActivityService } from "./gamGameActivity.service";
 
 export let api: FindArtworkActivityService;
 export let artworksService: ArtworksService;
 export let viewpointsArtworksService: ViewpointsArtworksService;
 export let viewpointsQuestionsService: ViewpointsQuestionsService;
 export let viewpointsResponseService: ViewpointsResponseService;
+export let gamGameApi: GamGameActivityService;
 
 /**
  * For the time being we fetch the relevant fields from the initialize services function provided here.
@@ -22,6 +24,8 @@ export const initializeServices = () => {
   const apiKey = process.env.REACT_APP_API_KEY || '';
   const activityDefinitionsDatasetUuid = process.env.REACT_APP_ACTIVITY_DEFINITIONS_DATASET_UUID || '0f286b7d-87cd-4453-8dc9-b6dc54320429';
   const huntDefinitionsDatasetUuid = process.env.REACT_APP_HUNT_DEFINITIONS_DATASET_UUID || 'a5c0f5fd-7fc7-461f-b276-fddb7ede99d6';
+  const gamGameActivityDefinitionsDatasetUuid = process.env.REACT_APP_GAM_GAME_ACTIVITY_DEFINITIONS_DATASET_UUID || '0ed38d67-7afb-440d-93b3-afe660072700';
+  const gamGameStoryDefinitionsDatasetUuid = process.env.REACT_APP_GAM_GAME_STORY_DEFINITIONS_DATASET_UUID || '816c8fb3-6c73-4405-bf71-b1c765c4a79e';
 
   const mapping: ArtworkFieldMapping = {
     author: process.env.REACT_APP_MAP_AUTHOR?.split(';') || ['author'],
@@ -38,4 +42,5 @@ export const initializeServices = () => {
   viewpointsArtworksService = new ViewpointsArtworksService();
   viewpointsQuestionsService = new ViewpointsQuestionsService();
   viewpointsResponseService = new ViewpointsResponseService();
+  gamGameApi = new GamGameActivityService(apiUrl, datasetUuid, gamGameActivityDefinitionsDatasetUuid, gamGameStoryDefinitionsDatasetUuid, apiKey);
 };
