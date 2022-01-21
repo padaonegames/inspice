@@ -370,3 +370,27 @@ export const NewTagText = styled.span`
   line-height: 1.1;
   padding: 3px;
 `;
+
+export const CheckboxList = styled.div`
+  margin-top: 5px;
+  display: flex;
+  background-color: transparent;
+  flex-direction: column;
+  align-items: left;
+
+  border-bottom: 2px solid #dadce0;
+  padding: 5px 0;
+  background-color: transparent;
+`;
+
+export const CheckboxOption = styled.div`
+  margin-top: 2px;
+  margin-left: 5px;
+  border-top: none;
+  font-size: 0.9em;
+  font-weight: 200;
+  font-family: ${props => props.theme.contentFont};
+  color: ${props => props.theme.textColor};
+  line-height: 135%;
+  width: 100%;
+`;
