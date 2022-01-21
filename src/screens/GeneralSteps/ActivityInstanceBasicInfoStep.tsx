@@ -28,7 +28,7 @@ export const ActivityInstanceBasicInfoStep = (props: StepComponentProps): JSX.El
   return (
     <Root>
       <StepTitleCard
-        stepTitle='Find Artwork - Basic Information'
+        stepTitle='Basic Information'
         stepDescription={`Below, enter the basic information about your activity, such as title, description, author,
         start and end dates, thumbnail image, and possible tags.`}
       />

@@ -2,9 +2,6 @@ import styled from 'styled-components';
 import CheckBoxGroupInputCard from '../../../components/Forms/Cards/CheckBoxGroupInputCard';
 import RangeInputCard from '../../../components/Forms/Cards/RangeInputCard';
 import StepTitleCard from '../../../components/Forms/Cards/StepTitleCard';
-import CheckBoxGroupInput from '../../../components/Forms/CheckBoxGroupInput';
-import IntegerRangeInputFieldWithTag from '../../../components/Forms/IntegerRangeInputFieldWithTag';
-import ContentCard from '../../../components/Layout/ContentCard';
 import { StepComponentProps } from '../../../components/Navigation/Steps';
 import { AllowedInputs } from '../../../services/findArtworkActivity.model';
 
@@ -15,9 +12,6 @@ const Root = styled.div`
   margin-top: 4.5vh;
 `;
 
-const CardContent = styled.div`
-  align-self: center;
-`;
 
 /**
  * <img src="media://ConfigureStageParamsStage.PNG" alt="ConfigureStageParamsStage">

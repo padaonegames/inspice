@@ -10,11 +10,11 @@ import { useAsyncRequest } from '../../services/useAsyncRequest';
 
 // steps
 import { State, Step, Steps, StepsConfig } from '../../components/Navigation/Steps';
-import BasicInformationStep from './Steps/BasicInformationStep';
 import ConfigureStageParamsStep from './Steps/ConfigureStageParamsStep';
 import SelectArtworksStep from './Steps/SelectArtworksStep';
 import { AllowedResponseType, CompletedGamGameActivityDefinition, InProgressGamGameActivityDefinition } from '../../services/gamGameActivity.model';
 import { useLocation } from 'react-router-dom';
+import ActivityInstanceBasicInfoStep from '../GeneralSteps/ActivityInstanceBasicInfoStep';
 
 const Root = styled.div`
   display: flex;
@@ -130,7 +130,7 @@ export const CreateGamGameActivityScreen = () => {
         genState={activityDefinition}
         setGenState={setActivityDefinition}
       >
-        <Step title='Basic Information' component={BasicInformationStep} />
+        <Step title='Basic Information' component={ActivityInstanceBasicInfoStep} />
         <Step title='Stage Settings' component={ConfigureStageParamsStep} />
         <Step title='Select Artworks' component={SelectArtworksStep} />
       </Steps>
