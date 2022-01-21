@@ -14,6 +14,7 @@ import BasicInformationStep from './Steps/BasicInformationStep';
 import ConfigureStageParamsStep from './Steps/ConfigureStageParamsStep';
 import SelectArtworksStep from './Steps/SelectArtworksStep';
 import { AllowedResponseType, CompletedGamGameActivityDefinition, InProgressGamGameActivityDefinition } from '../../services/gamGameActivity.model';
+import { useLocation } from 'react-router-dom';
 
 const Root = styled.div`
   display: flex;
@@ -24,6 +25,7 @@ const Root = styled.div`
 //                 State Definition
 //-------------------------------------------------------
 const sample_base: InProgressGamGameActivityDefinition = {
+  activityType: 'GAM Game',
   activityTitle: undefined,
   activityAuthor: undefined,
   beginsOn: undefined,
@@ -32,17 +34,20 @@ const sample_base: InProgressGamGameActivityDefinition = {
   maxArtworks: 5,
   allowedResponseTypes: [],
   storyDefinitionsDatasetUuid: process.env.REACT_APP_GAM_GAME_STORY_DEFINITIONS_DATASET_UUID || '',
-  activityDefinitionsDatasetUuid: process.env.REACT_APP_GAM_GAME_ACTIVITY_DEFINITIONS_DATASET_UUID || '',
   artworksDatasetUuid: process.env.REACT_APP_DATASET_UUID || '',
   artworks: [],
 };
 
-const sample: State = {
-  ...sample_base,
+const initialState = {
   page: 1,
   itemsPerPage: 30,
   appliedFilter: {},
   selectedArtworks: [],
+};
+
+const sample: State = {
+  ...sample_base,
+  ...initialState
 };
 
 const isStageOneCompleted = (definition: State): boolean => {
@@ -67,16 +72,20 @@ const isStageThreeCompleted = (definition: State): boolean => {
  */
 export const CreateGamGameActivityScreen = () => {
 
+  const { state } = useLocation();
+
   const [activityDefinition, setActivityDefinition] =
-    useState<State>(sample);
+    useState<State>(state ? { ...initialState, ...state } : sample);
   const [submitGame, setSubmitGame] = useState<boolean>(false);
 
-  const submitDefinition = () => {
+  const submitDefinition = async () => {
     if (!submitGame) return Promise.reject();
     setSubmitGame(false);
     const def: CompletedGamGameActivityDefinition = {
+      activityType: 'GAM Game',
       activityAuthor: activityDefinition['activityAuthor'] as string,
       activityTitle: activityDefinition['activityTitle'] as string,
+      description: activityDefinition['description'] as string,
       allowedResponseTypes: activityDefinition['allowedResponseTypes'] as AllowedResponseType[],
       artworks: activityDefinition['artworks'] as string[],
       beginsOn: activityDefinition['beginsOn'] as Date,
@@ -84,7 +93,6 @@ export const CreateGamGameActivityScreen = () => {
       minArtworks: activityDefinition['minArtworks'] as number,
       maxArtworks: activityDefinition['maxArtworks'] as number,
       storyDefinitionsDatasetUuid: activityDefinition['storyDefinitionsDatasetUuid'] as string,
-      activityDefinitionsDatasetUuid: activityDefinition['activityDefinitionsDatasetUuid'] as string,
       artworksDatasetUuid: activityDefinition['artworksDatasetUuid'] as string
     };
     return gamGameApi.submitGamGameActivityDefinition(def);

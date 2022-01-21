@@ -113,9 +113,9 @@ export const ArtworksContext = createContext<ArtworksContext>({
   artworks: [],
   activity: {
     _id: '',
+    activityType: 'GAM Game',
     activityTitle: '',
     activityAuthor: '',
-    activityDefinitionsDatasetUuid: '',
     artworksDatasetUuid: '',
     storyDefinitionsDatasetUuid: '',
     beginsOn: new Date(),

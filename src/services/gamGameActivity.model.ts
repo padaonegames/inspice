@@ -71,6 +71,7 @@ export type GetGamGameStoryDefinitionByIdResponse = GamGameStoryDefinition[];
 //------------------------------------------
 
 export interface InProgressGamGameActivityDefinition {
+  activityType: 'GAM Game';
   activityTitle: string | undefined;
   activityAuthor: string | undefined;
   beginsOn: Date | undefined;
@@ -79,7 +80,6 @@ export interface InProgressGamGameActivityDefinition {
   maxArtworks: number | undefined;
   allowedResponseTypes: AllowedResponseType[];
   storyDefinitionsDatasetUuid: string | undefined;
-  activityDefinitionsDatasetUuid: string | undefined;
   artworksDatasetUuid: string | undefined;
   artworks: string[];
 }
@@ -91,6 +91,7 @@ export type CompletedGamGameActivityDefinition = Omit<
 
 export const defaultGamGameActivityDefinition: InProgressGamGameActivityDefinition =
 {
+  activityType: 'GAM Game',
   activityTitle: undefined,
   activityAuthor: undefined,
   beginsOn: undefined,
@@ -99,12 +100,12 @@ export const defaultGamGameActivityDefinition: InProgressGamGameActivityDefiniti
   maxArtworks: undefined,
   allowedResponseTypes: [],
   storyDefinitionsDatasetUuid: undefined,
-  activityDefinitionsDatasetUuid: undefined,
   artworksDatasetUuid: undefined,
   artworks: [],
 };
 
 export interface GamGameActivityDefinition extends ActivityInstance {
+  activityType: 'GAM Game',
   minArtworks: number;
   maxArtworks: number;
   allowedResponseTypes: AllowedResponseType[];

@@ -14,6 +14,8 @@ import { State, Step, Steps, StepsConfig } from '../../components/Navigation/Ste
 import BasicInformationStep from './Steps/BasicInformationStep';
 import ConfigureStageParamsStep from './Steps/ConfigureStageParamsStep';
 import SelectArtworksStep from './Steps/SelectArtworksStep';
+import { useLocation } from 'react-router-dom';
+import ActivityInstanceBasicInfoStep from '../GeneralSteps/ActivityInstanceBasicInfoStep';
 
 const Root = styled.div`
   display: flex;
@@ -24,6 +26,7 @@ const Root = styled.div`
 //                 State Definition
 //-------------------------------------------------------
 const sample_base: InProgressFindArtworkActivityDefinition = {
+  activityType: 'Treasure Hunt',
   activityTitle: undefined,
   activityAuthor: undefined,
   beginsOn: undefined,
@@ -34,17 +37,20 @@ const sample_base: InProgressFindArtworkActivityDefinition = {
   maxCluesPerStage: 5,
   allowedInputs: [],
   huntDefinitionsDatasetUuid: process.env.REACT_APP_HUNT_DEFINITIONS_DATASET_UUID || '',
-  activityDefinitionsDatasetUuid: process.env.REACT_APP_ACTIVITY_DEFINITIONS_DATASET_UUID || '',
   artworksDatasetUuid: process.env.REACT_APP_DATASET_UUID || '',
   artworks: [],
 };
 
-const sample: State = {
-  ...sample_base,
+const initialData = {
   page: 1,
   itemsPerPage: 30,
   appliedFilter: {},
   selectedArtworks: []
+};
+
+const sample: State = {
+  ...sample_base,
+  ...initialData
 };
 
 const isStageOneCompleted = (definition: State): boolean => {
@@ -96,8 +102,10 @@ const isStageThreeCompleted = (definition: State): boolean => {
  */
 export const CreateFindArtworkActivityScreen = () => {
 
+  const { state } = useLocation();
+
   const [activityDefinition, setActivityDefinition] =
-    useState<State>(sample);
+    useState<State>(state ? { ...initialData, ...state } : sample);
   const [submitGame, setSubmitGame] = useState<boolean>(false);
 
   const submitDefinition = () => {
@@ -115,8 +123,8 @@ export const CreateFindArtworkActivityScreen = () => {
       minCluesPerStage: activityDefinition['minCluesPerStage'] as number,
       maxCluesPerStage: activityDefinition['maxCluesPerStage'] as number,
       huntDefinitionsDatasetUuid: activityDefinition['huntDefinitionsDatasetUuid'] as string,
-      activityDefinitionsDatasetUuid: activityDefinition['activityDefinitionsDatasetUuid'] as string,
-      artworksDatasetUuid: activityDefinition['artworksDatasetUuid'] as string
+      artworksDatasetUuid: activityDefinition['artworksDatasetUuid'] as string,
+      activityType: 'Treasure Hunt'
     };
     return api.submitFindArtworkActivityDefinition(def);
   };
@@ -152,7 +160,7 @@ export const CreateFindArtworkActivityScreen = () => {
         genState={activityDefinition}
         setGenState={setActivityDefinition}
       >
-        <Step title='Basic Information' component={BasicInformationStep} />
+        <Step title='Basic Information' component={ActivityInstanceBasicInfoStep} />
         <Step title='Stage Settings' component={ConfigureStageParamsStep} />
         <Step title='Select Artworks' component={SelectArtworksStep} />
       </Steps>

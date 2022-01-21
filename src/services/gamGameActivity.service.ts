@@ -171,7 +171,6 @@ export class GamGameActivityService {
     const apiDefinition: CompletedGamGameActivityDefinition = {
       ...activityDefinition,
       storyDefinitionsDatasetUuid: this.storyDefinitionsDatasetUuid,
-      activityDefinitionsDatasetUuid: this.activityDefinitionsDatasetUuid,
       artworksDatasetUuid: this.datasetUuid,
     };
 

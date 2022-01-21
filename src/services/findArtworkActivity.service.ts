@@ -141,7 +141,6 @@ export class FindArtworkActivityService {
     const apiDefinition: CompletedFindArtworkActivityDefinition = {
       ...activityDefinition,
       huntDefinitionsDatasetUuid: this.huntDefinitionsDatasetUuid,
-      activityDefinitionsDatasetUuid: this.activityDefinitionsDatasetUuid,
       artworksDatasetUuid: this.datasetUuid,
     };
 

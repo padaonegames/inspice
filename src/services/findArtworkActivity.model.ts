@@ -62,6 +62,7 @@ export type GetTreasureHuntDefinitionByIdResponse = TreasureHuntDefinition[];
 //------------------------------------------
 
 export interface InProgressFindArtworkActivityDefinition {
+  activityType: 'Treasure Hunt';
   activityTitle: string | undefined;
   activityAuthor: string | undefined;
   beginsOn: Date | undefined;
@@ -72,7 +73,6 @@ export interface InProgressFindArtworkActivityDefinition {
   maxCluesPerStage: number | undefined;
   allowedInputs: AllowedInputs[];
   huntDefinitionsDatasetUuid: string | undefined;
-  activityDefinitionsDatasetUuid: string | undefined;
   artworksDatasetUuid: string | undefined;
   artworks: string[];
 }
@@ -84,6 +84,7 @@ export type CompletedFindArtworkActivityDefinition = Omit<
 
 export const defaultFindArtworkActivityDefinition: InProgressFindArtworkActivityDefinition =
 {
+  activityType: 'Treasure Hunt',
   activityTitle: undefined,
   activityAuthor: undefined,
   beginsOn: undefined,
@@ -94,12 +95,12 @@ export const defaultFindArtworkActivityDefinition: InProgressFindArtworkActivity
   maxCluesPerStage: undefined,
   allowedInputs: [],
   huntDefinitionsDatasetUuid: undefined,
-  activityDefinitionsDatasetUuid: undefined,
   artworksDatasetUuid: undefined,
   artworks: [],
 };
 
 export interface FindArtworkActivityDefinition extends ActivityInstance {
+  activityType: 'Treasure Hunt';
   minStages: number;
   maxStages: number;
   minCluesPerStage: number;

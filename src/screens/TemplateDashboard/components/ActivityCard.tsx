@@ -1,8 +1,11 @@
 import { useState } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { ThreeDotsVertical } from "styled-icons/bootstrap";
 import { UserCircle } from "styled-icons/boxicons-regular";
 import { ActivityInstance } from "../../../services/activity.model";
+import { Open } from "@styled-icons/fluentui-system-filled/Open";
+import { Edit } from '@styled-icons/boxicons-regular/Edit';
+import { Duplicate } from "@styled-icons/ionicons-outline/Duplicate";
 
 const ActivityCardContainer = styled.div`
   display: flex;
@@ -10,6 +13,21 @@ const ActivityCardContainer = styled.div`
   height: auto;
   box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 0.5rem 0px;
   cursor: pointer;
+  width: calc(100% - 1rem);
+  margin: 0.6em;
+  min-width: 290px;
+  max-width: 18rem;
+  border-radius: 0.35rem 0.25rem;
+
+  &:hover {
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 0.5rem 0px;
+  }
+`;
+
+export const EmptyCard = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: auto;
   width: calc(100% - 1rem);
   margin: 0.6em;
   min-width: 290px;
@@ -78,9 +96,8 @@ const ActivityTextContainer = styled.div`
 `;
 
 const ActivityTitle = styled.a`
-  max-height: 2.25rem;
   overflow: hidden;
-  line-height: 1.25rem;
+  line-height: 1rem;
   font-weight: 700;
   color: ${props => props.theme.textColor};
   font-family: ${props => props.theme.clickableTextFont};
@@ -90,6 +107,7 @@ const ActivityTitle = styled.a`
   font-size: 0.95rem;
   text-decoration: none;
   letter-spacing: 0.75px;
+  margin-bottom: 0.1rem;
 `;
 
 const ActivityAuthor = styled.a`
@@ -149,7 +167,7 @@ const DropdownMenu = styled.div`
   background-color: ${props => props.theme.cardBackground};
   min-width: 160px;
   box-shadow: rgba(37, 7, 107, 0.35) 0px 2px 4px 0px;
-  z-index: 5;
+  z-index: 25;
   display: flex;
   flex-direction: column;
   border-radius: 0.25rem;
@@ -159,7 +177,10 @@ const DropdownMenuItem = styled.a`
   color: ${props => props.theme.textColor};
   padding: 12px 16px;
   text-decoration: none;
-  display: block;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: start;
   font-family: ${props => props.theme.contentFont};
 
   &:hover {
@@ -167,25 +188,77 @@ const DropdownMenuItem = styled.a`
   }
 `;
 
+const menuItemIcon = css`
+  color: ${props => props.theme.textColor};
+  height: 20px;
+  width: 20px;
+  margin-right: 10px;
+`;
+
+const OpenActivityIcon = styled(Open)`
+  ${menuItemIcon}
+`;
+
+const EditActivityIcon = styled(Edit)`
+  ${menuItemIcon}
+`;
+
+const DuplicateActivityIcon = styled(Duplicate)`
+  ${menuItemIcon}
+`;
+
+const DateSpan = styled.span`
+  margin: 0.5rem;
+  position: absolute;
+  right: 0.2rem;
+  bottom: 0px;
+
+  font-family: ${props => props.theme.clickableTextFont};
+  font-size: 0.625em;
+  font-weight: bold;
+  padding: 0.25rem 0.75rem;
+  display: flex;
+  -moz-box-align: center;
+  align-items: center;
+  color: white;
+  background-color: rgba(0, 0, 0, 0.75);
+  border-radius: 0.25rem;
+`;
+
 export interface ActivityCardProps {
   activityTemplate: ActivityInstance;
+  onOpenClicked?: () => void;
+  onEditClicked?: () => void;
+  onDuplicateClicked?: () => void;
 }
 
 export const ActivityCard = (props: ActivityCardProps): JSX.Element => {
 
-  const { activityTemplate } = props;
+  const {
+    activityTemplate,
+    onOpenClicked,
+    onEditClicked,
+    onDuplicateClicked
+  } = props;
 
   const [openMenu, setOpenMenu] = useState<boolean>(false);
 
-  const hue = intToHue(hashCode(activityTemplate.activityDefinitionsDatasetUuid));
+  const hue = intToHue(hashCode(activityTemplate.activityType));
+  const dateOpts: Intl.DateTimeFormatOptions = {
+    month: 'short',
+    day: '2-digit'
+  };
 
   return (
     <ActivityCardContainer>
       <ActivityImageContainer>
-        <ActivityCardImage src="https://images-cdn.kahoot.it/de070b9f-3d86-40e3-a8ab-6ad708e509c7?auto=webp&width=350" />
+        <ActivityCardImage src={activityTemplate.imageSrc ?? 'https://upload.wikimedia.org/wikipedia/commons/6/65/No-Image-Placeholder.svg'} />
         <ActivityTypeSpan hue={hue}>
-          {activityTemplate.activityDefinitionsDatasetUuid}
+          {activityTemplate.activityType}
         </ActivityTypeSpan>
+        <DateSpan>
+          {`${activityTemplate.beginsOn.toLocaleDateString(undefined, dateOpts)} to ${activityTemplate.endsOn.toLocaleDateString(undefined, dateOpts)}`}
+        </DateSpan>
       </ActivityImageContainer>
       <ActivityCardContent hue={hue}>
         <ActivityTypeIcon />
@@ -194,12 +267,21 @@ export const ActivityCard = (props: ActivityCardProps): JSX.Element => {
           <ActivityAuthor>{activityTemplate.activityAuthor}</ActivityAuthor>
         </ActivityTextContainer>
         <ActivityOptionsContainer>
-          <ActivityOptionsIcon onClick={() => setOpenMenu(prev => !prev)}/>
+          <ActivityOptionsIcon onClick={() => setOpenMenu(prev => !prev)} />
           {openMenu && (
             <DropdownMenu>
-              <DropdownMenuItem href="#">Details</DropdownMenuItem>
-              <DropdownMenuItem href="#">Edit</DropdownMenuItem>
-              <DropdownMenuItem href="#">Duplicate</DropdownMenuItem>
+              <DropdownMenuItem onClick={onOpenClicked}>
+                <OpenActivityIcon />
+                Open
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={onEditClicked}>
+                <EditActivityIcon />
+                Edit
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={onDuplicateClicked}>
+                <DuplicateActivityIcon />
+                Duplicate
+              </DropdownMenuItem>
             </DropdownMenu>
           )}
         </ActivityOptionsContainer>
@@ -210,7 +292,10 @@ export const ActivityCard = (props: ActivityCardProps): JSX.Element => {
 
 export default ActivityCard;
 
-function hashCode(str: string) { // java String#hashCode
+
+function hashCode(str: string | undefined) { // java String#hashCode
+  if (!str) return 0;
+
   var hash = 0;
   for (var i = 0; i < str.length; i++) {
     hash = str.charCodeAt(i) + ((hash << 4) - hash);
