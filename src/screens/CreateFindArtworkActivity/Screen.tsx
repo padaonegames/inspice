@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 // navigation
-import ActivityCreationOverviewPanel, { ActivityCreationOverviewPanelProps } from '../../components/Navigation/ActivityCreationOverviewPanel copy';
+import ActivityCreationOverviewPanel, { ActivityCreationOverviewPanelProps } from '../../components/Navigation/ActivityCreationOverviewPanel';
 
 // services
 import { api } from '../../services';

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 // navigation
-import ActivityCreationOverviewPanel, { ActivityCreationOverviewPanelProps } from '../../components/Navigation/ActivityCreationOverviewPanel copy';
+import { ActivityCreationOverviewPanel, ActivityCreationOverviewPanelProps } from '../../components/Navigation/ActivityCreationOverviewPanel';
 
 // services
 import { gamGameApi } from '../../services';

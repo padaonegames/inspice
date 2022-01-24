@@ -9,7 +9,7 @@ import LoadingOverlay from '../../components/Layout/LoadingOverlay';
 import { ArtworkData } from '../../services/artwork.model';
 import { InProgressTreasureHuntStage, CompletedTreasureHuntDefinition, InProgressTreasureHuntDefinition, FindArtworkActivityDefinition } from '../../services/findArtworkActivity.model';
 import { useTranslation } from 'react-i18next';
-import ActivityCreationOverviewPanel, { ActivityCreationOverviewPanelProps } from '../../components/Navigation/ActivityCreationOverviewPanel copy';
+import ActivityCreationOverviewPanel, { ActivityCreationOverviewPanelProps } from '../../components/Navigation/ActivityCreationOverviewPanel';
 import { State, Step, StepComponentProps, StepProps, Steps, StepsConfig } from '../../components/Navigation/Steps';
 import CreateStageStep from './Steps/CreateStageStep';
 

@@ -93,16 +93,8 @@ export interface ActivityCreationOverviewPanelProps extends NavigationComponentP
   onRemoveStage?: (index: number) => void;
 };
 
-/**
- * + Not editing
- * 
- * <img src="media://ActivityCreationOverviewPanelRegular.PNG" alt="ActivityCreationOverviewPanelRegular">
- * 
- * + Editing, removal and addition enabled
- * 
- * <img src="media://ActivityCreationOverviewPanelEditing.PNG" alt="ActivityCreationOverviewPanelEditing">
- */
-export const ActivityCreationOverviewPanel = (props: ActivityCreationOverviewPanelProps): JSX.Element => {
+/** Panel to display the current state of an activity creation flow/form and handle stage editing, addition and removal, as well as activity submission */
+export const ActivityCreationOverviewPanel = (props : ActivityCreationOverviewPanelProps): JSX.Element => {
 
   const {
     minStages,
@@ -117,8 +109,7 @@ export const ActivityCreationOverviewPanel = (props: ActivityCreationOverviewPan
     onSubmitActivity,
     onStageSelected,
     onAddNewStage,
-    onRemoveStage,
-    currentStep,
+    onRemoveStage
   } = props;
 
   // enable edition if addition is enabled or if any item can be removed.
@@ -131,9 +122,13 @@ export const ActivityCreationOverviewPanel = (props: ActivityCreationOverviewPan
     <Root>
       <UpperRowContainer>
         <ProgressLine
-          currentItem={currentStep}
+          currentItem={props.currentStep}
           items={stages}
-          onItemSelected={onStageSelected ?? props.jump}
+          onItemSelected={(index) => {
+            props.jump(index);
+            if (onStageSelected)
+              onStageSelected(index);
+          }}
           onSubmit={onSubmitActivity}
           onRemoveItem={onRemoveStage}
           finalItemCaption={finaItemCaption}

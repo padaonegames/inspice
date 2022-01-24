@@ -89,25 +89,15 @@ export interface StageButtonPanelProps {
   onButtonClicked?: () => void;
 };
 
-/**
- * + Add
- * 
- * <img src="media://StageButtonAdd.PNG" alt="StageButtonAdd">
- * 
- * + Cancel
- * 
- * <img src="media://StageButtonCancel.PNG" alt="StageButtonCancel">
- * 
- * + Edit
- * 
- * <img src="media://StageButtonEdit.PNG" alt="StageButtonEdit">
- */
-export const StageButtonPanel: React.FC<StageButtonPanelProps> = ({
-  onButtonClicked,
-  enabled,
-  panelText,
-  panelIconType
-}) => {
+/** Button to be used in conjunction with a stage management component to perform its three default allowed actions (edit, add, cancel) */
+export const StageButtonPanel = (props: StageButtonPanelProps) => {
+
+  const {
+    onButtonClicked,
+    enabled,
+    panelText,
+    panelIconType
+  } = props;
 
   const renderIcon = () => {
     switch (panelIconType) {
