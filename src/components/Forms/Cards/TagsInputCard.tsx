@@ -17,16 +17,23 @@ import {
 } from "./cardStyles";
 
 export interface TagsInputCardProps {
+  /** Main text rendered on top of the component as a prompt for the user, indicating what they must do with the tags manager */
   promptText: string;
+  /** callback to use whenever a card has been created or removed. `value` provides a complete list of tags in use */
   onChange?: (value: string[]) => void;
+  /** maximum number of tags to allow for */
   maxTags?: number;
+  /** minimum number of tags to allow for */
   minTags?: number;
+  /** current value of the input field. Needs to be changed after onChange events to be kept in sync with internal state */
   value?: string[];
+  /** whether this field is considered required within the overall form (used to display an asterisk) */
   required?: boolean;
-  /* True if user tried to submit the form without filling a required field */
+  /** whether to modify the appearance of this card to reflect that the user tried to submit the form without entering a value for this field */
   requiredAlert?: boolean;
 }
 
+/** Controlled card component to edit and manage a set of user generated tags */
 export const TagsInputCard = (props: TagsInputCardProps): JSX.Element => {
 
   const {
@@ -88,7 +95,7 @@ export const TagsInputCard = (props: TagsInputCardProps): JSX.Element => {
           {value.map((tag, i) => (
             <TagWrapper key={tag}>
               <TagText>{tag}</TagText>
-              <RemoveTagIcon onClick={() => handleRemoveTag(i)}/>
+              <RemoveTagIcon onClick={() => handleRemoveTag(i)} />
             </TagWrapper>
           ))}
           {newTagOpen && (

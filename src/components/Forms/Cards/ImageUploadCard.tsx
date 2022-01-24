@@ -13,10 +13,8 @@ import {
 
 export interface ImageUploadCardProps {
   promptText: string;
-  placeholder?: string;
   onChange?: (file: File | undefined) => void;
   onEnterPress?: () => void;
-  maxLength?: number;
   initialSrc?: string;
   initialFile?: File;
   required?: boolean;

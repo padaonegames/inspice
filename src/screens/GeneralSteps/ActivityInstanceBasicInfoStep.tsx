@@ -57,11 +57,9 @@ export const ActivityInstanceBasicInfoStep = (props: StepComponentProps): JSX.El
       />
       <ImageUploadCard
         promptText='Upload a thumbnail image:'
-        placeholder='Activity name...'
         onChange={(file) => props.setState<File | undefined>('localFile', file, undefined)}
         initialFile={props.getState<File | undefined>('localFile', undefined)}
         initialSrc={props.getState<string | undefined>('imageSrc', undefined)}
-        maxLength={30}
         required
       />
       <TagsInputCard

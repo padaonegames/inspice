@@ -11,12 +11,14 @@ import {
 } from "./cardStyles";
 
 export interface CheckBoxGroupInputCardProps {
+  /** Main text rendered on top of the component as a prompt for the user, indicating what they must check in the field */
   promptText: string;
   onFieldToggle?: (field: string) => void;
   checked?: string[];
   fields: string[];
+  /** whether this field is considered required within the overall form (used to display an asterisk) */
   required?: boolean;
-  /* True if user tried to submit the form without filling a required field */
+  /** whether to modify the appearance of this card to reflect that the user tried to submit the form without entering a value for this field */
   requiredAlert?: boolean;
 }
 

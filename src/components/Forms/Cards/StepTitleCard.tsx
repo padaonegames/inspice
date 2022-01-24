@@ -24,10 +24,15 @@ export const CardPanel = styled.div<CardPanelProps>`
 `;
 
 export interface StepTitleCardProps {
+  /** Step's title.  */
   stepTitle: string;
+  /** Short description of what needs to be done within the step */
   stepDescription?: string;
 }
 
+/**
+ * Primary card component to display a form step's title and description.
+ */
 export const StepTitleCard = (props: StepTitleCardProps): JSX.Element => {
 
   const {

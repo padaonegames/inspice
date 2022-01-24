@@ -2,7 +2,6 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import styled, { FlattenSimpleInterpolation } from "styled-components";
 
 interface ContainerProps {
-  css?: FlattenSimpleInterpolation;
   pos?: Position;
   canDrag?: boolean;
 }
@@ -14,7 +13,6 @@ const Container = styled.div.attrs<ContainerProps>(({
     top: `${pos?.y}px`,
   },
 })) <ContainerProps>`
-  ${props => props.css && props.css}
   ${props => props.canDrag && `
   cursor: move; /* fallback if grab cursor is unsupported */
   cursor: grab;
@@ -37,7 +35,6 @@ export interface DraggableProps {
   canDrag?: boolean;
   children: React.ReactNode;
   defaultPosition: Position;
-  css?: FlattenSimpleInterpolation;
   parentRef: HTMLDivElement;
   onStartDragging?: () => void;
   onEndDragging?: (endPosition: Position) => void;
@@ -49,7 +46,6 @@ export const Draggable = (props: DraggableProps): JSX.Element => {
     canDrag = true,
     children,
     defaultPosition,
-    css,
     parentRef,
     onStartDragging,
     onEndDragging
@@ -154,7 +150,6 @@ export const Draggable = (props: DraggableProps): JSX.Element => {
       canDrag={canDrag}
       onMouseDown={handleMouseDown}
       onTouchStart={handleTouchDown}
-      css={css}
       pos={{ x: posX, y: posY }}
       ref={divOverlayRef}
     >

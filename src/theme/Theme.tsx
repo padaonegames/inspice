@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { AvailableThemes, ThemeContext } from "./ThemeStore";
 import { createGlobalStyle, ThemeProvider } from "styled-components";
 
-const themes: AvailableThemes = {
+export const themes: AvailableThemes = {
   dark: {
     bodyBackground: 'darkgray',
     headerBackground: '#212529',
