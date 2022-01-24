@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import NumberIcon from '../NumberIcon'
+import NumberIcon from './NumberIcon'
 
 export const Root = styled.div`
   min-width: 250px;

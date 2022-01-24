@@ -65,15 +65,16 @@ const DarkModeIcon = styled(DarkMode)`
 `;
 
 export interface HeaderProps {
+  /** Title to display on this header */
   activityTitle?: string;
 };
 
-/**
- * <img src="media://Header.PNG" alt="Header">
- */
-export const Header: React.FC<HeaderProps> = ({ activityTitle = '' }) => {
+/** Basic Header component with support for theme and localization management */
+export const Header = (props: HeaderProps) => {
 
-  const { t } = useTranslation('app');
+  const { activityTitle = '' } = props;
+
+  // const { t } = useTranslation('app');
   const { theme, switchTheme } = useContext(ThemeContext);
   // ${t('museumHeader')} - 
   return (
