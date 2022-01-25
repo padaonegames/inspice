@@ -24,11 +24,17 @@ const ArtworkGrid = styled.div`
 `;
 
 export interface ArtworkSearchResultsProps {
+  /** List of artworks to be displayed by this component (content of current page) */
   artworks: ArtworkData[];
+  /** List of artwork ids that the user has already selected */
   selectedArtworks: string[];
+  /** currently displayed page */
   page?: number;
+  /** Total number of indexed pages to be displayed */
   pageTotal?: number;
+  /** Callback to the parent of this panel indicating that an artwork has been selected (Added to selection) */
   onArtworkSelected?: (artwork: ArtworkData) => void;
+  /** Callback to the parent of this panel indicating that an artwork has been deselected (Removed from selection) */
   onArtworkDeselected?: (artworkId: string) => void;
   /**
    * Callback to the parent of this panel indicating that an artwork has been clicked from the panel.
@@ -36,22 +42,23 @@ export interface ArtworkSearchResultsProps {
    * to explore it (e.g. to get more information about it).
    */
   onArtworkClicked?: (artworkId: string) => void;
+  /** Callback to the parent of this panel indicating that the user wishes to change the currently displayed page */
   onPageChange?: (page: number) => void;
 };
 
-/**
- * <img src="media://ArtworkSearchResults.PNG" alt="ArtworkSearchResults">
- */
-export const ArtworkSearchResults: React.FC<ArtworkSearchResultsProps> = ({
-  artworks,
-  page,
-  pageTotal,
-  onPageChange,
-  onArtworkDeselected,
-  onArtworkSelected,
-  onArtworkClicked,
-  selectedArtworks,
-}) => {
+/** Controlled component to display a list of artwork search results. All state management must be done within the parent component */
+export const ArtworkSearchResults = (props: ArtworkSearchResultsProps) => {
+
+  const {
+    artworks,
+    page,
+    pageTotal,
+    onPageChange,
+    onArtworkDeselected,
+    onArtworkSelected,
+    onArtworkClicked,
+    selectedArtworks,
+  } = props;
 
   return (
     <ArtworkGrid>

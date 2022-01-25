@@ -90,17 +90,25 @@ const ExpandIcon = styled.span`
 `;
 
 export interface FilterFieldProps {
+  /** display name of the filter category */
   filterField: string;
+  /** array of filter options for the given category */
   filterOptions: string[];
+  /** array of counts for each of the options in `filterOptions` (how many of each there are) */
   filterCounts: number[];
+  /** whether to render a bottom border (this is useful when displaying a sequence of filter categories) */
   bottomBorder?: boolean;
+  /** Maximum number of options to be shown to the user before expanding the list */
   maxOptionsShown?: number;
+  /** callback to the parent component specifying that a specific filter has been selected within this category */
   onFilterSelected: (filter: string) => void;
-  // TODO: show button
 };
 
 /**
- * <img src="media://FilterField.PNG" alt="FilterField">
+ * Component to display a list of filters that can be applied to a search.
+ * Initially displays up to `maxOptionsShown` filter options, with the possibility to
+ * show a complete list of options with navigation and search functionalities by clicking
+ * on *See All*.
  */
 export const FilterField: React.FC<FilterFieldProps> = ({
   filterField,

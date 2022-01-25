@@ -1,8 +1,10 @@
-import React from 'react';
 import styled from 'styled-components';
 import { ArtworkData } from '../../services/artwork.model';
 
 const CardContainer = styled.figure`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 
   @media (max-width: 768px) {
     width: 95%;
@@ -12,7 +14,8 @@ const CardContainer = styled.figure`
 
   @media (min-width: 768px) {
     width: 32%;
-    max-width: 240px;
+    min-width: 290px;
+    max-width: 18rem;
     margin: 0.5%;
   }
 `;
@@ -20,9 +23,11 @@ const CardContainer = styled.figure`
 const CardImage = styled.img`
   background-color: ${props => props.theme.artworkDisplayBackground};
   cursor: pointer;
-  min-width: 233px;
-  width: 75vw;
-  height: 75vw;
+  max-height: 18rem;
+  min-height: 290px;
+  width: 100%;
+  min-width: 290px;
+  max-width: 18rem;
   object-fit: contain;
 `;
 
@@ -81,6 +86,7 @@ const ArtworkAuthor = styled.dd`
 `;
 
 export interface ArtworkColumnElementProps {
+  /** Object containing relevant artwork information */
   artworkData: ArtworkData;
   /**
    * Callback to the parent of this panel indicating that this card has been clicked.
@@ -88,6 +94,10 @@ export interface ArtworkColumnElementProps {
   onCardClicked?: () => void;
 };
 
+/** 
+ * Basic component to display a thumbnail of a given artwork as well as some basic summary information,
+ * usually within the context of a list display.
+ */
 export const ArtworkColumnElement = (props: ArtworkColumnElementProps): JSX.Element => {
 
   const {
