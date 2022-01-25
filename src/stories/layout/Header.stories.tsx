@@ -6,7 +6,7 @@ export default {
   component: Header,
   decorators: [
     (Story) => (
-      <div style={{ width: '100%' }}>
+      <div style={{ margin: '3em' }}>
         {Story()}
       </div>
     ),

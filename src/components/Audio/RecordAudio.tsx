@@ -6,7 +6,7 @@ import useRecorder from './useRecorder';
 
 import { Microphone } from '@styled-icons/fa-solid/Microphone';
 import { StopCircle } from '@styled-icons/boxicons-regular/StopCircle';
-import NextCornerButton from '../../screens/CreateTreasureHunt/Steps/NextCornerButton';
+import NextCornerButton from '../../templates/FindArtwork/CreateTreasureHunt/Steps/NextCornerButton';
 
 interface RootProps {
   backgroundImage: string;

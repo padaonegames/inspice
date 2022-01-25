@@ -28,6 +28,7 @@ export interface StepTitleCardProps {
   stepTitle: string;
   /** Short description of what needs to be done within the step */
   stepDescription?: string;
+  children?: React.ReactNode;
 }
 
 /**
@@ -37,7 +38,8 @@ export const StepTitleCard = (props: StepTitleCardProps): JSX.Element => {
 
   const {
     stepTitle,
-    stepDescription
+    stepDescription,
+    children
   } = props;
 
   return (
@@ -47,9 +49,10 @@ export const StepTitleCard = (props: StepTitleCardProps): JSX.Element => {
         <TitleText>
           {stepTitle}
         </TitleText>
-        <StepDescription>
-          {stepDescription}
-        </StepDescription>
+        {stepDescription?.split('\n').map((i, key) => {
+          return <StepDescription key={key}>{i}</StepDescription>;
+        })}
+        {children}
       </CardPanel>
     </Root>
   );

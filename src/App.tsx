@@ -4,20 +4,20 @@ import React, { Suspense } from 'react';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 
 // screen imports
-import PlayTreasureHuntScreen from './screens/PlayTreasureHuntScreen';
-import CreateTreasureHuntScreen from './screens/CreateTreasureHunt/Screen';
-import CreateFindArtworkActivityScreen from './screens/CreateFindArtworkActivity/Screen';
+import PlayTreasureHuntScreen from './templates/FindArtwork/PlayTreasureHunt/Screen';
+import CreateTreasureHuntScreen from './templates/FindArtwork/CreateTreasureHunt/Screen';
+import CreateFindArtworkActivityScreen from './templates/FindArtwork/CreateActivity/Screen';
 import BrowseDefinitionsScreen from './screens/BrowseDefinitionsScreen';
-import ExploreActivityScreen from './screens/ExploreActivityScreen';
+import ExploreActivityScreen from './templates/FindArtwork/ExploreActivity/Screen';
 import { ActivityScreen } from './screens/ActivityScreen';
 
 // components
-import HomeComponent from './Viewpoints/HomeComponent';
-import ViewpointsResultsComponent from './Viewpoints/ViewpointsResultsComponent';
-import AnswerViewpointComponent from './Viewpoints/AnswerViewpointComponent';
-import CreateGamGameActivityScreen from './screens/GamGame_CreateActivity/Screen';
-import GamGameUserMenuScreen from './screens/GamGame_UserScreen/MenuScreen';
-import { TemplateDashboard } from './screens/TemplateDashboard/TemplateDashboard';
+import HomeComponent from './templates/Viewpoints/HomeComponent';
+import ViewpointsResultsComponent from './templates/Viewpoints/ViewpointsResultsComponent';
+import AnswerViewpointComponent from './templates/Viewpoints/AnswerViewpointComponent';
+import CreateGamGameActivityScreen from './templates/GamGame/CreateActivity/Screen';
+import GamGameUserMenuScreen from './templates/GamGame/UserPerspective/Screen';
+import { TemplateDashboard } from './templates/TemplateDashboard/Screen';
 
 /**
  * Main entrypoint for our React application within which all other components

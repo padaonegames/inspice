@@ -1,13 +1,13 @@
-import * as ArtworkSearchResults from "./ArtworkSearchResults";
-import * as ArtworkSelectedCard from "./ArtworkSelectedCard";
-import * as ArtworkSelectionCard from "./ArtworkSelectionCard";
-import * as FilterField from "./FilterField";
-import * as FilterPanel from "./FilterPanel";
-import * as FilterPopup from "./FilterPopup";
-import * as SearchAndSelectManyArtworks from "./SearchAndSelectManyArtworks";
-import * as SelectArtwork from "./SelectArtwork";
-import * as SelectedArtworksPopup from "./SelectedArtworksPopup";
-import * as ShowFilters from "./ShowFilters";
+import { ArtworkSearchResults } from "./ArtworkSearchResults";
+import { ArtworkSelectedCard } from "./ArtworkSelectedCard";
+import { ArtworkSelectionCard } from "./ArtworkSelectionCard";
+import { FilterField } from "./FilterField";
+import { FilterPanel } from "./FilterPanel";
+import { FilterPopup } from "./FilterPopup";
+import { SearchAndSelectManyArtworks } from "./SearchAndSelectManyArtworks";
+import { SelectArtwork } from "./SelectArtwork";
+import { SelectedArtworksPopup } from "./SelectedArtworksPopup";
+import { ShowFilters } from "./ShowFilters";
 
 export {
   ArtworkSearchResults,

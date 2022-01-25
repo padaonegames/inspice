@@ -45,7 +45,7 @@ const ContentContainer = styled.div`
 `;
 
 const SpinnerIcon = styled(Spinner2)`
-  height: 65px;
+  height: 4em;
   width: auto;
   align-self: center;
 
@@ -64,12 +64,11 @@ const LoadingText = styled.div`
 `;
 
 export interface LoadingOverlayProps {
+  /** Message to display */
   message?: string;
 };
 
-/**
- * <img src="media://LoadingOverlay.PNG" alt="LoadingOverlay">
- */
+/** Component to display a loading message while performing API calls */
 export const LoadingOverlay: React.FC<LoadingOverlayProps> = ({ message = 'Loading' }) => {
 
   const [numDots, setNumdots] = useState<number>(1);

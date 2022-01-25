@@ -3,7 +3,6 @@ import { QrCode } from 'styled-icons/remix-line';
 import { Home } from '@styled-icons/boxicons-regular/Home';
 import { Gallery } from '@styled-icons/remix-line/Gallery';
 import { Books } from '@styled-icons/icomoon/Books';
-import { NavigationComponentProps } from '../Navigation/Steps';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 const Root = styled.div`
