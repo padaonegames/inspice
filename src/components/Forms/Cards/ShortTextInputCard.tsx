@@ -25,6 +25,8 @@ export interface ShortTextInputCardProps {
   required?: boolean;
   /** whether to modify the appearance of this card to reflect that the user tried to submit the form without entering a value for this field */
   requiredAlert?: boolean;
+  /** alert message to be displayed when required alert is set to true */
+  alertMessage?: string;
 }
 
 /** Controlled card component to support input for shorter texts. */
@@ -37,6 +39,7 @@ export const ShortTextInputCard = (props: ShortTextInputCardProps): JSX.Element 
     value,
     requiredAlert,
     required,
+    alertMessage,
     onChange,
     onEnterPress
   } = props;
@@ -63,7 +66,7 @@ export const ShortTextInputCard = (props: ShortTextInputCardProps): JSX.Element 
         />
         {requiredAlert && (
           <RequiredQuestionSpan>
-            <RequiredAlertIcon /> This question is required.
+            <RequiredAlertIcon /> {alertMessage ?? 'This question is required.'}
           </RequiredQuestionSpan>
         )}
       </CardPanel>

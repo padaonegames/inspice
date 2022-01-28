@@ -3,10 +3,7 @@ import {
   CompletedGamGameActivityDefinition,
   CompletedGamGameStoryDefinition,
   GamGameActivityDefinition,
-  GetGamGameActivityDefinitionByIdResponse,
-  GetGamGameStoryDefinitionByIdResponse,
-  SubmitGamGameActivityDefinitionResponse,
-  SubmitGamGameStoryDefinitionResponse
+  GamGameStoryDefinition,
 } from './gamGameActivity.model';
 
 export type ApiResult<T> =
@@ -39,164 +36,88 @@ export class GamGameActivityService {
     private activityDefinitionsDatasetUuid: string,
     private storyDefinitionsDatasetUuid: string,
     private apiKey: string,
-  ) { }
+  ) { } // constructor
 
   /**
-   * Retrieve an activity by its id
+   * @description Retrieve a GAM Game activity by its id
+   * @param activityId ID of the activity to retrieve
    */
-  public async getGamGameActivityDefinitionById(activityId: string): Promise<ApiResult<GetGamGameActivityDefinitionByIdResponse>> {
-    const url = `${this.apiUrl}/object/${this.activityDefinitionsDatasetUuid}`;
-
-    const query = `{ "_id": "${activityId}" }`;
-
-    const opts: AxiosRequestConfig = {
-      auth: {
-        username: this.apiKey,
-        password: this.apiKey
-      },
-      params: {
-        query: query
-      }
-    };
-    return getApiResult<GetGamGameActivityDefinitionByIdResponse>(url, opts);
-  }
+  public async getGamGameActivityDefinitionById(activityId: string): Promise<ApiResult<GamGameActivityDefinition[]>> {
+    const url = `${this.apiUrl}/gam-game/activity/${activityId}`;
+    return getApiResult<GamGameActivityDefinition[]>(url);
+  } // getGamGameActivityDefinitionById
 
   /**
- * Retrieve all activities
- */
+   * @description Retrieve all GAM Game activities
+   */
   public async getGamGameActivityDefinitions(): Promise<ApiResult<GamGameActivityDefinition[]>> {
-    const url = `${this.apiUrl}/object/${this.activityDefinitionsDatasetUuid}`;
-
-    const opts: AxiosRequestConfig = {
-      auth: {
-        username: this.apiKey,
-        password: this.apiKey
-      },
-    };
-    return getApiResult<GamGameActivityDefinition[]>(url, opts);
-  }
+    const url = `${this.apiUrl}/gam-game/activities`;
+    return getApiResult<GamGameActivityDefinition[]>(url);
+  } // getGamGameActivityDefinitions
 
   /**
-* Retrieve all treasure hunts
-*/
-  public async getGamGameStoryDefinitions(): Promise<ApiResult<GetGamGameStoryDefinitionByIdResponse>> {
-    const url = `${this.apiUrl}/object/${this.storyDefinitionsDatasetUuid}`;
-
-    const opts: AxiosRequestConfig = {
-      auth: {
-        username: this.apiKey,
-        password: this.apiKey
-      },
-    };
-    return getApiResult<GetGamGameStoryDefinitionByIdResponse>(url, opts);
-  }
-
-  /**
- * Retrieve a treasure hunt by its id
- */
-  public async getGamGameStoryDefinitionById(GamGameStoryId: string): Promise<ApiResult<GetGamGameStoryDefinitionByIdResponse>> {
-    const url = `${this.apiUrl}/object/${this.storyDefinitionsDatasetUuid}`;
-
-    const query = `{ "_id": "${GamGameStoryId}" }`;
-
-    const opts: AxiosRequestConfig = {
-      auth: {
-        username: this.apiKey,
-        password: this.apiKey
-      },
-      params: {
-        query: query
-      }
-    };
-    return getApiResult<GetGamGameStoryDefinitionByIdResponse>(url, opts);
-  }
-
-
-  /**
-* Retrieve all treasure hunts belonging to a given activity
-*/
-  public async getGamGameStoryDefinitionsByActivityId(activityId: string): Promise<ApiResult<GetGamGameStoryDefinitionByIdResponse>> {
-    const url = `${this.apiUrl}/object/${this.storyDefinitionsDatasetUuid}`;
-
-    const query = `{ "activityId": "${activityId}" }`;
-
-    const opts: AxiosRequestConfig = {
-      auth: {
-        username: this.apiKey,
-        password: this.apiKey
-      },
-      params: {
-        query: query
-      }
-    };
-    return getApiResult<GetGamGameStoryDefinitionByIdResponse>(url, opts);
-  }
-
-
-  /**
-* Retrieve all treasure hunts belonging to a given activity
-*/
-  public async getGamGameStoryDefinitionsByArtworkId(artworkId: string): Promise<ApiResult<GetGamGameStoryDefinitionByIdResponse>> {
-    const url = `${this.apiUrl}/object/${this.storyDefinitionsDatasetUuid}`;
-
-    const query = `{ "artworkId": "${artworkId}" }`;
-
-    const opts: AxiosRequestConfig = {
-      auth: {
-        username: this.apiKey,
-        password: this.apiKey
-      },
-      params: {
-        query: query
-      }
-    };
-    return getApiResult<GetGamGameStoryDefinitionByIdResponse>(url, opts);
-  }
-
-
-  /**
-   * Submit an Activity Definition to the persistence layer
+   * @description Retrieve all GAM Game user-created story definitions
    */
-  public async submitGamGameActivityDefinition(activityDefinition: CompletedGamGameActivityDefinition):
-    Promise<ApiResult<SubmitGamGameActivityDefinitionResponse>> {
-    const url = `${this.apiUrl}/object/${this.activityDefinitionsDatasetUuid}`;
+  public async getGamGameStoryDefinitions(): Promise<ApiResult<GamGameStoryDefinition[]>> {
+    const url = `${this.apiUrl}/gam-game/stories`;
+    return getApiResult<GamGameStoryDefinition[]>(url);
+  } // getGamGameStoryDefinitions
 
-    const opts: AxiosRequestConfig = {
-      auth: {
-        username: this.apiKey,
-        password: this.apiKey
-      },
-    };
+  /**
+   * @description Retrieve a GAM Game story by id
+   * @param storyId Id of the story definition to fetch
+   */
+  public async getGamGameStoryDefinitionById(storyId: string): Promise<ApiResult<GamGameStoryDefinition[]>> {
+    const url = `${this.apiUrl}/gam-game/story/${storyId}`;
+    return getApiResult<GamGameStoryDefinition[]>(url);
+  } // getGamGameStoryDefinitionById
+
+  /**
+   * @description Retrieve all GAM Game stories belonging to a given activity
+   * @param activityId Id of the story definition to fetch
+   */
+  public async getGamGameStoryDefinitionsByActivityId(activityId: string): Promise<ApiResult<GamGameStoryDefinition[]>> {
+    const url = `${this.apiUrl}/gam-game/activity/${activityId}/stories`;
+    return getApiResult<GamGameStoryDefinition[]>(url);
+  } // getGamGameStoryDefinitionsByActivityId
+
+  /**
+   * @description Retrieve all GAM Game stories containing a given artwork
+   * @param artworkId Id of the artwork that the stories must contain
+   */
+  public async getGamGameStoryDefinitionsByArtworkId(artworkId: string): Promise<ApiResult<GamGameStoryDefinition[]>> {
+    const url = `${this.apiUrl}/gam-game/stories/query?artworkId=${artworkId}`;
+    return getApiResult<GamGameStoryDefinition[]>(url);
+  } // getGamGameStoryDefinitionsByArtworkId
+
+  /**
+   * @description Submit an Activity Definition to the persistence layer
+   * @param activityDefinition Activity definition to submit
+   */
+  public async submitGamGameActivityDefinition(activityDefinition: CompletedGamGameActivityDefinition): Promise<ApiResult<GamGameActivityDefinition>> {
+    const url = `${this.apiUrl}/gam-game/activity`;
 
     const apiDefinition: CompletedGamGameActivityDefinition = {
       ...activityDefinition,
       storyDefinitionsDatasetUuid: this.storyDefinitionsDatasetUuid,
-      artworksDatasetUuid: this.datasetUuid,
     };
 
-    return postApiResult<CompletedGamGameActivityDefinition, SubmitGamGameActivityDefinitionResponse>
-      (url, apiDefinition, opts);
-  }
+    return postApiResult<CompletedGamGameActivityDefinition, GamGameActivityDefinition>(url, apiDefinition);
+  } // submitGamGameActivityDefinition
 
-  public async submitGamGameStoryDefinition(GamGameStoryDefinition: CompletedGamGameStoryDefinition):
-    Promise<ApiResult<SubmitGamGameStoryDefinitionResponse>> {
-    const url = `${this.apiUrl}/object/${this.storyDefinitionsDatasetUuid}`;
-
-    const opts: AxiosRequestConfig = {
-      auth: {
-        username: this.apiKey,
-        password: this.apiKey
-      },
-    };
+  /**
+   * @description Submit a user created Story Definition to the persistence layer
+   * @param storyDefinition Story definition to submit 
+   */
+  public async submitGamGameStoryDefinition(storyDefinition: CompletedGamGameStoryDefinition): Promise<ApiResult<GamGameStoryDefinition>> {
+    const url = `${this.apiUrl}/gam-game/story`;
 
     const apiDefinition: CompletedGamGameStoryDefinition = {
-      ...GamGameStoryDefinition
+      ...storyDefinition
     };
 
-    return postApiResult<CompletedGamGameStoryDefinition, SubmitGamGameStoryDefinitionResponse>
-      (url, apiDefinition, opts);
-  }
-
+    return postApiResult<CompletedGamGameStoryDefinition, GamGameStoryDefinition>(url, apiDefinition);
+  } // submitGamGameStoryDefinition
 }
 
 /**

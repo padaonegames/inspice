@@ -243,24 +243,3 @@ const TemplateDashBoardView = (props: TemplateDashboardViewProps): JSX.Element =
     </>
   );
 };
-
-const sample: ActivityInstance = {
-  beginsOn: new Date(),
-  endsOn: new Date(),
-  activityAuthor: 'Alejandro',
-  activityTitle: 'Flores de Cerezo',
-  activityType: 'GAM Game',
-  _id: 'dqeiuwhduiehwfiudwe'
-};
-
-const sample2: ActivityInstance = {
-  beginsOn: new Date(),
-  endsOn: new Date(),
-  activityAuthor: 'Pedro',
-  activityTitle: 'Flores de Manzano',
-  activityType: 'Treasure Hunt',
-  _id: 'dqeiuwhduiehwfiudwe'
-};
-
-
-const samples = [sample, sample2, sample, sample, sample2, sample2, sample];

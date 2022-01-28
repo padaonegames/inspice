@@ -179,7 +179,8 @@ export const Root = styled.div`
   }
 
   @media (min-width: 768px) {
-    width: 770px;
+    max-width: 770px;
+    width: 97.5%;
     margin: 0.5%;
   }
 `;
