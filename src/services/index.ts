@@ -5,6 +5,8 @@ import { ViewpointsArtworksService } from "./viewpointsArtworks.service";
 import { ViewpointsQuestionsService } from "./viewpointsQuestions.service";
 import { ViewpointsResponseService } from "./viewpointsResponse.service";
 import { GamGameActivityService } from "./gamGameActivity.service";
+import { UserService } from "./user.service";
+import { AuthService } from "./auth.service";
 
 export let api: FindArtworkActivityService;
 export let artworksService: ArtworksService;
@@ -12,6 +14,8 @@ export let viewpointsArtworksService: ViewpointsArtworksService;
 export let viewpointsQuestionsService: ViewpointsQuestionsService;
 export let viewpointsResponseService: ViewpointsResponseService;
 export let gamGameApi: GamGameActivityService;
+export let userService: UserService;
+export let authService: AuthService;
 
 /**
  * For the time being we fetch the relevant fields from the initialize services function provided here.
@@ -43,4 +47,6 @@ export const initializeServices = () => {
   viewpointsQuestionsService = new ViewpointsQuestionsService();
   viewpointsResponseService = new ViewpointsResponseService();
   gamGameApi = new GamGameActivityService('http://localhost:8080/api', datasetUuid, gamGameActivityDefinitionsDatasetUuid, gamGameStoryDefinitionsDatasetUuid, apiKey);
+  userService = new UserService('http://localhost:8080/api');
+  authService = new AuthService('http://localhost:8080/api');
 };

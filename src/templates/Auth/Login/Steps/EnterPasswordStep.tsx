@@ -1,6 +1,9 @@
+import { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
+import { AuthContext } from "../../../../auth/AuthStore";
 import { ShortTextInputCard } from "../../../../components/Forms/Cards/ShortTextInputCard";
 import { StepComponentProps } from "../../../../components/Navigation/Steps";
+import { authService } from "../../../../services";
 import { useAsyncRequest } from "../../../../services/useAsyncRequest";
 import {
   ActionsContainer,
@@ -22,33 +25,64 @@ const Root = styled.div`
 
 export const EnterPasswordStep = (props: StepComponentProps): JSX.Element => {
 
-  const checkValidUsername = async () => {
+  const { setUserData, setAccessToken } = useContext(AuthContext);
 
+  const username = props.getState<string>('username', 'user');
+  const password = props.getState<string>('password', '');
+
+  const performLogin = async () => {
+    return await authService.performUserLogin(username, password);
   };
 
-  const [validUsernameRequest] = useAsyncRequest(checkValidUsername, []);
+  const [performLoginRequest, triggerRequest] = useAsyncRequest(performLogin, [], false);
+  const [alertMessage, setAlertMessage] = useState<string | undefined>(undefined);
+
+  const handleBackClicked = () => {
+    if (props.hasPrev()) {
+      props.prev();
+    }
+  };
+
+  const handleNextClicked = () => {
+    triggerRequest();
+  };
+
+  useEffect(() => {
+    if (performLoginRequest.kind === 'success') {
+      if (performLoginRequest.result.kind === 'http-error') {
+        setAlertMessage('Incorrect password. Please try again.');
+      }
+      else if (performLoginRequest.result.kind === 'ok' && performLoginRequest.result.data.accessToken) {
+        setAlertMessage(undefined);
+        setUserData({ ...performLoginRequest.result.data });
+        setAccessToken(performLoginRequest.result.data.accessToken);
+        console.log(`Your token: ${performLoginRequest.result.data.accessToken}`);
+      }
+    }
+  }, [performLoginRequest]);
 
   return (
     <Root>
       <StepDescription>
-        Welcome, {props.getState<string>('username', 'user')}!
+        Welcome, {username}!
       </StepDescription>
       <VerticalSeparator />
       <ShortTextInputCard
         promptText="Enter your personal password:"
         placeholder="Password..."
-        value={props.getState<string>('password', '')}
+        value={password}
         onChange={(val) => props.setState<string>('password', val, '')}
-        requiredAlert={true}
-        alertMessage="Incorrect password. Please try again."
+        requiredAlert={!!alertMessage}
+        alertMessage={alertMessage}
+        onEnterPress={handleNextClicked}
       />
       <VerticalSeparator />
       <VerticalSeparator />
       <ActionsContainer>
-        <TextActionSpan>
+        <TextActionSpan onClick={handleBackClicked}>
           Back
         </TextActionSpan>
-        <ButtonAction>
+        <ButtonAction onClick={handleNextClicked}>
           <ButtonActionText>
             Next
           </ButtonActionText>

@@ -1,48 +1,27 @@
+import { ValidateFunction } from 'ajv';
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 
 export type ApiResult<T> =
   | { kind: 'ok', data: T }
-  | ApiError;
+  | ApiError
+  ; // ApiResult
 
 export type ApiError =
   | { kind: 'axios-error', error: Error }
   | { kind: 'http-error', response: Response }
   | { kind: 'parse-error', errors: ParseError }
   | { kind: 'unhandled-error', error: Error }
-  ;
+  ; // ApiError
 
 export type ParseError =
   | 'InvalidJson'
-  ;
+  | string
+  ; // ParseError
 
 /**
- * The Api is responsible for all communication with the Project's Apis and Backends. (GamGame)
- * Ideally, we should incorporate a schema validator to all requests to ensure that
- * the data that gets fetched from the endpoints strictly matches the structures defined
- * in the specification (which ought to be included as a JSON schema elsewhere in every 
- * frontend/ backend side).
+ * Run the given request and parse the response according to a given schema
  */
-export class UserService {
-
-  public constructor(
-    private apiUrl: string,
-  ) { } // constructor
-
-  /**
-   * @description Check whether a given username is already in use
-   * @param username user's username
-   */
-  public async checkUsernameInUse(username: string): Promise<ApiResult<boolean>> {
-    const url = `${this.apiUrl}/user/inuse/${username}`;
-    return getApiResult<boolean>(url);
-  } // checkUsernameInUse
-
-}
-
-/**
- * Run the given request and (TODO) parse the response according to a given schema
- */
-async function getApiResult<T>(url: string, config: AxiosRequestConfig = {}): Promise<ApiResult<T>> {
+export async function getApiResult<T>(url: string, config: AxiosRequestConfig = {}, validate?: ValidateFunction<T>): Promise<ApiResult<T>> {
   let response: AxiosResponse<T>;
   try {
     // we attempt to perform a GET request to the specified url and save the
@@ -68,22 +47,35 @@ async function getApiResult<T>(url: string, config: AxiosRequestConfig = {}): Pr
 
   }
 
-  // TODO: we should validate the data object here against our schema
-  // As it is now, this is an unsafe type coercion
-  return { kind: 'ok', data: (response.data as T) };
-}
-
+  if (validate) {
+    if (validate(response.data)) {
+      // data has the correct format and we can safely assume this is of type T
+      return { kind: 'ok', data: response.data };
+    }
+    // invalid format, return error text
+    else return { kind: 'parse-error', errors: validate.errors?.toString() ?? '' }
+  }
+  else {
+    return { kind: 'ok', data: (response.data as T) };
+  }
+} // getApiResult
 
 /**
  * Run the given request and (TODO) parse the response according to a given schema.
  * T refers to data type for the payload, whereas R refers to expected response type
  */
-async function postApiResult<T, R>(url: string, payload: T, config: AxiosRequestConfig = {}): Promise<ApiResult<R>> {
-  let response: R;
+export async function postApiResult<T, R>(url: string, payload: T, config: AxiosRequestConfig = {}, validate?: ValidateFunction<R>): Promise<ApiResult<R>> {
+  let response: any;
   try {
-    // we attempt to perform a GET request to the specified url and save the
+    // we attempt to perform a POST request to the specified url and save the
     // corresponding response within the response variable.
-    response = await axios.post<T, R>(url, payload, config);
+    response = await axios.post<T, any>(url, payload, config);
+    if ('data' in response) {
+      response = response['data'];
+    }
+    else {
+      return { kind: 'parse-error', errors: 'No data found' };
+    }
   } catch (error: any) {
     if (error.response) {
       // if the error has a response, then this means that server responded
@@ -101,10 +93,17 @@ async function postApiResult<T, R>(url: string, payload: T, config: AxiosRequest
       // in any other case, we categorize this as an unhandled error
       return { kind: 'unhandled-error', error: error };
     }
-
   }
 
-  // TODO: we should validate the data object here against our schema
-  // As it is now, this is an unsafe type coercion
-  return { kind: 'ok', data: response };
-}
+  if (validate) {
+    if (validate(response)) {
+      // data has the correct format and we can safely assume this is of type T
+      return { kind: 'ok', data: response as R };
+    }
+    // invalid format, return error text
+    else return { kind: 'parse-error', errors: validate.errors?.toString() ?? '' }
+  }
+  else {
+    return { kind: 'ok', data: response as R };
+  }
+} // postApiResult

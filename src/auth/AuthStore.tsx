@@ -10,12 +10,18 @@ import { UserData } from "../services/user.model";
 interface IAuthContext {
   /** Data object for currently authenticated user (or undefined if not authenticated) */
   userData: UserData | undefined;
+  /** API JWT token for current session */
+  accessToken: string | undefined;
   /** Helper method to modify currently authenticated user from useContext hook */
   setUserData: (newData: UserData | undefined) => void;
+  /** Helper method to modify current access token from useContext hook */
+  setAccessToken: (newToken: string | undefined) => void;
 }
 const AuthContext = React.createContext<IAuthContext>({
   userData: undefined,
-  setUserData: (_) => {},
+  accessToken: undefined,
+  setUserData: (_) => { },
+  setAccessToken: (_) => { }
 });
 
 /** 
@@ -23,19 +29,45 @@ const AuthContext = React.createContext<IAuthContext>({
  * Preserves authentication data between sessions by keeping it within a localStorage variable.
  */
 const AuthStore: React.FC = ({ children }) => {
-  const [userData, setUserdata] = useState<UserData | undefined>(() => {
+  const [userData, setUserData] = useState<UserData | undefined>(() => {
     const prevUserData = localStorage.getItem('userData');
     if (prevUserData) return JSON.parse(prevUserData) as UserData;
     return undefined;
   });
 
+  const [accessToken, setAccessToken] = useState<string | undefined>(() => {
+    const prevToken = localStorage.getItem('accessToken');
+    if (prevToken) return prevToken;
+    return undefined;
+  });
+
   const setData = (data: UserData | undefined) => {
-    setUserdata(data);
-    localStorage.setItem('userData', JSON.stringify(data));
+    setUserData(data);
+    if (data) {
+      localStorage.setItem('userData', JSON.stringify(data));
+    }
+    else {
+      localStorage.removeItem('userData');
+    }
+  };
+
+  const setToken = (token: string | undefined) => {
+    setAccessToken(token);
+    if (token) {
+      localStorage.setItem('accessToken', token);
+    }
+    else {
+      localStorage.removeItem('accessToken');
+    }
   };
 
   return (
-    <AuthContext.Provider value={{ userData, setUserData: setData }}>
+    <AuthContext.Provider value={{
+      userData,
+      accessToken,
+      setUserData: setData,
+      setAccessToken: setToken
+    }}>
       {children}
     </AuthContext.Provider>
   );
