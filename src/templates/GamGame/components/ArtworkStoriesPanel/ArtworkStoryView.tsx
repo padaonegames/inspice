@@ -1,10 +1,10 @@
 import styled from 'styled-components';
-import { useNavigate, useParams } from 'react-router-dom';
-import { useContext } from 'react';
-import { StoriesContext } from './StoriesContext';
 import { Cross } from '@styled-icons/entypo/Cross';
 import ArtworkDecorationPanel from './ArtworkDecorationPanel';
 import ContainerCard from '../../../../components/Forms/Cards/ContainerCard';
+import { GamGameStoryPart } from '../../../../services/gamGameActivity.model';
+import { ArtworkData } from '../../../../services/artwork.model';
+import { ArtworkAuthor, ArtworkDataContainer, ArtworkDescription, ArtworkTitle } from '../generalStyles';
 
 const UpperPanel = styled.div`
   display: flex;
@@ -46,36 +46,6 @@ const StoryListDottedLine = styled.div`
   margin-bottom: 5px;
 `;
 
-const StoryDataContainer = styled.div`
-  margin-bottom: 5px;
-  overflow-y: scroll;
-  height: auto;
-`;
-
-const StoryDescription = styled.p`
-  font-weight: 400;
-  line-height: 1.5;
-  transition: color 0.5s ease;
-  margin: auto 0 auto 0;
-  word-wrap: break-word;
-  padding: 5px 15px;
-`;
-
-const StoryTitle = styled.p`
-  font-size: 1.25em;
-  font-weight: 500;
-  font-style: italic;
-  letter-spacing: +0.5px;
-  margin-bottom: 5px;
-`;
-
-const StoryAuthor = styled.p`
-  font-weight: 700;
-  font-style: bold;
-  letter-spacing: +0.5px;
-  margin-bottom: 5px;
-`;
-
 const QuitIcon = styled(Cross)`
   color: ${props => props.theme.textColor};
   height: 28px;
@@ -85,54 +55,56 @@ const QuitIcon = styled(Cross)`
   align-self: center;
 `;
 
-export const ArtworkStoryView = (): JSX.Element => {
+export interface StoryPartViewProps {
+  /** Story part to be rendered */
+  storyPart: GamGameStoryPart;
+  /** Artwork Data for the artwork included in storyPart as artworkId */
+  artworkData: ArtworkData;
+  /** Callback to parent component specifying that the next button has been pressed */
+  onNextClicked?: () => void;
+  /** Callback to parent specifying that the user wishes to close this story */
+  onQuit?: () => void;
+};
 
-  const { stories, artwork } = useContext(StoriesContext);
-  const { storyId } = useParams();
-  const navigate = useNavigate();
+export const StoryPartView = (props: StoryPartViewProps): JSX.Element => {
 
-  const storyData = stories.find(elem => elem._id === storyId);
-
-  console.log(stories)
-
-  if (!storyData) {
-    return (
-      <>No story found.</>
-    );
-  }
+  const {
+    storyPart,
+    artworkData,
+    onNextClicked,
+    onQuit
+  } = props;
 
   return (
     <ContainerCard upperDecorator>
       <SelectionPanel>
         <UpperPanel>
-          <QuitIcon onClick={() => navigate('..')} />
+          <QuitIcon onClick={onQuit} />
           <MainInfoPanel>
-            <StoryTitle>
-              {storyData.GamGameStoryTitle}
-            </StoryTitle>
-            <StoryAuthor>
-              {storyData.GamGameStoryAuthor}
-            </StoryAuthor>
+            <ArtworkTitle>
+              {artworkData.title}
+            </ArtworkTitle>
+            <ArtworkAuthor>
+              {artworkData.author}
+            </ArtworkAuthor>
           </MainInfoPanel>
         </UpperPanel>
 
         <StoryListDottedLine />
-        <StoryDataContainer>
-          {storyData.multimediaData.text && (
-            <StoryDescription>
-              {storyData.multimediaData.text}
-            </StoryDescription>
-          )}
-        </StoryDataContainer>
+        <ArtworkDataContainer>
+          <ArtworkDescription>
+            {storyPart.multimediaData.text}
+          </ArtworkDescription>
+        </ArtworkDataContainer>
       </SelectionPanel>
       <ArtworkDecorationPanel
         editEnabled={false}
-        artworkSrc={artwork.src}
-        emojis={storyData.multimediaData.emojis ?? []}
-        tags={storyData.multimediaData.tags ?? []}
+        artworkSrc={artworkData.src}
+        emojis={storyPart.multimediaData.emojis}
+        tags={storyPart.multimediaData.tags}
       />
     </ContainerCard>
   );
 };
 
-export default ArtworkStoryView;
+export default StoryPartView;

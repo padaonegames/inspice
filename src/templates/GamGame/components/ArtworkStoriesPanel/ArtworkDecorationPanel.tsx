@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components';
-import { availableEmoji, Emoji, StoryEmoji, StoryTag } from '../../../../services/gamGameActivity.model';
+import { availableEmoji, Emoji, StoryPartEmoji, StoryPartTag } from '../../../../services/gamGameActivity.model';
 import { Type } from '@styled-icons/bootstrap/Type';
 import { Sticker } from '@styled-icons/fluentui-system-filled/Sticker';
 import Draggable, { Position } from './Draggable';
@@ -128,8 +128,8 @@ const TagTypingInput = styled.input`
 export interface ArtworkDecorationPanelProps {
   editEnabled?: boolean;
   artworkSrc: string;
-  emojis: StoryEmoji[];
-  tags: StoryTag[];
+  emojis: StoryPartEmoji[];
+  tags: StoryPartTag[];
   onAddEmoji?: (emoji: Emoji) => void;
   onAddTag?: (tag: string) => void;
   /**

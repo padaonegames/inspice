@@ -13,8 +13,6 @@ import InspectArtworkStep from './Steps/InspectArtworkStep';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import ArtworkStoriesPanel from '../components/ArtworkStoriesPanel';
 import ArtworkStoriesList from '../components/ArtworkStoriesPanel/ArtworkStoriesList';
-import ArtworkStoryView from '../components/ArtworkStoriesPanel/ArtworkStoryView';
-import CreateArtworkStory from '../components/ArtworkStoriesPanel/CreateArtworkStory';
 import GeneralArtworkDetail from '../components/GeneralArtworkDetail';
 import { NavMenuElem } from '../../../components/Layout/SideMenu';
 import ActivityScreen from '../../../screens/ActivityScreen';
@@ -22,7 +20,9 @@ import { QrCode } from 'styled-icons/remix-line';
 import { Home } from '@styled-icons/boxicons-regular/Home';
 import { Gallery } from '@styled-icons/remix-line/Gallery';
 import { Books } from '@styled-icons/icomoon/Books';
+import { FeatherAlt } from '@styled-icons/fa-solid/FeatherAlt';
 import MyStoriesStep from './Steps/MyStoriesStep';
+import CreateStoryFlow from '../components/ArtworkStoriesPanel/CreateStoryFlow';
 
 const Root = styled.div`
   display: flex;
@@ -150,6 +150,11 @@ const gamGameNavigationConfig: NavMenuElem[] = [
     icon: QrCode
   },
   {
+    title: 'Create Story',
+    to: 'stories/create',
+    icon: FeatherAlt
+  },
+  {
     title: 'My Stories',
     to: 'my-stories',
     icon: Books
@@ -171,12 +176,12 @@ const GamGameUserFlow = ({ activityDefinition, artworks, artworkCount }: GamGame
             />}>
             <Route path='home' element={<GeneralInformationStep />} />
             <Route path='collection' element={<CollectionStep />} />
+            <Route path='stories/create' element={<CreateStoryFlow />} />
             <Route path='collection/:artworkId/*' element={<InspectArtworkStep />}>
               <Route path='detail' element={<GeneralArtworkDetail artworks={artworks} />} />
               <Route path='stories/*' element={<ArtworkStoriesPanel />}>
                 <Route path='all' element={<ArtworkStoriesList />} />
-                <Route path='create' element={<CreateArtworkStory />} />
-                <Route path=':storyId' element={<ArtworkStoryView />} />
+                {/* <Route path=':storyId' element={<ArtworkStoryView />} /> */}
                 <Route index element={<ArtworkStoriesList />} />
               </Route>
               <Route path='' element={<Navigate replace to='detail' />} />

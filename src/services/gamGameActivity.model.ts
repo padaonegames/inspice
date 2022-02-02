@@ -5,20 +5,30 @@
 import { ActivityInstance } from "./activity.model";
 
 export interface InProgressGamGameStoryDefinition {
-  GamGameStoryAuthor: string | undefined;
-  GamGameStoryTitle: string | undefined;
+  author: string | undefined;
+  title: string | undefined;
   activityId: string | undefined;
-  artworkId: string | undefined;
-  multimediaData: GamGameStoryMutimediaData | undefined;
+  parts: GamGameStoryPart[];
+  imageSrc: string | undefined;
 }
+
+export interface GamGameStoryPart {
+  artworkId: string;
+  multimediaData: GamGameStoryPartMutimediaData;
+}
+
+export interface InProgressGamGameStoryPart {
+  artworkId: string;
+  multimediaData: InProgressGamGameStoryPartMutimediaData;
+};
 
 export interface GamGameStoryDefinition {
   _id: string;
-  GamGameStoryAuthor: string;
-  GamGameStoryTitle: string;
+  imageSrc?: string;
+  author: string;
+  title: string;
   activityId: string;
-  artworkId: string;
-  multimediaData: GamGameStoryMutimediaData;
+  parts: GamGameStoryPart[];
 }
 
 export type CompletedGamGameStoryDefinition = Omit<
@@ -26,22 +36,25 @@ export type CompletedGamGameStoryDefinition = Omit<
   "_id"
 >;
 
-export interface GamGameStoryMutimediaData { 
-  text?: string;
-  emojis?: StoryEmoji[];
-  tags?: StoryTag[];
+export interface GamGameStoryPartMutimediaData {
+  textTemplate: string;
+  text: string;
+  emojis: StoryPartEmoji[];
+  tags: StoryPartTag[];
 }
 
-export interface StoryOverlayElement {
+export type InProgressGamGameStoryPartMutimediaData = Partial<GamGameStoryPartMutimediaData>;
+
+export interface StoryPartOverlayElement {
   locationX: number; // in [0, 1]
   locationY: number; // in [0, 1]
 }
 
-export interface StoryTag extends StoryOverlayElement {
+export interface StoryPartTag extends StoryPartOverlayElement {
   tag: string;
 }
 
-export interface StoryEmoji extends StoryOverlayElement {
+export interface StoryPartEmoji extends StoryPartOverlayElement {
   emoji: Emoji;
 }
 

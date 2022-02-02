@@ -202,3 +202,24 @@ export const StepRoot = styled.div`
   align-items: center;
   margin-bottom: 65px;
 `;
+
+export interface ProgressButtonProps {
+  enabled?: boolean;
+}
+export const ProgressButton = styled.button<ProgressButtonProps>`
+  border-radius: 15px;
+  background-color: ${props => props.enabled ? 'rgb(196, 76, 73)' : 'rgba(196, 76, 73, 0.5)'};
+  color: ${props => props.enabled ? 'white' : 'rgb(230, 230, 230)'};
+  font-weight: 700;
+  padding: 6px 10px;
+  cursor: ${props => props.enabled ? 'pointer' : 'default'};
+  box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 0.5rem 0px;
+  max-width: 25em;
+  width: 100%;
+
+  ${props => props.enabled && `
+    &:hover {
+      box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 0.5rem 0px;
+    }
+  `}
+`;

@@ -4,21 +4,26 @@ import { GamGameStoryDefinition } from "../../../../services/gamGameActivity.mod
 
 export const sampleStory: GamGameStoryDefinition = {
   _id: 'abcd-1234',
-  GamGameStoryAuthor: 'Pablo Gutiérrez',
-  GamGameStoryTitle: 'Mi nueva historia de prueba',
+  author: 'Pablo Gutiérrez',
+  title: 'Mi nueva historia de prueba',
   activityId: '',
-  artworkId: '',
-  multimediaData: {
-    tags: [
-      { tag: '#divertido', locationX: 0.1, locationY: 0.1 },
-      { tag: '#guay', locationX: 0.65, locationY: 0.65 },
-    ],
-    emojis: [
-      { emoji: '🤩', locationX: 0.25, locationY: 0.25 },
-      { emoji: '🥰', locationX: 0.5, locationY: 0.25 }
-    ],
-    text: 'Me ha gustado mucho esta obra'
-  }
+  parts: [
+    {
+      artworkId: '',
+      multimediaData: {
+        tags: [
+          { tag: '#divertido', locationX: 0.1, locationY: 0.1 },
+          { tag: '#guay', locationX: 0.65, locationY: 0.65 },
+        ],
+        emojis: [
+          { emoji: '🤩', locationX: 0.25, locationY: 0.25 },
+          { emoji: '🥰', locationX: 0.5, locationY: 0.25 }
+        ],
+        textTemplate: 'It makes me feel',
+        text: 'mucha felicidad'
+      }
+    }
+  ]
 };
 
 export interface StoriesContext {

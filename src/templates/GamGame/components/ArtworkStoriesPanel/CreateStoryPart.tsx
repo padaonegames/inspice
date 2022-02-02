@@ -1,16 +1,12 @@
 import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
-import { useContext, useEffect, useState } from 'react';
-import { StoriesContext } from './StoriesContext';
-import { CompletedGamGameStoryDefinition, Emoji, InProgressGamGameStoryDefinition } from '../../../../services/gamGameActivity.model';
-import { GamGameActivityContext } from '../../UserPerspective/Screen';
+import { useState } from 'react';
+import { Emoji, GamGameStoryPart, StoryPartEmoji, StoryPartTag } from '../../../../services/gamGameActivity.model';
 import { ArtworkDecorationPanel } from './ArtworkDecorationPanel';
 import { Position } from './Draggable';
 import { Cross } from '@styled-icons/entypo/Cross';
-import { useAsyncRequest } from '../../../../services/useAsyncRequest';
-import { gamGameApi } from '../../../../services';
 import { ArtworkAuthor, ArtworkTitle, InputArea } from '../generalStyles';
 import ContainerCard from '../../../../components/Forms/Cards/ContainerCard';
+import { ArtworkData } from '../../../../services/artwork.model';
 
 const UpperPanel = styled.div`
   display: flex;
@@ -82,6 +78,12 @@ const SubmitStoryButton = styled.button<SubmitStoryButtonProps>`
   font-weight: 700;
   padding: 6px 10px;
   cursor: ${props => props.enabled ? 'pointer' : 'default'};
+
+  box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 0.5rem 0px;
+
+  &:hover {
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 0.5rem 0px;
+  }
 `;
 
 const TemplateRow = styled.div`
@@ -112,100 +114,84 @@ const TemplateSelector = styled.button<TemplateSelectorProps>`
   }
 `;
 
-export const CreateArtworkStory = (): JSX.Element => {
+interface CreateStoryPartProps {
+  /** Artwork over which the current part will talk about */
+  artwork: ArtworkData;
+  /** Callback to parent that will be triggered when the user clicks on Done with a valid part definition (passed as part param) */
+  onSubmitPart?: (part: GamGameStoryPart) => void;
+  /** Callback to parent specifying that the user wishes to give up on this story */
+  onQuit?: () => void;
+};
 
-  const { artwork } = useContext(StoriesContext);
-  const { activity } = useContext(GamGameActivityContext);
-  const navigate = useNavigate();
+export const CreateStoryPart = (props: CreateStoryPartProps): JSX.Element => {
+
+  const {
+    artwork,
+    onSubmitPart,
+    onQuit
+  } = props;
 
   const templates = ['It makes me think about', 'It reminds me of', 'It makes me feel'] as const;
   const [selectedTemplate, setSelectedTemplate] = useState<typeof templates[number]>('It makes me think about');
+  const [text, setText] = useState<string>('');
+  const [emojis, setEmojis] = useState<StoryPartEmoji[]>([]);
+  const [tags, setTags] = useState<StoryPartTag[]>([]);
 
-  const [storyDefinition, setStoryDefinition] = useState<InProgressGamGameStoryDefinition>({
-    GamGameStoryAuthor: '',
-    GamGameStoryTitle: '',
-    activityId: activity._id,
-    artworkId: artwork.id,
-    multimediaData: {}
-  });
+  const handleSubmitPart = () => {
+    if (text.length === 0 || !onSubmitPart) return;
 
-  const [triggerSubmitStory, setTriggerSubmitStory] = useState<boolean>(false);
+    const part: GamGameStoryPart = {
+      artworkId: artwork.id,
+      multimediaData: {
+        text,
+        emojis,
+        tags,
+        textTemplate: selectedTemplate
+      }
+    };
 
-  const handleSubmitStory = async () => {
-    if (!canSubmitStory() || !triggerSubmitStory) return Promise.reject();
-
-    const completedStory = storyDefinition as CompletedGamGameStoryDefinition
-    return gamGameApi.submitGamGameStoryDefinition(completedStory);
+    onSubmitPart(part);
   };
 
-  const canSubmitStory = () => {
-    return !!storyDefinition.GamGameStoryAuthor && storyDefinition.GamGameStoryAuthor.length > 0 &&
-      !!storyDefinition.GamGameStoryTitle && storyDefinition.GamGameStoryTitle.length > 0 &&
-      !!storyDefinition.multimediaData?.text && storyDefinition.multimediaData.text.length > 0;
-  }
-
-  const [submitStoryRequest] = useAsyncRequest(handleSubmitStory, [triggerSubmitStory]);
-
-  useEffect(() => {
-    if (submitStoryRequest.kind === 'success') {
-      window.confirm('Story uploaded succesfully');
-      navigate(-1);
-    }
-  }, [submitStoryRequest, navigate]);
-
   const handleAddEmoji = (emoji: Emoji) => {
-    setStoryDefinition(prev => ({
+    setEmojis(prev => ([
       ...prev,
-      multimediaData: {
-        ...prev.multimediaData,
-        emojis: [
-          ...prev.multimediaData?.emojis ?? [],
-          {
-            locationX: 0.375,
-            locationY: 0.3,
-            emoji
-          }
-        ]
+      {
+        locationX: 0.375,
+        locationY: 0.3,
+        emoji
       }
-    }));
+    ]));
   };
 
   const handleAddTag = (tag: string) => {
-    setStoryDefinition(prev => ({
+    setTags(prev => ([
       ...prev,
-      multimediaData: {
-        ...prev.multimediaData,
-        tags: [
-          ...prev.multimediaData?.tags ?? [],
-          {
-            locationX: 0.375,
-            locationY: 0.3,
-            tag
-          }
-        ]
+      {
+        locationX: 0.375,
+        locationY: 0.3,
+        tag
       }
-    }));
+    ]));
   };
 
   const handleMoveEmoji = (index: number, pos: Position) => {
-    setStoryDefinition(prev => {
-      let copy: InProgressGamGameStoryDefinition = JSON.parse(JSON.stringify(prev));
-      if (copy.multimediaData?.emojis && index >= 0 && index < copy.multimediaData.emojis.length) {
-        copy.multimediaData.emojis[index].locationX = pos.x;
-        copy.multimediaData.emojis[index].locationY = pos.y;
+    setEmojis(prev => {
+      let copy: StoryPartEmoji[] = JSON.parse(JSON.stringify(prev));
+      if (index >= 0 && index < copy.length) {
+        copy[index].locationX = pos.x;
+        copy[index].locationY = pos.y;
       }
-      console.log(copy, pos)
       return copy;
     });
   };
 
   const handleMoveTag = (index: number, pos: Position) => {
-    setStoryDefinition(prev => {
-      let copy: InProgressGamGameStoryDefinition = JSON.parse(JSON.stringify(prev));
-      if (copy.multimediaData?.tags && index >= 0 && index < copy.multimediaData.tags.length) {
-        copy.multimediaData.tags[index].locationX = pos.x;
-        copy.multimediaData.tags[index].locationY = pos.y;
-        console.log(copy, pos)
+    setTags(prev => {
+      let copy: StoryPartTag[] = JSON.parse(JSON.stringify(prev));
+      if (index >= 0 && index < tags.length) {
+        tags[index].locationX = pos.x;
+        tags[index].locationY = pos.y;
       }
       return copy;
     });
@@ -215,14 +201,10 @@ export const CreateArtworkStory = (): JSX.Element => {
     <ContainerCard upperDecorator>
       <SelectionPanel>
         <HeaderRow>
-          <QuitIcon onClick={() => navigate(-1)} />
+          <QuitIcon onClick={onQuit} />
           <SubmitStoryButton
-            onClick={() => {
-              if (submitStoryRequest.kind !== 'running' && !triggerSubmitStory) {
-                setTriggerSubmitStory(true);
-              }
-            }}
-            enabled={canSubmitStory()}
+            onClick={handleSubmitPart}
+            enabled={text.length > 0}
           >
             Done
           </SubmitStoryButton>
@@ -255,19 +237,16 @@ export const CreateArtworkStory = (): JSX.Element => {
 
           <InputArea
             placeholder='Write your story text here...'
-            value={`${selectedTemplate}... ${storyDefinition.multimediaData?.text ?? ''}`}
-            onChange={(e) => setStoryDefinition(prev => ({
-              ...prev,
-              multimediaData: { ...prev.multimediaData, text: e.target.value.slice(selectedTemplate.length + 4) }
-            }))}
+            value={`${selectedTemplate}... ${text}`}
+            onChange={(e) => setText(e.target.value.slice(selectedTemplate.length + 4))}
             rows={4}
           />
         </StoryDataContainer>
 
         <ArtworkDecorationPanel
           artworkSrc={artwork.src}
-          emojis={storyDefinition.multimediaData?.emojis ?? []}
-          tags={storyDefinition.multimediaData?.tags ?? []}
+          emojis={emojis}
+          tags={tags}
           onAddEmoji={handleAddEmoji}
           onMoveEmoji={handleMoveEmoji}
           onAddTag={handleAddTag}
@@ -279,4 +258,4 @@ export const CreateArtworkStory = (): JSX.Element => {
   );
 };
 
-export default CreateArtworkStory;
+export default CreateStoryPart;

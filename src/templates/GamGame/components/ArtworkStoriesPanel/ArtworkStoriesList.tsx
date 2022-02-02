@@ -1,14 +1,13 @@
 import styled from 'styled-components';
 import { Image } from '@styled-icons/ionicons-solid/Image';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useContext, useState } from 'react';
+import { useContext } from 'react';
 import { GamGameActivityContext } from '../../UserPerspective/Screen';
 import { StoriesContext } from './StoriesContext';
 import { PlusCircleFill } from '@styled-icons/bootstrap/PlusCircleFill';
 import ContainerCard from '../../../../components/Forms/Cards/ContainerCard';
-import { ArtworkAuthor, ArtworkDate, ArtworkListDottedLine, ArtworkTitle, DetailActionPanel, DetailMainInfoPanel, DetailUpperPanel, StoryGrid, VerticalSeparator } from '../generalStyles';
-import SearchBar from '../../../../components/Forms/SearchBar';
-import StoryColumnElement from '../../../../components/ArtworkSelection/StoryColumnElement';
+import { ArtworkAuthor, ArtworkDate, ArtworkListDottedLine, ArtworkTitle, DetailActionPanel, DetailMainInfoPanel, DetailUpperPanel } from '../generalStyles';
+import StoriesList from './StoriesList';
 
 
 const DetailsIcon = styled(Image)`
@@ -49,13 +48,6 @@ export const ArtworkStoriesList = (): JSX.Element => {
   const { artworkId } = useParams();
   const navigate = useNavigate();
 
-  const [filter, setFilter] = useState<string>('');
-
-  const displayStories = stories.filter(elem =>
-    elem.GamGameStoryTitle.toLowerCase().includes(filter) ||
-    elem.GamGameStoryAuthor.toLowerCase().includes(filter)
-  );
-
   const artworkData = artworks.find(elem => elem.id === artworkId);
 
   if (!artworkData) {
@@ -94,20 +86,10 @@ export const ArtworkStoriesList = (): JSX.Element => {
       </DetailUpperPanel>
 
       <ArtworkListDottedLine />
-      <SearchBar
-        placeholder='Search stories by title or author...'
-        onSearchPerformed={(search) => setFilter(search)}
+      <StoriesList
+        stories={stories}
+        onStorySelected={(id) => navigate(`../${id}`)}
       />
-
-      <StoryGrid>
-        {displayStories.map(elem => (
-          <StoryColumnElement
-            storyData={elem}
-            artworkData={artworkData}
-            onCardClicked={() => navigate(`../${elem._id}`)}
-          />
-        ))}
-      </StoryGrid>
     </ContainerCard>
   );
 };

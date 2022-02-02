@@ -1,9 +1,10 @@
-import { ArtworkData } from '../../services/artwork.model';
 import { GamGameStoryDefinition } from '../../services/gamGameActivity.model';
 import { CardAuthor, CardCaption, CardContainer, CardDescriptionList, CardImage, CardImageContainer, CardTitle } from './generalStyles';
 
 export interface StoryListDisplayProps {
-  artworkData: ArtworkData;
+  /** image to be used to represent this story within a story list (miniature) */
+  imageSrc: string;
+  /** Data object with the story's information */
   storyData: GamGameStoryDefinition;
   /**
    * Callback to the parent of this panel indicating that this card has been clicked.
@@ -14,7 +15,7 @@ export interface StoryListDisplayProps {
 export const StoryListDisplay = (props: StoryListDisplayProps): JSX.Element => {
 
   const {
-    artworkData,
+    imageSrc,
     storyData,
     onCardClicked,
   } = props;
@@ -22,15 +23,15 @@ export const StoryListDisplay = (props: StoryListDisplayProps): JSX.Element => {
   return (
     <CardContainer onClick={onCardClicked}>
       <CardImageContainer>
-        <CardImage src={artworkData.src} />
+        <CardImage src={imageSrc} />
       </CardImageContainer>
       <CardCaption>
         <CardDescriptionList>
           <CardTitle>
-            {storyData.GamGameStoryTitle}
+            {storyData.title}
           </CardTitle>
           <CardAuthor>
-            {storyData.GamGameStoryAuthor}
+            {storyData.author}
           </CardAuthor>
         </CardDescriptionList>
       </CardCaption>
