@@ -4,32 +4,7 @@ import { Type } from '@styled-icons/bootstrap/Type';
 import { Sticker } from '@styled-icons/fluentui-system-filled/Sticker';
 import Draggable, { Position } from './Draggable';
 import { useState } from 'react';
-
-interface StoryDisplayProps {
-  backgroundImage: string;
-};
-
-const StoryDisplay = styled.div<StoryDisplayProps>`
-  width: 100%;
-  object-fit: contain;
-  @media (max-width: 768px) {
-    height: 90vw;
-  }
-
-  @media (min-width: 768px) {
-    height: 100vw;
-    max-height: 60vh;
-  }
-
-  position: relative;
-
-  background-image: ${props => `url(${props.backgroundImage})`};
-  overflow: hidden;
-  background-position: 50% 50%;
-  background-repeat: no-repeat;
-  background-size: auto 100%;
-  background-color: ${props => props.theme.artworkDisplayBackground};
-`;
+import { DetailArtworkDisplay } from '../generalStyles';
 
 const StoryEmojiSpan = styled.span`
   font-size: 50px;
@@ -242,7 +217,7 @@ export const ArtworkDecorationPanel = (props: ArtworkDecorationPanelProps): JSX.
   };
 
   return (
-    <StoryDisplay
+    <DetailArtworkDisplay
       ref={newRef => setImageContainerRef(newRef)}
       backgroundImage={artworkSrc}
     >
@@ -306,7 +281,7 @@ export const ArtworkDecorationPanel = (props: ArtworkDecorationPanelProps): JSX.
           </StoryTagSpan>
         </Draggable>
       ))}
-    </StoryDisplay>
+    </DetailArtworkDisplay>
   );
 };
 

@@ -2,6 +2,9 @@ import styled from "styled-components";
 import { StyledIcon } from "styled-icons/types";
 import { UserCircle } from "@styled-icons/boxicons-regular/UserCircle";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "../../auth/AuthStore";
+import { PowerOff } from "@styled-icons/boxicons-regular/PowerOff";
 
 interface RootProps {
   open: boolean;
@@ -18,6 +21,8 @@ const Root = styled.div<RootProps>`
   flex-direction: column;
 
   transition: width 0s;
+
+  box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 0.5rem 0px;
 `;
 
 const UserWrapper = styled.div`
@@ -60,6 +65,15 @@ const NavigationList = styled.li`
   border-top: dotted 1px lightgray;
 `;
 
+const IconStyle = styled.span<NavigationElemProps>`
+  * {
+    height: 1.75em;
+    width: 1.75em;
+    color: ${props => props.selected ? 'white' : props.theme.textColor};
+    margin-right: 1em;
+  }
+`;
+
 interface NavigationElemProps {
   selected?: boolean;
 };
@@ -78,14 +92,16 @@ const NavigationElem = styled.ul<NavigationElemProps>`
   padding: 0.35em 0;
   padding-left: 0.5em;
   border-radius: 5px;
-`;
 
-const IconStyle = styled.span<NavigationElemProps>`
-  * {
-    height: 1.75em;
-    width: 1.75em;
-    color: ${props => props.selected ? 'white' : props.theme.textColor};
-    margin-right: 1em;
+  &:hover {
+    background-color: ${props => `hsl(5, 80%, ${props.theme.textReadableLuminosity}%)`};
+    color: white;
+  }
+
+  &:hover ${IconStyle} {
+    * {
+      color: white;
+    }
   }
 `;
 
@@ -121,6 +137,7 @@ export const SideMenu = (props: SideMenuProps): JSX.Element => {
 
   const navigate = useNavigate();
   const { pathname } = useLocation();
+  const { userData, setAccessToken } = useContext(AuthContext);
 
   return (
     <>
@@ -129,7 +146,7 @@ export const SideMenu = (props: SideMenuProps): JSX.Element => {
           (<>
             <UserWrapper>
               <UserIcon />
-              <Username>Tester</Username>
+              <Username>{userData?.username ?? 'Not logged in'}</Username>
             </UserWrapper>
             <NavigationList>
               {entries.map(elem => (
@@ -149,6 +166,20 @@ export const SideMenu = (props: SideMenuProps): JSX.Element => {
                 </NavigationElem>
               ))}
             </NavigationList>
+
+            {userData && (
+              <NavigationList>
+                <NavigationElem
+                  selected={false}
+                  onClick={() => setAccessToken(undefined)}
+                >
+                  <IconStyle selected={false}>
+                    <PowerOff />
+                  </IconStyle>
+                  Sign out
+                </NavigationElem>
+              </NavigationList>
+            )}
           </>)}
       </Root>
     </>

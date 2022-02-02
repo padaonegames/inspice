@@ -1,116 +1,35 @@
 import styled from 'styled-components';
 import { Image } from '@styled-icons/ionicons-solid/Image';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { GamGameActivityContext } from '../../UserPerspective/Screen';
 import { StoriesContext } from './StoriesContext';
 import { PlusCircleFill } from '@styled-icons/bootstrap/PlusCircleFill';
-import StoryListDisplay from '../StoryListDisplay';
 import ContainerCard from '../../../../components/Forms/Cards/ContainerCard';
-import { Root } from '../generalStyles';
+import { ArtworkAuthor, ArtworkDate, ArtworkListDottedLine, ArtworkTitle, DetailActionPanel, DetailMainInfoPanel, DetailUpperPanel, StoryGrid, VerticalSeparator } from '../generalStyles';
+import SearchBar from '../../../../components/Forms/SearchBar';
+import StoryColumnElement from '../../../../components/ArtworkSelection/StoryColumnElement';
 
-const UpperPanel = styled.div`
-  display: flex;
-  flex-direction: row;
-  margin-bottom: 10px;
-`;
-
-const MainInfoPanel = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 80%;
-`;
-
-const DetailsPanel = styled.div`
-  width: 20%;
-  display: flex;
-  flex-direction: column;
-
-  justify-content: center;
-  align-items: center;
-  color: ${props => props.theme.textColor};
-  text-align: center;
-  font-size: 0.65em;
-  font-weight: 400;
-  letter-spacing: +1px;
-  font-family: 'EB Garamond';
-  text-transform: uppercase;
-  cursor: pointer;
-`;
 
 const DetailsIcon = styled(Image)`
   color: ${props => props.theme.textColor};
-  width : 28px;
-  height: 28px;
-  margin-bottom: 5px;
-`;
-
-const SelectionPanel = styled.div`
-  display: flex;
-  position: relative;
-  flex-direction: column;
-  margin: 0;
-
-  @media (max-width: 768px) {
-    width: 100%;
-    padding: 3%;
-  }
-
-  @media (min-width: 768px) {
-    width: 50%;
-    padding: 1.5%;
-    padding-top: 3%;
-  }
-`;
-
-const ArtworkListDottedLine = styled.div`
-  height: 0.5vh;
-  width: 100%;
-  border-style: dotted;
-  border-color: lightgray;
-  border-width: 0px 0px 1px 0px;
-  margin-bottom: 2.5%;
-`;
-
-const ArtworkDataContainer = styled.div`
-  margin-top: 15px;
-  margin-bottom: 15px;
-  overflow-y: scroll;
-  height: auto;
-`;
-
-const ArtworkTitle = styled.p`
-  font-size: 1.25em;
-  font-weight: 500;
-  font-style: italic;
-  letter-spacing: +0.5px;
-  margin-bottom: 5px;
-`;
-
-const ArtworkAuthor = styled.p`
-  font-weight: 700;
-  font-style: bold;
-  letter-spacing: +0.5px;
-  margin-bottom: 5px;
-`;
-
-const ArtworkDate = styled.p`
-  letter-spacing: +0.5px;
-  margin-bottom: 5px;
+  width : 3em;
+  height: 3em;
+  margin-bottom: 0.5em;
 `;
 
 const AddStoryButton = styled.div`
   position: fixed;
   z-index: 999;
-  bottom: 85px;
-  right: 20px;
+  bottom: 3em;
+  right: 3em;
 `;
 
 const AddStoryButtonBackground = styled.div`
   background-color: white;
   border-radius: 50%;
-  height: 41px;
-  width: 42px;
+  height: 3em;
+  width: 3em;
 `;
 
 const AddStoryIcon = styled(PlusCircleFill)`
@@ -118,8 +37,8 @@ const AddStoryIcon = styled(PlusCircleFill)`
   position: absolute;
   top: 0;
   left: 0;
-  height: 42px;
-  width: 42px;
+  height: 3em;
+  width: 3em;
   cursor: pointer;
 `;
 
@@ -130,55 +49,65 @@ export const ArtworkStoriesList = (): JSX.Element => {
   const { artworkId } = useParams();
   const navigate = useNavigate();
 
+  const [filter, setFilter] = useState<string>('');
+
+  const displayStories = stories.filter(elem =>
+    elem.GamGameStoryTitle.toLowerCase().includes(filter) ||
+    elem.GamGameStoryAuthor.toLowerCase().includes(filter)
+  );
+
   const artworkData = artworks.find(elem => elem.id === artworkId);
 
   if (!artworkData) {
     return (
-      <Root>
+      <>
         No artwork found.
-      </Root>
+      </>
     );
   }
 
   return (
     <ContainerCard upperDecorator>
-      <SelectionPanel>
-        <AddStoryButton
-          title='Add a new story'
-          onClick={() => navigate('../create')}
-        >
-          <AddStoryButtonBackground />
-          <AddStoryIcon />
-        </AddStoryButton>
-        <UpperPanel>
-          <MainInfoPanel>
-            <ArtworkTitle>
-              {artworkData.title}
-            </ArtworkTitle>
-            <ArtworkAuthor>
-              {artworkData.author}
-            </ArtworkAuthor>
-            <ArtworkDate>
-              {artworkData.date}
-            </ArtworkDate>
-          </MainInfoPanel>
-          <DetailsPanel>
-            <DetailsIcon onClick={() => navigate('../../detail')} />
-            Details
-          </DetailsPanel>
-        </UpperPanel>
+      <AddStoryButton
+        title='Add a new story'
+        onClick={() => navigate('../create')}
+      >
+        <AddStoryButtonBackground />
+        <AddStoryIcon />
+      </AddStoryButton>
+      <DetailUpperPanel>
+        <DetailMainInfoPanel>
+          <ArtworkTitle>
+            {artworkData.title}
+          </ArtworkTitle>
+          <ArtworkAuthor>
+            {artworkData.author}
+          </ArtworkAuthor>
+          <ArtworkDate>
+            {artworkData.date}
+          </ArtworkDate>
+        </DetailMainInfoPanel>
+        <DetailActionPanel>
+          <DetailsIcon onClick={() => navigate('../../detail')} />
+          Details
+        </DetailActionPanel>
+      </DetailUpperPanel>
 
-        <ArtworkListDottedLine />
-        <ArtworkDataContainer>
-          {stories.map(elem => (
-            <StoryListDisplay
-              storyData={elem}
-              artworkData={artworkData}
-              onCardClicked={() => navigate(`../${elem._id}`)}
-            />
-          ))}
-        </ArtworkDataContainer>
-      </SelectionPanel>
+      <ArtworkListDottedLine />
+      <SearchBar
+        placeholder='Search stories by title or author...'
+        onSearchPerformed={(search) => setFilter(search)}
+      />
+
+      <StoryGrid>
+        {displayStories.map(elem => (
+          <StoryColumnElement
+            storyData={elem}
+            artworkData={artworkData}
+            onCardClicked={() => navigate(`../${elem._id}`)}
+          />
+        ))}
+      </StoryGrid>
     </ContainerCard>
   );
 };

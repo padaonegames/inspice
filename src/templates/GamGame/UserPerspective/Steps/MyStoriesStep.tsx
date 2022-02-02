@@ -6,8 +6,8 @@ import SearchBar from '../../../../components/Forms/SearchBar';
 import { ArtworkGrid, ArtworkListDottedLine, StepRoot } from '../../components/generalStyles';
 import { GamGameActivityContext } from '../Screen';
 
-export const CollectionStep = (): JSX.Element => {
-
+export const MyStoriesStep = (): JSX.Element => {
+  
   const navigate = useNavigate();
   const { artworks } = useContext(GamGameActivityContext);
 
@@ -21,12 +21,12 @@ export const CollectionStep = (): JSX.Element => {
   return (
     <StepRoot>
       <StepTitleCard
-        stepTitle='Explore the Collection'
-        stepDescription={`Here you can find the works included in this activity. Click on any of them to access its information page or interact with its stories.`}
+        stepTitle='My Stories'
+        stepDescription={`Here you can find a list of your personal stories. Use this page to browse, view and delete the stories you've already created.`}
       >
         <ArtworkListDottedLine />
         <SearchBar
-          placeholder='Search by title or author...'
+          placeholder='Search story by title...'
           onSearchPerformed={(search) => setFilter(search)}
         />
         <ArtworkGrid>
@@ -45,4 +45,4 @@ export const CollectionStep = (): JSX.Element => {
   );
 }
 
-export default CollectionStep;
+export default MyStoriesStep;

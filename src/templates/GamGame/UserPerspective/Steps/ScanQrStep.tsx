@@ -1,5 +1,3 @@
-import styled from 'styled-components';
-
 // To use Html5QrcodeScanner (more info below)
 // https://github.com/mebjas/html5-qrcode
 import { Html5QrcodeScanner } from "html5-qrcode";
@@ -8,15 +6,7 @@ import { useCallback, useEffect, useRef } from 'react';
 import { Html5QrcodeResult, QrcodeSuccessCallback } from 'html5-qrcode/esm/core';
 import { useNavigate } from 'react-router-dom';
 import StepTitleCard from '../../../../components/Forms/Cards/StepTitleCard';
-
-const Root = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin-top: 5px;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 65px;
-`;
+import { StepRoot } from "../../components/generalStyles";
 
 export const ScanQrStep = (): JSX.Element => {
 
@@ -56,7 +46,7 @@ export const ScanQrStep = (): JSX.Element => {
   }, [scannerRef, onScanFailure, onScanSuccess]);
 
   return (
-    <Root>
+    <StepRoot>
       <StepTitleCard
         stepTitle='Scan QR'
         stepDescription={`Use your device's camera to take a picture of the QR code next to any artwork in this activity` +
@@ -66,7 +56,7 @@ export const ScanQrStep = (): JSX.Element => {
       >
         <div id="reader" ref={scannerRef}></div>
       </StepTitleCard>
-    </Root>
+    </StepRoot>
   );
 }
 

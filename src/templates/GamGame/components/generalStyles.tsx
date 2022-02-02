@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import lineBackground from './../../../components/line-header-point.png';
 
 export const Root = styled.div`
   display: flex;
@@ -19,6 +20,61 @@ export const Root = styled.div`
     padding: 0;
     flex-direction: row;
   }
+`;
+
+export const DetailUpperPanel = styled.div`
+  display: flex;
+  flex-direction: row;
+  padding: 16px 16px 24px 16px;
+`;
+
+export const DetailMainInfoPanel = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 80%;
+`;
+
+export const DetailActionPanel = styled.div`
+  width: 20%;
+  display: flex;
+  flex-direction: column;
+
+  justify-content: center;
+  align-items: center;
+  color: ${props => props.theme.textColor};
+  text-align: center;
+  font-size: 0.65em;
+  font-weight: 400;
+  letter-spacing: +1px;
+  font-family: 'EB Garamond';
+  text-transform: uppercase;
+  cursor: pointer;
+`;
+
+export interface DetailArtworkDisplayProps {
+  backgroundImage: string;
+};
+
+export const DetailArtworkDisplay = styled.div<DetailArtworkDisplayProps>`
+  width: 100%;
+  object-fit: contain;
+  @media (max-width: 768px) {
+    height: 90vw;
+  }
+
+  @media (min-width: 768px) {
+    height: 100vw;
+    max-height: 60vh;
+  }
+
+  position: relative;
+
+  background-image: ${props => `url(${props.backgroundImage})`};
+  overflow: hidden;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  background-size: auto 100%;
+  background-color: ${props => props.theme.artworkDisplayBackground};
 `;
 
 export const ArtworkDescription = styled.p`
@@ -55,6 +111,22 @@ export const ArtworkNotes = styled.p`
   font-size: 0.9em;
   font-weight: 400;
   font-style: italic;
+  margin-top: 1em;
+`;
+
+export const ArtworkDataContainer = styled.div`
+  height: auto;
+  padding: 1em;
+  margin-bottom: 0.5em;
+`;
+
+export const ClickableText = styled.p`
+  font-size: 0.9em;
+  font-weight: 400;
+  color: ${props => props.theme.clickableTextFontColor};
+  margin-top: 1em;
+  text-decoration: underline;
+  cursor: pointer;
 `;
 
 export const InputArea = styled.textarea`
@@ -76,4 +148,57 @@ export const InputArea = styled.textarea`
   &:focus {
     border-bottom: 3px solid #c44c49;
   }
+`;
+
+export const VerticalSeparator = styled.div`
+  width: 85%;
+  max-width: 960px;
+  height: 1em;
+  background: url(${lineBackground}) repeat-x 0 center;
+  align-self: center;
+`;
+
+export const ArtworkListDottedLine = styled.div`
+  height: 0.5em;
+  width: 100%;
+  border-style: dotted;
+  border-color: lightgray;
+  border-width: 0px 0px 1px 0px;
+  margin-bottom: 0.75em;
+`;
+
+export const ArtworkGrid = styled.div`
+  position: relative;
+  height: fit-content;
+  width: 100%;
+  max-width: 730px;
+  display: grid;
+  align-self: top;
+
+  @media (max-width: 768px) {
+    justify-content: center;
+    padding-bottom: 1em;
+  }
+
+  @media (min-width: 768px) {
+    padding-top: 1em;
+    justify-content: space-around;
+    align-content: center;
+    grid-row-gap: 1.5em;
+    grid-template-columns: auto auto;
+    padding-left: 15px;
+  }
+
+  padding-bottom: 24px;
+`;
+
+export const StoryGrid = ArtworkGrid;
+
+export const StepRoot = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-top: 5px;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 65px;
 `;

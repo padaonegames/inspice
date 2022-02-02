@@ -1,17 +1,8 @@
 import { Outlet, useParams } from 'react-router-dom';
-import styled from 'styled-components';
 import { useContext } from 'react';
 import { GamGameActivityContext } from '../Screen';
+import { StepRoot } from '../../components/generalStyles';
 
-
-const Root = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin-top: 5px;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 65px;
-`;
 
 export const InspectArtworkStep = (): JSX.Element => {
 
@@ -22,16 +13,16 @@ export const InspectArtworkStep = (): JSX.Element => {
 
   if (!artworkData) {
     return (
-      <Root>
+      <StepRoot>
         No artwork found.
-      </Root>
+      </StepRoot>
     );
   }
 
   return (
-    <Root>
+    <StepRoot>
       <Outlet />
-    </Root>
+    </StepRoot>
   );
 }
 

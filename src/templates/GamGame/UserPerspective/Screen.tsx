@@ -22,6 +22,7 @@ import { QrCode } from 'styled-icons/remix-line';
 import { Home } from '@styled-icons/boxicons-regular/Home';
 import { Gallery } from '@styled-icons/remix-line/Gallery';
 import { Books } from '@styled-icons/icomoon/Books';
+import MyStoriesStep from './Steps/MyStoriesStep';
 
 const Root = styled.div`
   display: flex;
@@ -181,7 +182,7 @@ const GamGameUserFlow = ({ activityDefinition, artworks, artworkCount }: GamGame
               <Route path='' element={<Navigate replace to='detail' />} />
             </Route>
             <Route path='scan-qr' element={<ScanQrStep />} />
-            <Route path='my-stories' element={<GeneralInformationStep />} />
+            <Route path='my-stories' element={<MyStoriesStep />} />
             <Route path='' element={<Navigate replace to='home' />} />
           </Route>
         </Routes>

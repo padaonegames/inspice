@@ -74,6 +74,7 @@ const AuthStore: React.FC = ({ children }) => {
     else {
       localStorage.removeItem('accessToken');
       axios.defaults.headers.common['Authorization'] = null;
+      setUserData(undefined);
     }
   };
 
