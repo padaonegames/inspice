@@ -20,7 +20,7 @@ const Root = styled.div`
   padding: 0;
   border-top: 1px solid #e5e5e5;
   box-sizing: inherit;
-  z-index: 9001;
+  z-index: 9999;
   oveflow-x: scroll;
 `;
 

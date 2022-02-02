@@ -1,6 +1,6 @@
 import { ThemeStore } from './theme/ThemeStore';
 import Theme from './theme/Theme';
-import React, { Suspense } from 'react';
+import { Suspense } from 'react';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 
 // screen imports
@@ -58,15 +58,13 @@ export const App = (): JSX.Element => {
                   <Route path='browse' element={<BrowseDefinitionsScreen />} />
                   <Route path='' element={<Navigate replace to='browse' />} />
                 </Route>
-                <Route path='gam-game' element={<ActivityScreen activityTitle='GAM - GAM Game' />}>
+                <Route path='gam-game'>
                   <Route path='consumer'>
                     <Route path='visit/:id/*' element={<GamGameUserMenuScreen />} />
                   </Route>
-                  <Route path='curator'>
+                  <Route path='curator' element={<ActivityScreen guarded activityTitle='GAM - GAM Game' />}>
                     <Route path='create' element={<CreateGamGameActivityScreen />} />
                   </Route>
-                  <Route path='browse' element={<BrowseDefinitionsScreen />} />
-                  <Route path='' element={<Navigate replace to='browse' />} />
                 </Route>
                 <Route path='/login' element={<LoginScreen />} />
                 <Route path='/' element={<Navigate replace to='/dashboard' />} />

@@ -1,7 +1,7 @@
 import { Outlet, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { useContext } from 'react';
-import { ArtworksContext } from '../Screen';
+import { GamGameActivityContext } from '../Screen';
 
 
 const Root = styled.div`
@@ -15,7 +15,7 @@ const Root = styled.div`
 
 export const InspectArtworkStep = (): JSX.Element => {
 
-  const { artworks } = useContext(ArtworksContext);
+  const { artworks } = useContext(GamGameActivityContext);
   const { artworkId } = useParams();
 
   const artworkData = artworks.find(elem => elem.id === artworkId);

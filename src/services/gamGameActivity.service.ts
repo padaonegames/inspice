@@ -31,11 +31,7 @@ export type ParseError =
 export class GamGameActivityService {
 
   public constructor(
-    private apiUrl: string,
-    private datasetUuid: string,
-    private activityDefinitionsDatasetUuid: string,
-    private storyDefinitionsDatasetUuid: string,
-    private apiKey: string,
+    private apiUrl: string
   ) { } // constructor
 
   /**
@@ -99,7 +95,6 @@ export class GamGameActivityService {
 
     const apiDefinition: CompletedGamGameActivityDefinition = {
       ...activityDefinition,
-      storyDefinitionsDatasetUuid: this.storyDefinitionsDatasetUuid,
     };
 
     return postApiResult<CompletedGamGameActivityDefinition, GamGameActivityDefinition>(url, apiDefinition);

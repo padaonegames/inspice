@@ -2,29 +2,8 @@ import styled from 'styled-components';
 import { FeatherAlt } from '@styled-icons/fa-solid/FeatherAlt';
 import { ArtworkData } from '../../../services/artwork.model';
 import { useNavigate, useParams } from 'react-router-dom';
-
-const Root = styled.div`
-  display: flex;
-  
-  @media (max-width: 768px) {
-    width: 100%;
-    align-self: center;
-    flex-direction: column;
-  }
-
-  @media (min-width: 768px) {
-    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-    padding: 16px;
-    width: 85%;
-    max-width: 1200px;
-    align-items: left;
-    margin-bottom: 15px;
-    padding: 0;
-    flex-direction: row;
-  }
-
-  background-color: ${props => props.theme.cardBackground};
-`;
+import ContainerCard from '../../../components/Forms/Cards/ContainerCard';
+import { ArtworkAuthor, ArtworkDate, ArtworkDescription, ArtworkNotes, ArtworkTitle } from './generalStyles';
 
 const UpperPanel = styled.div`
   display: flex;
@@ -96,41 +75,6 @@ const ArtworkDataContainer = styled.div`
   height: auto;
 `;
 
-const ArtworkDescription = styled.p`
-  font-weight: 400;
-  line-height: 1.5;
-  transition: color 0.5s ease;
-  margin: auto 0 auto 0;
-  word-wrap: break-word;
-  padding-right: 15px;
-`;
-
-const ArtworkTitle = styled.p`
-  font-size: 1.25em;
-  font-weight: 500;
-  font-style: italic;
-  letter-spacing: +0.5px;
-  margin-bottom: 5px;
-`;
-
-const ArtworkAuthor = styled.p`
-  font-weight: 700;
-  font-style: bold;
-  letter-spacing: +0.5px;
-  margin-bottom: 5px;
-`;
-
-const ArtworkDate = styled.p`
-  letter-spacing: +0.5px;
-  margin-bottom: 5px;
-`;
-
-const ArtworkNotes = styled.p`
-  font-size: 0.9em;
-  font-weight: 400;
-  font-style: italic;
-`;
-
 interface ArtworkDisplayProps {
   backgroundImage: string;
 };
@@ -138,8 +82,8 @@ interface ArtworkDisplayProps {
 const ArtworkDisplay = styled.div<ArtworkDisplayProps>`
 
   @media (max-width: 768px) {
-    width: 100vw;
-    height: 100vw;
+    width: 100%;
+    height: 95vw;
     object-fit: contain;
   }
 
@@ -179,14 +123,12 @@ export const GeneralArtworkDetail = (props: GeneralArtworkDetailProps): JSX.Elem
 
   if (!artworkData) {
     return (
-      <Root>
-        No artwork found.
-      </Root>
+      <>No artwork found.</>
     );
   }
 
   return (
-    <Root>
+    <ContainerCard upperDecorator>
       <SelectionPanel>
         <UpperPanel>
           <MainInfoPanel>
@@ -201,7 +143,7 @@ export const GeneralArtworkDetail = (props: GeneralArtworkDetailProps): JSX.Elem
             </ArtworkDate>
           </MainInfoPanel>
           <StoriesPanel>
-            <StoryIcon onClick={() => navigate('../stories/all')}/>
+            <StoryIcon onClick={() => navigate('../stories/all')} />
             Stories
           </StoriesPanel>
         </UpperPanel>
@@ -222,8 +164,7 @@ export const GeneralArtworkDetail = (props: GeneralArtworkDetailProps): JSX.Elem
       <ArtworkDisplay
         backgroundImage={artworkData.src}
       />
-    </Root>
-
+    </ContainerCard>
   );
 };
 

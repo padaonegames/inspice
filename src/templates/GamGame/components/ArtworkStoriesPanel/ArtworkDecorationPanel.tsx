@@ -10,15 +10,15 @@ interface StoryDisplayProps {
 };
 
 const StoryDisplay = styled.div<StoryDisplayProps>`
+  width: 100%;
+  object-fit: contain;
   @media (max-width: 768px) {
-    width: 100vw;
-    height: 100vw;
-    object-fit: contain;
-    margin-bottom: 3vh;
+    height: 90vw;
   }
 
   @media (min-width: 768px) {
-    width: 50%;
+    height: 100vw;
+    max-height: 60vh;
   }
 
   position: relative;
@@ -89,25 +89,34 @@ const TypeIcon = styled(Type)`
 
 const StickerSelectorContainer = styled.div`
   border-radius: 15px;
-  border: 1px solid black;
+  border: 1px solid darkgray;
   background-color: ${props => props.theme.headerBackground};
   position: absolute;
-  z-index: 50;
-  height: 65px;
-  width: 90vw;
+  z-index: 10;
+  height: 4.5em;
+  @media (max-width: 768px) {
+    width: 87.5vw;
+    -webkit-overflow-scrolling: touch;
+    overflow: scroll;
+  }
+
+  @media (min-width: 768px) {
+    width: min(87.5vw, 660px, fit-content);
+    overflow-x: auto;
+  }
+
   top: 95%;
-  right: 3vw;
+  right: 1em;
 
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: space-between;
-  overflow-x: scroll;
-  padding: 3%;
+  justify-content: right;
+  padding: 0 0.65em;
 `;
 
 const SelectionEmoji = styled.span`
-  font-size: 32px;
+  font-size: 2em;
 `;
 
 const TagTypingContainer = styled.div`
@@ -239,10 +248,10 @@ export const ArtworkDecorationPanel = (props: ArtworkDecorationPanelProps): JSX.
     >
       {editEnabled && (
         <ToolsRow>
-          <ToolContainer onClick={() => setTagsOpen(prev => !prev)} >
+          <ToolContainer onClick={() => setTagsOpen(prev => !stickersOpen && !prev)} >
             <TypeIcon />
           </ToolContainer>
-          <ToolContainer onClick={() => setStickersOpen(prev => !prev)} >
+          <ToolContainer onClick={() => setStickersOpen(prev => !tagsOpen && !prev)} >
             <StickerIcon />
             {stickersOpen &&
               <StickerSelectorContainer>

@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-import { UserData } from "../services/user.model";
+import axios from 'axios';
+import React, { useState } from 'react';
+import { UserData } from '../services/user.model';
 
 /**
  * This component provides access to a wrapping context that
@@ -36,8 +37,14 @@ const AuthStore: React.FC = ({ children }) => {
   });
 
   const [accessToken, setAccessToken] = useState<string | undefined>(() => {
+    // Look for previously existing tokens in local storage and assign them to axios default
+    // auth headers if found
     const prevToken = localStorage.getItem('accessToken');
-    if (prevToken) return prevToken;
+    if (prevToken) {
+      axios.defaults.headers.common['Authorization'] = prevToken;
+      return prevToken;
+    }
+    axios.defaults.headers.common['Authorization'] = null;
     return undefined;
   });
 
@@ -51,13 +58,22 @@ const AuthStore: React.FC = ({ children }) => {
     }
   };
 
+  /**
+   * Set a session token in authentication context and save it to browser's localStorage
+   * as well as as the default Authorization header for all axios requests. If token is set
+   * to undefined, remove access token from authentication context and localStorage entries,
+   * and set axios' default Authorization header to null.
+   * @param token 
+   */
   const setToken = (token: string | undefined) => {
     setAccessToken(token);
     if (token) {
       localStorage.setItem('accessToken', token);
+      axios.defaults.headers.common['Authorization'] = token;
     }
     else {
       localStorage.removeItem('accessToken');
+      axios.defaults.headers.common['Authorization'] = null;
     }
   };
 

@@ -3,39 +3,19 @@ import { useNavigate } from 'react-router-dom';
 import { useContext, useEffect, useState } from 'react';
 import { StoriesContext } from './StoriesContext';
 import { CompletedGamGameStoryDefinition, Emoji, InProgressGamGameStoryDefinition } from '../../../../services/gamGameActivity.model';
-import { ArtworksContext } from '../../../../templates/GamGame/UserPerspective/Screen';
+import { GamGameActivityContext } from '../../UserPerspective/Screen';
 import { ArtworkDecorationPanel } from './ArtworkDecorationPanel';
 import { Position } from './Draggable';
 import { Cross } from '@styled-icons/entypo/Cross';
 import { useAsyncRequest } from '../../../../services/useAsyncRequest';
 import { gamGameApi } from '../../../../services';
-
-const Root = styled.div`
-  display: flex;
-  
-  @media (max-width: 768px) {
-    width: 100%;
-    align-self: center;
-    flex-direction: column;
-  }
-
-  @media (min-width: 768px) {
-    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-    padding: 16px;
-    width: 85%;
-    max-width: 1200px;
-    align-items: left;
-    margin-bottom: 15px;
-    padding: 0;
-    flex-direction: row;
-  }
-
-  background-color: ${props => props.theme.cardBackground};
-`;
+import { ArtworkAuthor, ArtworkTitle, InputArea } from '../generalStyles';
+import ContainerCard from '../../../../components/Forms/Cards/ContainerCard';
 
 const UpperPanel = styled.div`
   display: flex;
   flex-direction: row;
+  width: 100%
 `;
 
 const MainInfoPanel = styled.div`
@@ -48,64 +28,28 @@ const MainInfoPanel = styled.div`
 const SelectionPanel = styled.div`
   display: flex;
   flex-direction: column;
-  max-height: 550px;
   margin: 0;
-
-  @media (max-width: 768px) {
-    width: 100%;
-  }
+  width: 100%;
 
   @media (min-width: 768px) {
-    width: 50%;
-    padding: 1.5%;
-    padding-top: 3%;
+    padding: 0.5em;
   }
 `;
 
 const StoryListDottedLine = styled.div`
-  height: 0.5vh;
-  width: 100%;
+  height: 0.5em;
+  width: 97.5%;
+  align-self: center;
   border-style: dotted;
   border-color: lightgray;
   border-width: 0px 0px 1px 0px;
-  margin-bottom: 2.5%;
+  margin-bottom: 0.5em;
 `;
 
 const StoryDataContainer = styled.div`
-  margin-bottom: 15px;
-  overflow-y: scroll;
+  margin-bottom: 0.5em;
   height: auto;
-  padding: 3%;
-  padding-top: 1%;
-`;
-
-const StoryDescription = styled.textarea`
-  font-weight: 400;
-  line-height: 1.2;
-  transition: color 0.5s ease;
-  margin: auto 0 auto 0;
-  word-wrap: break-word;
-  padding: 5px 15px;
-  width: 100%;
-`;
-
-const StoryTitle = styled.input`
-  font-size: 1.25em;
-  font-weight: 500;
-  font-style: italic;
-  letter-spacing: +0.5px;
-  margin-bottom: 5px;
-  padding: 5px 15px;
-  width: 100%;
-`;
-
-const StoryAuthor = styled.input`
-  font-weight: 700;
-  font-style: bold;
-  letter-spacing: +0.5px;
-  margin-bottom: 5px;
-  padding: 5px 15px;
-  width: 100%;
+  padding: 1em;
 `;
 
 const HeaderRow = styled.div`
@@ -119,9 +63,13 @@ const HeaderRow = styled.div`
 
 const QuitIcon = styled(Cross)`
   color: ${props => props.theme.textColor};
-  height: 28px;
-  width: 35px;
+  height: 1.5em;
+  width: 1.2em;
   cursor: pointer;
+
+  &:hover {
+    transform: scale(1.1);
+  }
 `;
 
 interface SubmitStoryButtonProps {
@@ -130,17 +78,48 @@ interface SubmitStoryButtonProps {
 const SubmitStoryButton = styled.button<SubmitStoryButtonProps>`
   border-radius: 15px;
   background-color: ${props => props.enabled ? 'rgb(196, 76, 73)' : 'rgba(196, 76, 73, 0.5)'};
-  color: ${props => props.enabled ? 'white' : 'lightgray'};
+  color: ${props => props.enabled ? 'white' : 'rgb(230, 230, 230)'};
   font-weight: 700;
   padding: 6px 10px;
   cursor: ${props => props.enabled ? 'pointer' : 'default'};
 `;
 
+const TemplateRow = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+`;
+
+interface TemplateSelectorProps {
+  enabled?: boolean;
+}
+const TemplateSelector = styled.button<TemplateSelectorProps>`
+  border-radius: 15px;
+  background-color: ${props => props.enabled ? 'rgb(196, 76, 73)' : 'rgba(196, 76, 73, 0.5)'};
+  color: ${props => props.enabled ? 'white' : 'rgb(230, 230, 230)'};
+  font-weight: 500;
+  font-size: 0.8em;
+  padding: 0.5em 1em;
+  margin: 0 0.2em;
+  max-width: 33%;
+  height: 3.25em;
+  cursor: ${props => props.enabled ? 'default' : 'pointer'};
+
+  &:hover {
+    background-color: ${props => props.enabled ? 'rgb(196, 76, 73)' : 'rgba(196, 76, 73, 0.85)'};
+    color: white;
+  }
+`;
+
 export const CreateArtworkStory = (): JSX.Element => {
 
   const { artwork } = useContext(StoriesContext);
-  const { activity } = useContext(ArtworksContext);
+  const { activity } = useContext(GamGameActivityContext);
   const navigate = useNavigate();
+
+  const templates = ['It makes me think about', 'It reminds me of', 'It makes me feel'] as const;
+  const [selectedTemplate, setSelectedTemplate] = useState<typeof templates[number]>('It makes me think about');
 
   const [storyDefinition, setStoryDefinition] = useState<InProgressGamGameStoryDefinition>({
     GamGameStoryAuthor: '',
@@ -233,7 +212,7 @@ export const CreateArtworkStory = (): JSX.Element => {
   };
 
   return (
-    <Root>
+    <ContainerCard upperDecorator>
       <SelectionPanel>
         <HeaderRow>
           <QuitIcon onClick={() => navigate(-1)} />
@@ -245,35 +224,41 @@ export const CreateArtworkStory = (): JSX.Element => {
             }}
             enabled={canSubmitStory()}
           >
-            Submit
+            Done
           </SubmitStoryButton>
         </HeaderRow>
+
+        <StoryListDottedLine />
+
         <StoryDataContainer>
           <UpperPanel>
             <MainInfoPanel>
-              <StoryTitle
-                value={storyDefinition.GamGameStoryTitle}
-                placeholder='Enter a title for your story...'
-                onChange={(e) => setStoryDefinition(prev => ({ ...prev, GamGameStoryTitle: e.target.value }))}
-                maxLength={25}
-              />
-              <StoryAuthor
-                value={storyDefinition.GamGameStoryAuthor}
-                placeholder='Enter your name or nickname...'
-                onChange={(e) => setStoryDefinition(prev => ({ ...prev, GamGameStoryAuthor: e.target.value }))}
-                maxLength={25}
-              />
+              <ArtworkTitle>{artwork.title}</ArtworkTitle>
+              <ArtworkAuthor>{artwork.author}</ArtworkAuthor>
             </MainInfoPanel>
           </UpperPanel>
 
           <StoryListDottedLine />
 
-          <StoryDescription
+          <TemplateRow>
+            {templates.map(elem =>
+              <TemplateSelector
+                enabled={elem === selectedTemplate}
+                onClick={() => setSelectedTemplate(elem)}
+              >
+                {elem}...
+              </TemplateSelector>
+            )}
+          </TemplateRow>
+
+          <StoryListDottedLine />
+
+          <InputArea
             placeholder='Write your story text here...'
-            value={storyDefinition.multimediaData?.text || ''}
+            value={`${selectedTemplate}... ${storyDefinition.multimediaData?.text ?? ''}`}
             onChange={(e) => setStoryDefinition(prev => ({
               ...prev,
-              multimediaData: { ...prev.multimediaData, text: e.target.value }
+              multimediaData: { ...prev.multimediaData, text: e.target.value.slice(selectedTemplate.length + 4) }
             }))}
             rows={4}
           />
@@ -289,8 +274,7 @@ export const CreateArtworkStory = (): JSX.Element => {
           onMoveTag={handleMoveTag}
         />
       </SelectionPanel>
-
-    </Root>
+    </ContainerCard>
 
   );
 };

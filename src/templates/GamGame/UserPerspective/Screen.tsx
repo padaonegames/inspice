@@ -6,17 +6,22 @@ import { artworksService, gamGameApi } from '../../../services';
 import LoadingOverlay from '../../../components/Layout/LoadingOverlay';
 import { ArtworkData } from '../../../services/artwork.model';
 import { GamGameActivityDefinition } from '../../../services/gamGameActivity.model';
-import NavigationFooter from '../../../components/Layout/NavigationFooter';
 import GeneralInformationStep from './Steps/GeneralInformationStep';
 import CollectionStep from './Steps/CollectionStep';
 import ScanQrStep from './Steps/ScanQrStep';
 import InspectArtworkStep from './Steps/InspectArtworkStep';
 import { Navigate, Route, Routes } from 'react-router-dom';
-import ArtworkStoriesPanel from '../components/ArtworkStoriesPanel.tsx';
-import ArtworkStoriesList from '../components/ArtworkStoriesPanel.tsx/ArtworkStoriesList';
-import ArtworkStoryView from '../components/ArtworkStoriesPanel.tsx/ArtworkStoryView';
-import CreateArtworkStory from '../components/ArtworkStoriesPanel.tsx/CreateArtworkStory';
+import ArtworkStoriesPanel from '../components/ArtworkStoriesPanel';
+import ArtworkStoriesList from '../components/ArtworkStoriesPanel/ArtworkStoriesList';
+import ArtworkStoryView from '../components/ArtworkStoriesPanel/ArtworkStoryView';
+import CreateArtworkStory from '../components/ArtworkStoriesPanel/CreateArtworkStory';
 import GeneralArtworkDetail from '../components/GeneralArtworkDetail';
+import { NavMenuElem } from '../../../components/Layout/SideMenu';
+import ActivityScreen from '../../../screens/ActivityScreen';
+import { QrCode } from 'styled-icons/remix-line';
+import { Home } from '@styled-icons/boxicons-regular/Home';
+import { Gallery } from '@styled-icons/remix-line/Gallery';
+import { Books } from '@styled-icons/icomoon/Books';
 
 const Root = styled.div`
   display: flex;
@@ -104,12 +109,12 @@ interface GamGameUserFlowProps {
   artworkCount: number;
 };
 
-export interface ArtworksContext {
+export interface IGamGameActivityContext {
   activity: GamGameActivityDefinition;
   artworks: ArtworkData[];
 }
 
-export const ArtworksContext = createContext<ArtworksContext>({
+export const GamGameActivityContext = createContext<IGamGameActivityContext>({
   artworks: [],
   activity: {
     _id: '',
@@ -127,30 +132,60 @@ export const ArtworksContext = createContext<ArtworksContext>({
   }
 });
 
+const gamGameNavigationConfig: NavMenuElem[] = [
+  {
+    title: 'Home',
+    to: 'home',
+    icon: Home
+  },
+  {
+    title: 'Collection',
+    to: 'collection',
+    icon: Gallery
+  },
+  {
+    title: 'Scan QR',
+    to: 'scan-qr',
+    icon: QrCode
+  },
+  {
+    title: 'My Stories',
+    to: 'my-stories',
+    icon: Books
+  },
+];
+
 const GamGameUserFlow = ({ activityDefinition, artworks, artworkCount }: GamGameUserFlowProps): JSX.Element => {
 
   return (
     <Root>
-      <ArtworksContext.Provider value={{ artworks, activity: activityDefinition }}>
+      <GamGameActivityContext.Provider value={{ artworks, activity: activityDefinition }}>
         <Routes>
-          <Route path='home' element={<GeneralInformationStep />} />
-          <Route path='collection' element={<CollectionStep />} />
-          <Route path='collection/:artworkId/*' element={<InspectArtworkStep />}>
-            <Route path='detail' element={<GeneralArtworkDetail artworks={artworks} />} />
-            <Route path='stories/*' element={<ArtworkStoriesPanel />}>
-              <Route path='all' element={<ArtworkStoriesList />} />
-              <Route path='create' element={<CreateArtworkStory />} />
-              <Route path=':storyId' element={<ArtworkStoryView />} />
-              <Route path='' element={<Navigate replace to='all' />} />
+          <Route
+            path=''
+            element={<ActivityScreen
+              guarded
+              activityTitle='GAM - GAM Game'
+              navigationEntries={gamGameNavigationConfig}
+            />}>
+            <Route path='home' element={<GeneralInformationStep />} />
+            <Route path='collection' element={<CollectionStep />} />
+            <Route path='collection/:artworkId/*' element={<InspectArtworkStep />}>
+              <Route path='detail' element={<GeneralArtworkDetail artworks={artworks} />} />
+              <Route path='stories/*' element={<ArtworkStoriesPanel />}>
+                <Route path='all' element={<ArtworkStoriesList />} />
+                <Route path='create' element={<CreateArtworkStory />} />
+                <Route path=':storyId' element={<ArtworkStoryView />} />
+                <Route index element={<ArtworkStoriesList />} />
+              </Route>
+              <Route path='' element={<Navigate replace to='detail' />} />
             </Route>
-            <Route path='' element={<Navigate replace to='detail' />} />
+            <Route path='scan-qr' element={<ScanQrStep />} />
+            <Route path='my-stories' element={<GeneralInformationStep />} />
+            <Route path='' element={<Navigate replace to='home' />} />
           </Route>
-          <Route path='scan-qr' element={<ScanQrStep />} />
-          <Route path='my-stories' element={<GeneralInformationStep />} />
-          <Route path='' element={<Navigate replace to='home' />} />
         </Routes>
-      </ArtworksContext.Provider>
-      <NavigationFooter />
+      </GamGameActivityContext.Provider>
     </Root>
   );
 };

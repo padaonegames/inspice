@@ -2,33 +2,12 @@ import styled from 'styled-components';
 import { Image } from '@styled-icons/ionicons-solid/Image';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useContext } from 'react';
-import { ArtworksContext } from '../../../../templates/GamGame/UserPerspective/Screen';
+import { GamGameActivityContext } from '../../UserPerspective/Screen';
 import { StoriesContext } from './StoriesContext';
 import { PlusCircleFill } from '@styled-icons/bootstrap/PlusCircleFill';
 import StoryListDisplay from '../StoryListDisplay';
-
-const Root = styled.div`
-  display: flex;
-  
-  @media (max-width: 768px) {
-    width: 100%;
-    align-self: center;
-    flex-direction: column;
-  }
-
-  @media (min-width: 768px) {
-    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-    padding: 16px;
-    width: 85%;
-    max-width: 1200px;
-    align-items: left;
-    margin-bottom: 15px;
-    padding: 0;
-    flex-direction: row;
-  }
-
-  background-color: ${props => props.theme.cardBackground};
-`;
+import ContainerCard from '../../../../components/Forms/Cards/ContainerCard';
+import { Root } from '../generalStyles';
 
 const UpperPanel = styled.div`
   display: flex;
@@ -147,7 +126,7 @@ const AddStoryIcon = styled(PlusCircleFill)`
 export const ArtworkStoriesList = (): JSX.Element => {
 
   const { stories } = useContext(StoriesContext);
-  const { artworks } = useContext(ArtworksContext);
+  const { artworks } = useContext(GamGameActivityContext);
   const { artworkId } = useParams();
   const navigate = useNavigate();
 
@@ -162,7 +141,7 @@ export const ArtworkStoriesList = (): JSX.Element => {
   }
 
   return (
-    <Root>
+    <ContainerCard upperDecorator>
       <SelectionPanel>
         <AddStoryButton
           title='Add a new story'
@@ -200,7 +179,7 @@ export const ArtworkStoriesList = (): JSX.Element => {
           ))}
         </ArtworkDataContainer>
       </SelectionPanel>
-    </Root>
+    </ContainerCard>
   );
 };
 

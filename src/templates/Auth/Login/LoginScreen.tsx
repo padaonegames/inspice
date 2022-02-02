@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import { AuthContext } from "../../../auth/AuthStore";
 import StepTitleCard from "../../../components/Forms/Cards/StepTitleCard";
@@ -9,10 +9,11 @@ import EnterUsernameStep from "./Steps/EnterUsernameStep";
 
 export const LoginScreen = (): JSX.Element => {
 
-  const { userData, setUserData } = useContext(AuthContext);
+  const { userData } = useContext(AuthContext);
+  const location = useLocation();
 
   if (userData) {
-    return <Navigate replace to='/' />;
+    return <Navigate replace to={location.state ?? '/'} />;
   }
 
   return <LoginFlow />;

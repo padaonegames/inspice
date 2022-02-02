@@ -4,29 +4,7 @@ import { useContext } from 'react';
 import { StoriesContext } from './StoriesContext';
 import { Cross } from '@styled-icons/entypo/Cross';
 import ArtworkDecorationPanel from './ArtworkDecorationPanel';
-
-const Root = styled.div`
-  display: flex;
-  
-  @media (max-width: 768px) {
-    width: 100%;
-    align-self: center;
-    flex-direction: column;
-  }
-
-  @media (min-width: 768px) {
-    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-    padding: 16px;
-    width: 85%;
-    max-width: 1200px;
-    align-items: left;
-    margin-bottom: 15px;
-    padding: 0;
-    flex-direction: row;
-  }
-
-  background-color: ${props => props.theme.cardBackground};
-`;
+import ContainerCard from '../../../../components/Forms/Cards/ContainerCard';
 
 const UpperPanel = styled.div`
   display: flex;
@@ -98,58 +76,6 @@ const StoryAuthor = styled.p`
   margin-bottom: 5px;
 `;
 
-interface StoryDisplayProps {
-  backgroundImage: string;
-};
-
-const StoryDisplay = styled.div<StoryDisplayProps>`
-
-  @media (max-width: 768px) {
-    width: 100vw;
-    height: 100vw;
-    object-fit: contain;
-    margin-bottom: 3vh;
-  }
-
-  @media (min-width: 768px) {
-    width: 50%;
-  }
-
-  position: relative;
-
-  background-image: ${props => `url(${props.backgroundImage})`};
-  overflow: hidden;
-  background-position: 50% 50%;
-  background-repeat: no-repeat;
-  background-size: auto 100%;
-  background-color: ${props => props.theme.artworkDisplayBackground};
-`;
-
-interface StoryEmojiProps {
-  locX: number;
-  locY: number;
-}
-const StoryEmojiContainer = styled.div<StoryEmojiProps>`
-  position: absolute;
-  z-index: 1;
-  left: ${props => props.locX * 100}%;
-  top: ${props => props.locY * 100}%;
-`;
-
-const StoryEmoji = styled.span`
-  font-size: 50px;
-  margin: auto;
-`;
-
-const StoryTag = styled.span`
-  -webkit-text-stroke: 1px black;
-  font-size: 35px;
-  font-weight: 800;
-  font-family: Verdana, sans-serif;
-  margin: auto;
-  color: white;
-`;
-
 const QuitIcon = styled(Cross)`
   color: ${props => props.theme.textColor};
   height: 28px;
@@ -171,14 +97,12 @@ export const ArtworkStoryView = (): JSX.Element => {
 
   if (!storyData) {
     return (
-      <Root>
-        No story found.
-      </Root>
+      <>No story found.</>
     );
   }
 
   return (
-    <Root>
+    <ContainerCard upperDecorator>
       <SelectionPanel>
         <UpperPanel>
           <QuitIcon onClick={() => navigate('..')} />
@@ -207,8 +131,7 @@ export const ArtworkStoryView = (): JSX.Element => {
         emojis={storyData.multimediaData.emojis ?? []}
         tags={storyData.multimediaData.tags ?? []}
       />
-    </Root>
-
+    </ContainerCard>
   );
 };
 

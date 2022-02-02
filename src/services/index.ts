@@ -46,7 +46,7 @@ export const initializeServices = () => {
   viewpointsArtworksService = new ViewpointsArtworksService();
   viewpointsQuestionsService = new ViewpointsQuestionsService();
   viewpointsResponseService = new ViewpointsResponseService();
-  gamGameApi = new GamGameActivityService('http://localhost:8080/api', datasetUuid, gamGameActivityDefinitionsDatasetUuid, gamGameStoryDefinitionsDatasetUuid, apiKey);
+  gamGameApi = new GamGameActivityService('http://localhost:8080/api');
   userService = new UserService('http://localhost:8080/api');
   authService = new AuthService('http://localhost:8080/api');
 };
