@@ -4,47 +4,61 @@
 
 import { ActivityInstance } from "./activity.model";
 
-export interface InProgressGamGameStoryDefinition {
-  author: string | undefined;
-  title: string | undefined;
-  activityId: string | undefined;
-  parts: GamGameStoryPart[];
-  imageSrc: string | undefined;
-}
 
+/** Definition of a GAM Game story part, including selected artwork and user-generated multimedia data */
 export interface GamGameStoryPart {
+  /** Id of the selected artwork within the database */
   artworkId: string;
+  /** Multimedia data associated with a given story (texts, emojis, tags) */
   multimediaData: GamGameStoryPartMutimediaData;
 }
 
-export interface InProgressGamGameStoryPart {
-  artworkId: string;
-  multimediaData: InProgressGamGameStoryPartMutimediaData;
-};
-
-export interface GamGameStoryDefinition {
+/** Definition of a GAM Game story from the perspective of the client.
+ * For the time being, author identities will be kept hidden on the client side,
+ * though there will still be an endpoint allowing to fetch all stories created
+ * by the currently logged in user.
+ */
+export interface GamGameStoryDefinitionData {
+  /** Id of this story within the database (needed for navigation and fetching by id) */
   _id: string;
+  /** Link to image that should be displayed when browsing stories */
   imageSrc?: string;
-  author: string;
+  /** Title of the story */
   title: string;
+  /** Id of the activity that this story is assigned to */
   activityId: string;
+  /** List of parts containing selected artworks and multimedia data */
   parts: GamGameStoryPart[];
 }
 
-export type CompletedGamGameStoryDefinition = Omit<
-  GamGameStoryDefinition,
-  "_id"
->;
+/** Data that the user will need to fill in before submitting a definition to the persistance layer.
+ * Note that authorId is kept outside of this definition, since it will be added by the server from auth token.
+ */
+export interface InProgressGamGameStoryDefinitionData {
+  /** Title of the story */
+  title: string | undefined;
+  /** Id of the activity that this story is assigned to */
+  activityId: string | undefined;
+  /** List of parts containing selected artworks and multimedia data */
+  parts: GamGameStoryPart[];
+  /** Link to image that should be displayed when browsing stories */
+  imageSrc?: string;
+}
 
+/** Multimedia data associated with a given story (texts, emojis, tags) */
 export interface GamGameStoryPartMutimediaData {
+  /** What template is being used for the associated text. This is the part that the user cannot modify directly,
+   * instead needing to select a fixed text as a start for their answers */
   textTemplate: string;
+  /** Text written by the user about the artwork */
   text: string;
+  /** List of emojis that the user has placed on top of the artwork (+ positions) */
   emojis: StoryPartEmoji[];
+  /** List of tags that the user has placed on top of the artwork (+ positions) */
   tags: StoryPartTag[];
 }
 
-export type InProgressGamGameStoryPartMutimediaData = Partial<GamGameStoryPartMutimediaData>;
-
+/** Basic interface for any element that can be placed on top on an artwork */
 export interface StoryPartOverlayElement {
   locationX: number; // in [0, 1]
   locationY: number; // in [0, 1]
@@ -70,14 +84,6 @@ export const availableEmoji = [
 ] as const;
 
 export type Emoji = typeof availableEmoji[number];
-
-export interface SubmitGamGameStoryDefinitionRequest {
-  GamGameStoryDefinition: InProgressGamGameStoryDefinition;
-}
-
-export type SubmitGamGameStoryDefinitionResponse = GamGameStoryDefinition;
-
-export type GetGamGameStoryDefinitionByIdResponse = GamGameStoryDefinition[];
 
 //------------------------------------------
 //         ACTIVITY DEFINITIONS

@@ -27,6 +27,8 @@ export interface ShortTextInputCardProps {
   requiredAlert?: boolean;
   /** alert message to be displayed when required alert is set to true */
   alertMessage?: string;
+  /** Whether this field represents a password (should be hidden) */
+  isPassword?: boolean;
 }
 
 /** Controlled card component to support input for shorter texts. */
@@ -40,6 +42,7 @@ export const ShortTextInputCard = (props: ShortTextInputCardProps): JSX.Element 
     requiredAlert,
     required,
     alertMessage,
+    isPassword = false,
     onChange,
     onEnterPress
   } = props;
@@ -51,7 +54,7 @@ export const ShortTextInputCard = (props: ShortTextInputCardProps): JSX.Element 
           {promptText}{required && <RequiredAsterisk> *</RequiredAsterisk>}
         </PromptText>
         <InputText
-          type='text'
+          type={isPassword ? 'password' : 'text'}
           placeholder={placeholder}
           maxLength={maxLength}
           value={value}

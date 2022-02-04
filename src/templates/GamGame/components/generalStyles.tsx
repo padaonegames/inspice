@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import lineBackground from './../../../components/line-header-point.png';
+import { Cross } from '@styled-icons/entypo/Cross';
 
 export const Root = styled.div`
   display: flex;
@@ -222,4 +223,72 @@ export const ProgressButton = styled.button<ProgressButtonProps>`
       box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 0.5rem 0px;
     }
   `}
+`;
+
+export const StoryDisplayUpperPanel = styled.div`
+  display: flex;
+  flex-direction: row;
+  width: 100%
+`;
+
+export const StoryDisplayMainInfoPanel = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-bottom: 10px;
+`;
+
+export const StoryDisplaySelectionPanel = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  width: 100%;
+
+  @media (min-width: 768px) {
+    padding: 0.5em;
+  }
+`;
+
+export const StoryDataContainer = styled.div`
+  margin-bottom: 0.5em;
+  height: auto;
+  padding: 1em;
+`;
+
+export const StoryDisplayHeaderRow = styled.div`
+  display: flex;
+  flex-direction: row;
+  padding: 5px 12px;
+  align-items: center;
+  justify-content: space-between;
+  margin: 5px 0 5px 0;
+`;
+
+export const StoryDisplayQuitIcon = styled(Cross)`
+  color: ${props => props.theme.textColor};
+  height: 1.5em;
+  width: 1.2em;
+  cursor: pointer;
+
+  &:hover {
+    transform: scale(1.1);
+  }
+`;
+
+export interface StoryDisplayActionButtonProps {
+  enabled?: boolean;
+}
+export const StoryDisplayActionButton = styled.button<StoryDisplayActionButtonProps>`
+  border-radius: 15px;
+  background-color: ${props => props.enabled ? 'rgb(196, 76, 73)' : 'rgba(196, 76, 73, 0.5)'};
+  color: ${props => props.enabled ? 'white' : 'rgb(230, 230, 230)'};
+  font-weight: 700;
+  padding: 6px 10px;
+  cursor: ${props => props.enabled ? 'pointer' : 'default'};
+
+  box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 0.5rem 0px;
+
+  &:hover {
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 0.5rem 0px;
+  }
 `;

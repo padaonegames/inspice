@@ -1,9 +1,9 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import {
   CompletedGamGameActivityDefinition,
-  CompletedGamGameStoryDefinition,
   GamGameActivityDefinition,
-  GamGameStoryDefinition,
+  GamGameStoryDefinitionData,
+  InProgressGamGameStoryDefinitionData,
 } from './gamGameActivity.model';
 
 export type ApiResult<T> =
@@ -54,36 +54,44 @@ export class GamGameActivityService {
   /**
    * @description Retrieve all GAM Game user-created story definitions
    */
-  public async getGamGameStoryDefinitions(): Promise<ApiResult<GamGameStoryDefinition[]>> {
+  public async getGamGameStoryDefinitions(): Promise<ApiResult<GamGameStoryDefinitionData[]>> {
     const url = `${this.apiUrl}/gam-game/stories`;
-    return getApiResult<GamGameStoryDefinition[]>(url);
+    return getApiResult<GamGameStoryDefinitionData[]>(url);
   } // getGamGameStoryDefinitions
+
+  /**
+   * @description Retrieve all GAM Game user-created story definitions
+   */
+  public async getGamGameStoryDefinitionsByCurrentUser(): Promise<ApiResult<GamGameStoryDefinitionData[]>> {
+    const url = `${this.apiUrl}/gam-game/stories/user-stories`;
+    return getApiResult<GamGameStoryDefinitionData[]>(url);
+  } // getGamGameStoryDefinitionsByCurrentUser
 
   /**
    * @description Retrieve a GAM Game story by id
    * @param storyId Id of the story definition to fetch
    */
-  public async getGamGameStoryDefinitionById(storyId: string): Promise<ApiResult<GamGameStoryDefinition[]>> {
+  public async getGamGameStoryDefinitionById(storyId: string): Promise<ApiResult<GamGameStoryDefinitionData[]>> {
     const url = `${this.apiUrl}/gam-game/story/${storyId}`;
-    return getApiResult<GamGameStoryDefinition[]>(url);
+    return getApiResult<GamGameStoryDefinitionData[]>(url);
   } // getGamGameStoryDefinitionById
 
   /**
    * @description Retrieve all GAM Game stories belonging to a given activity
    * @param activityId Id of the story definition to fetch
    */
-  public async getGamGameStoryDefinitionsByActivityId(activityId: string): Promise<ApiResult<GamGameStoryDefinition[]>> {
+  public async getGamGameStoryDefinitionsByActivityId(activityId: string): Promise<ApiResult<GamGameStoryDefinitionData[]>> {
     const url = `${this.apiUrl}/gam-game/activity/${activityId}/stories`;
-    return getApiResult<GamGameStoryDefinition[]>(url);
+    return getApiResult<GamGameStoryDefinitionData[]>(url);
   } // getGamGameStoryDefinitionsByActivityId
 
   /**
    * @description Retrieve all GAM Game stories containing a given artwork
    * @param artworkId Id of the artwork that the stories must contain
    */
-  public async getGamGameStoryDefinitionsByArtworkId(artworkId: string): Promise<ApiResult<GamGameStoryDefinition[]>> {
+  public async getGamGameStoryDefinitionsByArtworkId(artworkId: string): Promise<ApiResult<GamGameStoryDefinitionData[]>> {
     const url = `${this.apiUrl}/gam-game/stories/query?artworkId=${artworkId}`;
-    return getApiResult<GamGameStoryDefinition[]>(url);
+    return getApiResult<GamGameStoryDefinitionData[]>(url);
   } // getGamGameStoryDefinitionsByArtworkId
 
   /**
@@ -104,14 +112,10 @@ export class GamGameActivityService {
    * @description Submit a user created Story Definition to the persistence layer
    * @param storyDefinition Story definition to submit 
    */
-  public async submitGamGameStoryDefinition(storyDefinition: CompletedGamGameStoryDefinition): Promise<ApiResult<GamGameStoryDefinition>> {
+  public async submitGamGameStoryDefinition(storyDefinition: InProgressGamGameStoryDefinitionData): Promise<ApiResult<GamGameStoryDefinitionData>> {
     const url = `${this.apiUrl}/gam-game/story`;
 
-    const apiDefinition: CompletedGamGameStoryDefinition = {
-      ...storyDefinition
-    };
-
-    return postApiResult<CompletedGamGameStoryDefinition, GamGameStoryDefinition>(url, apiDefinition);
+    return postApiResult<InProgressGamGameStoryDefinitionData, GamGameStoryDefinitionData>(url, storyDefinition);
   } // submitGamGameStoryDefinition
 }
 

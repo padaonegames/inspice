@@ -58,6 +58,10 @@ export const CreateStoryFlow = (): JSX.Element => {
     setStatus('submit');
   };
 
+  const handleStorySubmitted = () => {
+    // setStatus('recommend-artworks');
+  };
+
   if (status === 'intro') {
     return <IntroStep onBeginClicked={() => setStatus('select-artwork')} />
   }
@@ -96,7 +100,9 @@ export const CreateStoryFlow = (): JSX.Element => {
   if (status === 'submit') {
     return (
       <SubmitStoryStep
+        activityId={activity._id}
         storyParts={storyParts}
+        onStorySubmitted={handleStorySubmitted}
       />
     );
   }

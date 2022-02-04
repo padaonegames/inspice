@@ -22,7 +22,7 @@ export type AsyncProgress<ResultType = any, ErrorType = any> =
  * @param triggerOnStart - A parameter specifying whether request should be triggered
  *                          at the beginning of this hook's lifecycle. Further requests
  *                          to provided promise producer may be retriggered via a helper
- *                          triggerRequest callback.
+ *                          triggerRequest callback. @default true
  * @param deps - A list of dependencies whose changes will retrigger request. If deps has
  *               at least one element, triggerOnStart will be ignored. 
  */

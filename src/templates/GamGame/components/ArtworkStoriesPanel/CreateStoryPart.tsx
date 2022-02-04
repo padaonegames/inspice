@@ -3,88 +3,9 @@ import { useState } from 'react';
 import { Emoji, GamGameStoryPart, StoryPartEmoji, StoryPartTag } from '../../../../services/gamGameActivity.model';
 import { ArtworkDecorationPanel } from './ArtworkDecorationPanel';
 import { Position } from './Draggable';
-import { Cross } from '@styled-icons/entypo/Cross';
-import { ArtworkAuthor, ArtworkTitle, InputArea } from '../generalStyles';
+import { ArtworkAuthor, ArtworkListDottedLine, ArtworkTitle, InputArea, StoryDataContainer, StoryDisplayActionButton, StoryDisplayHeaderRow, StoryDisplayMainInfoPanel, StoryDisplayQuitIcon, StoryDisplaySelectionPanel, StoryDisplayUpperPanel } from '../generalStyles';
 import ContainerCard from '../../../../components/Forms/Cards/ContainerCard';
 import { ArtworkData } from '../../../../services/artwork.model';
-
-const UpperPanel = styled.div`
-  display: flex;
-  flex-direction: row;
-  width: 100%
-`;
-
-const MainInfoPanel = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  margin-bottom: 10px;
-`;
-
-const SelectionPanel = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin: 0;
-  width: 100%;
-
-  @media (min-width: 768px) {
-    padding: 0.5em;
-  }
-`;
-
-const StoryListDottedLine = styled.div`
-  height: 0.5em;
-  width: 97.5%;
-  align-self: center;
-  border-style: dotted;
-  border-color: lightgray;
-  border-width: 0px 0px 1px 0px;
-  margin-bottom: 0.5em;
-`;
-
-const StoryDataContainer = styled.div`
-  margin-bottom: 0.5em;
-  height: auto;
-  padding: 1em;
-`;
-
-const HeaderRow = styled.div`
-  display: flex;
-  flex-direction: row;
-  padding: 5px 12px;
-  align-items: center;
-  justify-content: space-between;
-  margin: 5px 0 5px 0;
-`;
-
-const QuitIcon = styled(Cross)`
-  color: ${props => props.theme.textColor};
-  height: 1.5em;
-  width: 1.2em;
-  cursor: pointer;
-
-  &:hover {
-    transform: scale(1.1);
-  }
-`;
-
-interface SubmitStoryButtonProps {
-  enabled?: boolean;
-}
-const SubmitStoryButton = styled.button<SubmitStoryButtonProps>`
-  border-radius: 15px;
-  background-color: ${props => props.enabled ? 'rgb(196, 76, 73)' : 'rgba(196, 76, 73, 0.5)'};
-  color: ${props => props.enabled ? 'white' : 'rgb(230, 230, 230)'};
-  font-weight: 700;
-  padding: 6px 10px;
-  cursor: ${props => props.enabled ? 'pointer' : 'default'};
-
-  box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 0.5rem 0px;
-
-  &:hover {
-    box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 0.5rem 0px;
-  }
-`;
 
 const TemplateRow = styled.div`
   display: flex;
@@ -199,28 +120,28 @@ export const CreateStoryPart = (props: CreateStoryPartProps): JSX.Element => {
 
   return (
     <ContainerCard upperDecorator>
-      <SelectionPanel>
-        <HeaderRow>
-          <QuitIcon onClick={onQuit} />
-          <SubmitStoryButton
+      <StoryDisplaySelectionPanel>
+        <StoryDisplayHeaderRow>
+          <StoryDisplayQuitIcon onClick={onQuit} />
+          <StoryDisplayActionButton
             onClick={handleSubmitPart}
             enabled={text.length > 0}
           >
             Done
-          </SubmitStoryButton>
-        </HeaderRow>
+          </StoryDisplayActionButton>
+        </StoryDisplayHeaderRow>
 
-        <StoryListDottedLine />
+        <ArtworkListDottedLine />
 
         <StoryDataContainer>
-          <UpperPanel>
-            <MainInfoPanel>
+          <StoryDisplayUpperPanel>
+            <StoryDisplayMainInfoPanel>
               <ArtworkTitle>{artwork.title}</ArtworkTitle>
               <ArtworkAuthor>{artwork.author}</ArtworkAuthor>
-            </MainInfoPanel>
-          </UpperPanel>
+            </StoryDisplayMainInfoPanel>
+          </StoryDisplayUpperPanel>
 
-          <StoryListDottedLine />
+          <ArtworkListDottedLine />
 
           <TemplateRow>
             {templates.map(elem =>
@@ -233,7 +154,7 @@ export const CreateStoryPart = (props: CreateStoryPartProps): JSX.Element => {
             )}
           </TemplateRow>
 
-          <StoryListDottedLine />
+          <ArtworkListDottedLine />
 
           <InputArea
             placeholder='Write your story text here...'
@@ -252,7 +173,7 @@ export const CreateStoryPart = (props: CreateStoryPartProps): JSX.Element => {
           onAddTag={handleAddTag}
           onMoveTag={handleMoveTag}
         />
-      </SelectionPanel>
+      </StoryDisplaySelectionPanel>
     </ContainerCard>
 
   );

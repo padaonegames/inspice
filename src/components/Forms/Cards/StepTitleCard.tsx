@@ -21,6 +21,7 @@ export const CardPanel = styled.div<CardPanelProps>`
   word-wrap: break-word;
   display: flex;
   flex-direction: column;
+  position: relative;
 `;
 
 export interface StepTitleCardProps {

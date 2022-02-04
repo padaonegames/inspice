@@ -41,7 +41,7 @@ const AuthStore: React.FC = ({ children }) => {
     // auth headers if found
     const prevToken = localStorage.getItem('accessToken');
     if (prevToken) {
-      axios.defaults.headers.common['Authorization'] = prevToken;
+      axios.defaults.headers.common['Authorization'] = `Bearer ${prevToken}`;
       return prevToken;
     }
     axios.defaults.headers.common['Authorization'] = null;

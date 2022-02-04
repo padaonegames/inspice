@@ -1,22 +1,33 @@
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import ArtworkColumnElement from '../../../../components/ArtworkSelection/ArtworkColumnElement';
 import StepTitleCard from '../../../../components/Forms/Cards/StepTitleCard';
-import SearchBar from '../../../../components/Forms/SearchBar';
-import { ArtworkGrid, ArtworkListDottedLine, StepRoot } from '../../components/generalStyles';
+import LoadingOverlay from '../../../../components/Layout/LoadingOverlay';
+import { gamGameApi } from '../../../../services';
+import { GamGameStoryDefinitionData } from '../../../../services/gamGameActivity.model';
+import { useAsyncRequest } from '../../../../services/useAsyncRequest';
+import StoriesList from '../../components/ArtworkStoriesPanel/StoriesList';
+import { ArtworkListDottedLine, StepRoot } from '../../components/generalStyles';
 import { GamGameActivityContext } from '../Screen';
 
 export const MyStoriesStep = (): JSX.Element => {
-  
+
   const navigate = useNavigate();
+
   const { artworks } = useContext(GamGameActivityContext);
 
-  const [filter, setFilter] = useState<string>('');
+  const requestUserStories = () => {
+    return gamGameApi.getGamGameStoryDefinitionsByCurrentUser();
+  };
+  const [fetchUserStoriesRequest] = useAsyncRequest(requestUserStories, [], true);
 
-  const displayArtworks = artworks.filter(elem =>
-    elem.title.toLowerCase().includes(filter) ||
-    elem.author.toLowerCase().includes(filter)
-  );
+  const [stories, setStories] = useState<GamGameStoryDefinitionData[]>([]);
+
+  useEffect(() => {
+    if (fetchUserStoriesRequest.kind === 'success' &&
+      fetchUserStoriesRequest.result.kind === 'ok') {
+      setStories(fetchUserStoriesRequest.result.data);
+    }
+  }, [fetchUserStoriesRequest]);
 
   return (
     <StepRoot>
@@ -25,21 +36,14 @@ export const MyStoriesStep = (): JSX.Element => {
         stepDescription={`Here you can find a list of your personal stories. Use this page to browse, view and delete the stories you've already created.`}
       >
         <ArtworkListDottedLine />
-        <SearchBar
-          placeholder='Search story by title...'
-          onSearchPerformed={(search) => setFilter(search)}
+        {fetchUserStoriesRequest.kind === 'running' && (
+          <LoadingOverlay message='Fetching user stories' />
+        )}
+        <StoriesList
+          stories={stories}
+          artworks={artworks}
+          onStorySelected={(storyId) => navigate(`./../stories/${storyId}`)}
         />
-        <ArtworkGrid>
-          {displayArtworks.map(elem => (
-            <ArtworkColumnElement
-              artworkData={elem}
-              key={elem.id}
-              onCardClicked={() => {
-                navigate(`${elem.id}`);
-              }}
-            />
-          ))}
-        </ArtworkGrid>
       </StepTitleCard>
     </StepRoot>
   );

@@ -45,7 +45,7 @@ export const GeneralArtworkDetail = (props: GeneralArtworkDetailProps): JSX.Elem
           </ArtworkDate>
         </DetailMainInfoPanel>
         <DetailActionPanel>
-          <StoryIcon onClick={() => navigate('../stories/all')} />
+          <StoryIcon onClick={() => navigate('../stories')} />
           Stories
         </DetailActionPanel>
       </DetailUpperPanel>

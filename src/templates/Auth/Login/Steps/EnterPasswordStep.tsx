@@ -71,6 +71,7 @@ export const EnterPasswordStep = (props: StepComponentProps): JSX.Element => {
         promptText="Enter your personal password:"
         placeholder="Password..."
         value={password}
+        isPassword
         onChange={(val) => props.setState<string>('password', val, '')}
         requiredAlert={!!alertMessage}
         alertMessage={alertMessage}

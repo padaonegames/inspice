@@ -11,8 +11,7 @@ import CollectionStep from './Steps/CollectionStep';
 import ScanQrStep from './Steps/ScanQrStep';
 import InspectArtworkStep from './Steps/InspectArtworkStep';
 import { Navigate, Route, Routes } from 'react-router-dom';
-import ArtworkStoriesPanel from '../components/ArtworkStoriesPanel';
-import ArtworkStoriesList from '../components/ArtworkStoriesPanel/ArtworkStoriesList';
+import ArtworkStoriesPanel from '../components/ArtworkStoriesPanel/ArtworkStoriesPanel';
 import GeneralArtworkDetail from '../components/GeneralArtworkDetail';
 import { NavMenuElem } from '../../../components/Layout/SideMenu';
 import ActivityScreen from '../../../screens/ActivityScreen';
@@ -23,6 +22,8 @@ import { Books } from '@styled-icons/icomoon/Books';
 import { FeatherAlt } from '@styled-icons/fa-solid/FeatherAlt';
 import MyStoriesStep from './Steps/MyStoriesStep';
 import CreateStoryFlow from '../components/ArtworkStoriesPanel/CreateStoryFlow';
+import GuardedRoute from '../../../auth/GuardedRoute';
+import StoryViewStep from './Steps/StoryViewStep';
 
 const Root = styled.div`
   display: flex;
@@ -169,25 +170,26 @@ const GamGameUserFlow = ({ activityDefinition, artworks, artworkCount }: GamGame
         <Routes>
           <Route
             path=''
-            element={<ActivityScreen
-              guarded
-              activityTitle='GAM - GAM Game'
-              navigationEntries={gamGameNavigationConfig}
-            />}>
+            element={
+              <ActivityScreen
+                activityTitle='GAM - GAM Game'
+                navigationEntries={gamGameNavigationConfig}
+              />}>
             <Route path='home' element={<GeneralInformationStep />} />
             <Route path='collection' element={<CollectionStep />} />
-            <Route path='stories/create' element={<CreateStoryFlow />} />
+            <Route path='stories/:storyId' element={<StoryViewStep />} />
+            <Route path='stories/create' element={<GuardedRoute />}>
+              <Route index element={<CreateStoryFlow />} />
+            </Route>
             <Route path='collection/:artworkId/*' element={<InspectArtworkStep />}>
               <Route path='detail' element={<GeneralArtworkDetail artworks={artworks} />} />
-              <Route path='stories/*' element={<ArtworkStoriesPanel />}>
-                <Route path='all' element={<ArtworkStoriesList />} />
-                {/* <Route path=':storyId' element={<ArtworkStoryView />} /> */}
-                <Route index element={<ArtworkStoriesList />} />
-              </Route>
+              <Route path='stories' element={<ArtworkStoriesPanel />} />
               <Route path='' element={<Navigate replace to='detail' />} />
             </Route>
             <Route path='scan-qr' element={<ScanQrStep />} />
-            <Route path='my-stories' element={<MyStoriesStep />} />
+            <Route path='my-stories' element={<GuardedRoute />}>
+              <Route index element={<MyStoriesStep />} />
+            </Route>
             <Route path='' element={<Navigate replace to='home' />} />
           </Route>
         </Routes>

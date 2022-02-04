@@ -32,6 +32,27 @@ export const CardImageContainer = styled.div`
   }
 `;
 
+interface CardGridCollageProps {
+  imageSrcs: string[];
+}
+export const CardGridCollage = styled.div<CardGridCollageProps>`
+  background-color: ${props => props.theme.artworkDisplayBackground};
+  padding: 1em;
+  background-image: ${props => props.imageSrcs.map((elem, i) => i === 0 ? `url(${elem})` : `, url(${elem})`)};
+  background-repeat: ${props => props.imageSrcs.map((_, i) => i === 0 ? 'no-repeat' : ', no-repeat')};
+  // background-attachment: ${props => props.imageSrcs.map((_, i) => i === 0 ? 'fixed' : ', fixed')};
+  background-position: ${props => props.imageSrcs.map((_, i) => i === 0 ? `50% ${18 / props.imageSrcs.length * i}rem` : `, 50% ${18 / props.imageSrcs.length * i}rem`)};
+  background-size: ${props => props.imageSrcs.map((_, i) => i === 0 ? `auto ${100 / props.imageSrcs.length}%` : `, auto ${100 / props.imageSrcs.length}%`)};
+  max-height: 18rem;
+  min-height: 290px;
+  width: 100%;
+  min-width: 290px;
+  max-width: 18rem;
+  border-radius: 0.35rem 0.25rem;
+
+  box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 0.5rem 0px;
+`;
+
 export const CardContainer = styled.figure`
   display: flex;
   flex-direction: column;
