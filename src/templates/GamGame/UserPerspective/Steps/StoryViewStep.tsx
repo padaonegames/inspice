@@ -1,5 +1,5 @@
 import { useContext, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import LoadingOverlay from '../../../../components/Layout/LoadingOverlay';
 import { gamGameApi } from '../../../../services';
 import { ArtworkData } from '../../../../services/artwork.model';
@@ -50,13 +50,17 @@ export const StoryViewStep = (): JSX.Element => {
 //               SECOND STAGE: User Flow
 //------------------------------------------------------------------
 interface StoryViewFlowProps {
+  /** defintion of the gam game story */
   story: GamGameStoryDefinitionData;
+  /** Artwork data that will be needed to render the story parts */
   artworks: ArtworkData[];
 };
 
 const StoryViewFlow = (props: StoryViewFlowProps): JSX.Element => {
 
   const { story, artworks } = props;
+  const navigate = useNavigate();
+
   const [currentPart, setCurrentPart] = useState<number>(0);
 
   const part = story.parts[currentPart];
@@ -67,6 +71,9 @@ const StoryViewFlow = (props: StoryViewFlowProps): JSX.Element => {
       // there are more parts left
       setCurrentPart(prev => prev + 1);
     }
+    else {
+      navigate(-1);
+    }
   };
 
   return (
@@ -76,6 +83,7 @@ const StoryViewFlow = (props: StoryViewFlowProps): JSX.Element => {
           storyPart={part}
           artworkData={artwork}
           onNextClicked={handleNextClicked}
+          onQuit={() => navigate(-1)}
         />
       )}
     </StepRoot>

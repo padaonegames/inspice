@@ -7,9 +7,11 @@ import { ViewpointsResponseService } from "./viewpointsResponse.service";
 import { GamGameActivityService } from "./gamGameActivity.service";
 import { UserService } from "./user.service";
 import { AuthService } from "./auth.service";
+import { GamArtworksService } from "./gamArtworks.service";
 
 export let api: FindArtworkActivityService;
 export let artworksService: ArtworksService;
+export let gamArtworksService: GamArtworksService;
 export let viewpointsArtworksService: ViewpointsArtworksService;
 export let viewpointsQuestionsService: ViewpointsQuestionsService;
 export let viewpointsResponseService: ViewpointsResponseService;
@@ -49,4 +51,5 @@ export const initializeServices = () => {
   gamGameApi = new GamGameActivityService('http://localhost:8080/api');
   userService = new UserService('http://localhost:8080/api');
   authService = new AuthService('http://localhost:8080/api');
+  gamArtworksService = new GamArtworksService('http://localhost:8080/api');
 };

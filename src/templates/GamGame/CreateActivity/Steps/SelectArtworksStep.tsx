@@ -1,10 +1,11 @@
 import styled from 'styled-components';
 import { SearchAndSelectManyArtworks } from '../../../../components/ArtworkSelection/index';
 import { StepComponentProps } from '../../../../components/Navigation/Steps';
-import { artworksService } from '../../../../services';
+import { gamArtworksService } from '../../../../services';
 import { ArtworkData } from '../../../../services/artwork.model';
 import { GetArtworksFilter } from '../../../../services/queries';
 import { useAsyncRequest } from '../../../../services/useAsyncRequest';
+import { cloneDeep } from 'lodash';
 
 
 const Root = styled.div`
@@ -33,7 +34,8 @@ export const SelectArtworksStep = (props: StepComponentProps) => {
     if ('date' !== field && 'author' !== field && 'info' !== field) return;
 
     // make a copy of current filter, add new filter and save result
-    let newFilter: GetArtworksFilter = JSON.parse(JSON.stringify(appliedFilter));
+    let newFilter: GetArtworksFilter = cloneDeep(appliedFilter);
+    console.log(newFilter);
     newFilter[field] = filter;
     props.setState('appliedFilter', newFilter, {});
 
@@ -45,7 +47,7 @@ export const SelectArtworksStep = (props: StepComponentProps) => {
     if ('date' !== field && 'author' !== field && 'info' !== field) return;
 
     // make a copy of current filter, remove filter and save result
-    let newFilter: GetArtworksFilter = JSON.parse(JSON.stringify(appliedFilter));
+    let newFilter: GetArtworksFilter = cloneDeep(appliedFilter);
     newFilter[field] = undefined;
     delete newFilter[field];
     props.setState('appliedFilter', newFilter, {});
@@ -59,7 +61,7 @@ export const SelectArtworksStep = (props: StepComponentProps) => {
   };
 
   const handleApplyKeywordsFilter = (keywords: string) => {
-    let newFilter: GetArtworksFilter = JSON.parse(JSON.stringify(appliedFilter));
+    let newFilter: GetArtworksFilter = cloneDeep(appliedFilter);
     newFilter.titleKeywords = keywords;
     props.setState('appliedFilter', newFilter, {});
     props.setState('page', 1, 1);
@@ -69,11 +71,11 @@ export const SelectArtworksStep = (props: StepComponentProps) => {
   //            API CALLS AND REQUESTS
   //--------------------------------------------------
   const fetchArtworksFromDataset = async () => {
-    return artworksService.fetchArtworks({ sortingField: 'title', pageNumber: page, pageSize: itemsPerPage, filter: appliedFilter });
+    return gamArtworksService.fetchArtworks({ sortingField: 'title', pageNumber: page, pageSize: itemsPerPage, filter: appliedFilter });
   };
 
   const fetchUniqueFieldValuesFromDataset = async (field: 'date' | 'author' | 'info') => {
-    return artworksService.fetchUniqueFieldValues(field);
+    return gamArtworksService.fetchUniqueFieldValues(field);
   };
 
   const fetchStepData = async () => {

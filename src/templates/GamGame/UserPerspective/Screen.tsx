@@ -2,7 +2,7 @@ import { createContext } from 'react';
 import styled from 'styled-components';
 import { useParams } from 'react-router';
 import { useAsyncRequest } from '../../../services/useAsyncRequest';
-import { artworksService, gamGameApi } from '../../../services';
+import { artworksService, gamArtworksService, gamGameApi } from '../../../services';
 import LoadingOverlay from '../../../components/Layout/LoadingOverlay';
 import { ArtworkData } from '../../../services/artwork.model';
 import { GamGameActivityDefinition } from '../../../services/gamGameActivity.model';
@@ -80,7 +80,7 @@ const LoadActivityArtworks = ({ activityDefinition }: LoadActivityArtworksProps)
 
   // Use activity's definition to request the corresponding artworks from server
   const fetchActivityArtworks = async () => {
-    return artworksService.fetchArtworks({ filter: { ids: activityDefinition.artworks } });
+    return gamArtworksService.fetchArtworksById(activityDefinition.artworks);
   };
 
   // Make request only after having a valid activity definition.
@@ -91,13 +91,15 @@ const LoadActivityArtworks = ({ activityDefinition }: LoadActivityArtworksProps)
   }
 
   // cache the value of our activityArtworks after they are fetched.
-  const { artworks, count: artworkCount } = fetchActivityArtworksStatus.result.data;
+  const artworks = fetchActivityArtworksStatus.result.data;
+
+  console.log(artworks)
 
   return (
     <GamGameUserFlow
       activityDefinition={activityDefinition}
       artworks={artworks}
-      artworkCount={artworkCount}
+      artworkCount={artworks.length}
     />
   );
 };

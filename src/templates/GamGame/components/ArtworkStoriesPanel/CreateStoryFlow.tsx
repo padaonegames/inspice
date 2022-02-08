@@ -1,9 +1,11 @@
 import { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { GamGameStoryPart } from "../../../../services/gamGameActivity.model";
 import { GamGameActivityContext } from "../../UserPerspective/Screen";
 import ContinueOrSubmitStep from "./CreateStorySteps/ContinueOrSubmitStep";
 import CreateStoryPartStep from "./CreateStorySteps/CreateStoryPartStep";
 import IntroStep from "./CreateStorySteps/IntroStep";
+import RecommendationsStep from "./CreateStorySteps/RecommedationsStep";
 import SelectArtworkStep from "./CreateStorySteps/SelectArtworkStep";
 import SubmitStoryStep from "./CreateStorySteps/SubmitStoryStep";
 
@@ -12,6 +14,8 @@ type CreateStoryStatus = 'intro' | 'select-artwork' | 'create-story-part' | 'con
 export const CreateStoryFlow = (): JSX.Element => {
 
   const { artworks, activity } = useContext(GamGameActivityContext);
+
+  const navigate = useNavigate();
 
   const [status, setStatus] = useState<CreateStoryStatus>('intro');
 
@@ -59,7 +63,15 @@ export const CreateStoryFlow = (): JSX.Element => {
   };
 
   const handleStorySubmitted = () => {
-    // setStatus('recommend-artworks');
+    setStatus('recommend-artworks');
+  };
+
+  const handleEndRecommendations = () => {
+    navigate(`/gam-game/consumer/visit/${activity._id}/home`);
+  };
+
+  const handleRecommendedArtworkSelected = (artworkId: string) => {
+    navigate(`/gam-game/consumer/visit/${activity._id}/collection/${artworkId}/detail`);
   };
 
   if (status === 'intro') {
@@ -103,6 +115,17 @@ export const CreateStoryFlow = (): JSX.Element => {
         activityId={activity._id}
         storyParts={storyParts}
         onStorySubmitted={handleStorySubmitted}
+      />
+    );
+  }
+
+  if (status === 'recommend-artworks') {
+    return (
+      <RecommendationsStep
+        storyParts={storyParts}
+        artworks={artworks}
+        onEndRecommendations={handleEndRecommendations}
+        onArtworkSelected={handleRecommendedArtworkSelected}
       />
     );
   }
