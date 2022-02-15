@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import { ArtworkData } from '../../services/artwork.model';
 import ArtworkFront from '../../templates/FindArtwork/components/ArtworkFront';
@@ -21,7 +20,7 @@ const CardContainer = styled.div`
 
   transform-style: preserve-3d;
   perspective: 1000px;
-  background-color: ${props => props.theme.artworkDisplayBackground};
+  background-color: transparent;
   border: 1px solid #e0e0e0;
 `;
 

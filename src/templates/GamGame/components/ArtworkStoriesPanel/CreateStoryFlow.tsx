@@ -63,6 +63,7 @@ export const CreateStoryFlow = (): JSX.Element => {
   };
 
   const handleStorySubmitted = () => {
+    console.log("story submitted")
     setStatus('recommend-artworks');
   };
 

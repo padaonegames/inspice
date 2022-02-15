@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import CalendarInputCard from '../../components/Forms/Cards/CalendarInputCard';
+import EmbedImageLinkCard from '../../components/Forms/Cards/EmbedImageLinkCard';
 import ImageUploadCard from '../../components/Forms/Cards/ImageUploadCard';
 import LongTextInputCard from '../../components/Forms/Cards/LongTextInputCard';
 import ShortTextInputCard from '../../components/Forms/Cards/ShortTextInputCard';
@@ -37,7 +38,7 @@ export const ActivityInstanceBasicInfoStep = (props: StepComponentProps): JSX.El
         placeholder='Activity name...'
         onChange={(val) => props.setState<string>('activityTitle', val, '')}
         value={props.getState<string>('activityTitle', '')}
-        maxLength={30}
+        maxLength={60}
         required
       />
       <ShortTextInputCard
@@ -55,11 +56,20 @@ export const ActivityInstanceBasicInfoStep = (props: StepComponentProps): JSX.El
         value={props.getState<string>('description', '')}
         maxLength={500}
       />
+      {/*
       <ImageUploadCard
         promptText='Upload a thumbnail image:'
         onChange={(file) => props.setState<File | undefined>('localFile', file, undefined)}
         initialFile={props.getState<File | undefined>('localFile', undefined)}
         initialSrc={props.getState<string | undefined>('imageSrc', undefined)}
+        required
+      />
+      */}
+
+      <EmbedImageLinkCard
+        promptText='Paste the source url of a thumbnail image:'
+        src={props.getState<string | undefined>('imageSrc', undefined)}
+        onChange={(src) => props.setState<string | undefined>('imageSrc', src, undefined)}
         required
       />
       <TagsInputCard

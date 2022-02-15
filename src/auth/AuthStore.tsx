@@ -69,7 +69,7 @@ const AuthStore: React.FC = ({ children }) => {
     setAccessToken(token);
     if (token) {
       localStorage.setItem('accessToken', token);
-      axios.defaults.headers.common['Authorization'] = token;
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     }
     else {
       localStorage.removeItem('accessToken');

@@ -94,6 +94,8 @@ const NewActivityText = styled.span`
 
 export const TemplateDashboard = (): JSX.Element => {
 
+  const [activityToDelete, setActivityToDelete] = useState<string | undefined>(undefined);
+
   const fetchTreasureHuntActivities = async () => {
     return api.getFindArtworkActivityDefinitions();
   };
@@ -102,8 +104,18 @@ export const TemplateDashboard = (): JSX.Element => {
     return gamGameApi.getGamGameActivityDefinitions();
   };
 
-  const [fetchTreasureHuntActivitiesRequest] = useAsyncRequest(fetchTreasureHuntActivities, []);
-  const [fetchGamGameActivitiesRequest] = useAsyncRequest(fetchGamGameActivities, []);
+  const deleteActivity = async () => {
+    if (!activityToDelete) return;
+    const res = await gamGameApi.deleteGamGameActivityDefinitionById(activityToDelete);
+    setActivityToDelete(undefined);
+    triggerFetchTreasureHuntActivities();
+    triggerFetchGamGameActivities();
+    return res;
+  };
+
+  const [fetchTreasureHuntActivitiesRequest, triggerFetchTreasureHuntActivities] = useAsyncRequest(fetchTreasureHuntActivities, []);
+  const [fetchGamGameActivitiesRequest, triggerFetchGamGameActivities] = useAsyncRequest(fetchGamGameActivities, []);
+  const [deleteActivityRequest] = useAsyncRequest(deleteActivity, [activityToDelete], false);
 
   if (fetchTreasureHuntActivitiesRequest.kind !== 'success' || fetchGamGameActivitiesRequest.kind !== 'success') {
     return <LoadingOverlay message="Fetching activity definitions" />;
@@ -113,27 +125,49 @@ export const TemplateDashboard = (): JSX.Element => {
     return <LoadingOverlay message="There was an error while fetching the activities from the LDH" />;
   }
 
+  if (deleteActivityRequest.kind === 'running') {
+    return <LoadingOverlay message="Deleting activity definition" />;
+  }
+
   return (
     <TemplateDashBoardView
       activities={[
-        ...fetchTreasureHuntActivitiesRequest.result.data,
         ...fetchGamGameActivitiesRequest.result.data,
+        ...fetchTreasureHuntActivitiesRequest.result.data,
       ]}
+      onDeleteActivity={(id) => setActivityToDelete(id)}
     />
   );
 };
 
 
 interface TemplateDashboardViewProps {
-  activities: ActivityInstance[]
+  activities: ActivityInstance[];
+  onDeleteActivity?: (activityId: string) => void;
 }
 
 const TemplateDashBoardView = (props: TemplateDashboardViewProps): JSX.Element => {
 
-  const { activities: acts } = props;
+  const { activities: acts, onDeleteActivity } = props;
 
   const navigate = useNavigate();
   const [newActivityPopupOpen, setNewActivityPopupOpen] = useState<boolean>(false);
+
+  const [displayTypes, setDisplayTypes] = useState<Map<SupportedActivity, boolean>>(new Map([
+    ['Treasure Hunt', true],
+    ['GAM Game', true]
+  ]));
+  const [displayTags, setDisplayTags] = useState<Map<string, boolean>>(() => {
+    const tagsMap = new Map<string, boolean>();
+    for (let act of acts) {
+      for (let tag of act.tags ?? []) {
+        if (!tagsMap.has(tag)) {
+          tagsMap.set(tag, false);
+        }
+      }
+    }
+    return tagsMap;
+  })
 
   const activities: ActivityInstance[] = acts.map(elem => ({
     ...elem,
@@ -180,6 +214,26 @@ const TemplateDashBoardView = (props: TemplateDashboardViewProps): JSX.Element =
     }
   };
 
+  const handleDeleteActivity = (activity: ActivityInstance) => {
+    if (onDeleteActivity) {
+      onDeleteActivity(activity._id);
+    }
+  };
+
+  const handleDisplayTypeCheck = (type: SupportedActivity, checked: boolean) => {
+    setDisplayTypes(prev => {
+      prev.set(type, checked);
+      return new Map(JSON.parse(JSON.stringify(Array.from(prev))));
+    });
+  };
+
+  const handleDisplayTagsCheck = (tag: string, checked: boolean) => {
+    setDisplayTags(prev => {
+      prev.set(tag, checked);
+      return new Map(JSON.parse(JSON.stringify(Array.from(prev))));
+    });
+  };
+
   const noScroll = () => {
     window.scrollTo(0, 0);
   };
@@ -197,6 +251,43 @@ const TemplateDashBoardView = (props: TemplateDashboardViewProps): JSX.Element =
     return () => window.removeEventListener("scroll", noScroll);
 
   }, [newActivityPopupOpen]);
+
+  const renderActivityTagsFilters = () => {
+    const elems: JSX.Element[] = [];
+    let it = displayTags.entries();
+    let current = it.next();
+    while (current && !current.done) {
+      const tag = current.value[0];
+      elems.push((
+        <GridFilterOption key={current.value[0]}>
+          <CheckBoxInput
+            labelText={tag}
+            boxSize='15px'
+            onCheckedChange={(checked) => handleDisplayTagsCheck(tag, checked)}
+            initialChecked={displayTags.get(tag)}
+          />
+        </GridFilterOption>)
+      );
+      current = it.next();
+    }
+    return elems;
+  };
+
+  const shouldDisplay = (activity: ActivityInstance) => {
+    if (!displayTypes.get(activity.activityType)) return false;
+
+    let hasAllTags = true;
+    let it = displayTags.entries();
+    let current = it.next();
+    while (current && !current.done) {
+      if (current.value[1]) {
+        hasAllTags = (activity.tags?.some(elem => elem === current.value[0]) ?? false);
+        if (!hasAllTags) break;
+      }
+      current = it.next();
+    }
+    return hasAllTags;
+  };
 
   return (
     <>
@@ -217,20 +308,27 @@ const TemplateDashBoardView = (props: TemplateDashboardViewProps): JSX.Element =
               <CheckBoxInput
                 labelText={elem}
                 boxSize='15px'
-                onCheckedChange={() => { }}
+                onCheckedChange={(checked) => handleDisplayTypeCheck(elem, checked)}
+                initialChecked={displayTypes.get(elem)}
               />
             </GridFilterOption>
           ))}
+          <GridFilterHeader>Tags</GridFilterHeader>
+          {renderActivityTagsFilters()}
         </GridFilters>
         <ActivityCardGrid>
-          {activities.map(activity => (
-            <ActivityCard
-              key={activity._id}
-              activityTemplate={activity}
-              onOpenClicked={() => handleOpenActivity(activity)}
-              onEditClicked={() => handleEditActivity(activity)}
-            />
-          ))}
+          {activities.flatMap(activity => {
+            if (shouldDisplay(activity))
+              return (
+                <ActivityCard
+                  key={activity._id}
+                  activityTemplate={activity}
+                  onOpenClicked={() => handleOpenActivity(activity)}
+                  onEditClicked={() => handleEditActivity(activity)}
+                  onDeleteClicked={() => handleDeleteActivity(activity)}
+                />
+              )
+          })}
           {[...Array(10)].map(i => <EmptyCard key={i} />) /* Hacky but does the trick */}
         </ActivityCardGrid>
       </GridContainer>

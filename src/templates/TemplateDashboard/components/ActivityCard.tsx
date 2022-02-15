@@ -6,6 +6,7 @@ import { ActivityInstance } from "../../../services/activity.model";
 import { Open } from "@styled-icons/fluentui-system-filled/Open";
 import { Edit } from '@styled-icons/boxicons-regular/Edit';
 import { Duplicate } from "@styled-icons/ionicons-outline/Duplicate";
+import { Delete } from '@styled-icons/fluentui-system-regular/Delete';
 
 const ActivityCardContainer = styled.div`
   display: flex;
@@ -207,6 +208,10 @@ const DuplicateActivityIcon = styled(Duplicate)`
   ${menuItemIcon}
 `;
 
+const DeleteActivityIcon = styled(Delete)`
+  ${menuItemIcon}
+`;
+
 const DateSpan = styled.span`
   margin: 0.5rem;
   position: absolute;
@@ -230,6 +235,7 @@ export interface ActivityCardProps {
   onOpenClicked?: () => void;
   onEditClicked?: () => void;
   onDuplicateClicked?: () => void;
+  onDeleteClicked?: () => void;
 }
 
 export const ActivityCard = (props: ActivityCardProps): JSX.Element => {
@@ -238,7 +244,8 @@ export const ActivityCard = (props: ActivityCardProps): JSX.Element => {
     activityTemplate,
     onOpenClicked,
     onEditClicked,
-    onDuplicateClicked
+    onDuplicateClicked,
+    onDeleteClicked
   } = props;
 
   const [openMenu, setOpenMenu] = useState<boolean>(false);
@@ -281,6 +288,10 @@ export const ActivityCard = (props: ActivityCardProps): JSX.Element => {
               <DropdownMenuItem onClick={onDuplicateClicked}>
                 <DuplicateActivityIcon />
                 Duplicate
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={onDeleteClicked}>
+                <DeleteActivityIcon />
+                Delete
               </DropdownMenuItem>
             </DropdownMenu>
           )}

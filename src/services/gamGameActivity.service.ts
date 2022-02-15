@@ -44,6 +44,15 @@ export class GamGameActivityService {
   } // getGamGameActivityDefinitionById
 
   /**
+   * @description Delete a GAM Game activity by its id
+   * @param activityId ID of the activity to delete
+   */
+  public async deleteGamGameActivityDefinitionById(activityId: string): Promise<ApiResult<GamGameActivityDefinition[]>> {
+    const url = `${this.apiUrl}/gam-game/activity/${activityId}`;
+    return deleteApiResult<GamGameActivityDefinition[]>(url);
+  } // deleteGamGameActivityDefinitionById
+
+  /**
    * @description Retrieve all GAM Game activities
    */
   public async getGamGameActivityDefinitions(): Promise<ApiResult<GamGameActivityDefinition[]>> {
@@ -128,6 +137,40 @@ async function getApiResult<T>(url: string, config: AxiosRequestConfig = {}): Pr
     // we attempt to perform a GET request to the specified url and save the
     // corresponding response within the response variable.
     response = await axios.get<T>(url, config);
+  } catch (error: any) {
+    if (error.response) {
+      // if the error has a response, then this means that server responded
+      // with an error status (4xx, 5xx), which leads us to categorize it 
+      // as an http error
+      return { kind: 'http-error', response: error.response };
+    }
+    else if (error.request) {
+      // if an error were to happen where we have a request but no response, 
+      // we can categorize it as an axios error (the request wasn't performed
+      // correctly or the server did not respond at all).
+      return { kind: 'axios-error', error: error };
+    }
+    else {
+      // in any other case, we categorize this as an unhandled error
+      return { kind: 'unhandled-error', error: error };
+    }
+
+  }
+
+  // TODO: we should validate the data object here against our schema
+  // As it is now, this is an unsafe type coercion
+  return { kind: 'ok', data: (response.data as T) };
+}
+
+/**
+ * Run the given request and (TODO) parse the response according to a given schema
+ */
+ async function deleteApiResult<T>(url: string, config: AxiosRequestConfig = {}): Promise<ApiResult<T>> {
+  let response: AxiosResponse<T>;
+  try {
+    // we attempt to perform a DELETE request to the specified url and save the
+    // corresponding response within the response variable.
+    response = await axios.delete<T>(url, config);
   } catch (error: any) {
     if (error.response) {
       // if the error has a response, then this means that server responded

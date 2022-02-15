@@ -93,7 +93,9 @@ export const CreateGamGameActivityScreen = () => {
       minArtworks: activityDefinition['minArtworks'] as number,
       maxArtworks: activityDefinition['maxArtworks'] as number,
       storyDefinitionsDatasetUuid: activityDefinition['storyDefinitionsDatasetUuid'] as string,
-      artworksDatasetUuid: activityDefinition['artworksDatasetUuid'] as string
+      artworksDatasetUuid: activityDefinition['artworksDatasetUuid'] as string,
+      tags: activityDefinition['tags'] as string[],
+      imageSrc: activityDefinition['imageSrc'] as string
     };
     return gamGameApi.submitGamGameActivityDefinition(def);
   };

@@ -123,7 +123,10 @@ export const CreateFindArtworkActivityScreen = () => {
       maxCluesPerStage: activityDefinition['maxCluesPerStage'] as number,
       huntDefinitionsDatasetUuid: activityDefinition['huntDefinitionsDatasetUuid'] as string,
       artworksDatasetUuid: activityDefinition['artworksDatasetUuid'] as string,
-      activityType: 'Treasure Hunt'
+      activityType: 'Treasure Hunt',
+      tags: activityDefinition['tags'] as string[],
+      imageSrc: activityDefinition['imageSrc'] as string,
+      description: activityDefinition['description'] as string
     };
     return api.submitFindArtworkActivityDefinition(def);
   };
