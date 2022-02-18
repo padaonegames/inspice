@@ -8,6 +8,7 @@ import { GamGameActivityService } from "./gamGameActivity.service";
 import { UserService } from "./user.service";
 import { AuthService } from "./auth.service";
 import { GamArtworksService } from "./gamArtworks.service";
+import { MncnArtifactService } from "./mncnArtifact.service";
 
 export let api: FindArtworkActivityService;
 export let artworksService: ArtworksService;
@@ -18,6 +19,7 @@ export let viewpointsResponseService: ViewpointsResponseService;
 export let gamGameApi: GamGameActivityService;
 export let userService: UserService;
 export let authService: AuthService;
+export let mncnArtifactService: MncnArtifactService;
 
 /**
  * For the time being we fetch the relevant fields from the initialize services function provided here.
@@ -52,4 +54,5 @@ export const initializeServices = () => {
   userService = new UserService('http://localhost:8080/api');
   authService = new AuthService('http://localhost:8080/api');
   gamArtworksService = new GamArtworksService('http://localhost:8080/api');
+  mncnArtifactService = new MncnArtifactService('http://localhost:8080/api');
 };

@@ -20,6 +20,8 @@ import GamGameUserMenuScreen from './templates/GamGame/UserPerspective/Screen';
 import { TemplateDashboard } from './templates/TemplateDashboard/Screen';
 import { AuthStore } from './auth/AuthStore';
 import LoginScreen from './templates/Auth/Login/LoginScreen';
+import { MncnCatalogueBrowsingScreen } from './templates/NaturalScienceCatalogue/BrowseCatalogue/Screen';
+import { MncnViewArtifactScreen } from './templates/NaturalScienceCatalogue/Artifact/ViewArtifactScreen';
 
 /**
  * Main entrypoint for our React application within which all other components
@@ -36,6 +38,10 @@ export const App = (): JSX.Element => {
               <Routes>
                 <Route path='dashboard' element={<ActivityScreen activityTitle='InSpice - Dashboard' />}>
                   <Route path='' element={<TemplateDashboard />} />
+                </Route>
+                <Route path='mncn-collection' element={<ActivityScreen activityTitle='MNCN - Colección' />}>
+                  <Route path='browse' element={<MncnCatalogueBrowsingScreen />} />
+                  <Route path='artifact/:id' element={<MncnViewArtifactScreen />} />
                 </Route>
                 <Route path='viewpoints' element={<ActivityScreen activityTitle='IMMA - Viewpoints' />}>
                   <Route path='consumer'>
