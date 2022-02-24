@@ -3,7 +3,7 @@ import { Edit } from '@styled-icons/boxicons-regular/Edit';
 import { useNavigate } from 'react-router-dom';
 import ContainerCard from '../../../components/Forms/Cards/ContainerCard';
 import { MncnArtifact } from '../../../services/mncnArtifact.model';
-import { DetailUpperPanel, DetailMainInfoPanel, ArtworkTitle, ArtworkAuthor, ArtworkDate, DetailActionPanel, ArtworkListDottedLine, ArtworkDataContainer, ArtworkDescription, ArtworkNotes, ClickableText, DetailArtworkDisplay, StepRoot } from '../../GamGame/components/generalStyles';
+import { DetailUpperPanel, DetailMainInfoPanel, ArtworkTitle, ArtworkAuthor, DetailActionPanel, ArtworkListDottedLine, ArtworkDataContainer, ArtworkDescription, ArtworkNotes, DetailArtworkDisplay, StepRoot } from '../../GamGame/components/generalStyles';
 
 const EditIcon = styled(Edit)`
   color: ${props => props.theme.textColor};

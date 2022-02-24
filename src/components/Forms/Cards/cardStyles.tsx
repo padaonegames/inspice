@@ -3,7 +3,6 @@ import { Plus } from "styled-icons/bootstrap";
 import { AlertCircleOutline, CloseOutline } from "styled-icons/evaicons-outline";
 
 export const PromptText = styled.div`
-  // font: 400 16px Roboto,RobotoDraft,Helvetica,Arial,sans-serif;
   font-size: 1em;
   font-weight: 400;
   color: ${props => props.theme.textColor};
