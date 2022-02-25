@@ -75,18 +75,7 @@ RUN { \
   && mkdir /usr/local/apache2/conf.d
 
 
-# Copiamos la aplicación web compilada, que tendrá el
-# .htaccess que necesitamos gracias a reactapp.
-# Hay que copiar directorio a directorio porque
-# COPY --from=builder-frontend /app/build/* /usr/local/apache2/htdocs/
-# no funciona bien (aparte de que así somos selectivos y no copiamos
-# cosas que no necesitamos). No funciona porque /app/build/* se expande
-# e incluye /app/build/static que es un directorio. Cuando COPY se
-# encuentra un directorio copia su contenido pero *no* el directorio
-# en sí mismo, de modo que terminaríamos teniendo en el destino
-# lo de dentro directamente, en lugar de la jerarquía correcta.
-# El rollo de hacerlo así es que hay más pasos y más imágenes. Ponemos
-# lo último lo más susceptible de cambiar (espero).
+
 COPY --from=builder-frontend /app/build/favicon.ico /app/build/logo*.png /app/build/robots.txt /app/build/.htaccess /app/build/index.html /usr/local/apache2/htdocs/
 COPY --from=builder-frontend /app/build/locales /usr/local/apache2/htdocs/locales
 COPY --from=builder-frontend /app/build/static /usr/local/apache2/htdocs/static

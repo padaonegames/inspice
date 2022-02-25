@@ -151,7 +151,7 @@ const MncnCatalogueBrowsingScreenView = (props: MncnCatalogueBrowsingScreenViewP
             labelText={tag}
             boxSize='15px'
             onCheckedChange={() => { }}
-            initialChecked={displayTags.get(tag)}
+            checked={displayTags.get(tag)}
           />
         </GridFilterOption>)
       );
@@ -194,13 +194,13 @@ const MncnCatalogueBrowsingScreenView = (props: MncnCatalogueBrowsingScreenViewP
               labelText={'Roca'}
               boxSize='15px'
               onCheckedChange={() => { }}
-              initialChecked={true}
+              checked={true}
             />
             <CheckBoxInput
               labelText={'Dinosaurio'}
               boxSize='15px'
               onCheckedChange={() => { }}
-              initialChecked={true}
+              checked={true}
             />
           </GridFilterOption>
         </GridFilters>

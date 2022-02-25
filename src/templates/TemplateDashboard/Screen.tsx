@@ -264,7 +264,7 @@ const TemplateDashBoardView = (props: TemplateDashboardViewProps): JSX.Element =
             labelText={tag}
             boxSize='15px'
             onCheckedChange={(checked) => handleDisplayTagsCheck(tag, checked)}
-            initialChecked={displayTags.get(tag)}
+            checked={displayTags.get(tag)}
           />
         </GridFilterOption>)
       );
@@ -309,7 +309,7 @@ const TemplateDashBoardView = (props: TemplateDashboardViewProps): JSX.Element =
                 labelText={elem}
                 boxSize='15px'
                 onCheckedChange={(checked) => handleDisplayTypeCheck(elem, checked)}
-                initialChecked={displayTypes.get(elem)}
+                checked={displayTypes.get(elem)}
               />
             </GridFilterOption>
           ))}

@@ -1,4 +1,3 @@
-import { ChangeEvent } from 'react';
 import styled from 'styled-components';
 
 const LikertResponseContainer = styled.label`
@@ -12,7 +11,7 @@ const LikertResponseContainer = styled.label`
 
 const LikertText = styled.span`
   font-size: 0.9em;
-  font-weight: normal;
+  font-weight: 200;
   letter-spacing: +0.5px;
   font-family: Raleway;
   color: ${props => props.theme.textColor};

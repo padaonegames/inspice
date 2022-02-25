@@ -1,8 +1,8 @@
-import { useState } from 'react';
 import styled, { FlattenSimpleInterpolation } from 'styled-components';
 
 interface ContainerProps {
   css?: FlattenSimpleInterpolation;
+  enabled: boolean;
 }
 /* The container */
 const Container = styled.div<ContainerProps>`
@@ -10,7 +10,8 @@ const Container = styled.div<ContainerProps>`
   height: 25px;
   position: relative;
   padding-left: 35px;
-  cursor: pointer;
+  cursor: ${props => props.enabled ? 'pointer' : 'default'};
+  opacity: ${props => props.enabled ? '1' : '0.5'};
 
   font-size: 0.9em;
   font-weight: normal;
@@ -26,6 +27,8 @@ const Container = styled.div<ContainerProps>`
 interface CheckMarkProps {
   checked: boolean;
   size?: string;
+  enabled: boolean;
+  type: 'radio' | 'checkbox';
 };
 
 const CheckMark = styled.span<CheckMarkProps>`
@@ -36,9 +39,13 @@ const CheckMark = styled.span<CheckMarkProps>`
   width: ${props => props.size ?? '25px'};
   background-color: ${props => props.checked ? '#4a90e2' : '#eee'};
 
+  ${props => props.type === 'radio' && 'border-radius: 50%;'}
+
+  ${props => props.enabled && `
   &:hover {
-    background-color: ${props => props.checked ? '#4a90e2' : '#ccc'};
+    background-color: ${props.checked ? '#4a90e2' : '#ccc'};
   }
+  `}
 
   transform: translate(0, -55%);
 
@@ -62,10 +69,12 @@ const CheckMark = styled.span<CheckMarkProps>`
 `;
 
 export interface CheckBoxInputProps {
-  initialChecked?: boolean;
+  checked?: boolean;
   labelText: string;
   boxSize?: string;
+  style?: 'radio' | 'checkbox';
   textFont?: FlattenSimpleInterpolation;
+  enabled?: boolean;
   onCheckedChange: (checked: boolean) => void;
 };
 
@@ -75,23 +84,28 @@ export interface CheckBoxInputProps {
 export const CheckBoxInput = (props: CheckBoxInputProps): JSX.Element => {
 
   const {
-    initialChecked = false,
+    enabled = true,
+    checked = false,
     boxSize = '25px',
+    style = 'checkbox',
     labelText,
     onCheckedChange,
   } = props;
 
-  const [checked, setChecked] = useState<boolean>(initialChecked !== undefined ? initialChecked : false);
-
   const toggleCheckbox = () => {
+    if (!enabled) return;
     onCheckedChange(!checked);
-    setChecked(prev => !prev);
   };
 
   return (
-    <Container onClick={toggleCheckbox}>
+    <Container
+      enabled={enabled}
+      onClick={toggleCheckbox}
+    >
       {labelText}
       <CheckMark
+        enabled={enabled}
+        type={style}
         size={boxSize}
         checked={checked}
       />

@@ -44,7 +44,7 @@ export const CheckBoxGroupInputCard = (props: CheckBoxGroupInputCardProps): JSX.
             <CheckboxOption key={elem}>
               <CheckBoxInput
                 labelText={elem}
-                initialChecked={checked?.some(e => e === elem)}
+                checked={checked?.some(e => e === elem)}
                 boxSize='15px'
                 onCheckedChange={() => {
                   if (onFieldToggle)
