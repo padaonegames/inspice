@@ -4,7 +4,11 @@ import {
   Root,
   TitleColor,
   TitleText,
-  StepDescription
+  StepDescription,
+  EditableTitleText,
+  EditableStepDescription,
+  RequiredAlertIcon,
+  RequiredQuestionSpan
 } from "./cardStyles";
 
 
@@ -35,7 +39,7 @@ const HeaderRow = styled.div`
 `;
 
 export interface StepTitleCardProps {
-  /** Step's title.  */
+  /** Step's title. */
   stepTitle: string;
   /** Short description of what needs to be done within the step */
   stepDescription?: string;
@@ -84,6 +88,73 @@ export const StepTitleCard = (props: StepTitleCardProps): JSX.Element => {
           return <StepDescription key={key}>{i}</StepDescription>;
         })}
         {children}
+      </CardPanel>
+    </Root>
+  );
+};
+
+export interface EditableStepTitleCardProps {
+  /** Step's title. */
+  stepTitle: string;
+  /** callback notifying of title being changed by the user */
+  onTitleChanged?: (value: string) => void;
+  /** Short description of what needs to be done within the step */
+  stepDescription?: string;
+  /** Callback notifying of description being changed by the user */
+  onDescriptionChanged?: (value: string) => void;
+  /** Placeholder for this card's title */
+  titlePlaceholder?: string;
+  /** Placeholder for this card's description */
+  descriptionPlaceholder?: string;
+  /** whether to modify the appearance of this card to reflect that the user tried to submit the form without entering a value for this field */
+  requiredAlert?: boolean;
+  /** alert message to be displayed when required alert is set to true */
+  alertMessage?: string;
+}
+
+/**
+ * Editable version of StepTitleCard for form editing
+ */
+export const EditableStepTitleCard = (props: EditableStepTitleCardProps): JSX.Element => {
+
+  const {
+    stepTitle,
+    stepDescription,
+    titlePlaceholder = 'Enter a title for this card...',
+    descriptionPlaceholder = 'Enter a description for this card...',
+    onTitleChanged,
+    onDescriptionChanged,
+    requiredAlert,
+    alertMessage
+  } = props;
+
+  return (
+    <Root>
+      <TitleColor />
+      <CardPanel requiredAlert={requiredAlert}>
+        <HeaderRow>
+          <EditableTitleText
+            placeholder={titlePlaceholder}
+            maxLength={150}
+            value={stepTitle}
+            onChange={event => {
+              if (onTitleChanged) onTitleChanged(event.target.value);
+            }}
+          />
+        </HeaderRow>
+        <EditableStepDescription
+          placeholder={descriptionPlaceholder}
+          maxLength={5000}
+          value={stepDescription}
+          onChange={event => {
+            if (onDescriptionChanged) onDescriptionChanged(event.target.value);
+          }}
+        />
+        {requiredAlert && (
+          <RequiredQuestionSpan>
+            <RequiredAlertIcon /> {alertMessage ?? 'This item is required.'}
+          </RequiredQuestionSpan>
+        )}
       </CardPanel>
     </Root>
   );

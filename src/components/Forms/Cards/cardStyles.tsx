@@ -69,24 +69,60 @@ export const InputText = styled.input`
   }
 `;
 
-export const InputArea = styled.textarea`
+interface InputAreaProps {
+  width?: string;
+  height?: string;
+  dimBackground?: boolean;
+}
+export const InputArea = styled.textarea<InputAreaProps>`
   font-size: 0.9em;
   font-weight: 200;
   font-family: ${props => props.theme.contentFont};
   line-height: 135%;
-  width: 100%;
-  height: 6em;
+  width: ${props => props.width ?? '100%'};
+  height: ${props => props.height ?? '6em'};
   margin-top: 10px;
   color: ${props => props.theme.textColor};
   border: none;
   border-bottom: 2px solid #dadce0;
   outline: none;
-  padding: 2px 0;
-  background-color: transparent;
+  padding: 0.65em;
+  background-color: ${props => props.dimBackground ? '#f8f9fa' : 'transparent'};
   resize: none;
+  overflow-y: hidden;
 
   &:focus {
     border-bottom: 3px solid #c44c49;
+  }
+`;
+
+export const SelectFieldTypeDropdownButton = styled.span`
+  font-size: 0.9em;
+  font-weight: 200;
+  font-family: ${props => props.theme.contentFont};
+  line-height: 135%;
+  margin-top: 10px;
+  cursor: pointer;
+  color: ${props => props.theme.textColor};
+
+  position: relative;
+
+  height: 2.5em;
+  width: 45%;
+
+  background-color: transparent;
+  border-radius: 5px;
+  box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 0.1rem 0px;
+  border: 1px solid #dadce0;
+  cursor: pointer;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0 0.85em;
+
+  &:hover {
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 0px 0.25rem 0px;
   }
 `;
 
@@ -218,6 +254,26 @@ export const TitleText = styled.div`
   width: 100%;
 `;
 
+export const EditableTitleText = styled.input`
+  // font: 400 16px Roboto,RobotoDraft,Helvetica,Arial,sans-serif;
+  font-size: 1.45em;
+  font-weight: 500;
+  color: ${props => props.theme.textColor};
+  font-family: ${props => props.theme.contentFont};
+  line-height: 135%;
+  width: 100%;
+
+  border: none;
+  border-bottom: 2px solid #dadce0;
+  outline: none;
+  padding: 2px 0;
+  background-color: transparent;
+
+  &:focus {
+    border-bottom: 3px solid #c44c49;
+  }
+`;
+
 export const TitleColor = styled.div`
   width: 100%;
   height: 10px;
@@ -233,6 +289,28 @@ export const StepDescription = styled.div`
   width: 100%;
   margin-top: 5px;
   color: ${props => props.theme.textColor};
+`;
+
+export const EditableStepDescription = styled.textarea`
+  font-size: 0.95em;
+  font-weight: 200;
+  font-family: ${props => props.theme.contentFont};
+  line-height: 135%;
+  width: 100%;
+  margin-top: 5px;
+  color: ${props => props.theme.textColor};
+
+  height: 6em;
+  border: none;
+  border-bottom: 2px solid #dadce0;
+  outline: none;
+  padding: 2px 0;
+  background-color: transparent;
+  resize: none;
+
+  &:focus {
+    border-bottom: 3px solid #c44c49;
+  }
 `;
 
 export const ImagePreview = styled.img`

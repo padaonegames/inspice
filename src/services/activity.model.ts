@@ -14,6 +14,18 @@ export interface ActivityInstance {
   intendedUsers?: IntendedUser[];
 }
 
+export interface InProgressActivityInstance {
+  activityType: SupportedActivity;
+  activityTitle: string | undefined;
+  activityAuthor: string | undefined;
+  beginsOn: Date | undefined;
+  endsOn: Date | undefined;
+  description?: string | undefined;
+  imageSrc?: string | undefined;
+  tags?: string[] | undefined;
+  intendedUsers?: IntendedUser[] | undefined;
+}
+
 export const intendedUsers = [
   'Children',
   'Families',
@@ -26,7 +38,8 @@ export type IntendedUser = typeof intendedUsers[number];
 
 export const supportedActivities = [
   'Treasure Hunt',
-  'GAM Game'
+  'GAM Game',
+  'Multistage Form'
 ] as const;
 
 export type SupportedActivity = typeof supportedActivities[number];

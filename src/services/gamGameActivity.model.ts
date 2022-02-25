@@ -2,7 +2,7 @@
 //       GAM GAME DEFINITIONS
 //------------------------------------------
 
-import { ActivityInstance } from "./activity.model";
+import { ActivityInstance, InProgressActivityInstance } from "./activity.model";
 
 
 /** Definition of a GAM Game story part, including selected artwork and user-generated multimedia data */
@@ -89,12 +89,8 @@ export type Emoji = typeof availableEmoji[number];
 //         ACTIVITY DEFINITIONS
 //------------------------------------------
 
-export interface InProgressGamGameActivityDefinition {
+export interface InProgressGamGameActivityDefinition extends InProgressActivityInstance {
   activityType: 'GAM Game';
-  activityTitle: string | undefined;
-  activityAuthor: string | undefined;
-  beginsOn: Date | undefined;
-  endsOn: Date | undefined;
   minArtworks: number | undefined;
   maxArtworks: number | undefined;
   allowedResponseTypes: AllowedResponseType[];

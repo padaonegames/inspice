@@ -1,10 +1,10 @@
 import { ComponentMeta, ComponentStory } from '@storybook/react/dist/ts3.9/client/preview/types-6-3';
 import { MemoryRouter } from 'react-router-dom';
-import { Header } from '../../components/Layout/Header';
+import CreateMultistageFormActivityScreen from '../../templates/MultistageForm/CreateActivity/Screen';
 
 export default {
-  title: 'Layout/Header',
-  component: Header,
+  title: 'Pages/Multistage Form Creation',
+  component: CreateMultistageFormActivityScreen,
   decorators: [
     (Story) => {
       return (
@@ -14,12 +14,10 @@ export default {
       );
     },
   ],
-} as ComponentMeta<typeof Header>;
+} as ComponentMeta<typeof CreateMultistageFormActivityScreen>;
 
-const Template: ComponentStory<typeof Header> = (args) => <Header {...args} />;
+const Template: ComponentStory<typeof CreateMultistageFormActivityScreen> = (_) => <CreateMultistageFormActivityScreen />;
 
 export const Default = Template.bind({});
-
 Default.args = {
-  activityTitle: 'Sample Activity'
 };
