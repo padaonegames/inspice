@@ -9,6 +9,7 @@ import { useState } from "react";
 import CheckBoxInput from "../../../components/Forms/CheckBoxInput";
 import { EmptyCard } from "../../TemplateDashboard/components/ActivityCard";
 import ArtifactCard from "../components/ArtifactCard";
+import SearchBar from "../../../components/Forms/SearchBar";
 
 const GridContainer = styled.div`
   display: flex;
@@ -21,16 +22,17 @@ const GridContainer = styled.div`
 `;
 
 const GridFilters = styled.div`
-  padding-left: 20px;
-  padding-bottom: 10px;
-  padding-top: 20px;
+  padding-left: 1em;
+  padding-right: 1em;
+  padding-bottom: 0.75em;
+  padding-top: 1.25em;
   border-right: solid 1px #D5DBDB;
   align-self: stretch;
   display: flex;
   flex-direction: column;
-  width: 20%;
+  width: 30%;
   min-width: 170px;
-  max-width: 250px;
+  max-width: 500px;
   background-color: ${props => props.theme.cardBackground};
 `;
 
@@ -58,19 +60,25 @@ const ActivityCardGrid = styled.div`
   background-color: ${props => props.theme.selectArtworkChoicesBackground};
 `;
 
-const NewActivityButton = styled.div`
+interface NewActivityButtonProps {
+  disabled?: boolean;
+}
+const NewActivityButton = styled.div<NewActivityButtonProps>`
   width: 80%;
+  max-width: 13em;
   height: 48px;
   background-color: ${props => `hsl(10, 80%, ${props.theme.textReadableLuminosity}%)`};
   border-radius: 50px;
   box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 0.5rem 0px;
-  cursor: pointer;
+  cursor: ${props => props.disabled ? 'default' : 'pointer'};
   display: flex;
   flex-direction: row;
   align-items: center;
+  align-self: center;
+  opacity: ${props => props.disabled ? 0.55 : 1};
 
   &:hover {
-    box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 0.5rem 0px;
+    ${props => !props.disabled && `box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 0.5rem 0px;`}
   }
 `;
 
@@ -86,9 +94,17 @@ const NewActivityText = styled.span`
   font-weight: bold;
   font-family: ${props => props.theme.contentFont};
   font-size: 0.875rem;
-  margin-left: 7px;
+  margin-left: 1.25em;
 `;
 
+const VerticalSeparator = styled.div`
+  height: 0.1em;
+  width: 100%;
+  border-style: dotted;
+  border-color: lightgray;
+  border-width: 0px 0px 2px 0px;
+  margin: 1em 0;
+`;
 
 export const MncnCatalogueBrowsingScreen = (): JSX.Element => {
 
@@ -139,6 +155,8 @@ const MncnCatalogueBrowsingScreenView = (props: MncnCatalogueBrowsingScreenViewP
     return tagsMap;
   });
 
+  const [search, setSearch] = useState<string | undefined>(undefined);
+
   const renderActivityTagsFilters = () => {
     const elems: JSX.Element[] = [];
     let it = displayTags.entries();
@@ -171,15 +189,30 @@ const MncnCatalogueBrowsingScreenView = (props: MncnCatalogueBrowsingScreenViewP
       }
       current = it.next();
     }
-    return hasAllTags;
+
+    let matchesSearch =
+      search === undefined ||
+      artifact.title.toLowerCase().includes(search.toLowerCase()) ||
+      artifact.description.toLowerCase().includes(search.toLowerCase());
+    return matchesSearch && hasAllTags;
+  };
+
+  const handleSearchPerformed = (searchText: string) => {
+    setSearch(searchText);
   };
 
   return (
     <>
       <GridContainer>
         <GridFilters>
+          <SearchBar
+            onSearchPerformed={handleSearchPerformed}
+            placeholder="Busca por título o descripción..."
+          />
+          <VerticalSeparator />
           <NewActivityButton
-            title='Add a new Artifact'
+            title='Esta funcionalidad no se encuentra disponible para esta colección de artefactos.'
+            disabled
             onClick={() => { }}
           >
             <NewActivityIcon />
@@ -189,15 +222,9 @@ const MncnCatalogueBrowsingScreenView = (props: MncnCatalogueBrowsingScreenViewP
           </NewActivityButton>
           <GridFilterHeader>Etiquetas</GridFilterHeader>
           {renderActivityTagsFilters()}
-          <GridFilterOption key={'sample'}>
+          <GridFilterOption key={'sample'} title='Etiqueta las obras de esta colección para tener acceso a filtros.'>
             <CheckBoxInput
-              labelText={'Roca'}
-              boxSize='15px'
-              onCheckedChange={() => { }}
-              checked={true}
-            />
-            <CheckBoxInput
-              labelText={'Dinosaurio'}
+              labelText={'Todas'}
               boxSize='15px'
               onCheckedChange={() => { }}
               checked={true}

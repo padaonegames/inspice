@@ -50,9 +50,11 @@ export const initializeServices = () => {
   viewpointsArtworksService = new ViewpointsArtworksService();
   viewpointsQuestionsService = new ViewpointsQuestionsService();
   viewpointsResponseService = new ViewpointsResponseService();
-  gamGameApi = new GamGameActivityService('http://localhost:8080/api');
-  userService = new UserService('http://localhost:8080/api');
-  authService = new AuthService('http://localhost:8080/api');
-  gamArtworksService = new GamArtworksService('http://localhost:8080/api');
-  mncnArtifactService = new MncnArtifactService('http://localhost:8080/api');
+
+  const inspiceServerApi = process.env.REACT_APP_SERVER_API_URL || 'http://testinspice.padaonegames.com/api';
+  gamGameApi = new GamGameActivityService(inspiceServerApi);
+  userService = new UserService(inspiceServerApi);
+  authService = new AuthService(inspiceServerApi);
+  gamArtworksService = new GamArtworksService(inspiceServerApi);
+  mncnArtifactService = new MncnArtifactService(inspiceServerApi);
 };

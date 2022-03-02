@@ -111,6 +111,6 @@ export const CheckBoxInput = (props: CheckBoxInputProps): JSX.Element => {
       />
     </Container>
   );
-}
+};
 
 export default CheckBoxInput;

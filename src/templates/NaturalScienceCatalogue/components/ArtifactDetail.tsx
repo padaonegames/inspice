@@ -33,8 +33,11 @@ export const ArtifactDetail = (props: ArtifactDetailProps): JSX.Element => {
               Museo Nacional de Ciencias Naturales
             </ArtworkAuthor>
           </DetailMainInfoPanel>
-          <DetailActionPanel>
-            <EditIcon onClick={() => navigate('../stories')} />
+          <DetailActionPanel
+            title='Esta acción no se encuentra habilitada para el artefacto actual'
+            disabled
+          >
+            <EditIcon onClick={() => /*navigate('../stories')*/ { }} />
             Editar
           </DetailActionPanel>
         </DetailUpperPanel>

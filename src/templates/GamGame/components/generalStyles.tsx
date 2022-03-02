@@ -35,7 +35,10 @@ export const DetailMainInfoPanel = styled.div`
   width: 80%;
 `;
 
-export const DetailActionPanel = styled.div`
+interface DetailActionPanelProps {
+  disabled?: boolean;
+}
+export const DetailActionPanel = styled.div<DetailActionPanelProps>`
   width: 20%;
   display: flex;
   flex-direction: column;
@@ -49,7 +52,8 @@ export const DetailActionPanel = styled.div`
   letter-spacing: +1px;
   font-family: 'EB Garamond';
   text-transform: uppercase;
-  cursor: pointer;
+  ${props => !props.disabled && 'cursor: pointer;'}
+  ${props => props.disabled && 'opacity: 0.5;'}
 `;
 
 export interface DetailArtworkDisplayProps {

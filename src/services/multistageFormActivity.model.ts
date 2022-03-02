@@ -79,6 +79,13 @@ export const supportedFieldTypes = [
 
 export type FieldType = typeof supportedFieldTypes[number];
 
+export interface EditableFieldProps<T extends FieldDefinitionBase> {
+  /** Definition to be used to render the stateless editable field component (only the exclusive part of the definition, prompt text and type are edited elsewhere) */
+  fieldDefinition: Omit<T, 'type' | 'promptText'>;
+  /** Callback to notify parent component of a change whithin the current definition */
+  onDefinitionChanged?: (definition: T) => void;
+}
+
 export interface ShortTextFieldDefinition extends FieldDefinitionBase {
   type: 'short-text';
   placeholder?: string;
@@ -115,7 +122,7 @@ export interface LikertScaleFieldDefinition extends FieldDefinitionBase {
 export interface MultipleChoiceFieldDefinition extends FieldDefinitionBase {
   type: 'multiple-choice';
   answers: string[];
-  maxAnswers: number;
+  maxAnswers?: number;
 }
 
 export interface RangeFieldDefinition extends FieldDefinitionBase {

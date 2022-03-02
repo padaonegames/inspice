@@ -1,4 +1,6 @@
+import { EditableFieldProps, MultipleChoiceFieldDefinition } from "../../../services/multistageFormActivity.model";
 import CheckBoxInput from "../CheckBoxInput";
+import EditableCheckBoxInput from "../EditableCheckBoxInput";
 import {
   Root,
   CardPanel,
@@ -10,7 +12,7 @@ import {
   CheckboxOption
 } from "./cardStyles";
 
-export interface MultipleChoiceCardProps {
+export interface MultipleChoiceCardProps extends MultipleChoiceFieldDefinition {
   /** Main text rendered on top of the component as a prompt for the user, indicating what they must check in the field */
   promptText: string;
   /** callback to parent component specifying that a given answer has been selected */
@@ -25,6 +27,8 @@ export interface MultipleChoiceCardProps {
   requiredAlert?: boolean;
   /** Maximum number of allowed answers */
   maxAnswers?: number;
+  /** Enforce typing */
+  type: 'multiple-choice';
 }
 
 export const MultipleChoiceCard = (props: MultipleChoiceCardProps): JSX.Element => {
@@ -79,6 +83,49 @@ export const MultipleChoiceCard = (props: MultipleChoiceCardProps): JSX.Element 
         )}
       </CardPanel>
     </Root>
+  );
+};
+
+
+export interface EditableMultipleChoiceCardContentProps extends MultipleChoiceFieldDefinition {
+  /** answers to choose from, to be edited by the user */
+  answers: string[];
+  /** Maximum number of allowed answers */
+  maxAnswers?: number;
+  /** callback to parent specifying that an answer text has been changed */
+  onAnswerChanged?: (index: number, value: string) => void;
+  /** callback to parent specifying that maximum number of answers has been changed */
+  onMaxAnswersChanged?: (value: number) => void;
+  /** Enforce typing */
+  type: 'multiple-choice';
+}
+
+export const EditableMultipleChoiceCardContent = (props: EditableFieldProps<MultipleChoiceFieldDefinition>): JSX.Element => {
+
+  const {
+    fieldDefinition,
+    onDefinitionChanged
+  } = props;
+
+  const {
+    answers,
+    maxAnswers
+  } = fieldDefinition;
+
+  return (
+    <>
+      <CheckboxList>
+        {answers.map((elem, i) => (
+          <CheckboxOption key={elem}>
+            <EditableCheckBoxInput
+              labelText={elem}
+              style='radio'
+              boxSize='15px'
+            />
+          </CheckboxOption>
+        ))}
+      </CheckboxList>
+    </>
   );
 };
 

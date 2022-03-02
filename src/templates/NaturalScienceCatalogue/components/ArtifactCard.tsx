@@ -12,7 +12,6 @@ const ArtifactCardContainer = styled.div`
   flex-direction: column;
   height: auto;
   box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 0.5rem 0px;
-  cursor: pointer;
   width: calc(100% - 1rem);
   margin: 0.6em;
   min-width: 290px;
@@ -55,6 +54,7 @@ const ArtifactImageContainer = styled.div`
   align-self: center;
   margin: 0 auto;
   position: relative;
+  cursor: pointer;
 `;
 
 const ArtifactCardContent = styled.div`
@@ -169,7 +169,10 @@ const DropdownMenu = styled.div`
   border-radius: 0.25rem;
 `;
 
-const DropdownMenuItem = styled.a`
+interface DropdownMenuItemProps {
+  disabled?: boolean;
+}
+const DropdownMenuItem = styled.a<DropdownMenuItemProps>`
   color: ${props => props.theme.textColor};
   padding: 12px 16px;
   text-decoration: none;
@@ -178,9 +181,11 @@ const DropdownMenuItem = styled.a`
   align-items: center;
   justify-content: start;
   font-family: ${props => props.theme.contentFont};
+  cursor: ${props => props.disabled ? 'default' : 'pointer'};
+  ${props => props.disabled && 'opacity: 0.5;'}
 
   &:hover {
-    background-color: darkgray;
+    ${props => !props.disabled && 'background-color: darkgray;'}
   }
 `;
 
@@ -241,7 +246,7 @@ export const ArtifactCard = (props: ArtifactCardProps): JSX.Element => {
 
   return (
     <ArtifactCardContainer>
-      <ArtifactImageContainer>
+      <ArtifactImageContainer onClick={onOpenClicked}>
         <ArtifactCardImage src={artifactData.image ?? 'https://upload.wikimedia.org/wikipedia/commons/6/65/No-Image-Placeholder.svg'} />
         <ArtifactTypeSpan>
           Pieza
@@ -259,15 +264,23 @@ export const ArtifactCard = (props: ArtifactCardProps): JSX.Element => {
             <DropdownMenu>
               <DropdownMenuItem onClick={onOpenClicked}>
                 <OpenArtifactIcon />
-                Open
+                Abrir
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={onEditClicked}>
+              <DropdownMenuItem
+                title='Esta opción no se encuentra disponible para este artefacto'
+                disabled
+                onClick={onEditClicked}
+              >
                 <EditArtifactIcon />
-                Edit
+                Editar
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={onDeleteClicked}>
+              <DropdownMenuItem
+                title='Esta opción no se encuentra disponible para este artefacto'
+                disabled
+                onClick={onDeleteClicked}
+              >
                 <DeleteArtifactIcon />
-                Delete
+                Borrar
               </DropdownMenuItem>
             </DropdownMenu>
           )}

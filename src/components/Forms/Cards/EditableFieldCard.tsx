@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import styled, { css } from "styled-components";
-import { FieldType, supportedFieldTypes } from "../../../services/multistageFormActivity.model";
+import { FieldDefinition, FieldType, supportedFieldTypes } from "../../../services/multistageFormActivity.model";
 import {
   Root,
   RequiredAlertIcon,
@@ -21,6 +21,7 @@ import { LinearScale } from "@styled-icons/material-outlined/LinearScale";
 import { Tags } from "@styled-icons/fa-solid/Tags";
 import { Delete } from '@styled-icons/fluentui-system-regular/Delete';
 import CheckBoxInput from "../CheckBoxInput";
+import { EditableMultipleChoiceCardContent } from "./MultipleChoiceCard";
 
 const HeaderRow = styled.div`
   display: flex;
@@ -162,6 +163,8 @@ export interface EditableFieldCardProps {
   fieldType: FieldType;
   /** Callback notifying of field type changing to a new format */
   onFieldTypeChanged?: (value: FieldType) => void;
+  /** Callback notifying parent of field changing (including data payload) */
+  onFieldDefinitionChanged?: (value: FieldDefinition) => void;
   /** Callback notifying parent component of user wanting to delete this card */
   onCardDeleted?: () => void;
 }
@@ -192,6 +195,7 @@ export const EditableFieldCard = (props: EditableFieldCardProps): JSX.Element =>
     alertMessage,
     fieldType,
     onFieldTypeChanged,
+    onFieldDefinitionChanged,
     onCardDeleted
   } = props;
 
@@ -242,6 +246,11 @@ export const EditableFieldCard = (props: EditableFieldCardProps): JSX.Element =>
               </DropdownMenu>}
           </SelectFieldTypeDropdownButton>
         </HeaderRow>
+        {fieldType === 'multiple-choice' && (
+          <EditableMultipleChoiceCardContent
+            fieldDefinition={{ answers: ['I think nothing in this list is very interesting', 'I think I have run out of ideas'] }}
+          />
+        )}
         <DottedLine />
         <BottomRow>
           <CheckBoxInput
@@ -255,7 +264,7 @@ export const EditableFieldCard = (props: EditableFieldCardProps): JSX.Element =>
             }}
           />
           <HorizontalLine />
-          <DeleteIcon onClick={onCardDeleted}/>
+          <DeleteIcon onClick={onCardDeleted} />
         </BottomRow>
         {requiredAlert && (
           <RequiredQuestionSpan>
