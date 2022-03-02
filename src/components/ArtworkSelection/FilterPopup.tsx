@@ -178,23 +178,30 @@ const NavContainer = styled.div`
 `;
 
 export interface FilterPopupProps {
+  /** display name of the filter category */
   filterField: string;
+  /** array of filter options for the given category */
   filterOptions: string[];
+  /** array of counts for each of the options in `filterOptions` (how many of each there are) */
   filterCounts: number[];
-  onFilterSelected: (filter: string) => void;
-  setFilterPopupOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  /** callback to the parent component specifying that a specific filter has been selected within this category */
+  onFilterSelected?: (filter: string) => void;
+  /** callback to the parent component specifying whether we want to close this component */
+  setFilterPopupOpen?: (opened: boolean) => void;
 };
 
 /**
- * <img src="media://FilterPopup.PNG" alt="FilterPopup">
+ * Popup component to explore a list of filtering options that can be applied to a given filtering field
  */
-export const FilterPopup: React.FC<FilterPopupProps> = ({
-  filterField,
-  filterOptions,
-  filterCounts,
-  onFilterSelected,
-  setFilterPopupOpen,
-}) => {
+export const FilterPopup = (props: FilterPopupProps) => {
+
+  const {
+    filterField,
+    filterOptions,
+    filterCounts,
+    onFilterSelected,
+    setFilterPopupOpen,
+  } = props;
 
   const [filters, setFilters] = useState<string[]>(filterOptions);
   const [counts, setCounts] = useState<number[]>(filterCounts);
@@ -221,18 +228,27 @@ export const FilterPopup: React.FC<FilterPopupProps> = ({
 
   return ReactDOM.createPortal(
     <>
-      <Background onClick={() => setFilterPopupOpen(false)} />
+      <Background onClick={() => {
+        if (setFilterPopupOpen)
+          setFilterPopupOpen(false)
+      }} />
       <Root>
         <TitleText>
           {filterField}
         </TitleText>
 
         <MediaQuery maxWidth={768}>
-          <BackIcon onClick={() => setFilterPopupOpen(false)} />
+          <BackIcon onClick={() => {
+            if (setFilterPopupOpen)
+              setFilterPopupOpen(false)
+          }} />
         </MediaQuery>
 
         <MediaQuery minWidth={768}>
-          <CloseIcon onClick={() => setFilterPopupOpen(false)} />
+          <CloseIcon onClick={() => {
+            if (setFilterPopupOpen)
+              setFilterPopupOpen(false)
+          }} />
         </MediaQuery>
 
         <SearchContainer>

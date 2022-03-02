@@ -1,73 +1,82 @@
 import { ThemeStore } from './theme/ThemeStore';
 import Theme from './theme/Theme';
-import React, { Suspense } from 'react';
+import { Suspense } from 'react';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 
 // screen imports
-import PlayTreasureHuntScreen from './screens/PlayTreasureHuntScreen';
-import CreateTreasureHuntScreen from './screens/CreateTreasureHunt/Screen';
-import CreateFindArtworkActivityScreen from './screens/CreateFindArtworkActivity/Screen';
+import PlayTreasureHuntScreen from './templates/FindArtwork/PlayTreasureHunt/Screen';
+import CreateTreasureHuntScreen from './templates/FindArtwork/CreateTreasureHunt/Screen';
+import CreateFindArtworkActivityScreen from './templates/FindArtwork/CreateActivity/Screen';
 import BrowseDefinitionsScreen from './screens/BrowseDefinitionsScreen';
-import ExploreActivityScreen from './screens/ExploreActivityScreen';
+import ExploreActivityScreen from './templates/FindArtwork/ExploreActivity/Screen';
 import { ActivityScreen } from './screens/ActivityScreen';
 
 // components
-import HomeComponent from './Viewpoints/HomeComponent';
-import ViewpointsResultsComponent from './Viewpoints/ViewpointsResultsComponent';
-import AnswerViewpointComponent from './Viewpoints/AnswerViewpointComponent';
-import CreateGamGameActivityScreen from './screens/GamGame_CreateActivity/Screen';
-import GamGameUserMenuScreen from './screens/GamGame_UserScreen/MenuScreen';
-import { TemplateDashboard } from './screens/TemplateDashboard/TemplateDashboard';
+import HomeComponent from './templates/Viewpoints/HomeComponent';
+import ViewpointsResultsComponent from './templates/Viewpoints/ViewpointsResultsComponent';
+import AnswerViewpointComponent from './templates/Viewpoints/AnswerViewpointComponent';
+import CreateGamGameActivityScreen from './templates/GamGame/CreateActivity/Screen';
+import GamGameUserMenuScreen from './templates/GamGame/UserPerspective/Screen';
+import { TemplateDashboard } from './templates/TemplateDashboard/Screen';
+import { AuthStore } from './auth/AuthStore';
+import LoginScreen from './templates/Auth/Login/LoginScreen';
+import { MncnCatalogueBrowsingScreen } from './templates/NaturalScienceCatalogue/BrowseCatalogue/Screen';
+import { MncnViewArtifactScreen } from './templates/NaturalScienceCatalogue/Artifact/ViewArtifactScreen';
 
 /**
  * Main entrypoint for our React application within which all other components
  * will be rendered. 
  */
-export const App: React.FC = () => {
+export const App = (): JSX.Element => {
 
   return (
     <Suspense fallback='loading'>
       <ThemeStore>
         <Theme>
-          <BrowserRouter>
-            <Routes>
-              <Route path='dashboard' element={<ActivityScreen activityTitle='InSpice - Dashboard' />}>
-                <Route path='' element={<TemplateDashboard />} />
-              </Route>
-              <Route path='viewpoints' element={<ActivityScreen activityTitle='IMMA - Viewpoints' />}>
-                <Route path='consumer'>
-                  <Route path='browse' element={<HomeComponent />} />
-                  <Route path='results' element={<ViewpointsResultsComponent />} />
-                  <Route path='answer/:id' element={<AnswerViewpointComponent />} />
+          <AuthStore>
+            <BrowserRouter>
+              <Routes>
+                <Route path='dashboard' element={<ActivityScreen activityTitle='InSpice - Dashboard' />}>
+                  <Route path='' element={<TemplateDashboard />} />
+                </Route>
+                <Route path='mncn-collection' element={<ActivityScreen activityTitle='MNCN - Colección' />}>
+                  <Route path='browse' element={<MncnCatalogueBrowsingScreen />} />
+                  <Route path='artifact/:id' element={<MncnViewArtifactScreen />} />
+                </Route>
+                <Route path='viewpoints' element={<ActivityScreen activityTitle='IMMA - Viewpoints' />}>
+                  <Route path='consumer'>
+                    <Route path='browse' element={<HomeComponent />} />
+                    <Route path='results' element={<ViewpointsResultsComponent />} />
+                    <Route path='answer/:id' element={<AnswerViewpointComponent />} />
+                    <Route path='' element={<Navigate replace to='browse' />} />
+                  </Route>
+                  <Route path='' element={<Navigate replace to='consumer' />} />
+                </Route>
+                <Route path='find-artwork' element={<ActivityScreen activityTitle='IMMA - Find Artworks' />}>
+                  <Route path='consumer'>
+                    <Route path='play/:id' element={<PlayTreasureHuntScreen />} />
+                    <Route path='create/:id' element={<CreateTreasureHuntScreen />} />
+                    <Route path='explore/:id' element={<ExploreActivityScreen />} />
+                  </Route>
+                  <Route path='curator'>
+                    <Route path='create' element={<CreateFindArtworkActivityScreen />} />
+                  </Route>
+                  <Route path='browse' element={<BrowseDefinitionsScreen />} />
                   <Route path='' element={<Navigate replace to='browse' />} />
                 </Route>
-                <Route path='' element={<Navigate replace to='consumer' />} />
-              </Route>
-              <Route path='find-artwork' element={<ActivityScreen activityTitle='IMMA - Find Artworks' />}>
-                <Route path='consumer'>
-                  <Route path='play/:id' element={<PlayTreasureHuntScreen />} />
-                  <Route path='create/:id' element={<CreateTreasureHuntScreen />} />
-                  <Route path='explore/:id' element={<ExploreActivityScreen />} />
+                <Route path='gam-game'>
+                  <Route path='consumer'>
+                    <Route path='visit/:id/*' element={<GamGameUserMenuScreen />} />
+                  </Route>
+                  <Route path='curator' element={<ActivityScreen guarded activityTitle='GAM - GAM Game' />}>
+                    <Route path='create' element={<CreateGamGameActivityScreen />} />
+                  </Route>
                 </Route>
-                <Route path='curator'>
-                  <Route path='create' element={<CreateFindArtworkActivityScreen />} />
-                </Route>
-                <Route path='browse' element={<BrowseDefinitionsScreen />} />
-                <Route path='' element={<Navigate replace to='browse' />} />
-              </Route>
-              <Route path='gam-game' element={<ActivityScreen activityTitle='GAM - GAM Game' />}>
-                <Route path='consumer'>
-                  <Route path='visit/:id/*' element={<GamGameUserMenuScreen />} />
-                </Route>
-                <Route path='curator'>
-                  <Route path='create' element={<CreateGamGameActivityScreen />} />
-                </Route>
-                <Route path='browse' element={<BrowseDefinitionsScreen />} />
-                <Route path='' element={<Navigate replace to='browse' />} />
-              </Route>
-              <Route path='/' element={<Navigate replace to='/dashboard' />} />
-            </Routes>
-          </BrowserRouter>
+                <Route path='/login' element={<LoginScreen />} />
+                <Route path='/' element={<Navigate replace to='/dashboard' />} />
+              </Routes>
+            </BrowserRouter>
+          </AuthStore>
         </Theme>
       </ThemeStore>
     </Suspense>

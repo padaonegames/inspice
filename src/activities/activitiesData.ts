@@ -13,9 +13,9 @@ const activityOne: FindArtworkActivityDefinition = {
   maxCluesPerStage: 4,
   allowedInputs: ['Text'],
   huntDefinitionsDatasetUuid: 'undefined',
-  activityDefinitionsDatasetUuid: 'undefined',
   artworksDatasetUuid: 'undefined',
-  artworks: sampleArtworks.slice(0, 10).map(elem => elem.id)
+  artworks: sampleArtworks.slice(0, 10).map(elem => elem.id),
+  activityType: "Treasure Hunt"
 };
 
 export const sampleActivities: FindArtworkActivityDefinition[] = [

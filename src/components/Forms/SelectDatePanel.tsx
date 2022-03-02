@@ -36,7 +36,7 @@ const PanelContainer = styled.div`
 
 const FieldNameSpan = styled.h3`
   align-self: center;
-  font-weight: 700;
+  font-weight: 500;
   letter-spacing: +0.5px;
   font-family: Raleway;
 
@@ -132,7 +132,7 @@ export const SelectDatePanel = (props: SelectDatePanelProps) => {
   return (
     <Root>
       <FieldNameSpan>
-        {'Choose a date range'.toUpperCase()}
+        {'Choose a date range'}
         {from && to && (
           <ResetButton onClick={handleResetClick}>
             Reset

@@ -2,10 +2,7 @@
 //         GENERAL DEFINITIONS
 //------------------------------------------
 export interface ActivityInstance {
-  /**
-   * Where is this activity being stored?
-   */
-  activityDefinitionsDatasetUuid: string;
+  activityType: SupportedActivity;
   activityTitle: string;
   activityAuthor: string;
   beginsOn: Date;
@@ -13,4 +10,36 @@ export interface ActivityInstance {
   _id: string;
   description?: string;
   imageSrc?: string;
+  tags?: string[];
+  intendedUsers?: IntendedUser[];
 }
+
+export interface InProgressActivityInstance {
+  activityType: SupportedActivity;
+  activityTitle: string | undefined;
+  activityAuthor: string | undefined;
+  beginsOn: Date | undefined;
+  endsOn: Date | undefined;
+  description?: string | undefined;
+  imageSrc?: string | undefined;
+  tags?: string[] | undefined;
+  intendedUsers?: IntendedUser[] | undefined;
+}
+
+export const intendedUsers = [
+  'Children',
+  'Families',
+  'Adults',
+  'Teenagers',
+  'Deaf People'
+];
+
+export type IntendedUser = typeof intendedUsers[number];
+
+export const supportedActivities = [
+  'Treasure Hunt',
+  'GAM Game',
+  'Multistage Form'
+] as const;
+
+export type SupportedActivity = typeof supportedActivities[number];

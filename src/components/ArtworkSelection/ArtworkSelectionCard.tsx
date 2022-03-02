@@ -1,7 +1,6 @@
-import React from 'react';
 import styled from 'styled-components';
-import ArtworkFront from '../../FindArtwork/ArtworkFront';
 import { ArtworkData } from '../../services/artwork.model';
+import ArtworkFront from '../../templates/FindArtwork/components/ArtworkFront';
 import ArtworkSelectedCard from './ArtworkSelectedCard';
 
 const CardContainer = styled.div`
@@ -21,7 +20,7 @@ const CardContainer = styled.div`
 
   transform-style: preserve-3d;
   perspective: 1000px;
-  background-color: ${props => props.theme.artworkDisplayBackground};
+  background-color: transparent;
   border: 1px solid #e0e0e0;
 `;
 
@@ -30,9 +29,13 @@ const Dummy = styled.div`
 `;
 
 export interface ArtworkSelectionCardProps {
+  /** Artwork data to be used to render this component */
   artworkData: ArtworkData;
+  /** Whether this should be displayed as being selected by the user */
   selected: boolean;
+  /** Callback to the parent of this panel indicating that this artwork has been selected (Added to selection) */
   onCardSelected?: () => void;
+  /** Callback to the parent of this panel indicating that this artwork has been deselected (Removed from selection) */
   onCardDeselected?: () => void;
   /**
    * Callback to the parent of this panel indicating that this card has been clicked.
@@ -43,25 +46,17 @@ export interface ArtworkSelectionCardProps {
 };
 
 /**
- * + Unselected Version:
- * 
- * <img src="media://ArtworkSelectionCardUnselected.PNG" alt="ArtworkSelectionCardUnselected">
- * 
- * + Unselected Version (Hover):
- * 
- * <img src="media://ArtworkSelectionCardHover.PNG" alt="ArtworkSelectionCardHover">
- * 
- * + Selected Version:
- * 
- * <img src="media://ArtworkSelectedCard.PNG" alt="ArtworkSelectedCard">
+ * Basic Card to be used for displaying artworks that can be selected within a list or grid of artwork thumbails/ previews.
  */
-export const ArtworkSelectionCard: React.FC<ArtworkSelectionCardProps> = ({
-  artworkData,
-  selected,
-  onCardSelected,
-  onCardDeselected,
-  onCardClicked,
-}) => {
+export const ArtworkSelectionCard = (props: ArtworkSelectionCardProps) => {
+
+  const {
+    artworkData,
+    selected,
+    onCardSelected,
+    onCardDeselected,
+    onCardClicked,
+  } = props;
 
   return (
     <CardContainer>

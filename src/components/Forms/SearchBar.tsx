@@ -9,9 +9,9 @@ const SearchArea = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  width: 90%;
-  max-width: 560px;
-  height: 64px;
+  width: 95%;
+  max-width: 750px;
+  height: auto;
   align-self: center;
 `;
 
@@ -27,25 +27,29 @@ const SearchBarInput = styled.input`
   display: table-cell;
   border: 1px solid #e5e5e5;
   width: 600px;
-  height: 45px;
+  height: 2.75em;
+  width: 80%;
 `;
 
 const SearchButton = styled.div`
-  width: 80px;
-  height: 45px;
+  height: 2.4em;
+  width: 15%;
+  padding: 0.25em;
   display: flex;
   justify-content: center;
   align-items: center;
   background-color: #c44c49;
+  border-radius: 0 0.5em 0.5em 0;
   &:hover{
     cursor:pointer;
   }
 `;
 
 const SearchIcon = styled(Search)`
-  width: 25px;
-  height: 25px;
+  width: 1.5em;
+  height: 1.5em;
   color: white;
+  margin: auto;
 `;
 
 export interface SearchBarProps {

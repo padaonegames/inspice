@@ -27,5 +27,6 @@ declare module 'styled-components' {
     artworkDisplayBackground: string;
     selectArtworkChoicesBackground: string;
     fadedContentColor: string;
+    textReadableLuminosity: number;
   }
 }

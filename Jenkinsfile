@@ -26,7 +26,7 @@ def deployInfo() {
     [
             'master':  [
                 host: 'gaiatemp',
-                envFile: 'spice-activity-demo.master.dev'
+                envFile: 'spice-activity-demo.env.master'
             ],
             'dev':  [
                 host: 'gaiatemp',

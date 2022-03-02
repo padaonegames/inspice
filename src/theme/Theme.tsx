@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { AvailableThemes, ThemeContext } from "./ThemeStore";
 import { createGlobalStyle, ThemeProvider } from "styled-components";
 
-const themes: AvailableThemes = {
+export const themes: AvailableThemes = {
   dark: {
     bodyBackground: 'darkgray',
     headerBackground: '#212529',
@@ -25,11 +25,12 @@ const themes: AvailableThemes = {
     clickableTextFontSize: '1em',
     clickableTextFontColor: '#FFFF00',
     artworkDisplayBackground: 'black',
-    selectArtworkChoicesBackground: '#0b0b0b',
+    selectArtworkChoicesBackground: '#0f0f0f',
     fadedContentColor: 'lightgray',
+    textReadableLuminosity: 40,
   },
   light: {
-    bodyBackground: '#F3F3F3',
+    bodyBackground: '#E5E5E5',
     headerBackground: "#fff",
     title: "#ff6347",
     textColor: "#000",
@@ -50,8 +51,9 @@ const themes: AvailableThemes = {
     clickableTextFontSize: '1em',
     clickableTextFontColor: 'brown',
     artworkDisplayBackground: '#474747',
-    selectArtworkChoicesBackground: 'white',
+    selectArtworkChoicesBackground: '#F5F5F5',
     fadedContentColor: 'lightgray',
+    textReadableLuminosity: 80,
   },
 };
 
@@ -67,6 +69,8 @@ const GlobalStyle = createGlobalStyle`
   }
   body {
     background-color: ${props => props.theme.bodyBackground};
+    min-height: 100% !important;
+    height: 100%;
   }
   textarea {
     font-family: ${props => props.theme.textAreaFont};
@@ -83,6 +87,10 @@ const GlobalStyle = createGlobalStyle`
     font-size: ${props => props.theme.contentFontSize};
     color: ${props => props.theme.textColor};
     letter-spacing: ${props => props.theme.contentLetterSpacing};
+  }
+  html {
+    min-height: 100% !important;
+    height: 100%;
   }
 `;
 

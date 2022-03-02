@@ -12,7 +12,7 @@ const Root = styled.div`
 
 const SliderContainer = styled.div`
   width: 80%;
-  height: 10px;
+  height: 0.45em;
   position: relative;
 `;
 
@@ -53,13 +53,13 @@ interface ThumbProps {
 const Thumb = styled.div<ThumbProps>`
   position: absolute;
   z-index: 3;
-  height: 25px;
-  width: 25px;
+  height: 1.35em;
+  width: 1.35em;
   background-color: #4a90e2;
   border-radius: 50%;
   opacity: 1;
   ${props => props.side === 'left' ? `left: ${props.percent}%` : `right: ${props.percent}%`};
-  transform: translate${props => props.side === 'left' ? '(-12px, -7px)' : '(12px, -7px)'};
+  transform: translate${props => props.side === 'left' ? '(-0.65em, -0.4em)' : '(0.65em, -0.4em)'};
 `;
 
 const Slider = styled.div`
@@ -114,6 +114,7 @@ const Marker = styled.div<MarkerProps>`
   letter-spacing: 0.05em;
   transform: translateX(-50%);
   left: ${props => props.percent}%;
+  font-family: ${props => props.theme.contentFont};
 
   &:after {
     content: '';
@@ -134,8 +135,8 @@ export interface IntegerRangeSliderProps {
   step?: number;
   initialMin?: number;
   initialMax?: number;
-  onMinValueChange: (min: number) => void;
-  onMaxValueChange: (max: number) => void;
+  onMinValueChange?: (min: number) => void;
+  onMaxValueChange?: (max: number) => void;
 };
 
 /**
@@ -158,7 +159,8 @@ export const IntegerRangeSlider: React.FC<IntegerRangeSliderProps> = ({
     const val = parseInt(event.target.value, 10);
     if (val <= maxValue) {
       setMinValue(val);
-      onMinValueChange(val);
+      if (onMinValueChange)
+        onMinValueChange(val);
     }
   };
 
@@ -166,7 +168,8 @@ export const IntegerRangeSlider: React.FC<IntegerRangeSliderProps> = ({
     const val = parseInt(event.target.value, 10);
     if (val >= minValue) {
       setMaxValue(val);
-      onMaxValueChange(val);
+      if (onMaxValueChange)
+        onMaxValueChange(val);
     }
   };
 

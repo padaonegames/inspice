@@ -290,7 +290,7 @@ export const SearchAndSelectManyArtworks: React.FC<SearchAndSelectManyArtworksPr
                 onArtworkClicked={onArtworkClicked}
                 selectedArtworks={selectedArtworks.map(elem => elem.id)}
                 page={pageData?.currentPage}
-                pageTotal={pageData?.itemsPerPage ? ~~(displayedArtworks.length / pageData?.itemsPerPage) + 1 : undefined}
+                pageTotal={pageData?.pageTotal}
                 onPageChange={onPageChanged}
               />
             </ResultsFiltersAndArtworks>

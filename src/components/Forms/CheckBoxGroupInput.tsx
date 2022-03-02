@@ -56,6 +56,7 @@ const CheckBoxContainer = styled.div`
 export interface CheckBoxGroupInputProps {
   fieldText: string;
   labelList: string[];
+  checked: boolean[];
   initialAllowedInputTypes?: string[];
   onCheckBoxToggled: (label: string) => void;
 };
@@ -66,8 +67,8 @@ export interface CheckBoxGroupInputProps {
 export const CheckBoxGroupInput: React.FC<CheckBoxGroupInputProps> = ({
   fieldText,
   labelList,
-  onCheckBoxToggled,
-  initialAllowedInputTypes,
+  checked,
+  onCheckBoxToggled
 }) => {
 
   return (
@@ -79,7 +80,7 @@ export const CheckBoxGroupInput: React.FC<CheckBoxGroupInputProps> = ({
         <CheckBoxContainer>
           {labelList.map((label, index) =>
             <CheckBoxInput
-              initialChecked={initialAllowedInputTypes?.some(elem => elem === label)}
+              checked={index < checked.length && checked[index]}
               labelText={label}
               onCheckedChange={() => onCheckBoxToggled(label)}
               key={index}

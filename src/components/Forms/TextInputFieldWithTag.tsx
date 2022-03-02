@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
 
 const FieldContainer = styled.div`
@@ -6,6 +6,7 @@ const FieldContainer = styled.div`
   display: flex;
   width: 100%;
   margin: 35px auto;
+  padding: 15px;
 
   @media (max-width: 768px) {
     max-width: 760px;
@@ -32,9 +33,12 @@ const TextInputField = styled.input`
   }
 `;
 
-const FieldNameLabel = styled.h3`
-  align-self: center;
-  font-weight: 700;
+interface FieldNameLabelProps {
+  textAlign: 'left' | 'right' | 'center' | 'justify';
+}
+const FieldNameLabel = styled.h3<FieldNameLabelProps>`
+  align-self: ${props => props.textAlign};
+  font-weight: 500;
   letter-spacing: +0.5px;
   font-family: Raleway;
 
@@ -52,6 +56,7 @@ export interface TextInputFieldWithTagProps {
   placeholder?: string;
   icon?: JSX.Element;
   fieldName: string;
+  textAlign?: 'left' | 'right' | 'center' | 'justify';
   onChange: (value: string) => void;
   onEnterPress?: () => void;
   maxLength?: number;
@@ -60,20 +65,23 @@ export interface TextInputFieldWithTagProps {
 /**
  * <img src="media://TextInputFieldWithTag.PNG" alt="TextInputFieldWithTag">
  */
-export const TextInputFieldWithTag: React.FC<TextInputFieldWithTagProps> = ({
-  onEnterPress,
-  initialValue,
-  placeholder,
-  fieldName,
-  onChange,
-  maxLength,
-}) => {
+export const TextInputFieldWithTag = (props: TextInputFieldWithTagProps) => {
+
+  const {
+    onEnterPress,
+    initialValue,
+    placeholder,
+    fieldName,
+    onChange,
+    maxLength,
+    textAlign = 'left'
+  } = props;
 
   const [value, setValue] = useState<string>(initialValue || '');
 
   return (
     <FieldContainer>
-      <FieldNameLabel>
+      <FieldNameLabel textAlign={textAlign}>
         {fieldName}
       </FieldNameLabel>
 

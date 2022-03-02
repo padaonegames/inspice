@@ -2,7 +2,6 @@ import React from 'react';
 import styled, { keyframes } from 'styled-components';
 
 import { Spinner2 } from '@styled-icons/icomoon/Spinner2';
-import { NumberLiteralType } from 'typescript';
 import { useTranslation } from 'react-i18next';
 
 const Root = styled.div`
