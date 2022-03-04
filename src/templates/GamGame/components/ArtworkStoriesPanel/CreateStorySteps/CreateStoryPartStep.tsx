@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { ArtworkData } from "../../../../../services/artwork.model";
 import { GamGameStoryPart } from "../../../../../services/gamGameActivity.model";
 import { StepRoot } from "../../generalStyles";
@@ -14,11 +15,12 @@ interface CreateStoryPartStepProps {
 
 export const CreateStoryPartStep = (props: CreateStoryPartStepProps): JSX.Element => {
 
+  const { t } = useTranslation('gamGame');
   const { artworkData, onSubmitStoryPart, onQuit } = props;
 
   const handleQuitStoryPart = () => {
     const time = Date.now();
-    const res = window.confirm('Are you sure you want to go back to the artwork selection screen? Your progress in this story part will be lost.');
+    const res = window.confirm(t('areYouSureYouWantToGoBackToArtworkSelectionScreen'));
     if ((res || (Date.now() - time < 10)) && onQuit) {
       onQuit();
     }

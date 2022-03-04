@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import StepTitleCard from "../../../../../components/Forms/Cards/StepTitleCard";
 import { ArtworkListDottedLine, ProgressButton, StepRoot } from "../../generalStyles";
 
@@ -10,19 +11,13 @@ export const IntroStep = (props: IntroStepProps): JSX.Element => {
 
   const { onBeginClicked } = props;
 
+  const { t } = useTranslation('gamGame');
+
   return (
     <StepRoot>
       <StepTitleCard
-        stepTitle='New GAM Game Story'
-        stepDescription={`
-        So you've decided to create a new GAM Game Story...
-        
-        In the next few steps, you will be prompted to select different artworks ` +
-          `from the GAM collection (between 2 and 3) and share your thoughts and feelings about them. ` +
-          `You can even add your own tags and emojis to the artworks!
-
-        Please press BEGIN to start creating your personal story.
-        `}
+        stepTitle={t('newGamGameStory')}
+        stepDescription={t('createGamGameStoryDescription')}
       >
         <ArtworkListDottedLine />
         <ProgressButton
@@ -30,7 +25,7 @@ export const IntroStep = (props: IntroStepProps): JSX.Element => {
           enabled
           onClick={onBeginClicked}
         >
-          BEGIN
+          {t('begin').toUpperCase()}
         </ProgressButton>
       </StepTitleCard>
     </StepRoot>

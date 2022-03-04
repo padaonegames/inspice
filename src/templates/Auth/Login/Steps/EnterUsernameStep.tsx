@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import { ShortTextInputCard } from "../../../../components/Forms/Cards/ShortTextInputCard";
 import { StepComponentProps } from "../../../../components/Navigation/Steps";
@@ -23,6 +24,8 @@ const Root = styled.div`
 
 export const EnterUsernameStep = (props: StepComponentProps): JSX.Element => {
 
+  const { t } = useTranslation('gamGame');
+  
   const username = props.getState<string>('username', '');
 
   const checkValidUsername = async () => {
@@ -53,8 +56,8 @@ export const EnterUsernameStep = (props: StepComponentProps): JSX.Element => {
     <Root>
       <VerticalSeparator />
       <ShortTextInputCard
-        promptText="Enter your InSpice username:"
-        placeholder="Username..."
+        promptText={`${t('enterYourUsername')}:`}
+        placeholder={`${t('username')}...`}
         value={username}
         onChange={(val) => props.setState<string>('username', val, '')}
         requiredAlert={!!alertMessage}
@@ -65,11 +68,11 @@ export const EnterUsernameStep = (props: StepComponentProps): JSX.Element => {
       <VerticalSeparator />
       <ActionsContainer>
         <TextActionSpan>
-          Create Account
+          {t('createAccount')}
         </TextActionSpan>
         <ButtonAction onClick={handleNextClicked}>
           <ButtonActionText>
-            Next
+            {t('Next')}
           </ButtonActionText>
         </ButtonAction>
       </ActionsContainer>

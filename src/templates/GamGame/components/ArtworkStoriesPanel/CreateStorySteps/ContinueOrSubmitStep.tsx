@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import StepTitleCard from "../../../../../components/Forms/Cards/StepTitleCard";
 import { ArtworkListDottedLine, ProgressButton, StepRoot } from "../../generalStyles";
@@ -23,13 +24,14 @@ const HorizontalSeparator = styled.span`
 
 export const ContinueOrSubmitStep = (props: ContinueOrSubmitStepProps): JSX.Element => {
 
+  const { t } = useTranslation('gamGame');
   const { onContinueClicked, onSubmitClicked } = props;
 
   return (
     <StepRoot>
       <StepTitleCard
-        stepTitle='Keep adding parts?'
-        stepDescription={`Would you like to add an additional artwork to your story? Or would you rather submit it as it is?`}
+        stepTitle={t('keepAddingParts')}
+        stepDescription={t('wouldYouLikeToAddAnAdditionalArtworkToStory')}
       >
         <ArtworkListDottedLine />
         <ButtonsContainer>
@@ -38,7 +40,7 @@ export const ContinueOrSubmitStep = (props: ContinueOrSubmitStepProps): JSX.Elem
             enabled
             onClick={onSubmitClicked}
           >
-            Submit
+            {t('submit')}
           </ProgressButton>
           <HorizontalSeparator />
           <ProgressButton
@@ -46,7 +48,7 @@ export const ContinueOrSubmitStep = (props: ContinueOrSubmitStepProps): JSX.Elem
             enabled
             onClick={onContinueClicked}
           >
-            Continue
+            {t('continue')}
           </ProgressButton>
         </ButtonsContainer>
       </StepTitleCard>

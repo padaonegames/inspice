@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import StepTitleCard from "../../../../../components/Forms/Cards/StepTitleCard";
 import { ArtworkData } from "../../../../../services/artwork.model";
 import { GamGameStoryPart } from "../../../../../services/gamGameActivity.model";
@@ -25,6 +26,8 @@ export const RecommendationsStep = (props: RecommendationsStepProps): JSX.Elemen
     onArtworkSelected
   } = props;
 
+  const { t } = useTranslation('gamGame');
+
   const [stage, setStage] = useState<'similar' | 'opposite'>('similar');
 
   const handleNextClicked = () => {
@@ -41,11 +44,10 @@ export const RecommendationsStep = (props: RecommendationsStepProps): JSX.Elemen
   return (
     <StepRoot>
       <StepTitleCard
-        stepTitle={stage === 'similar' ? `Similar Artworks` : 'Opposite Artworks'}
-        stepDescription={`Here are a few artworks that trigger ${stage} emotions from the ones you've selected for your story. You may click on any of them to view more details.
-        `}
+        stepTitle={stage === 'similar' ? t('similarArtworks') : t('oppositeArtworks')}
+        stepDescription={t(`${stage}ArtworksDescription`)}
         onActionCliked={handleNextClicked}
-        actionName={stage === 'similar' ? 'NEXT' : 'FINISH'}
+        actionName={stage === 'similar' ? t('next').toUpperCase() : t('finish').toUpperCase()}
         enableAction={true}
       >
         <ArtworkListDottedLine />

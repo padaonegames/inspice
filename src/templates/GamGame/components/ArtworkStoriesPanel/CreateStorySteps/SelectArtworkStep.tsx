@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import StepTitleCard from "../../../../../components/Forms/Cards/StepTitleCard";
 import { ArtworkData } from "../../../../../services/artwork.model";
 import { ArtworkListDottedLine, StepRoot } from "../../generalStyles";
@@ -14,6 +15,7 @@ interface SelectArtworkStepProps {
 
 export const SelectArtworkStep = (props: SelectArtworkStepProps): JSX.Element => {
 
+  const { t } = useTranslation('gamGame');
   const { artworks, onArtworkSelected, index } = props;
 
   const handleArtworkSelected = (id: string) => {
@@ -30,9 +32,8 @@ export const SelectArtworkStep = (props: SelectArtworkStepProps): JSX.Element =>
   return (
     <StepRoot>
       <StepTitleCard
-        stepTitle={`Select Artwork${index !== undefined ? ` #${index}` : ''}`}
-        stepDescription={`Take a look at the different artworks included in this activity and pick one for your story by clicking on it. You may use the search bar to look for specific artworks by title or author's name.
-        `}
+        stepTitle={`${t('selectArtwork')} ${index !== undefined ? ` #${index}` : ''}`}
+        stepDescription={t('selectArtworkDescription')}
       >
         <ArtworkListDottedLine />
         <ArtworksList

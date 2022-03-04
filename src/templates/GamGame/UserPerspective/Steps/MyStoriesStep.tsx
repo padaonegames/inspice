@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import StepTitleCard from '../../../../components/Forms/Cards/StepTitleCard';
 import LoadingOverlay from '../../../../components/Layout/LoadingOverlay';
@@ -11,6 +12,7 @@ import { GamGameActivityContext } from '../Screen';
 
 export const MyStoriesStep = (): JSX.Element => {
 
+  const { t } = useTranslation('gamGame');
   const navigate = useNavigate();
 
   const { artworks } = useContext(GamGameActivityContext);
@@ -32,12 +34,12 @@ export const MyStoriesStep = (): JSX.Element => {
   return (
     <StepRoot>
       <StepTitleCard
-        stepTitle='My Stories'
-        stepDescription={`Here you can find a list of your personal stories. Use this page to browse, view and delete the stories you've already created.`}
+        stepTitle={t('myStories')}
+        stepDescription={t('myStoriesDescription')}
       >
         <ArtworkListDottedLine />
         {fetchUserStoriesRequest.kind === 'running' && (
-          <LoadingOverlay message='Fetching user stories' />
+          <LoadingOverlay message={t('fetchingUserStories')} />
         )}
         <StoriesList
           stories={stories}
