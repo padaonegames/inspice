@@ -5,6 +5,7 @@ import { useAsyncRequest } from '../../../../services/useAsyncRequest';
 import { gamGameApi } from '../../../../services';
 import ArtworkStoriesList from './ArtworkStoriesList';
 import LoadingOverlay from '../../../../components/Layout/LoadingOverlay';
+import { useTranslation } from 'react-i18next';
 
 // /collection/:artworkId/stories
 export const ArtworkStoriesPanel = (): JSX.Element => {
@@ -13,6 +14,8 @@ export const ArtworkStoriesPanel = (): JSX.Element => {
   const { artworks } = useContext(GamGameActivityContext);
   // what artwork are we refering to?
   const { artworkId } = useParams();
+
+  const { t } = useTranslation('gamGame');
 
   const navigate = useNavigate();
 
@@ -38,14 +41,14 @@ export const ArtworkStoriesPanel = (): JSX.Element => {
   // Request currently running
   if (fetchStoriesRequest.kind === 'running') {
     return (
-      <LoadingOverlay message='Fetching artwork stories' />
+      <LoadingOverlay message={t('fetchingArtworkStories')} />
     );
   }
 
   // Request is done with, but didn't succeed
   if (!(fetchStoriesRequest.kind === 'success' && fetchStoriesRequest.result.kind === 'ok')) {
     return (
-      <>There was a problem while fetching this artwork's stories.</>
+      <>{t('thereWasProblemWhenFetchingArtworkStories')}</>
     );
   }
 

@@ -3,6 +3,7 @@ import { ArtworkGrid } from '../generalStyles';
 import SearchBar from '../../../../components/Forms/SearchBar';
 import ArtworkColumnElement from '../../../../components/ArtworkSelection/ArtworkColumnElement';
 import { ArtworkData } from '../../../../services/artwork.model';
+import { useTranslation } from 'react-i18next';
 
 export interface ArtworksListProps {
   /** Artworks to be rendered within this component */
@@ -13,6 +14,7 @@ export interface ArtworksListProps {
 
 export const ArtworksList = (props: ArtworksListProps): JSX.Element => {
 
+  const { t } = useTranslation('gamGame');
   const { artworks, onArtworkSelected } = props;
 
   const [filter, setFilter] = useState<string>('');
@@ -25,7 +27,7 @@ export const ArtworksList = (props: ArtworksListProps): JSX.Element => {
   return (
     <>
       <SearchBar
-        placeholder='Search artworks by title or author...'
+        placeholder={t('searchArtworksByTitleOrAuthor')}
         onSearchPerformed={(search) => setFilter(search)}
       />
 

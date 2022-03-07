@@ -2,7 +2,7 @@ import ArtworkDecorationPanel from './ArtworkDecorationPanel';
 import ContainerCard from '../../../../components/Forms/Cards/ContainerCard';
 import { GamGameStoryPart } from '../../../../services/gamGameActivity.model';
 import { ArtworkData } from '../../../../services/artwork.model';
-import { ArtworkAuthor, ArtworkDataContainer, ArtworkDescription, ArtworkListDottedLine, ArtworkTitle, StoryDataContainer, StoryDisplayActionButton, StoryDisplayHeaderRow, StoryDisplayMainInfoPanel, StoryDisplayQuitIcon, StoryDisplaySelectionPanel, StoryDisplayUpperPanel } from '../generalStyles';
+import { ArtworkAuthor, ArtworkDescription, ArtworkListDottedLine, ArtworkTitle, StoryDataContainer, StoryDisplayActionButton, StoryDisplayHeaderRow, StoryDisplayMainInfoPanel, StoryDisplayQuitIcon, StoryDisplaySelectionPanel, StoryDisplayUpperPanel } from '../generalStyles';
 
 export interface StoryPartViewProps {
   /** Story part to be rendered */

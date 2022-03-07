@@ -24,6 +24,7 @@ import MyStoriesStep from './Steps/MyStoriesStep';
 import CreateStoryFlow from '../components/ArtworkStoriesPanel/CreateStoryFlow';
 import GuardedRoute from '../../../auth/GuardedRoute';
 import StoryViewStep from './Steps/StoryViewStep';
+import { useTranslation } from 'react-i18next';
 
 const Root = styled.div`
   display: flex;
@@ -136,35 +137,37 @@ export const GamGameActivityContext = createContext<IGamGameActivityContext>({
   }
 });
 
-const gamGameNavigationConfig: NavMenuElem[] = [
-  {
-    title: 'Home',
-    to: 'home',
-    icon: Home
-  },
-  {
-    title: 'Collection',
-    to: 'collection',
-    icon: Gallery
-  },
-  {
-    title: 'Scan QR',
-    to: 'scan-qr',
-    icon: QrCode
-  },
-  {
-    title: 'Create Story',
-    to: 'stories/create',
-    icon: FeatherAlt
-  },
-  {
-    title: 'My Stories',
-    to: 'my-stories',
-    icon: Books
-  },
-];
-
 const GamGameUserFlow = ({ activityDefinition, artworks, artworkCount }: GamGameUserFlowProps): JSX.Element => {
+
+  const { t } = useTranslation('gamGame');
+
+  const gamGameNavigationConfig: NavMenuElem[] = [
+    {
+      title: t('home'),
+      to: 'home',
+      icon: Home
+    },
+    {
+      title: t('collection'),
+      to: 'collection',
+      icon: Gallery
+    },
+    {
+      title: t('scanQr'),
+      to: 'scan-qr',
+      icon: QrCode
+    },
+    {
+      title: t('createStory'),
+      to: 'stories/create',
+      icon: FeatherAlt
+    },
+    {
+      title: t('myStories'),
+      to: 'my-stories',
+      icon: Books
+    },
+  ];
 
   return (
     <Root>

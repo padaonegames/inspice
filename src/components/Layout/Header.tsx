@@ -6,6 +6,7 @@ import { LightMode } from '@styled-icons/material-sharp/LightMode';
 import { DarkMode } from '@styled-icons/material-sharp/DarkMode';
 import SideMenu, { NavMenuElem } from './SideMenu';
 import { Menu } from "styled-icons/ionicons-solid";
+import { Language } from "@styled-icons/fa-solid/Language";
 
 interface BurgerIconProps {
   open?: boolean;
@@ -48,6 +49,10 @@ const AppName = styled.span`
 `;
 
 const ThemeSwitch = styled.span`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-content: center;
   cursor: pointer;
   margin-left: auto;
 `;
@@ -63,12 +68,19 @@ const modeStyle = css`
   }
 `;
 
+
+
 const LightModeIcon = styled(LightMode)`
   ${modeStyle}
 `;
 
 const DarkModeIcon = styled(DarkMode)`
   ${modeStyle}
+`;
+
+const LanguageIcon = styled(Language)`
+  ${modeStyle}
+  margin-right: 1em;
 `;
 
 export interface HeaderProps {
@@ -86,7 +98,7 @@ export const Header = (props: HeaderProps) => {
     navigationEntries = []
   } = props;
 
-  // const { t } = useTranslation('app');
+  const { t, i18n } = useTranslation('app');
   const { theme, switchTheme } = useContext(ThemeContext);
   // ${t('museumHeader')} - 
 
@@ -100,8 +112,20 @@ export const Header = (props: HeaderProps) => {
           onClick={() => setOpenMenu(prev => !prev)}
         />
         <AppName>{`${activityTitle && `${activityTitle}`}`}</AppName>
-        <ThemeSwitch onClick={() => switchTheme(theme === 'dark' ? 'light' : 'dark')}>
-          {theme === 'dark' ? <LightModeIcon /> : <DarkModeIcon />}
+        <ThemeSwitch>
+          {<LanguageIcon
+            title='Switch language'
+            onClick={() => i18n.changeLanguage(i18n.language === 'en' ? 'it' : 'en')}
+          />}
+          {theme === 'dark' ?
+            <LightModeIcon
+              title='Switch to light mode'
+              onClick={() => switchTheme('light')}
+            /> :
+            <DarkModeIcon
+              title='Switch to dark mode'
+              onClick={() => switchTheme('dark')}
+            />}
         </ThemeSwitch>
       </Root>
       <SideMenu

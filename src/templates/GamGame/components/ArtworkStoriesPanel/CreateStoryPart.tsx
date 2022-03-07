@@ -6,6 +6,7 @@ import { Position } from './Draggable';
 import { ArtworkAuthor, ArtworkListDottedLine, ArtworkTitle, InputArea, StoryDataContainer, StoryDisplayActionButton, StoryDisplayHeaderRow, StoryDisplayMainInfoPanel, StoryDisplayQuitIcon, StoryDisplaySelectionPanel, StoryDisplayUpperPanel } from '../generalStyles';
 import ContainerCard from '../../../../components/Forms/Cards/ContainerCard';
 import { ArtworkData } from '../../../../services/artwork.model';
+import { useTranslation } from 'react-i18next';
 
 const TemplateRow = styled.div`
   display: flex;
@@ -51,6 +52,8 @@ export const CreateStoryPart = (props: CreateStoryPartProps): JSX.Element => {
     onSubmitPart,
     onQuit
   } = props;
+
+  const { t } = useTranslation('gamGame');
 
   const templates = ['It makes me think about', 'It reminds me of', 'It makes me feel'] as const;
   const [selectedTemplate, setSelectedTemplate] = useState<typeof templates[number]>('It makes me think about');
@@ -127,7 +130,7 @@ export const CreateStoryPart = (props: CreateStoryPartProps): JSX.Element => {
             onClick={handleSubmitPart}
             enabled={text.length > 0}
           >
-            Done
+            {t('done')}
           </StoryDisplayActionButton>
         </StoryDisplayHeaderRow>
 
@@ -157,7 +160,7 @@ export const CreateStoryPart = (props: CreateStoryPartProps): JSX.Element => {
           <ArtworkListDottedLine />
 
           <InputArea
-            placeholder='Write your story text here...'
+            placeholder={t('writeYourStoryTextHere')}
             value={`${selectedTemplate}... ${text}`}
             onChange={(e) => setText(e.target.value.slice(selectedTemplate.length + 4))}
             rows={4}

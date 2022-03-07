@@ -4,6 +4,7 @@ import SearchBar from '../../../../components/Forms/SearchBar';
 import StoryColumnElement from '../../../../components/ArtworkSelection/StoryColumnElement';
 import { GamGameStoryDefinitionData } from '../../../../services/gamGameActivity.model';
 import { ArtworkData } from '../../../../services/artwork.model';
+import { useTranslation } from 'react-i18next';
 
 export interface StoriesListProps {
   /** Stories to be rendered within this component */
@@ -16,6 +17,7 @@ export interface StoriesListProps {
 
 export const StoriesList = (props: StoriesListProps): JSX.Element => {
 
+  const { t } = useTranslation('gamGame');
   const { stories, artworks, onStorySelected } = props;
 
   const [filter, setFilter] = useState<string>('');
@@ -27,7 +29,7 @@ export const StoriesList = (props: StoriesListProps): JSX.Element => {
   return (
     <>
       <SearchBar
-        placeholder='Search stories by title...'
+        placeholder={`${t('searchStoriesByTitle')}...`}
         onSearchPerformed={(search) => setFilter(search)}
       />
 

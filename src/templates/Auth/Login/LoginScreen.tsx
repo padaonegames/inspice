@@ -1,4 +1,5 @@
 import { useContext, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Navigate, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import { AuthContext } from "../../../auth/AuthStore";
@@ -32,13 +33,15 @@ const LoginFlow = (): JSX.Element => {
 
   const [state, setState] = useState<State>({});
 
+  const { t } = useTranslation('gamGame');
+
   return (
     <>
       <Header />
       <Root>
         <StepTitleCard
-          stepTitle="Log in"
-          stepDescription="Log in to your InSpice account to create your own content and interact with the museum's artworks."
+          stepTitle={t('logIn')}
+          stepDescription={t('logInDescription')}
         >
           <Steps
             genState={state}

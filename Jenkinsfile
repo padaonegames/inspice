@@ -17,8 +17,10 @@ def deployMachines() {
 
 // Lista de las ramas que generan imagen en el registro.
 // Si el valor asociado al nombre de la rama es equivalente
-// a false, sólo se crea y publica la imagen pero no se
-// despliega. En caso contrario, debe tener la información
+// a false, o tiene valor pero no hay clave "backendUrl", no se
+// hará nada cuando haya un commit a la rama. Si hay clave backendUrl
+// para ella, se creará la imagen.
+// Para que, además, se despliegue, debe tener la información
 // del host donde se despliega (clave a las entradas definidas
 // en deployMachines()) y el fichero específico de
 // variables de entorno.
@@ -26,11 +28,13 @@ def deployInfo() {
     [
             'master':  [
                 host: 'gaiatemp',
-                envFile: 'spice-activity-demo.env.master'
+                envFile: 'spice-activity-demo.env.master',
+                backendUrl: 'spice-activity-demo.backend.master' // Usada durante la build
             ],
             'dev':  [
                 host: 'gaiatemp',
-                envFile: 'spice-activity-demo.env.dev'
+                envFile: 'spice-activity-demo.env.dev',
+                backendUrl: 'spice-activity-demo.backend.dev' // Usada durante la build
             ]
     ]
 }
@@ -66,14 +70,21 @@ pipeline {
 	    }
 
         stage ('Compile / Build images') {
+            when {
+                expression {
+                    deployBranches[env.BRANCH_NAME] &&
+                    deployBranches[env.BRANCH_NAME].containsKey('backendUrl')
+                }
+            }
             steps {
                 withCredentials([
                     string(credentialsId:'spice-activity-demo-api-key', variable: 'REACT_APP_API_KEY'),
-                    string(credentialsId:'spice-activity-demo-dataset-uuid', variable: 'REACT_APP_DATASET_UUID')
+                    string(credentialsId:'spice-activity-demo-dataset-uuid', variable: 'REACT_APP_DATASET_UUID'),
+                    string(credentialsId: deployBranches[env.BRANCH_NAME].backendUrl, variable: 'REACT_APP_SERVER_API_URL')
                 ]) {
                     script {
 	  	               image = docker.build("spice/spice-activity-demo/spice/activity-demo",
-                         "--build-arg REACT_APP_API_KEY=${REACT_APP_API_KEY} --build-arg REACT_APP_DATASET_UUID=${REACT_APP_DATASET_UUID} ."
+                         "--build-arg REACT_APP_API_KEY=${REACT_APP_API_KEY} --build-arg REACT_APP_DATASET_UUID=${REACT_APP_DATASET_UUID} --build-arg REACT_APP_SERVER_API_URL=${REACT_APP_SERVER_API_URL} ."
                          );
                     }
                 }

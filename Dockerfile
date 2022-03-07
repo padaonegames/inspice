@@ -51,6 +51,8 @@ COPY ./public public
 ARG REACT_APP_API_KEY
 # Configuración del id del dataset
 ARG REACT_APP_DATASET_UUID
+# Configuración del backend (URL a la que nos conectamos)
+ARG REACT_APP_SERVER_API_URL
 RUN npm run build
 # El resultado se queda en ./build/
 

@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import { AuthContext } from "../../../../auth/AuthStore";
 import { ShortTextInputCard } from "../../../../components/Forms/Cards/ShortTextInputCard";
@@ -24,6 +25,8 @@ const Root = styled.div`
 `;
 
 export const EnterPasswordStep = (props: StepComponentProps): JSX.Element => {
+
+  const { t } = useTranslation('gamGame');
 
   const { setUserData, setAccessToken } = useContext(AuthContext);
 
@@ -64,12 +67,12 @@ export const EnterPasswordStep = (props: StepComponentProps): JSX.Element => {
   return (
     <Root>
       <StepDescription>
-        Welcome, {username}!
+        {t('welcome')}, {username}!
       </StepDescription>
       <VerticalSeparator />
       <ShortTextInputCard
-        promptText="Enter your personal password:"
-        placeholder="Password..."
+        promptText={`${t('enterYourPassword')}:`}
+        placeholder={`${t('password')}...`}
         value={password}
         isPassword
         onChange={(val) => props.setState<string>('password', val, '')}
@@ -81,11 +84,11 @@ export const EnterPasswordStep = (props: StepComponentProps): JSX.Element => {
       <VerticalSeparator />
       <ActionsContainer>
         <TextActionSpan onClick={handleBackClicked}>
-          Back
+          {t('back')}
         </TextActionSpan>
         <ButtonAction onClick={handleNextClicked}>
           <ButtonActionText>
-            Next
+            {t('next')}
           </ButtonActionText>
         </ButtonAction>
       </ActionsContainer>

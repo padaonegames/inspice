@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import ShortTextInputCard from "../../../../../components/Forms/Cards/ShortTextInputCard";
 import StepTitleCard from "../../../../../components/Forms/Cards/StepTitleCard";
 import LoadingOverlay from "../../../../../components/Layout/LoadingOverlay";
@@ -17,6 +18,8 @@ interface SubmitStoryStepProps {
 }
 
 export const SubmitStoryStep = (props: SubmitStoryStepProps): JSX.Element => {
+
+  const { t } = useTranslation('gamGame');
 
   const {
     storyParts,
@@ -62,13 +65,13 @@ export const SubmitStoryStep = (props: SubmitStoryStepProps): JSX.Element => {
   return (
     <StepRoot>
       <StepTitleCard
-        stepTitle='Submit Story'
-        stepDescription={`Before submitting your story, please type a title for it down below.`}
+        stepTitle={t('submitStory')}
+        stepDescription={t('beforeSubmittingYourStory')}
       >
         <ArtworkListDottedLine />
         <ShortTextInputCard
-          promptText='Write a title for your story:'
-          placeholder={`Your story's title here...`}
+          promptText={t('writeTitleForYourStory')}
+          placeholder={`${t('yourStorysTitleHere')}...`}
           value={title}
           onChange={(val) => setTitle(val)}
           alertMessage={errorMessage}
@@ -82,12 +85,12 @@ export const SubmitStoryStep = (props: SubmitStoryStepProps): JSX.Element => {
           style={{ alignSelf: 'center' }}
           onClick={handleSubmitClicked}
         >
-          Submit Story
+          {t('submitStory')}
         </ProgressButton>
 
         {submitStoryRequest.kind === 'running' && (
           <LoadingOverlay
-            message='Submitting story'
+            message={t('submittingStory')}
           />
         )}
       </StepTitleCard>

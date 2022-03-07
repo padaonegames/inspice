@@ -7,8 +7,11 @@ import { Html5QrcodeResult, QrcodeSuccessCallback } from 'html5-qrcode/esm/core'
 import { useNavigate } from 'react-router-dom';
 import StepTitleCard from '../../../../components/Forms/Cards/StepTitleCard';
 import { StepRoot } from "../../components/generalStyles";
+import { useTranslation } from "react-i18next";
 
 export const ScanQrStep = (): JSX.Element => {
+
+  const { t } = useTranslation('gamGame');
 
   const navigate = useNavigate();
   const scannerRef = useRef<HTMLDivElement>(null);
@@ -48,11 +51,8 @@ export const ScanQrStep = (): JSX.Element => {
   return (
     <StepRoot>
       <StepTitleCard
-        stepTitle='Scan QR'
-        stepDescription={`Use your device's camera to take a picture of the QR code next to any artwork in this activity` +
-        `and select it from here.
-        
-        `}
+        stepTitle={t('scanQr')}
+        stepDescription={t('scanQrDescription')}
       >
         <div id="reader" ref={scannerRef}></div>
       </StepTitleCard>
