@@ -68,8 +68,6 @@ const modeStyle = css`
   }
 `;
 
-
-
 const LightModeIcon = styled(LightMode)`
   ${modeStyle}
 `;
