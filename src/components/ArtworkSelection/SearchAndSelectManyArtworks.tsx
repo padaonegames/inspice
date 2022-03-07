@@ -236,16 +236,18 @@ export const SearchAndSelectManyArtworks: React.FC<SearchAndSelectManyArtworksPr
       titleAlign='center'
       width='95%'
     >
+      <VerticalSeparator />
       <SearchBar
         onSearchPerformed={onSearchPerformed}
       />
+      <VerticalSeparator />
       {displayedArtworks && (
         <DisplayPanel>
           <ResultsUpperPanel>
             {pageData && (
               <ResultsWrapper>
                 <Results>
-                  Showing results{" "} 
+                  Showing results{" "}
                   {(pageData.currentPage - 1) * pageData.itemsPerPage + 1}
                   -
                   {(pageData.currentPage - 1) * pageData.itemsPerPage + displayedArtworks.length}

@@ -13,7 +13,7 @@ import { State, Step, Steps, StepsConfig } from '../../../components/Navigation/
 import ConfigureStageParamsStep from './Steps/ConfigureStageParamsStep';
 import SelectArtworksStep from './Steps/SelectArtworksStep';
 import { AllowedResponseType, CompletedGamGameActivityDefinition, InProgressGamGameActivityDefinition } from '../../../services/gamGameActivity.model';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import ActivityInstanceBasicInfoStep from '../../GeneralSteps/ActivityInstanceBasicInfoStep';
 
 const Root = styled.div`
@@ -73,6 +73,7 @@ const isStageThreeCompleted = (definition: State): boolean => {
 export const CreateGamGameActivityScreen = () => {
 
   const { state } = useLocation();
+  const navigate = useNavigate();
 
   const [activityDefinition, setActivityDefinition] =
     useState<State>(state ? { ...initialState, ...state } : sample);
@@ -104,6 +105,7 @@ export const CreateGamGameActivityScreen = () => {
   useEffect(() => {
     if (submitDefinitionStatus.kind === 'success' && submitDefinitionStatus.result.kind === 'ok') {
       window.alert('Your activity was successfully uploaded to the linked data hub.');
+      navigate('/dashboard');
     }
   }, [submitDefinitionStatus]);
 
