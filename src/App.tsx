@@ -68,7 +68,7 @@ export const App = (): JSX.Element => {
                   <Route path='consumer'>
                     <Route path='visit/:id/*' element={<GamGameUserMenuScreen />} />
                   </Route>
-                  <Route path='curator' element={<ActivityScreen guarded activityTitle='GAM - GAM Game' />}>
+                  <Route path='curator' element={<ActivityScreen /*guarded*/ activityTitle='GAM - GAM Game' />}>
                     <Route path='create' element={<CreateGamGameActivityScreen />} />
                   </Route>
                 </Route>

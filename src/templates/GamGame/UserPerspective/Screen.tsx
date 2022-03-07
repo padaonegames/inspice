@@ -183,8 +183,8 @@ const GamGameUserFlow = ({ activityDefinition, artworks, artworkCount }: GamGame
             <Route path='home' element={<GeneralInformationStep />} />
             <Route path='collection' element={<CollectionStep />} />
             <Route path='stories/:storyId' element={<StoryViewStep />} />
-            <Route path='stories/create' element={<GuardedRoute />}>
-              <Route index element={<CreateStoryFlow />} />
+            <Route path='stories/create' element={/*<GuardedRoute />*/<CreateStoryFlow />}>
+              {/*<Route index element={<CreateStoryFlow />} />*/}
             </Route>
             <Route path='collection/:artworkId/*' element={<InspectArtworkStep />}>
               <Route path='detail' element={<GeneralArtworkDetail artworks={artworks} />} />
