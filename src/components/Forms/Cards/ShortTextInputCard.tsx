@@ -29,6 +29,8 @@ export interface ShortTextInputCardProps {
   alertMessage?: string;
   /** Whether this field represents a password (should be hidden) */
   isPassword?: boolean;
+  /** Proportion of container width to be used for input. 50% (0.5) by default */
+  width?: number;
 }
 
 /** Controlled card component to support input for shorter texts. */
@@ -44,7 +46,8 @@ export const ShortTextInputCard = (props: ShortTextInputCardProps): JSX.Element 
     alertMessage,
     isPassword = false,
     onChange,
-    onEnterPress
+    onEnterPress,
+    width = 0.5
   } = props;
 
   return (
@@ -54,6 +57,7 @@ export const ShortTextInputCard = (props: ShortTextInputCardProps): JSX.Element 
           {promptText}{required && <RequiredAsterisk> *</RequiredAsterisk>}
         </PromptText>
         <InputText
+          textWidth={width}
           type={isPassword ? 'password' : 'text'}
           placeholder={placeholder}
           maxLength={maxLength}

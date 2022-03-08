@@ -50,12 +50,16 @@ export const InputFileButton = styled.label`
   }
 `;
 
-export const InputText = styled.input`
+interface InputTextProps {
+  /** proportion of parent to use to display text */
+  textWidth?: number;
+}
+export const InputText = styled.input<InputTextProps>`
   font-size: 0.9em;
   font-weight: 200;
   font-family: ${props => props.theme.contentFont};
   line-height: 135%;
-  width: 50%;
+  width: ${props => props.textWidth ? props.textWidth * 100 : 50}%;
   margin-top: 10px;
   color: ${props => props.theme.textColor};
   border: none;

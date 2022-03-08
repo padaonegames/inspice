@@ -5,6 +5,7 @@ import { Sticker } from '@styled-icons/fluentui-system-filled/Sticker';
 import Draggable, { Position } from './Draggable';
 import { useState } from 'react';
 import { DetailArtworkDisplay } from '../generalStyles';
+import { useTranslation } from 'react-i18next';
 
 const StoryEmojiSpan = styled.span`
   font-size: 50px;
@@ -155,6 +156,8 @@ export const ArtworkDecorationPanel = (props: ArtworkDecorationPanelProps): JSX.
     onMoveTag
   } = props;
 
+  const { t } = useTranslation('gamGame');
+
   const [stickersOpen, setStickersOpen] = useState<boolean>(false);
   const [tagsOpen, setTagsOpen] = useState<boolean>(false);
 
@@ -249,7 +252,7 @@ export const ArtworkDecorationPanel = (props: ArtworkDecorationPanelProps): JSX.
         >
           <TagTypingBackground onClick={handleCreateTag} />
           <TagTypingInput
-            placeholder='Enter a new tag...'
+            placeholder={`${t('enterNewTag')}...`}
             value={newTag}
             onChange={(e) => setNewTag(e.target.value)}
           />

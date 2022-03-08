@@ -23,7 +23,7 @@ export const SelectArtworkStep = (props: SelectArtworkStepProps): JSX.Element =>
     if (!artwork) return;
 
     const time = Date.now();
-    const res = window.confirm(`You're about to choose ${artwork.title}, by ${artwork.author} as your next artwork. Continue with this choice?`);
+    const res = window.confirm(t('youreAboutToChooseArtwork', { artwork: artwork.title, author: artwork.author }));
     if ((res || (Date.now() - time < 10)) && onArtworkSelected) {
       onArtworkSelected(id);
     }

@@ -28,7 +28,7 @@
   "begin": "Begin",
   "selectArtwork": "Select Artwork",
   "selectArtworkDescription": "Take a look at the different artworks included in this activity and pick one for your story by clicking on it. You may use the search bar to look for specific artworks by title or author's name.",
-  "youreAboutToChooseArtwork": "You're about to choose {{artwork}} - as your next artwork. Continue with this choice?",
+  "youreAboutToChooseArtwork": "You're about to choose {{artwork}}, by {{author}} - as your next artwork. Continue with this choice?",
   "itMakesMeThinkAbout": "It makes me think about",
   "itRemindsMeOf": "It reminds me of",
   "itMakesMeFeel": "It makes me feel",
@@ -53,5 +53,6 @@
   "areYouSureYouWantToGoBackToArtworkSelectionScreen": "Are you sure you want to go back to the artwork selection screen? Your progress in this story part will be lost.",
   "writeYourStoryTextHere": "Write your story text here...",
   "submittingStory": "Submitting story",
-  "thereWasProblemWhenFetchingArtworkStories": "There was a problem while fetching this artwork's stories."
+  "thereWasProblemWhenFetchingArtworkStories": "There was a problem while fetching this artwork's stories.",
+  "enterNewTag": "Enter a new tag"
 }

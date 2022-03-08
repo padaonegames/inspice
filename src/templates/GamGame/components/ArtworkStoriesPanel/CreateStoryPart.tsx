@@ -55,8 +55,8 @@ export const CreateStoryPart = (props: CreateStoryPartProps): JSX.Element => {
 
   const { t } = useTranslation('gamGame');
 
-  const templates = ['It makes me think about', 'It reminds me of', 'It makes me feel'] as const;
-  const [selectedTemplate, setSelectedTemplate] = useState<typeof templates[number]>('It makes me think about');
+  const templates = ['itMakesMeThinkAbout', 'itRemindsMeOf', 'itMakesMeFeel'] as const;
+  const [selectedTemplate, setSelectedTemplate] = useState<typeof templates[number]>('itMakesMeThinkAbout');
   const [text, setText] = useState<string>('');
   const [emojis, setEmojis] = useState<StoryPartEmoji[]>([]);
   const [tags, setTags] = useState<StoryPartTag[]>([]);
@@ -152,7 +152,7 @@ export const CreateStoryPart = (props: CreateStoryPartProps): JSX.Element => {
                 enabled={elem === selectedTemplate}
                 onClick={() => setSelectedTemplate(elem)}
               >
-                {elem}...
+                {t(elem)}...
               </TemplateSelector>
             )}
           </TemplateRow>
@@ -161,8 +161,8 @@ export const CreateStoryPart = (props: CreateStoryPartProps): JSX.Element => {
 
           <InputArea
             placeholder={t('writeYourStoryTextHere')}
-            value={`${selectedTemplate}... ${text}`}
-            onChange={(e) => setText(e.target.value.slice(selectedTemplate.length + 4))}
+            value={`${t(selectedTemplate)} ${text}`}
+            onChange={(e) => setText(e.target.value.slice(t(selectedTemplate).length + 1))}
             rows={4}
           />
         </StoryDataContainer>

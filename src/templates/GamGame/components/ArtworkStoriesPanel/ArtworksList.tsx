@@ -27,7 +27,7 @@ export const ArtworksList = (props: ArtworksListProps): JSX.Element => {
   return (
     <>
       <SearchBar
-        placeholder={t('searchArtworksByTitleOrAuthor')}
+        placeholder={`${t('searchArtworksByTitleOrAuthor')}...`}
         onSearchPerformed={(search) => setFilter(search)}
       />
 
