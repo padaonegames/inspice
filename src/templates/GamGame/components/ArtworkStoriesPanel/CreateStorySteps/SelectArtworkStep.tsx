@@ -1,3 +1,4 @@
+import _ from "lodash";
 import { useTranslation } from "react-i18next";
 import StepTitleCard from "../../../../../components/Forms/Cards/StepTitleCard";
 import { ArtworkData } from "../../../../../services/artwork.model";
@@ -37,12 +38,23 @@ export const SelectArtworkStep = (props: SelectArtworkStepProps): JSX.Element =>
       >
         <ArtworkListDottedLine />
         <ArtworksList
-          artworks={artworks}
+          artworks={shuffleArray(artworks)}
           onArtworkSelected={handleArtworkSelected}
         />
       </StepTitleCard>
     </StepRoot>
   );
 };
+
+function shuffleArray<T>(array: T[]) {
+  const newArray = _.cloneDeep(array);
+  for (let i = newArray.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    const temp = newArray[i];
+    newArray[i] = newArray[j];
+    newArray[j] = temp;
+  }
+  return newArray;
+}
 
 export default SelectArtworkStep;
