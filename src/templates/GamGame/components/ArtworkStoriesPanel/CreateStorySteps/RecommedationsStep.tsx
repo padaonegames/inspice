@@ -29,6 +29,8 @@ export const RecommendationsByEmotionsScreen = (): JSX.Element => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const { t } = useTranslation('gamGame');
+
   // extract activity Id from current location
   const startPos = '/gam-game/consumer/visit/'.length;
   const text = location.pathname.slice(startPos);
@@ -72,7 +74,7 @@ export const RecommendationsByEmotionsScreen = (): JSX.Element => {
   const [fetchRecommendationsRequest] = useAsyncRequest(fetchRecommendations, [location]);
 
   if (!(fetchRecommendationsRequest.kind === 'success')) {
-    return <LoadingOverlay message='Fetching recommendations' />;
+    return <LoadingOverlay message={t('fetchingRecommendations')} />;
   }
 
   return (
