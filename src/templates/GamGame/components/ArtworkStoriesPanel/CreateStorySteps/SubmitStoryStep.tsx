@@ -70,6 +70,7 @@ export const SubmitStoryStep = (props: SubmitStoryStepProps): JSX.Element => {
       >
         <ArtworkListDottedLine />
         <ShortTextInputCard
+          width={1}
           promptText={t('writeTitleForYourStory')}
           placeholder={`${t('yourStorysTitleHere')}...`}
           value={title}

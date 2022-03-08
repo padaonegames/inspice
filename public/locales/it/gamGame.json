@@ -53,5 +53,6 @@
   "areYouSureYouWantToGoBackToArtworkSelectionScreen": "Sei sicuro di voler tornare alla schermata di selezione delle opere d'arte? I tuoi progressi in questa parte della storia andranno persi.",
   "writeYourStoryTextHere": "Scrivi qui il testo della tua storia",
   "submittingStory": "Invio della storia",
-  "thereWasProblemWhenFetchingArtworkStories": "C'è stato un problema durante il recupero delle storie di questa opera d'arte."
+  "thereWasProblemWhenFetchingArtworkStories": "C'è stato un problema durante il recupero delle storie di questa opera d'arte.",
+  "enterNewTag": "Inserisci un nuovo tag"
 }
