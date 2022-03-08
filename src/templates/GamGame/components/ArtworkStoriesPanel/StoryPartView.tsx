@@ -3,6 +3,7 @@ import ContainerCard from '../../../../components/Forms/Cards/ContainerCard';
 import { GamGameStoryPart } from '../../../../services/gamGameActivity.model';
 import { ArtworkData } from '../../../../services/artwork.model';
 import { ArtworkAuthor, ArtworkDescription, ArtworkListDottedLine, ArtworkTitle, StoryDataContainer, StoryDisplayActionButton, StoryDisplayHeaderRow, StoryDisplayMainInfoPanel, StoryDisplayQuitIcon, StoryDisplaySelectionPanel, StoryDisplayUpperPanel } from '../generalStyles';
+import { useTranslation } from 'react-i18next';
 
 export interface StoryPartViewProps {
   /** Story part to be rendered */
@@ -24,6 +25,8 @@ export const StoryPartView = (props: StoryPartViewProps): JSX.Element => {
     onQuit
   } = props;
 
+  const { t } = useTranslation('gamGame');
+
   return (
     <ContainerCard upperDecorator>
       <StoryDisplaySelectionPanel>
@@ -33,7 +36,7 @@ export const StoryPartView = (props: StoryPartViewProps): JSX.Element => {
             onClick={onNextClicked}
             enabled
           >
-            NEXT
+            {t('next')}
           </StoryDisplayActionButton>
         </StoryDisplayHeaderRow>
 
@@ -53,7 +56,7 @@ export const StoryPartView = (props: StoryPartViewProps): JSX.Element => {
 
           <ArtworkListDottedLine />
           <ArtworkDescription>
-            <b>{storyPart.multimediaData.textTemplate}...</b> {storyPart.multimediaData.text}
+            <b>{t(storyPart.multimediaData.textTemplate)}...</b> {storyPart.multimediaData.text}
           </ArtworkDescription>
         </StoryDataContainer>
         <ArtworkDecorationPanel

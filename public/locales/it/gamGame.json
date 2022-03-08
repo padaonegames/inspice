@@ -54,5 +54,6 @@
   "writeYourStoryTextHere": "Scrivi qui il testo della tua storia",
   "submittingStory": "Invio della storia",
   "thereWasProblemWhenFetchingArtworkStories": "C'è stato un problema durante il recupero delle storie di questa opera d'arte.",
-  "enterNewTag": "Inserisci un nuovo tag"
+  "enterNewTag": "Inserisci un nuovo tag",
+  "fetchingRecommendations": "Trovare le raccomandazioni"
 }
