@@ -121,6 +121,11 @@ export const CreateStoryPart = (props: CreateStoryPartProps): JSX.Element => {
     });
   };
 
+  const handleSelectTemplate = (newTemplate: typeof templates[number]) => {
+    setSelectedTemplate(newTemplate);
+    setText('');
+  };
+
   return (
     <ContainerCard upperDecorator>
       <StoryDisplaySelectionPanel>
@@ -150,7 +155,7 @@ export const CreateStoryPart = (props: CreateStoryPartProps): JSX.Element => {
             {templates.map(elem =>
               <TemplateSelector
                 enabled={elem === selectedTemplate}
-                onClick={() => setSelectedTemplate(elem)}
+                onClick={() => handleSelectTemplate(elem)}
               >
                 {t(elem)}...
               </TemplateSelector>

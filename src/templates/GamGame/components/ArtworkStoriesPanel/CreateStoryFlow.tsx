@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { createSearchParams, useNavigate } from "react-router-dom";
 import { GamGameStoryPart } from "../../../../services/gamGameActivity.model";
 import { GamGameActivityContext } from "../../UserPerspective/Screen";
 import ContinueOrSubmitStep from "./CreateStorySteps/ContinueOrSubmitStep";
@@ -9,7 +9,7 @@ import RecommendationsStep from "./CreateStorySteps/RecommedationsStep";
 import SelectArtworkStep from "./CreateStorySteps/SelectArtworkStep";
 import SubmitStoryStep from "./CreateStorySteps/SubmitStoryStep";
 
-type CreateStoryStatus = 'intro' | 'select-artwork' | 'create-story-part' | 'continue-or-submit' | 'recommend-artworks' | 'submit';
+type CreateStoryStatus = 'intro' | 'select-artwork' | 'create-story-part' | 'continue-or-submit' | 'submit';
 
 export const CreateStoryFlow = (): JSX.Element => {
 
@@ -64,15 +64,13 @@ export const CreateStoryFlow = (): JSX.Element => {
 
   const handleStorySubmitted = () => {
     console.log("story submitted")
-    setStatus('recommend-artworks');
-  };
-
-  const handleEndRecommendations = () => {
-    navigate(`/gam-game/consumer/visit/${activity._id}/home`);
-  };
-
-  const handleRecommendedArtworkSelected = (artworkId: string) => {
-    navigate(`/gam-game/consumer/visit/${activity._id}/collection/${artworkId}/detail`);
+    navigate({
+      pathname: `/gam-game/consumer/visit/${activity._id}/recommendations`,
+      search: `?${createSearchParams([
+        ['relation', 'similar'],
+        ['artworksIncluded', JSON.stringify(storyParts.map(part => part.artworkId))]
+      ])}`
+    });
   };
 
   if (status === 'intro') {
@@ -116,17 +114,6 @@ export const CreateStoryFlow = (): JSX.Element => {
         activityId={activity._id}
         storyParts={storyParts}
         onStorySubmitted={handleStorySubmitted}
-      />
-    );
-  }
-
-  if (status === 'recommend-artworks') {
-    return (
-      <RecommendationsStep
-        storyParts={storyParts}
-        artworks={artworks}
-        onEndRecommendations={handleEndRecommendations}
-        onArtworkSelected={handleRecommendedArtworkSelected}
       />
     );
   }

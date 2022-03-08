@@ -25,6 +25,7 @@ import CreateStoryFlow from '../components/ArtworkStoriesPanel/CreateStoryFlow';
 import GuardedRoute from '../../../auth/GuardedRoute';
 import StoryViewStep from './Steps/StoryViewStep';
 import { useTranslation } from 'react-i18next';
+import RecommendationsStep, { RecommendationsByEmotionsScreen } from '../components/ArtworkStoriesPanel/CreateStorySteps/RecommedationsStep';
 
 const Root = styled.div`
   display: flex;
@@ -195,6 +196,7 @@ const GamGameUserFlow = ({ activityDefinition, artworks, artworkCount }: GamGame
             <Route path='my-stories' element={<GuardedRoute />}>
               <Route index element={<MyStoriesStep />} />
             </Route>
+            <Route path='recommendations' element={<RecommendationsByEmotionsScreen />} />
             <Route path='' element={<Navigate replace to='home' />} />
           </Route>
         </Routes>
