@@ -34,30 +34,21 @@ export class GamArtworksService {
     return getApiResult<{ value: string, count: number }[]>(url, opts);
   };
 
-  public async fetchRecommendationsByEmotion(artworkId: string): Promise<ApiResult<{ artworks: ArtworkData[], count: number }>> {
-    const url = 'http://130.192.212.225/fuseki/Test_SPICE_DEGARI_Reasoner/query';
-    const opts: AxiosRequestConfig = {
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Access-Control-Allow-Origin': '*',
-        'origin': 'x-requested-with',
-        'Access-Control-Allow-Headers': 'POST, GET, PUT, DELETE, OPTIONS, HEAD, Authorization, Origin, Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, Access-Control-Allow-Origin',
-      },
-    };
-    let params = new URLSearchParams();
-    params.append('query', retrieveArtworksWithAtLeastAnEmotionInCommon('spiceartefact' + artworkId));
-    const ids = await getRecommendationsResultRDF(url, opts, params);
+  /**
+   * @param relation What sort of relationship you want to query for between our artwork and the rest
+   * @param artworkId Artwork for which we want to query similar/ opposite items
+   * @returns 
+   */
+  public async fetchRecommendationsByEmotion(relation: 'opposite' | 'similar', artworkId: string): Promise<ApiResult<ArtworkData[]>> {
+    const url = `${this.apiUrl}/gam-artwork/${relation === 'opposite' ? 'opposite-emotions' : 'similar-emotions'}`;
 
-    if (ids.kind === 'ok') {
-      return this.fetchArtworks({
-        filter: {
-          ids: ids.data
-        }
-      });
-    }
-    else {
-      return { kind: 'unhandled-error', error: new Error('test') };
-    }
+    const opts: AxiosRequestConfig = {
+      params: {
+        artworkId: artworkId
+      }
+    };
+
+    return getApiResult<ArtworkData[]>(url, opts);
   };
 
   public async fetchAvailableArtworksWithEmotions(): Promise<ApiResult<string[]>> {
