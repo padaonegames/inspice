@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { Plus } from "styled-icons/bootstrap";
+import { Cross } from '@styled-icons/entypo/Cross';
 import { AlertCircleOutline, CloseOutline } from "styled-icons/evaicons-outline";
 
 export const PromptText = styled.div`
@@ -112,7 +113,14 @@ export const SelectFieldTypeDropdownButton = styled.span`
   position: relative;
 
   height: 2.5em;
-  width: 45%;
+
+  @media (max-width: 768px) {
+    width: 100%;
+  }
+
+  @media (min-width: 768px) {
+    width: 45%;
+  }
 
   background-color: transparent;
   border-radius: 5px;
@@ -410,7 +418,22 @@ export const RemoveTagIcon = styled(CloseOutline)`
   cursor: pointer;
 
   &:hover {
-    transform: scale(1.1);
+    background-color: #f8f9fa;
+  }
+`;
+
+export const RemoveOptionIcon = styled(Cross)`
+  height: 1.5em;
+  width: 1.5em;
+  padding: 0.1em;
+  color: ${props => props.theme.textColor};
+  cursor: pointer;
+  margin: auto;
+  border-radius: 50%;
+  color: #696d72;
+
+  &:hover {
+    background-color: #f8f9fa;
   }
 `;
 
@@ -466,8 +489,9 @@ export const CheckboxList = styled.div`
 `;
 
 export const CheckboxOption = styled.div`
-  margin-top: 2px;
-  margin-left: 5px;
+  margin-top: 0.1em;
+  margin-left: 0.3em;
+  margin-right: 0.3em;
   border-top: none;
   font-size: 0.9em;
   font-weight: 200;
@@ -475,4 +499,7 @@ export const CheckboxOption = styled.div`
   color: ${props => props.theme.textColor};
   line-height: 135%;
   width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-content: center;
 `;

@@ -1,3 +1,4 @@
+import { EditableFieldProps, ShortTextFieldDefinition } from "../../../services/multistageFormActivity.model";
 import {
   Root,
   CardPanel,
@@ -80,5 +81,30 @@ export const ShortTextInputCard = (props: ShortTextInputCardProps): JSX.Element 
     </Root>
   );
 };
+
+export interface EditableShortTextContentProps extends EditableFieldProps<ShortTextFieldDefinition> {
+}
+
+export const EditableShortTextContent = (props: EditableShortTextContentProps): JSX.Element => {
+
+  const {
+    fieldDefinition,
+    onDefinitionChanged
+  } = props;
+
+  return (
+    <Root>
+      <InputText
+        width='95%'
+        placeholder='Placeholder...'
+        value={fieldDefinition.placeholder || ''}
+        onChange={event => {
+          if (onDefinitionChanged) onDefinitionChanged({ ...fieldDefinition, placeholder: event.target.value });
+        }}
+      />
+    </Root>
+  );
+};
+
 
 export default ShortTextInputCard;

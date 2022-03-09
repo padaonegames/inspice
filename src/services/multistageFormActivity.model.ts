@@ -83,7 +83,7 @@ export interface EditableFieldProps<T extends FieldDefinitionBase> {
   /** Definition to be used to render the stateless editable field component (only the exclusive part of the definition, prompt text and type are edited elsewhere) */
   fieldDefinition: Omit<T, 'type' | 'promptText'>;
   /** Callback to notify parent component of a change whithin the current definition */
-  onDefinitionChanged?: (definition: T) => void;
+  onDefinitionChanged?: (definition: Omit<T, 'type' | 'promptText'>) => void;
 }
 
 export interface ShortTextFieldDefinition extends FieldDefinitionBase {

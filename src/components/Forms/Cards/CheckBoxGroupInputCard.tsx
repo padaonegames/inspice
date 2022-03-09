@@ -1,4 +1,6 @@
+import { CheckboxGroupFieldDefinition, EditableFieldProps } from "../../../services/multistageFormActivity.model";
 import CheckBoxInput from "../CheckBoxInput";
+import EditableCheckBoxInput from "../EditableCheckBoxInput";
 import {
   Root,
   CardPanel,
@@ -63,5 +65,69 @@ export const CheckBoxGroupInputCard = (props: CheckBoxGroupInputCardProps): JSX.
     </Root>
   );
 };
+
+export interface EditableCheckBoxGroupCardContentProps extends EditableFieldProps<CheckboxGroupFieldDefinition> {
+  /** text to display for the add new option label. */
+  addNewOptionLabel: string;
+}
+
+export const EditableCheckBoxGroupCardContent = (props: EditableCheckBoxGroupCardContentProps): JSX.Element => {
+
+  const {
+    fieldDefinition,
+    addNewOptionLabel,
+    onDefinitionChanged
+  } = props;
+
+  const {
+    fields,
+  } = fieldDefinition;
+
+  const handleAddOption = () => {
+    if (!onDefinitionChanged) return;
+    onDefinitionChanged({
+      ...fieldDefinition,
+      fields: [...fieldDefinition.fields, '']
+    })
+  };
+
+  const handleRemoveOption = (index: number) => {
+    if (!onDefinitionChanged) return;
+    onDefinitionChanged({
+      ...fieldDefinition,
+      fields: fieldDefinition.fields.filter((_, i) => i !== index)
+    })
+  };
+
+  return (
+    <>
+      <CheckboxList>
+        {fields.map((elem, i) => (
+          <CheckboxOption key={elem}>
+            <EditableCheckBoxInput
+              labelText={elem}
+              style='checkbox'
+              boxSize='15px'
+              onObjectRemoved={() => handleRemoveOption(i)}
+            />
+          </CheckboxOption>
+        ))}
+        <CheckboxOption
+          onClick={handleAddOption}
+          key='addNew'
+        >
+          <EditableCheckBoxInput
+            labelText=''
+            labelTextPlaceholder={addNewOptionLabel}
+            style='checkbox'
+            boxSize='15px'
+            enabled={false}
+          />
+        </CheckboxOption>
+      </CheckboxList>
+    </>
+  );
+};
+
 
 export default CheckBoxGroupInputCard;
