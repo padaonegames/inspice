@@ -1,4 +1,4 @@
-# Docker para crear la imagen de la aplicación web.
+# Docker para crear la imagen de la aplicación web y la documentación.
 #
 # Se utiliza un Dockerfile multietapa. La imagen final tiene un
 # apache básico con los ficheros estáticos, la regla de reescritura
@@ -55,6 +55,10 @@ ARG REACT_APP_DATASET_UUID
 ARG REACT_APP_SERVER_API_URL
 RUN npm run build
 # El resultado se queda en ./build/
+#
+# Hacemos la build de la documentación
+RUN npm run build-storybook
+# El resultado se queda en ./storybook-static
 
 ###################################################
 #
@@ -81,6 +85,8 @@ RUN { \
 COPY --from=builder-frontend /app/build/favicon.ico /app/build/logo*.png /app/build/robots.txt /app/build/.htaccess /app/build/index.html /usr/local/apache2/htdocs/
 COPY --from=builder-frontend /app/build/locales /usr/local/apache2/htdocs/locales
 COPY --from=builder-frontend /app/build/static /usr/local/apache2/htdocs/static
+# Documentación
+COPY --from=builder-frontend /app/build/storybook-static /usr/local/apache2/htdocs/doc
 
 # Activamos la redirección para el directorio de la
 # aplicación, sacado del .htaccess
