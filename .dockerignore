@@ -7,6 +7,7 @@
 # proyecto y no tiene sentido para la imagen.
 .git
 
+
 # El fichero de jenkins no se necesita (aunque tampoco ocupa mucho)
 Jenkinsfile
 
@@ -21,3 +22,4 @@ Jenkinsfile
 
 # Otras cosas, ignoradas en git que tampoco querremos enviar.
 build
+storybook-static
