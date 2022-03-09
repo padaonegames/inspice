@@ -87,7 +87,7 @@ COPY --from=builder-frontend /app/build/favicon.ico /app/build/logo*.png /app/bu
 COPY --from=builder-frontend /app/build/locales /usr/local/apache2/htdocs/locales
 COPY --from=builder-frontend /app/build/static /usr/local/apache2/htdocs/static
 # Documentación
-COPY --from=builder-frontend /app/build/storybook-static /usr/local/apache2/htdocs/doc
+COPY --from=builder-frontend /app/storybook-static /usr/local/apache2/htdocs/doc
 
 # Activamos la redirección para el directorio de la
 # aplicación, sacado del .htaccess
