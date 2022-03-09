@@ -45,7 +45,7 @@ COPY ./package*.json ./
 RUN npm install
 # Copiamos todo lo demás y hacemos la build de verdad.
 COPY ./tsconfig.json ./
-COPY ./.storybook ./
+COPY ./.storybook .storybook
 COPY ./public public
 COPY ./src src
 # Configuración de la clave
