@@ -45,8 +45,9 @@ COPY ./package*.json ./
 RUN npm install
 # Copiamos todo lo demás y hacemos la build de verdad.
 COPY ./tsconfig.json ./
-COPY ./src src
+COPY ./.storybook ./
 COPY ./public public
+COPY ./src src
 # Configuración de la clave
 ARG REACT_APP_API_KEY
 # Configuración del id del dataset
