@@ -199,7 +199,7 @@ export const DateContainer = styled.div`
 `;
 
 interface CardPanelProps {
-  /* True if user tried to submit the form without filling a required field */
+  /** True if user tried to submit the form without filling a required field */
   requiredAlert?: boolean;
 }
 export const CardPanel = styled.div<CardPanelProps>`
@@ -207,6 +207,9 @@ export const CardPanel = styled.div<CardPanelProps>`
   background-color: ${props => props.theme.cardBackground};
   ${props => !props.requiredAlert && 'border: 1px solid #dadce0;'}
   ${props => props.requiredAlert && 'border: 1px solid #c44c49;'}
+  &:focus-within {
+    border-left: 6px solid #c44c49;
+  }
   border-radius: 8px;
   width: 100%;
   word-wrap: break-word;

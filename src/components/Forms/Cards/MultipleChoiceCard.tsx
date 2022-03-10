@@ -109,7 +109,19 @@ export const EditableMultipleChoiceCardContent = (props: EditableMultipleChoiceC
     if (!onDefinitionChanged) return;
     onDefinitionChanged({
       ...fieldDefinition,
-      answers: [...fieldDefinition.answers, '']
+      answers: [...fieldDefinition.answers, `Option ${fieldDefinition.answers.length + 1}`]
+    })
+  };
+
+  const handleEditOption = (index: number, value: string) => {
+    if (!onDefinitionChanged) return;
+    onDefinitionChanged({
+      ...fieldDefinition,
+      answers: [
+        ...fieldDefinition.answers.slice(0, index),
+        value,
+        ...fieldDefinition.answers.slice(index + 1)
+      ]
     })
   };
 
@@ -125,20 +137,23 @@ export const EditableMultipleChoiceCardContent = (props: EditableMultipleChoiceC
     <>
       <CheckboxList>
         {answers.map((elem, i) => (
-          <CheckboxOption key={elem}>
+          <CheckboxOption key={`checkBoxOption${i}`}>
             <EditableCheckBoxInput
+              key={`editableCheckBoxInput${i}`}
               labelText={elem}
               style='radio'
               boxSize='15px'
               onObjectRemoved={() => handleRemoveOption(i)}
+              onLabelTextChanged={(value) => handleEditOption(i, value)}
             />
           </CheckboxOption>
         ))}
         <CheckboxOption
           onClick={handleAddOption}
-          key='addNew'
+          key='checkBoxOptionAddNew'
         >
           <EditableCheckBoxInput
+            key='editableCheckBoxInputAddNew'
             labelText=''
             labelTextPlaceholder={addNewOptionLabel}
             style='radio'

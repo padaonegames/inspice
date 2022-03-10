@@ -168,6 +168,8 @@ export interface EditableFieldCardProps {
   onFieldDefinitionChanged?: (value: FieldDefinition) => void;
   /** Callback notifying parent component of user wanting to delete this card */
   onCardDeleted?: () => void;
+  /** Callback notifying parent component of card getting the focus */
+  onCardFocused?: () => void;
 }
 
 const fieldMappings: Map<FieldType, { component: JSX.Element; name: string; }> = new Map();
@@ -193,7 +195,8 @@ export const EditableFieldCard = (props: EditableFieldCardProps): JSX.Element =>
     fieldDefinition,
     onFieldTypeChanged,
     onFieldDefinitionChanged,
-    onCardDeleted
+    onCardDeleted,
+    onCardFocused
   } = props;
 
   const promptAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -225,7 +228,10 @@ export const EditableFieldCard = (props: EditableFieldCardProps): JSX.Element =>
 
   return (
     <Root>
-      <CardPanel requiredAlert={requiredAlert}>
+      <CardPanel
+        onClick={onCardFocused}
+        requiredAlert={requiredAlert}
+      >
         <HeaderRow>
           <InputArea
             dimBackground

@@ -41,10 +41,9 @@ export interface MultistageFormStage {
   /** General text that will appear on top of the stage to contetxualize the page */
   description?: string;
   /** 
-   * Mapping between fields to be included in the final user response JSON and form types to display
-   * For instance, you could write 'name': { 'type': 'short-string', 'prompt' : 'Your name here:' }
+   * Forms defined within this particular stage
    */
-  forms: Map<string, string>;
+  forms: FieldDefinition[];
 }
 
 export type FieldDefinition =

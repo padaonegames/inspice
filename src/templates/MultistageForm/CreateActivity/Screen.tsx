@@ -9,9 +9,9 @@ import { useAsyncRequest } from '../../../services/useAsyncRequest';
 
 // steps
 import { State, Step, Steps, StepsConfig } from '../../../components/Navigation/Steps';
-import { useLocation } from 'react-router-dom';
 import ActivityInstanceBasicInfoStep from '../../GeneralSteps/ActivityInstanceBasicInfoStep';
 import { CompletedMultistageFormActivityDefinition, InProgressMultistageFormActivityDefinition, MultistageFormStage } from '../../../services/multistageFormActivity.model';
+import DefineMultistageFormStep from './Steps/DefineMultistageFormStep';
 
 const Root = styled.div`
   display: flex;
@@ -21,6 +21,50 @@ const Root = styled.div`
 //-------------------------------------------------------
 //                 State Definition
 //-------------------------------------------------------
+
+/**
+ * Screen to encapsulate the creation flow of a Multistage Form activity.
+ * Component responsible for handling the information fetching and posting logic; actual
+ * rendering of this screen is delegated to the *CreateMultistageFormActivityScreenComponent* component.
+ */
+export const CreateMultistageFormActivityScreen = () => {
+
+  const [completedActivity, setCompletedActivity] = useState<CompletedMultistageFormActivityDefinition | undefined>(undefined);
+
+  const submitDefinition = async () => {
+    if (!completedActivity) return Promise.reject();
+    setCompletedActivity(undefined);
+    return Promise.reject();
+  };
+
+  const [submitDefinitionStatus] = useAsyncRequest(submitDefinition, [completedActivity]);
+
+  useEffect(() => {
+    if (submitDefinitionStatus.kind === 'success' /*&& submitDefinitionStatus.result.kind === 'ok'*/) {
+      window.alert('Your activity was successfully uploaded to the linked data hub.');
+    }
+  }, [submitDefinitionStatus]);
+
+
+  return (
+    <CreateMultistageFormActivityScreenComponent
+      initialActivityDefinition={undefined}
+    />
+  );
+}
+
+interface CreateMultistageFormActivityScreenComponentProps {
+  /** Initial state that this component will take as base */
+  initialActivityDefinition?: InProgressMultistageFormActivityDefinition | undefined;
+  /** callback to parent notifying of a change within the internal state of this component */
+  onActivityDefinitionChanged?: (value: InProgressMultistageFormActivityDefinition) => void;
+  /** callback to parent notifying of activity definition being submitted by the user.
+   * Submission does NOT take place within this component. Rather, the action is lifted to
+   * the parent so that rendering and communication with the services remain isolated.
+   */
+  onSubmitActivityDefinition?: (value: CompletedMultistageFormActivityDefinition) => void;
+}
+
 const sample_base: InProgressMultistageFormActivityDefinition = {
   activityType: 'Multistage Form',
   activityTitle: undefined,
@@ -31,31 +75,36 @@ const sample_base: InProgressMultistageFormActivityDefinition = {
   formResponsesDatasetUuid: ''
 };
 
-const sample: State = {
-  ...sample_base
-};
-
 const isStageOneCompleted = (definition: State): boolean => {
   return definition['activityAuthor'] as string !== undefined && (definition['activityAuthor'] as string).length > 0 &&
     definition['activityTitle'] as string !== undefined && (definition['activityTitle'] as string).length > 0 &&
     definition['beginsOn'] as Date !== undefined &&
     definition['endsOn'] as Date !== undefined;
-}
+};
 
-/**
- * Screen to encapsulate the creation flow of a Multistage Form activity.
- */
-export const CreateMultistageFormActivityScreen = () => {
+export const CreateMultistageFormActivityScreenComponent = (props: CreateMultistageFormActivityScreenComponentProps): JSX.Element => {
 
-  const { state } = useLocation();
+  const {
+    initialActivityDefinition,
+    onActivityDefinitionChanged,
+    onSubmitActivityDefinition
+  } = props;
 
+  // Initialize internal component state using fields from the provided initialActivityDefinition, if any.
+  // Note here that we are adding the minimum necessary fields to have a valid transformation from State into InProgressMultistageFormActivityDefinition
+  // by incorporating the base content from sample_base.
   const [activityDefinition, setActivityDefinition] =
-    useState<State>(state ? { ...state } : sample);
-  const [submitActivity, setSubmitActivity] = useState<boolean>(false);
+    useState<State>(initialActivityDefinition ? { ...sample_base, ...initialActivityDefinition } : { ...sample_base });
 
-  const submitDefinition = async () => {
-    if (!submitActivity) return Promise.reject();
-    setSubmitActivity(false);
+  useEffect(() => {
+    if (!onActivityDefinitionChanged) return;
+    onActivityDefinitionChanged(activityDefinition as unknown as InProgressMultistageFormActivityDefinition);
+  }, [activityDefinition]);
+
+  const handleSubmitActivityDefinition = () => {
+    if (!onSubmitActivityDefinition) return;
+    if (!isStageOneCompleted(activityDefinition)) return;
+
     const def: CompletedMultistageFormActivityDefinition = {
       activityType: 'Multistage Form',
       activityAuthor: activityDefinition['activityAuthor'] as string,
@@ -68,17 +117,9 @@ export const CreateMultistageFormActivityScreen = () => {
       stages: activityDefinition['stages'] as MultistageFormStage[],
       formResponsesDatasetUuid: activityDefinition['responsesDatasetUuid'] as string
     };
-    return Promise.reject();
+
+    onSubmitActivityDefinition(def);
   };
-
-  const [submitDefinitionStatus] = useAsyncRequest(submitDefinition, [submitActivity]);
-
-  useEffect(() => {
-    if (submitDefinitionStatus.kind === 'success' /*&& submitDefinitionStatus.result.kind === 'ok'*/) {
-      window.alert('Your activity was successfully uploaded to the linked data hub.');
-    }
-  }, [submitDefinitionStatus]);
-
 
   const config: StepsConfig = {
     navigation: {
@@ -90,7 +131,7 @@ export const CreateMultistageFormActivityScreen = () => {
             { name: 'Basic Information'.toUpperCase(), completed: isStageOneCompleted(activityDefinition) },
             { name: 'Edit Stages'.toUpperCase(), completed: false },
           ]}
-          onSubmitActivity={() => setSubmitActivity(true)}
+          onSubmitActivity={handleSubmitActivityDefinition}
           finaItemCaption={'Submit Activity'.toUpperCase()}
         />
     }
@@ -104,7 +145,7 @@ export const CreateMultistageFormActivityScreen = () => {
         setGenState={setActivityDefinition}
       >
         <Step title='Basic Information' component={ActivityInstanceBasicInfoStep} />
-        <Step title='Edit Stages' component={ActivityInstanceBasicInfoStep} />
+        <Step title='Edit Stages' component={DefineMultistageFormStep} />
       </Steps>
     </Root>
   );
