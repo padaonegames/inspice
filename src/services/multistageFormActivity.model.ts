@@ -41,10 +41,9 @@ export interface MultistageFormStage {
   /** General text that will appear on top of the stage to contetxualize the page */
   description?: string;
   /** 
-   * Mapping between fields to be included in the final user response JSON and form types to display
-   * For instance, you could write 'name': { 'type': 'short-string', 'prompt' : 'Your name here:' }
+   * Forms defined within this particular stage
    */
-  forms: Map<string, string>;
+  forms: FieldDefinition[];
 }
 
 export type FieldDefinition =
@@ -83,7 +82,7 @@ export interface EditableFieldProps<T extends FieldDefinitionBase> {
   /** Definition to be used to render the stateless editable field component (only the exclusive part of the definition, prompt text and type are edited elsewhere) */
   fieldDefinition: Omit<T, 'type' | 'promptText'>;
   /** Callback to notify parent component of a change whithin the current definition */
-  onDefinitionChanged?: (definition: T) => void;
+  onDefinitionChanged?: (definition: Omit<T, 'type' | 'promptText'>) => void;
 }
 
 export interface ShortTextFieldDefinition extends FieldDefinitionBase {

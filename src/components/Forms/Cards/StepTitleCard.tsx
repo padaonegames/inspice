@@ -27,6 +27,10 @@ export const CardPanel = styled.div<CardPanelProps>`
   display: flex;
   flex-direction: column;
   position: relative;
+
+  &:focus-within {
+    border-left: 6px solid #c44c49;
+  }
 `;
 
 const HeaderRow = styled.div`
@@ -110,6 +114,8 @@ export interface EditableStepTitleCardProps {
   requiredAlert?: boolean;
   /** alert message to be displayed when required alert is set to true */
   alertMessage?: string;
+  /** Callback notifying parent component of card getting the focus */
+  onCardFocused?: () => void;
 }
 
 /**
@@ -124,6 +130,7 @@ export const EditableStepTitleCard = (props: EditableStepTitleCardProps): JSX.El
     descriptionPlaceholder = 'Enter a description for this card...',
     onTitleChanged,
     onDescriptionChanged,
+    onCardFocused,
     requiredAlert,
     alertMessage
   } = props;
@@ -131,7 +138,10 @@ export const EditableStepTitleCard = (props: EditableStepTitleCardProps): JSX.El
   return (
     <Root>
       <TitleColor />
-      <CardPanel requiredAlert={requiredAlert}>
+      <CardPanel
+        requiredAlert={requiredAlert}
+        onClick={onCardFocused}
+      >
         <HeaderRow>
           <EditableTitleText
             placeholder={titlePlaceholder}

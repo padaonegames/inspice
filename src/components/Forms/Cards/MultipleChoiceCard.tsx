@@ -9,7 +9,7 @@ import {
   RequiredQuestionSpan,
   RequiredAlertIcon,
   CheckboxList,
-  CheckboxOption
+  CheckboxOption,
 } from "./cardStyles";
 
 export interface MultipleChoiceCardProps extends MultipleChoiceFieldDefinition {
@@ -87,23 +87,16 @@ export const MultipleChoiceCard = (props: MultipleChoiceCardProps): JSX.Element 
 };
 
 
-export interface EditableMultipleChoiceCardContentProps extends MultipleChoiceFieldDefinition {
-  /** answers to choose from, to be edited by the user */
-  answers: string[];
-  /** Maximum number of allowed answers */
-  maxAnswers?: number;
-  /** callback to parent specifying that an answer text has been changed */
-  onAnswerChanged?: (index: number, value: string) => void;
-  /** callback to parent specifying that maximum number of answers has been changed */
-  onMaxAnswersChanged?: (value: number) => void;
-  /** Enforce typing */
-  type: 'multiple-choice';
+export interface EditableMultipleChoiceCardContentProps extends EditableFieldProps<MultipleChoiceFieldDefinition> {
+  /** text to display for the add new option label. */
+  addNewOptionLabel: string;
 }
 
-export const EditableMultipleChoiceCardContent = (props: EditableFieldProps<MultipleChoiceFieldDefinition>): JSX.Element => {
+export const EditableMultipleChoiceCardContent = (props: EditableMultipleChoiceCardContentProps): JSX.Element => {
 
   const {
     fieldDefinition,
+    addNewOptionLabel,
     onDefinitionChanged
   } = props;
 
@@ -112,18 +105,62 @@ export const EditableMultipleChoiceCardContent = (props: EditableFieldProps<Mult
     maxAnswers
   } = fieldDefinition;
 
+  const handleAddOption = () => {
+    if (!onDefinitionChanged) return;
+    onDefinitionChanged({
+      ...fieldDefinition,
+      answers: [...fieldDefinition.answers, `Option ${fieldDefinition.answers.length + 1}`]
+    })
+  };
+
+  const handleEditOption = (index: number, value: string) => {
+    if (!onDefinitionChanged) return;
+    onDefinitionChanged({
+      ...fieldDefinition,
+      answers: [
+        ...fieldDefinition.answers.slice(0, index),
+        value,
+        ...fieldDefinition.answers.slice(index + 1)
+      ]
+    })
+  };
+
+  const handleRemoveOption = (index: number) => {
+    if (!onDefinitionChanged) return;
+    onDefinitionChanged({
+      ...fieldDefinition,
+      answers: fieldDefinition.answers.filter((_, i) => i !== index)
+    })
+  };
+
   return (
     <>
       <CheckboxList>
         {answers.map((elem, i) => (
-          <CheckboxOption key={elem}>
+          <CheckboxOption key={`checkBoxOption${i}`}>
             <EditableCheckBoxInput
+              key={`editableCheckBoxInput${i}`}
               labelText={elem}
               style='radio'
               boxSize='15px'
+              onObjectRemoved={() => handleRemoveOption(i)}
+              onLabelTextChanged={(value) => handleEditOption(i, value)}
             />
           </CheckboxOption>
         ))}
+        <CheckboxOption
+          onClick={handleAddOption}
+          key='checkBoxOptionAddNew'
+        >
+          <EditableCheckBoxInput
+            key='editableCheckBoxInputAddNew'
+            labelText=''
+            labelTextPlaceholder={addNewOptionLabel}
+            style='radio'
+            boxSize='15px'
+            enabled={false}
+          />
+        </CheckboxOption>
       </CheckboxList>
     </>
   );

@@ -22,13 +22,22 @@ import { Tags } from "@styled-icons/fa-solid/Tags";
 import { Delete } from '@styled-icons/fluentui-system-regular/Delete';
 import CheckBoxInput from "../CheckBoxInput";
 import { EditableMultipleChoiceCardContent } from "./MultipleChoiceCard";
+import { EditableCheckBoxGroupCardContent } from "./CheckBoxGroupInputCard";
+import { EditableShortTextContent } from "./ShortTextInputCard";
 
 const HeaderRow = styled.div`
   display: flex;
-  flex-direction: row;
   padding: 5px 0;
   justify-content: space-between;
   margin-bottom: 0.25em;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+  }
 `;
 
 const BottomRow = styled.div`
@@ -145,14 +154,6 @@ const HorizontalLine = styled.div`
 `;
 
 export interface EditableFieldCardProps {
-  /** Prompt to serve as a context for the user filling in the field (what they are supposed to do and so on). */
-  promptText: string;
-  /** callback notifying of prompt text being changed by the user */
-  onPromptTextChanged?: (value: string) => void;
-  /** Whether contained field should be required in the final form */
-  required?: boolean;
-  /** Callback notifying of required status being changed by the user */
-  onRequiredChanged?: (value: boolean) => void;
   /** Placeholder for this card's prompt text */
   promptTextPlaceholder?: string;
   /** whether to modify the appearance of this card to reflect that the user tried to submit the form without entering a value for this field */
@@ -160,13 +161,15 @@ export interface EditableFieldCardProps {
   /** alert message to be displayed when required alert is set to true */
   alertMessage?: string;
   /** What type of question/ field this card is representing */
-  fieldType: FieldType;
+  fieldDefinition: FieldDefinition;
   /** Callback notifying of field type changing to a new format */
   onFieldTypeChanged?: (value: FieldType) => void;
   /** Callback notifying parent of field changing (including data payload) */
   onFieldDefinitionChanged?: (value: FieldDefinition) => void;
   /** Callback notifying parent component of user wanting to delete this card */
   onCardDeleted?: () => void;
+  /** Callback notifying parent component of card getting the focus */
+  onCardFocused?: () => void;
 }
 
 const fieldMappings: Map<FieldType, { component: JSX.Element; name: string; }> = new Map();
@@ -186,17 +189,14 @@ fieldMappings.set('tags', { component: <TagsIcon />, name: 'Tag Cloud' });
 export const EditableFieldCard = (props: EditableFieldCardProps): JSX.Element => {
 
   const {
-    promptText,
-    onPromptTextChanged,
-    required,
-    onRequiredChanged,
     promptTextPlaceholder = 'Prompt',
     requiredAlert,
     alertMessage,
-    fieldType,
+    fieldDefinition,
     onFieldTypeChanged,
     onFieldDefinitionChanged,
-    onCardDeleted
+    onCardDeleted,
+    onCardFocused
   } = props;
 
   const promptAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -209,7 +209,7 @@ export const EditableFieldCard = (props: EditableFieldCardProps): JSX.Element =>
     promptAreaRef.current.style.height = '0px';
     const scrollHeight = promptAreaRef.current.scrollHeight;
     promptAreaRef.current.style.height = scrollHeight + 'px';
-  }, [promptText]);
+  }, [fieldDefinition.promptText]);
 
   const handleFieldTypeSelected = (value: FieldType) => {
     if (onFieldTypeChanged) {
@@ -217,9 +217,21 @@ export const EditableFieldCard = (props: EditableFieldCardProps): JSX.Element =>
     }
   };
 
+  const handleFieldDefinitionChanged = (value: Omit<FieldDefinition, 'type' | 'promptText'>) => {
+    if (onFieldDefinitionChanged) {
+      onFieldDefinitionChanged({
+        ...fieldDefinition,
+        ...value
+      })
+    }
+  };
+
   return (
     <Root>
-      <CardPanel requiredAlert={requiredAlert}>
+      <CardPanel
+        onClick={onCardFocused}
+        requiredAlert={requiredAlert}
+      >
         <HeaderRow>
           <InputArea
             dimBackground
@@ -228,13 +240,18 @@ export const EditableFieldCard = (props: EditableFieldCardProps): JSX.Element =>
             ref={promptAreaRef}
             placeholder={promptTextPlaceholder}
             maxLength={500}
-            value={promptText}
+            value={fieldDefinition.promptText}
             onChange={event => {
-              if (onPromptTextChanged) onPromptTextChanged(event.target.value);
+              if (onFieldDefinitionChanged) {
+                onFieldDefinitionChanged({
+                  ...fieldDefinition,
+                  promptText: event.target.value
+                });
+              }
             }}
           />
           <SelectFieldTypeDropdownButton onClick={() => setFieldTypeDropdownOpen(prev => !prev)}>
-            <MultipleChoiceIcon />{fieldMappings.get(fieldType)?.name ?? fieldType} <ExpandDropdownIcon />
+            <MultipleChoiceIcon />{fieldMappings.get(fieldDefinition.type)?.name ?? fieldDefinition.type} <ExpandDropdownIcon />
             {fieldTypeDropdownOpen &&
               <DropdownMenu>
                 {supportedFieldTypes.map(elem => (
@@ -246,20 +263,40 @@ export const EditableFieldCard = (props: EditableFieldCardProps): JSX.Element =>
               </DropdownMenu>}
           </SelectFieldTypeDropdownButton>
         </HeaderRow>
-        {fieldType === 'multiple-choice' && (
+        {fieldDefinition.type === 'short-text' && (
+          <EditableShortTextContent
+            fieldDefinition={fieldDefinition}
+          />
+        )}
+        {fieldDefinition.type === 'long-text' && (
+          <></>
+        )}
+        {fieldDefinition.type === 'multiple-choice' && (
           <EditableMultipleChoiceCardContent
-            fieldDefinition={{ answers: ['I think nothing in this list is very interesting', 'I think I have run out of ideas'] }}
+            addNewOptionLabel='Add new option'
+            fieldDefinition={fieldDefinition}
+            onDefinitionChanged={handleFieldDefinitionChanged}
+          />
+        )}
+        {fieldDefinition.type === 'checkbox' && (
+          <EditableCheckBoxGroupCardContent
+            addNewOptionLabel='Add new option'
+            fieldDefinition={fieldDefinition}
+            onDefinitionChanged={handleFieldDefinitionChanged}
           />
         )}
         <DottedLine />
         <BottomRow>
           <CheckBoxInput
             style='radio'
-            checked={required}
+            checked={fieldDefinition.required}
             labelText='Required'
             onCheckedChange={(checked) => {
-              if (onRequiredChanged) {
-                onRequiredChanged(checked)
+              if (onFieldDefinitionChanged) {
+                onFieldDefinitionChanged({
+                  ...fieldDefinition,
+                  required: checked
+                });
               }
             }}
           />
