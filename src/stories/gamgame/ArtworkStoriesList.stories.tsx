@@ -2,7 +2,7 @@ import { ComponentMeta, ComponentStory } from '@storybook/react/dist/ts3.9/clien
 
 import ArtworkStoriesList from '../../templates/GamGame/components/ArtworkStoriesPanel/ArtworkStoriesList';
 import { ArtworkData } from '../../services/artwork.model';
-import * as SampleImage from './../../assets/head_of_a_girl.jpg';
+import * as SampleImage from '../assets/head_of_a_girl.jpg';
 import {GamGameStoryDefinitionData, GamGameStoryPart, GamGameStoryPartMutimediaData} from '../../services/gamGameActivity.model'
 import {StoryPartEmoji, StoryPartTag} from "../../services/gamGameActivity.model";
 
