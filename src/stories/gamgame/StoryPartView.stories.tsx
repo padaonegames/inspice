@@ -1,6 +1,6 @@
 import { ComponentMeta, ComponentStory } from '@storybook/react/dist/ts3.9/client/preview/types-6-3';
 
-import ArtworkStoriesList from '../../templates/GamGame/components/ArtworkStoriesPanel/ArtworkStoriesList';
+import StoryPartView from '../../templates/GamGame/components/ArtworkStoriesPanel/StoryPartView';
 import { ArtworkData } from '../../services/artwork.model';
 import * as SampleImage from '../assets/head_of_a_girl.jpg';
 import {GamGameStoryDefinitionData, GamGameStoryPart, GamGameStoryPartMutimediaData} from '../../services/gamGameActivity.model'
@@ -8,8 +8,8 @@ import {StoryPartEmoji, StoryPartTag} from "../../services/gamGameActivity.model
 
 
 export default {
-  title: 'GAM Game/Artwork Stories List',
-  component: ArtworkStoriesList,
+  title: 'GAM Game/Story Part View',
+  component: StoryPartView,
   decorators: [
     (Story) => (
       <div style={{ margin: '3em' }}>
@@ -17,7 +17,7 @@ export default {
       </div>
     ),
   ],
-} as ComponentMeta<typeof ArtworkStoriesList>;
+} as ComponentMeta<typeof StoryPartView>;
 
 const emoji1: StoryPartEmoji={
   emoji: '🤩',
@@ -48,7 +48,7 @@ const tag2: StoryPartTag={
 const tags: StoryPartTag[] = [tag1, tag2];
 
 const storyPartMult: GamGameStoryPartMutimediaData = {
-  textTemplate: 'Plantilla',
+  textTemplate: 'plantilla',
   text: 'texto',
   emojis: emojis,
   tags: tags
@@ -56,19 +56,11 @@ const storyPartMult: GamGameStoryPartMutimediaData = {
 
 
 const storyPart: GamGameStoryPart={
-  artworkId: 'id obra',
+  artworkId: '1942',
   multimediaData: storyPartMult
 }
-const storyParts: GamGameStoryPart[] = [ storyPart,  storyPart];
 
-const storyDef : GamGameStoryDefinitionData = {
-  _id: 'id',
-  title: 'Título',
-  activityId: 'id actividad',
-  parts: storyParts
-}
 
-const storyDefs : GamGameStoryDefinitionData[] = [storyDef, storyDef];
 
 
 const sample: ArtworkData = {
@@ -81,14 +73,11 @@ const sample: ArtworkData = {
   location: 'IMMA Collection: On Loan'
 };
 
-const samples: ArtworkData[] = [sample, sample];
 
+const Template: ComponentStory<typeof StoryPartView> = (args) => <StoryPartView {...args} />;
 
-const Template: ComponentStory<typeof ArtworkStoriesList> = (args) => <ArtworkStoriesList {...args} />;
-
-export const list = Template.bind({});
-list.args = {
-  stories: storyDefs,
-  artworks: samples,
-  currentArtwork: sample
+export const stories = Template.bind({});
+stories.args = {
+  storyPart: storyPart,
+  artworkData: sample
 };
