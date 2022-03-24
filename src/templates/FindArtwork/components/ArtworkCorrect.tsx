@@ -77,8 +77,11 @@ const CardBackground = styled.div<CardBackgroundProps>`
 `;
 
 export interface ArtworkCorrectProps {
+  /** If the image is flipped it's shown, otherwise is hidden */
   flipped: boolean;
+  /** Image to be shown */
   image: string;
+  /** Name of the artwork shown */
   title: string;
 };
 

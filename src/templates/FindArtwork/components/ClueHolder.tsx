@@ -118,8 +118,10 @@ const InfoIconWrapper = styled.div`
 `;
 
 export interface ClueHolderProps {
+  /** Clues to help the user guessing the artwork. */
   clues: string[];
-  onClueOpened: (points: number) => void;
+  /** Callback to the parent component to notify if a clue was opened and which one. */
+  onClueOpened?: (points: number) => void;
 };
 
 /**
@@ -169,7 +171,9 @@ export const ClueHolder: React.FC<ClueHolderProps> = ({ clues, onClueOpened }) =
                 aux[i] = true;
                 return aux;
               });
-              onClueOpened(cluePrice);
+              if (onClueOpened !== undefined) {
+                onClueOpened(cluePrice);
+              }
             }}
           >
             <InfoIconClosed />

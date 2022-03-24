@@ -227,9 +227,13 @@ const DateSpan = styled.span`
 `;
 
 export interface ArtifactCardProps {
+  /** Data about the artifact showing. */
   artifactData: MncnArtifact;
+  /** Callback to the parent component to notify that the user has clicked over the card. */
   onOpenClicked?: () => void;
+  /** Callback to the parent component to notify that the user is going to edit the card. */
   onEditClicked?: () => void;
+  /** Callback to the parent component to notify that the user has deleted the card. */
   onDeleteClicked?: () => void;
 }
 

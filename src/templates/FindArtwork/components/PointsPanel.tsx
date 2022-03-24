@@ -34,6 +34,7 @@ const PointsCorner = styled.div`
 `;
 
 export interface PointsPanelProps {
+  /** Points to be given to the user after guessing an artwork. */
   points: number
 };
 

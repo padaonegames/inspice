@@ -86,8 +86,11 @@ const PrizeContainer = styled.div`
 `;
 
 export type Props = {
+  /** If the image is flipped it's shown, otherwise is hidden. */
   flipped: boolean;
+  /** List of prizes earned by the user. */
   prize: string[];
+  /** Artwork piece correctly gessed to earn the prizes.  */
   artworkData: ArtworkData;
 };
 

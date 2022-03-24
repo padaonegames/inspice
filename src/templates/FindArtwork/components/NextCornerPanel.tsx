@@ -38,7 +38,7 @@ const NextCorner = styled.div`
 `;
 
 interface NextPanelProps {
-  onNextClicked: () => void;
+  onNextClicked?: () => void;
 };
 
 const NextPanel: React.FC<NextPanelProps> = ({ onNextClicked }) => {

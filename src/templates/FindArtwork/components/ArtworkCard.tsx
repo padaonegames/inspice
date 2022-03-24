@@ -23,10 +23,14 @@ export type ArtworkCardStatus =
   | { status: 'right', prizes: string[] };
 
 export interface ArtworkCardProps {
+  /** Piece of artwork to be guessed. */
   artworkData: ArtworkData;
+  /** Indicates whether the card has been guessed correctly or not. */
   status: ArtworkCardStatus;
+  /** When flipped it is shown if the awnser was correct or not. */
   flipped: boolean;
-  onCardSelected: () => void;
+  /** Callback to the parent component to notify that the user has selected the card. */
+  onCardSelected?: () => void;
 };
 
 /**
