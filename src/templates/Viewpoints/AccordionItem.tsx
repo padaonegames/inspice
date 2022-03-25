@@ -38,7 +38,7 @@ const AccordionPanel = styled.div<AccordionPanelProps>`
   transition: height 0.2s ease-out;
 `;
 
-interface AccordionItemProps {
+export interface AccordionItemProps {
   artwork: Artwork;
   responses: Response[];
   defaultToggled?: boolean;

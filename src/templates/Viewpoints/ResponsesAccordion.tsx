@@ -7,6 +7,7 @@ const Root = styled.ul`
 `;
 
 interface ResponsesAccordionProps {
+  /** List of artworks with their corresponding resposes to the questons established. */
   responsesByArtwork: ArtworkResponses[];
 };
 
@@ -15,7 +16,7 @@ const ResponsesAccordion: React.FC<ResponsesAccordionProps> = ({ responsesByArtw
   return (
     <Root>
       {responsesByArtwork.map(resp => (
-        <AccordionItem 
+        <AccordionItem
           artwork={resp.artwork}
           responses={resp.responses}
         />
