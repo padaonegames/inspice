@@ -76,7 +76,7 @@ export interface StageButtonPanelProps {
    */
   enabled: boolean;
   /**
-   * Text to display beneath panel's icon.
+   * Text to display beneath the panel's icon.
    */
   panelText?: string;
   /**

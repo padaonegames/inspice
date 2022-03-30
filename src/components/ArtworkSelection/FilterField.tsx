@@ -90,17 +90,17 @@ const ExpandIcon = styled.span`
 `;
 
 export interface FilterFieldProps {
-  /** display name of the filter category */
+  /** Display name of the filter category. */
   filterField: string;
-  /** array of filter options for the given category */
+  /** Array of filter options for the given category. */
   filterOptions: string[];
-  /** array of counts for each of the options in `filterOptions` (how many of each there are) */
+  /** Array of numbers that are used in order as ids for the filters. */
   filterCounts: number[];
-  /** whether to render a bottom border (this is useful when displaying a sequence of filter categories) */
+  /** Whether to render a bottom border (this is useful when displaying a sequence of filter categories). */
   bottomBorder?: boolean;
   /** Maximum number of options to be shown to the user before expanding the list */
   maxOptionsShown?: number;
-  /** callback to the parent component specifying that a specific filter has been selected within this category */
+  /** Callback to the parent component specifying that a specific filter has been selected within this category */
   onFilterSelected: (filter: string) => void;
 };
 

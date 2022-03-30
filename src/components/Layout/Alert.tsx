@@ -27,7 +27,9 @@ const CloseBtn = styled.span`
 `;
 
 export interface AlertProps {
+  /** Callback to manage the action after closing the alert. */
   onClose?: () => void;
+  /** Defines the color of the alert (e.g. “blue”). */
   color?: string;
 };
 

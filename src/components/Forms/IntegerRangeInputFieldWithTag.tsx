@@ -44,13 +44,21 @@ const PanelContainer = styled.div`
 `;
 
 export interface IntegerRangeInputFieldWithTagProps {
+  /** Minimum value of the range. */
   min: number;
+  /** Maximum value of the range. */
   max: number;
+  /** Value for the size of the jumps when changing the range.  */
   step?: number;
+  /** Initial value for the minimum range. */
   initialMin?: number;
+  /** Initial value for the maximum range. */
   initialMax?: number;
+  /** Callback to inform the parent of the component that the minimum value has changed. */
   onMinValueChange: (min: number) => void;
+  /** Callback to inform the parent of the component that the maximum value has changed. */
   onMaxValueChange: (max: number) => void;
+  /** String used as label for the range.  */
   fieldText: string;
 };
 

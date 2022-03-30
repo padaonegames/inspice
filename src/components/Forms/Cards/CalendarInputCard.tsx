@@ -14,10 +14,17 @@ import {
 } from "./cardStyles";
 
 export interface CalendarInputCardProps {
+  /** Text rendered on top of the component as a 
+   * prompt for the user, indicating what date they should choose. 
+   */
   promptText: string;
+  /** Callback to notify the parent when the value of the input field has changed.*/
   onChange?: (date: Date | undefined) => void;
+  /** Callback to notify the parent when the enter key is pressed while the component is focused. */
   onEnterPress?: () => void;
+  /** Default date that will be shown on the loading page before the user inserts any date. */
   initialDate?: Date | undefined;
+  /** Whether this field is considered required within the overall form (used to display an asterisk). */
   required?: boolean;
   /* True if user tried to submit the form without filling a required field */
   requiredAlert?: boolean;

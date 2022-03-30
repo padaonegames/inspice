@@ -24,27 +24,34 @@ const ArtworkGrid = styled.div`
 `;
 
 export interface ArtworkSearchResultsProps {
-  /** List of artworks to be displayed by this component (content of current page) */
+  /** List of artworks adhering to the ArtworkData interface, each of them 
+   *  containing at least an artwork’s id, author, title, and image source.*/
   artworks: ArtworkData[];
-  /** List of artwork ids that the user has already selected */
+  /** List of artwork ids that the user has already selected. */
   selectedArtworks: string[];
-  /** currently displayed page */
+  /** Currently displayed page. */
   page?: number;
-  /** Total number of indexed pages to be displayed */
+  /** Total number of indexed pages to be displayed. */
   pageTotal?: number;
-  /** Callback to the parent of this panel indicating that an artwork has been selected (Added to selection) */
+  /** Callback to the parent of this panel indicating that an artwork has been
+   *  selected (Added to selection). */
   onArtworkSelected?: (artwork: ArtworkData) => void;
-  /** Callback to the parent of this panel indicating that an artwork has been deselected (Removed from selection) */
+  /** Callback to the parent of this panel indicating that an artwork has been
+   *  deselected (Removed from selection). */
   onArtworkDeselected?: (artworkId: string) => void;
   /**
-   * Callback to the parent of this panel indicating that an artwork has been clicked from the panel.
-   * Note that this is different from selection, as clicking on an artwork just means that the user wishes
+   * Callback to the parent of this panel indicating that an artwork has been 
+   * clicked from the panel.
+   * Note that this is different from selection, as clicking on an artwork 
+   * just means that the user wishes
    * to explore it (e.g. to get more information about it).
    */
   onArtworkClicked?: (artworkId: string) => void;
-  /** Callback to the parent of this panel indicating that the user wishes to change the currently displayed page */
+  /** Callback to the parent of this panel indicating that the user wishes to 
+   *  change the currently displayed page. */
   onPageChange?: (page: number) => void;
 };
+
 
 /** Controlled component to display a list of artwork search results. All state management must be done within the parent component */
 export const ArtworkSearchResults = (props: ArtworkSearchResultsProps) => {

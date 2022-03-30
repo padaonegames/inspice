@@ -52,15 +52,24 @@ const FieldNameLabel = styled.h3<FieldNameLabelProps>`
 `;
 
 export interface TextInputFieldWithTagProps {
+  /** Default value for the text box. */
   initialValue?: string;
+  /** Text to display when the value is empty or undefined. */
   placeholder?: string;
+  /** Component renderized next to the text. */
   icon?: JSX.Element;
+  /** Label used for the test box. */
   fieldName: string;
+  /** Alignment used for the text. Aligned by default to the left. */ 
   textAlign?: 'left' | 'right' | 'center' | 'justify';
+  /** Callback to the parent with the new value of the textbox as a parameter. */
   onChange: (value: string) => void;
+  /** Callback which notifies when the enter key is pressed while the component is focused */
   onEnterPress?: () => void;
+  /** Maximum number of characters to allow within the input area. */
   maxLength?: number;
 };
+
 
 /**
  * <img src="media://TextInputFieldWithTag.PNG" alt="TextInputFieldWithTag">

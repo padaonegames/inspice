@@ -15,12 +15,15 @@ import {
 export interface CheckBoxGroupInputCardProps {
   /** Main text rendered on top of the component as a prompt for the user, indicating what they must check in the field */
   promptText: string;
+  /** Callback to use whenever the value of a checkbox changes. Recieves the name of the field as a parameter. */
   onFieldToggle?: (field: string) => void;
+  /** Array which contains the name of the fields checked. */
   checked?: string[];
+  /** Array containing the name of all the checkboxes. */
   fields: string[];
-  /** whether this field is considered required within the overall form (used to display an asterisk) */
+  /** Variable wich indicates if the field is considered required within the overall form (used to display an asterisk) */
   required?: boolean;
-  /** whether to modify the appearance of this card to reflect that the user tried to submit the form without entering a value for this field */
+  /** Alert used when the user tries to submit the form without entering a required value. As feedback the appearance of the card is modified. */
   requiredAlert?: boolean;
 }
 

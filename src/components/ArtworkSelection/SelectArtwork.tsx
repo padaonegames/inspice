@@ -115,29 +115,29 @@ const ArtworkContainer = styled.div`
 
 export interface SelectArtworkProps {
   /**
-   * array of objects adhering to the ArtworkData interface, each of them containing at
+   * Array of objects adhering to the ArtworkData interface, each of them containing at
    * least an artwork’s id, author, title, and image source. Image source will be used
    * to render the selected artwork’s preview.
    */
   imagesData: ArtworkData[];
   /**
-   * id of the currently selected artwork, or undefined if none of them is selected at the time.
+   * Id of the currently selected artwork, or undefined if none of them is selected at the time.
    * Must match the id of one of the artworks declared in imagesData (otherwise behaviour will
    * be the same as when passing in undefined in this prop).
    */
   selectedArtwork: string | undefined;
   /**
-   * callback that will be used whenever an artwork is selected in the list of available artworks,
+   * Callback that will be used whenever an artwork is selected in the list of available artworks,
    * with the id of the selected artwork as a parameter.
    * @param artworkId unique identifier of selected artwork within imagesData.
    */
   onArtworkSelected: (artworkId: string) => void;
   /**
-   * callback that will be triggered when the continue button on the panel is clicked.
+   * Callback that will be triggered when the continue button on the panel is clicked.
    */
   onNextClicked?: () => void;
   /**
-   * title to display on top of the list of available artworks.
+   * Title to display on top of the list of available artworks.
    */
   titleText: string;
 };

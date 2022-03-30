@@ -194,8 +194,14 @@ const CloseIcon = styled(Close)`
 `;
 
 export interface SelectedArtworksPopupProps {
+  /** Artworks that should be displayed by this Component. This is not intended 
+   * to be a comprehensive list of all artworks returned from a big query, but 
+   * rather a slice of a desired handpicked selection cards. */
   artworks: ArtworkData[];
+  /** Callback with the id of an artwork as a parameter, which the user wants 
+   * to remove from the list. */
   onArtworkRemoved: (artworkId: string) => void;
+  /** Callback to the parent to close/open the popup. */
   setPopupOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 

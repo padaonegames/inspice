@@ -12,13 +12,19 @@ import {
 } from "./cardStyles";
 
 export interface ImageUploadCardProps {
+  /** Main text rendered on top of the component as a prompt for the user, indicating what they must upload. */
   promptText: string;
+  /** Callback to use whenever the value of the input field is changed. */
   onChange?: (file: File | undefined) => void;
+  /** Callback to use whenever the enter key is pressed while the component is focused. */
   onEnterPress?: () => void;
+  /** Default file path that will be loaded on the page before the user uploads any file. */
   initialSrc?: string;
+  /** Default file that will be uploaded on the page before the user uploads any file. */
   initialFile?: File;
+  /** Whether this field is considered required within the overall form (used to display an asterisk). */
   required?: boolean;
-  /* True if user tried to submit the form without filling a required field */
+  /* True if user tried to submit the form without filling a required field. */
   requiredAlert?: boolean;
 }
 

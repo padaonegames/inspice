@@ -72,7 +72,7 @@ const CloseAll = styled.button`
 
 export interface ShowFiltersProps {
   /**
-   * currently applied filters. each entry must contain the name of the field
+   * Currently applied filters. each entry must contain the name of the field
    * over which the corresponding filter is applied, and the value of the filter
    * itself. Fields will not be displayed, but they are needed to notify the parent component
    * about the removal of a given filter.

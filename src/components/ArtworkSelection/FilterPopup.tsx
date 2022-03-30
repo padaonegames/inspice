@@ -178,15 +178,15 @@ const NavContainer = styled.div`
 `;
 
 export interface FilterPopupProps {
-  /** display name of the filter category */
+  /** Display name of the filter category. */
   filterField: string;
-  /** array of filter options for the given category */
+  /** Array of filter options for the given category. */
   filterOptions: string[];
-  /** array of counts for each of the options in `filterOptions` (how many of each there are) */
+  /** Array of numbers that are used in order as ids for the filters. */
   filterCounts: number[];
-  /** callback to the parent component specifying that a specific filter has been selected within this category */
+  /** Callback to the parent component specifying that a specific filter has been selected within this category. */
   onFilterSelected?: (filter: string) => void;
-  /** callback to the parent component specifying whether we want to close this component */
+  /** Callback to the parent component specifying whether we want to close this component. */
   setFilterPopupOpen?: (opened: boolean) => void;
 };
 
