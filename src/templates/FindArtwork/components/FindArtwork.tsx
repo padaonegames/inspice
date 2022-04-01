@@ -109,7 +109,7 @@ export interface FindArtworkProps {
 };
 
 /**
- * <img src="media://FindArtwork.PNG" alt="FindArtwork">
+ * This component is responsible for the complete find artwork game experience. It has all the stage information and the artworks to be displayed in the game and is checking the points of the game.
  */
 export const FindArtwork: React.FC<FindArtworkProps> = ({
   stageData,

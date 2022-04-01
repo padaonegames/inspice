@@ -39,8 +39,11 @@ const AccordionPanel = styled.div<AccordionPanelProps>`
 `;
 
 export interface AccordionItemProps {
+  /** Artwork that will be shown when the item is opened. */
   artwork: Artwork;
+  /** List of questions and responses about the artwork. */
   responses: Response[];
+  /** If the item is open or closed, */
   defaultToggled?: boolean;
 };
 

@@ -237,6 +237,9 @@ export interface ArtifactCardProps {
   onDeleteClicked?: () => void;
 }
 
+
+
+ /** Small piece of information about an artifact of the museum. */
 export const ArtifactCard = (props: ArtifactCardProps): JSX.Element => {
 
   const {

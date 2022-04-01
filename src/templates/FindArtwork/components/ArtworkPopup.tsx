@@ -90,11 +90,13 @@ export type Props = {
   flipped: boolean;
   /** List of prizes earned by the user. */
   prize: string[];
-  /** Artwork piece correctly gessed to earn the prizes.  */
+  /** Artwork piece correctly guessed to earn the prizes.  */
   artworkData: ArtworkData;
 };
 
-
+/**
+ * After selection of the correct artwork this component will be shown as a popup. Complete information of the artwork is shown in this popup. Moreover, the prizes assigned for finding this specific artwork can be revealed.  
+ */
 export const ArtworkPopup: React.FC<Props> = ({ flipped, prize, artworkData }) => {
 
   const { t } = useTranslation('app');

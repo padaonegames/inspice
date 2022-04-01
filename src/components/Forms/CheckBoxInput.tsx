@@ -81,7 +81,7 @@ export interface CheckBoxInputProps {
   textFont?: FlattenSimpleInterpolation;
   enabled?: boolean;
   /** Callback with the state of the checkbox as a parameter and then reverses it. */
-  onCheckedChange: (checked: boolean) => void;
+  onCheckedChange?: (checked: boolean) => void;
 };
 
 /**
@@ -100,7 +100,8 @@ export const CheckBoxInput = (props: CheckBoxInputProps): JSX.Element => {
 
   const toggleCheckbox = () => {
     if (!enabled) return;
-    onCheckedChange(!checked);
+    if (onCheckedChange)
+      onCheckedChange(!checked);
   };
 
   return (

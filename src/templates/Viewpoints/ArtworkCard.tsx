@@ -127,7 +127,9 @@ const CardBackground = styled.div<CardBackgroundProps>`
 `;
 
 interface ArtworkCardProps {
-  /** Data of the artwork shown. */
+  /** Data about the artwork shown. Contains id, name, artist, description, date, 
+   *  imageLoc, image, audio, notes and URL. 
+   */
   artworkData: Artwork;
   /** Callback to notify the parent if the artwork card has been selected. */
   onArtworkSelected?: () => void;

@@ -12,6 +12,7 @@ export interface ArtworksListProps {
   onArtworkSelected?: (artworkId: string) => void;
 };
 
+/** List of arworks to search through. */
 export const ArtworksList = (props: ArtworksListProps): JSX.Element => {
 
   const { t } = useTranslation('gamGame');

@@ -71,9 +71,11 @@ const NavigateBeforeIcon = styled(NavigateBefore) <NavIconProps>`
 `;
 
 interface ArtworksComponentProps {
-  /** List of artworks and their information */
+  /** List of artworks, each contain its id, name, artist, description, date, imageLoc, 
+   *  image, audio, notes and URL. */
   artworks: Artwork[];
-  /** Callback to notify the parent if the artwork has been clicked on */
+  /** Callback that will be used whenever an artwork is selected in the list 
+   *  of available artworks, with the id of the selected artwork as a parameter. */
   onArtworkClicked?: (id: string) => void;
 };
 

@@ -125,7 +125,7 @@ export interface ClueHolderProps {
 };
 
 /**
- * <img src="media://ClueHolder.PNG" alt="ClueHolder">
+ * This component shows the users the clues they might need to find an artwork in a game. If the user decides to use more clues some of their point will be reduced.
  */
 export const ClueHolder: React.FC<ClueHolderProps> = ({ clues, onClueOpened }) => {
 

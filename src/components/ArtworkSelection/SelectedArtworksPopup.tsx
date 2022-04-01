@@ -200,9 +200,9 @@ export interface SelectedArtworksPopupProps {
   artworks: ArtworkData[];
   /** Callback with the id of an artwork as a parameter, which the user wants 
    * to remove from the list. */
-  onArtworkRemoved: (artworkId: string) => void;
+  onArtworkRemoved?: (artworkId: string) => void;
   /** Callback to the parent to close/open the popup. */
-  setPopupOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setPopupOpen?: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 /**
@@ -224,7 +224,7 @@ export const SelectedArtworksPopup: React.FC<SelectedArtworksPopupProps> = ({ ar
   return ReactDOM.createPortal(
     <Root>
       <PopupPanelContent>
-        <CloseIcon onClick={() => setPopupOpen(false)} />
+        <CloseIcon onClick={() => { if (setPopupOpen) setPopupOpen(false) }} />
         <PopupTitlePanel>
           <PopupText>
             SELECTED ARTWORKS
@@ -247,7 +247,7 @@ export const SelectedArtworksPopup: React.FC<SelectedArtworksPopupProps> = ({ ar
               {//artworks.slice((page + column) * 4, (page + 1 + column) * 4).map(elem => (
                 artworks.slice(page + (column * 4), page + 4 + (column * 4)).map(elem => (
                   <ArtworkItemContainer key={elem.id}>
-                    <RemoveArtworkIcon onClick={() => onArtworkRemoved(elem.id)} />
+                    <RemoveArtworkIcon onClick={() => { if (onArtworkRemoved) onArtworkRemoved(elem.id) }} />
                     <ArtworkMiniatureContainer>
                       <ArtworkMiniature src={elem.src} />
                     </ArtworkMiniatureContainer>

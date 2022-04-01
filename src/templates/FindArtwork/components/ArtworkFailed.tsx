@@ -86,16 +86,18 @@ const CardBackground = styled.div<CardBackgroundProps>`
 `;
 
 export interface ArtworkFailedProps {
-  /** If the image is flipped it's shown, otherwise is hidden */
+  /** If the image is flipped it's shown, otherwise is hidden. */
   flipped: boolean;
-  /** Image to be shown */
+  /** Path to the source image of the artwork which is used as the background of the cards. */
   image: string;
-  /** Name of the artwork shown */
+  /** Title of the artwork card. */
   title: string;
 };
 
 /**
- * <img src="media://ArtworkFailed.PNG" alt="ArtworkFailed">
+ * This card is being use the find artwork game when the player unsuccessfully selects the wrong artwork. 
+ * It contains the background image and a title text to inform the player that it is the wrong artwork. 
+ * There is also a boolean that is being passed to acknowledge the fact that this card has been flipped.
  */
 export const ArtworkFailed: React.FC<ArtworkFailedProps> = ({ flipped, image, title }) => {
   
