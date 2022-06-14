@@ -43,7 +43,7 @@ const SlideContainer = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1 1 0%;
-  height: calc(100% - 2rem);
+  height: calc(100% - 1.25rem);
   box-sizing: border-box;
   color: rgb(51, 51, 51);
 `;
@@ -55,13 +55,14 @@ const PuzzlePreview = styled.div<PuzzlePreviewProps>`
   display: flex;
   flex-direction: column;
   -moz-box-pack: justify;
-  justify-content: top;
+  justify-content: space-between;
   height: 100%;
   width: 100%;
   max-width: 100%;
   flex: 1 1 0%;
   padding: 0.25rem 0.5rem;
   color: rgb(178, 178, 178);
+
   margin: 0.25em 0.5em;
   border: 1px solid rgb(229, 229, 229);
   border-radius: 0.25rem;
@@ -77,13 +78,13 @@ const PuzzlePreview = styled.div<PuzzlePreviewProps>`
 `;
 
 const PreviewTitle = styled.div`
-  margin-bottom: 0.125rem;
+  margin-bottom: 0.25rem;
   color: rgb(110, 110, 110);
   text-align: center;
   font-size: 0.75rem;
   line-height: 1.33;
   letter-spacing: 0.2px;
-  max-height: 1rem;
+  max-height: 1.5rem;
   max-width: 100%;
   overflow: hidden;
   white-space: nowrap;
@@ -129,7 +130,10 @@ export const PuzzleSlide = (props: PuzzleSlideProps): JSX.Element => {
   } = props;
 
   return (
-    <Root selected={selected}>
+    <Root
+      onClick={onSlideSelected}
+      selected={selected}
+    >
       <SlideTitle>{puzzleType}</SlideTitle>
       <SlideContainer>
         <PuzzlePreview selected={selected}>

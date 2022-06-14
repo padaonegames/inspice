@@ -48,7 +48,7 @@ export type EscapeRoomPuzzleDefinition = RoomPuzzle &
 
 export interface EscapeRoomActivityDefinition extends ActivityInstance {
   activityType: 'Escape Room',
-  rooms: EscapeRoomPuzzleDefinition[];
+  rooms: RoomDefinition[];
 }
 
 export interface EditablePuzzleProps<T> {

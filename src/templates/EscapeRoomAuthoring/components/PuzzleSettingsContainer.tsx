@@ -210,6 +210,10 @@ export interface PuzzleSettingsContainerProps {
   selectedPuzzleMapping?: PuzzleMapping;
   /** Callback notifying of puzzle type changing to a new format */
   onPuzzleTypeChanged?: (value: string) => void;
+  /** Callback notifying parent component of user wanting to delete this puzzle */
+  onPuzzleDeleted?: () => void;
+  /** Callback notifying parent component of user wanting to duplicate this puzzle */
+  onPuzzleDuplicated?: () => void;
 } // PuzzleSettingsContainerProps
 
 export const PuzzleSettingsContainer = (props: PuzzleSettingsContainerProps): JSX.Element => {
@@ -217,7 +221,9 @@ export const PuzzleSettingsContainer = (props: PuzzleSettingsContainerProps): JS
   const {
     puzzleMappings,
     selectedPuzzleMapping,
-    onPuzzleTypeChanged
+    onPuzzleTypeChanged,
+    onPuzzleDeleted,
+    onPuzzleDuplicated
   } = props;
 
   const [puzzleTypeDropdownOpen, setPuzzleTypeDropdownOpen] = useState<boolean>(false);
@@ -248,8 +254,8 @@ export const PuzzleSettingsContainer = (props: PuzzleSettingsContainerProps): JS
       </FieldLabel>
       <HorizontalLine />
       <ButtonsContainer>
-        <DeleteButton>Delete</DeleteButton>
-        <DuplicateButton>Duplicate</DuplicateButton>
+        <DeleteButton onClick={onPuzzleDeleted}>Delete</DeleteButton>
+        <DuplicateButton onClick={onPuzzleDuplicated}>Duplicate</DuplicateButton>
       </ButtonsContainer>
     </Root>
   );

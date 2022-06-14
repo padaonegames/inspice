@@ -6,6 +6,7 @@ import { PuzzleSettingsContainer } from "./PuzzleSettingsContainer";
 
 const ContentWrapper = styled.main`
   position: fixed;
+  left: 0;
   height: 100%;
   width: 97.5%;
   display: flex;
@@ -39,17 +40,17 @@ export interface EditablePuzzleComponentProps {
   /** Placeholder for this puzzle's prompt text */
   promptTextPlaceholder?: string;
   /** What type of question/ puzzle this card is representing (type must be consistent with puzzleMappings' name values) */
-  initialPuzzleDefinition?: EscapeRoomPuzzleDefinition;
+  puzzleDefinition?: EscapeRoomPuzzleDefinition;
   /** What  mappings we are working with in this editiable puzzle card (available puzzle types and how to render them) */
   puzzleMappings: PuzzleMapping[];
   /** Callback notifying of puzzle type changing to a new format */
   onPuzzleTypeChanged?: (value: string) => void;
   /** Callback notifying parent of puzzle changing (including data payload) */
   onPuzzleDefinitionChanged?: (value: EscapeRoomPuzzleDefinition['payload']) => void;
-  /** Callback notifying parent component of user wanting to delete this card */
-  onCardDeleted?: () => void;
-  /** Callback notifying parent component of card getting the focus */
-  onCardFocused?: () => void;
+  /** Callback notifying parent component of user wanting to delete this puzzle */
+  onPuzzleDeleted?: () => void;
+  /** Callback notifying parent component of user wanting to duplicate this puzzle */
+  onPuzzleDuplicated?: () => void;
 }
 
 export interface PuzzleMapping {
@@ -72,23 +73,16 @@ export const EditablePuzzleComponent = (props: EditablePuzzleComponentProps): JS
 
   const {
     promptTextPlaceholder = 'Prompt',
-    initialPuzzleDefinition,
+    puzzleDefinition,
     puzzleMappings,
     onPuzzleTypeChanged,
     onPuzzleDefinitionChanged,
-    onCardDeleted,
-    onCardFocused
+    onPuzzleDeleted,
+    onPuzzleDuplicated
   } = props;
 
-  // managed state for puzzle definition
-  const [puzzleDefinition, setPuzzleDefinition] = useState<EscapeRoomPuzzleDefinition>(initialPuzzleDefinition ?? {
-    promptText: '',
-    type: puzzleMappings[0].puzzleType,
-    payload: puzzleMappings[0].defaultPuzzlePayload
-  });
+  if (!puzzleDefinition) return <></>;
 
-  // whether the puzzle type dropdown is currently open
-  const [puzzleTypeDropdownOpen, setPuzzleTypeDropdownOpen] = useState<boolean>(false);
   // reference to the actual DOM element for the prompt area to allow for dynamic resizing
   const promptAreaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -105,7 +99,7 @@ export const EditablePuzzleComponent = (props: EditablePuzzleComponentProps): JS
     promptAreaRef.current.style.height = '0px';
     const scrollHeight = promptAreaRef.current.scrollHeight;
     promptAreaRef.current.style.height = scrollHeight + 'px';
-  }, [puzzleDefinition.promptText]); // useEffect
+  }, [puzzleDefinition]); // useEffect
 
   /**
    * Manage the selection of a new puzzle type from the dropdown
@@ -120,8 +114,7 @@ export const EditablePuzzleComponent = (props: EditablePuzzleComponentProps): JS
       type: value,
       payload: puzzleMappings.find(elem => elem.puzzleType === value)?.defaultPuzzlePayload
     };
-    // update inner state
-    setPuzzleDefinition(newPuzzleDefinition);
+
     // and notify parent component about the change, if callbacks have been provided for that purpose
     if (onPuzzleTypeChanged) {
       onPuzzleTypeChanged(value);
@@ -144,8 +137,7 @@ export const EditablePuzzleComponent = (props: EditablePuzzleComponentProps): JS
       ...puzzleDefinition,
       payload: payload
     };
-    // update inner state
-    setPuzzleDefinition(newPuzzleDefinition);
+
     // and notify parent component about the change, if callbacks have been provided for that purpose
     if (onPuzzleDefinitionChanged) {
       onPuzzleDefinitionChanged(newPuzzleDefinition);
@@ -162,8 +154,7 @@ export const EditablePuzzleComponent = (props: EditablePuzzleComponentProps): JS
       ...puzzleDefinition,
       promptText: value
     };
-    // update inner state
-    setPuzzleDefinition(newPuzzleDefinition);
+
     // and notify parent component about the change, if callbacks have been provided for that purpose
     if (onPuzzleDefinitionChanged) {
       onPuzzleDefinitionChanged(newPuzzleDefinition);
@@ -177,7 +168,7 @@ export const EditablePuzzleComponent = (props: EditablePuzzleComponentProps): JS
       <Content>
         <ContentBackground>
           <PromptField
-            promptText={puzzleDefinition['promptText'] as string}
+            promptText={puzzleDefinition.promptText ?? ''}
             promptPlaceholder='Start typing your prompt'
             onPromptChange={handlePromptTextChanged}
           />
@@ -192,6 +183,8 @@ export const EditablePuzzleComponent = (props: EditablePuzzleComponentProps): JS
           puzzleMappings={puzzleMappings}
           selectedPuzzleMapping={selectedPuzzle}
           onPuzzleTypeChanged={() => {}}
+          onPuzzleDeleted={onPuzzleDeleted}
+          onPuzzleDuplicated={onPuzzleDuplicated}
         />
       </Content>
     </ContentWrapper>
