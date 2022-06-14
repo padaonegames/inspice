@@ -18,6 +18,7 @@ export interface CheckBoxGroupInputCardProps extends CheckboxGroupFieldDefinitio
   /** Whether this field should always be filled in by the user */
   required?: boolean;
   onFieldToggle?: (field: string) => void;
+  /** Array which contains the name of the fields checked. */
   checked?: string[];
   /** whether to modify the appearance of this card to reflect that the user tried to submit the form without entering a value for this field */
   requiredAlert?: boolean;

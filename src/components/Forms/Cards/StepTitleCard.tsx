@@ -45,13 +45,13 @@ const HeaderRow = styled.div`
 export interface StepTitleCardProps {
   /** Step's title. */
   stepTitle: string;
-  /** Short description of what needs to be done within the step */
+  /** Short description of what needs to be done within the step. */
   stepDescription?: string;
-  /** whether to enable action button at the top of the card */
+  /** Whether to enable action button at the top of the card. */
   enableAction?: boolean;
-  /** Name of the action to be performed. If not specified, no action will be available (button won't be rendered) */
+  /** Name of the action to be performed. If not specified, no action will be available (button won't be rendered). */
   actionName?: string;
-  /** callback to parent component indicating that the action has been requested by the user */
+  /** Callback to parent component indicating that the action has been requested by the user. */
   onActionCliked?: () => void;
   children?: React.ReactNode;
 }

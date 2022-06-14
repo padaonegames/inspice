@@ -69,13 +69,19 @@ const CheckMark = styled.span<CheckMarkProps>`
 `;
 
 export interface CheckBoxInputProps {
+  /** Default value of the checkbox. */
   checked?: boolean;
+  /** Label of the checkbox. */
   labelText: string;
+  /** String for the size of the checkbox in pixels. If not used then by default it will be “25px”. */
   boxSize?: string;
+  /** The style which the checkbox will be presented with */
   style?: 'radio' | 'checkbox';
+  /** String containing the font of the label of the checkbox. */
   textFont?: FlattenSimpleInterpolation;
   enabled?: boolean;
-  onCheckedChange: (checked: boolean) => void;
+  /** Callback with the state of the checkbox as a parameter and then reverses it. */
+  onCheckedChange?: (checked: boolean) => void;
 };
 
 /**
@@ -94,7 +100,8 @@ export const CheckBoxInput = (props: CheckBoxInputProps): JSX.Element => {
 
   const toggleCheckbox = () => {
     if (!enabled) return;
-    onCheckedChange(!checked);
+    if (onCheckedChange)
+      onCheckedChange(!checked);
   };
 
   return (

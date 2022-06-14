@@ -38,7 +38,7 @@ const FilterPanelButton = styled.div`
 
 export interface FilterPanelProps {
   /**
-   * dictionary containing all different, unique filter fields that the user might access, as well
+   * Dictionary containing all different, unique filter fields that the user might access, as well
    * as the different values that each of those filters considers. E.g. "Date" -> ["1997", "1998", ...].
    * Each of the entries provided here will be used to generate a filtering subpanel with up to maxOptionsShown
    * entries each.

@@ -102,9 +102,13 @@ month[10] = 'November';
 month[11] = 'December';
 
 export interface SelectDatePanelProps {
+  /** Callback to notify the parent that the start point has changed. */
   onFromSelected?: (from: Date | undefined | null) => void;
+  /** Callback to notify the parent that the end point has changed. */
   onToSelected?: (to: Date | undefined | null) => void;
+  /** Start point of the date. */
   from: Date | undefined | null;
+  /** End point of the range. */
   to: Date | undefined | null;
 };
 

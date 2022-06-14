@@ -231,10 +231,15 @@ const DateSpan = styled.span`
 `;
 
 export interface ActivityCardProps {
+  /** Description and features about the activity. */
   activityTemplate: ActivityInstance;
+  /** Callback to notify the parent when the card has been opened. */
   onOpenClicked?: () => void;
+  /** Callback to notify the parent when the card is going to be edited. */
   onEditClicked?: () => void;
+  /** Callback to notify the parent when the card is being duplicated. */
   onDuplicateClicked?: () => void;
+  /** Callback to notify the parent when the card is being deleted. */
   onDeleteClicked?: () => void;
 }
 

@@ -9,14 +9,25 @@ import {
   RequiredAlertIcon
 } from "./cardStyles";
 
+
+
+
 export interface RangeInputCardProps {
+  /** Main text rendered on top of the component as a prompt for the user, indicating what is the range that they have to choose. */
   promptText: string;
+  /** Minimum value, is the start point of the range. */
   min: number;
+  /** Maximum value possible, is the end point of the range. */
   max: number;
+  /** Initial value for the range. */
   initialMin?: number;
+  /** Initial maximum value for the range. */
   initialMax?: number;
+  /** Callback to use when the minimum value is changed. */
   onMinValueChange?: (value: number) => void;
+  /** Callback to use when the maximum value is changed. */
   onMaxValueChange?: (value: number) => void;
+  /** If this field is considered required within the overall form (used to display an asterisk). */
   required?: boolean;
   /* True if user tried to submit the form without filling a required field */
   requiredAlert?: boolean;

@@ -127,11 +127,17 @@ const TagTypingInput = styled.input`
 `;
 
 export interface ArtworkDecorationPanelProps {
+  /** Controls if the panel can be edited. */
   editEnabled?: boolean;
+  /** Path to find the source image of the artwork. */
   artworkSrc: string;
+  /** Emojis shown in the panel. */
   emojis: StoryPartEmoji[];
+  /** Tags shown in the panel. */
   tags: StoryPartTag[];
+  /** Callback to the parent notifying when is added a new emoji. */
   onAddEmoji?: (emoji: Emoji) => void;
+  /** Callback to the parent notifying when is added a new tag. */
   onAddTag?: (tag: string) => void;
   /**
    * Called with position expressed in relative terms (% of image's height and width)
@@ -143,6 +149,7 @@ export interface ArtworkDecorationPanelProps {
   onMoveTag?: (index: number, pos: Position) => void;
 }
 
+/** Customizable panel where it can be added tags and emojis to an artwork piece. */
 export const ArtworkDecorationPanel = (props: ArtworkDecorationPanelProps): JSX.Element => {
 
   const {

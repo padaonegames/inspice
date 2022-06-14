@@ -28,51 +28,53 @@ const UpperRowContainer = styled.div`
   border-width: 0px 0px 1px 0px;
 `;
 
+
+
 export interface ActivityCreationOverviewPanelProps extends NavigationComponentProps {
   /**
-   * Minimum number of stages to allow when stage adding/ removal is enabled.
+   * Minimum number of stages to allow when stage adding/removal is enabled.
    */
   minStages?: number;
   /**
-   * Maximum number of stages to allow when stage adding/ removal is enabled.
+   * Maximum number of stages to allow when stage adding/removal is enabled.
    */
   maxStages?: number;
   /**
    * List of available stages to select from. Each entry contains information about the 
-   * name of the stage and whether or not it has already been completed by the user.
-   * Also specifies whether stage can be removed when clicking on edit stages.
+   * name of the stage and whether it has already been completed by the user or not.
+   * Also specifies if the stage can be removed when clicking on edit stages.
    * Names will be used to display the label for each stage.
    */
   stages: { name: string, completed: boolean, canBeRemoved?: boolean }[];
   /**
-   * Caption/ label for last button at the end of the stage sequence, generally used as a submission
+   * Caption/label for the last button at the end of the stage sequence, generally used as a submission
    * button for the activity built during the creation process. If not provided, this last button 
    * will not be rendered.
    */
   finaItemCaption?: string;
   /**
-   * Caption/ label for add stage panel button that will be used to add new stages to the panel.
+   * Caption/label used to add a stage panel button that will be used to add new stages to the panel.
    * Has no effect if enableStageAddition is not active.
    */
   addStagePanelText?: string;
   /**
-   * Caption/ label for edit stages panel button that will be used to edit stages in the panel (remove/ add/ reorder).
+   * Caption/label used to edit stages panel button that will be used to edit stages in the panel (remove/add/reorder).
    * Has no effect if enableStageAddition is not active.
    */
   editStagesPanelText?: string;
   /**
-   * Caption/ label for cancel edit stages panel button that will be used to disable edit mode (remove/ add/ reorder).
+   * Caption/label used to cancel edit stages panel button that will be used to disable edit mode (remove/add/reorder).
    * Has no effect if enableStageAddition is not active.
    */
   cancelEditStagesPanelText?: string;
   /**
    * Whether stage addition should be allowed for this activity. This determines
-   * whether the add stage panel is enabled when clicking on edit stages. Disabled by default.
+   * if the add stage panel is enabled when clicking on edit stages. Disabled by default.
    */
   enableStageAddition?: boolean;
   /**
    * Whether stage removal should be allowed for this activity. This determines
-   * whether the remove stage icons are enabled when clicking on edit stages. Disabled by default.
+   * if the remove stage icons are enabled when clicking on edit stages. Disabled by default.
    */
   enableStageRemoval?: boolean;
   /**

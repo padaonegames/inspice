@@ -17,7 +17,9 @@ export interface CalendarInputCardProps {
   /** Whether this field should always be filled in by the user */
   required?: boolean;
   onChange?: (date: Date | undefined) => void;
+  /** Callback to notify the parent when the enter key is pressed while the component is focused. */
   onEnterPress?: () => void;
+  /** Default date that will be shown on the loading page before the user inserts any date. */
   initialDate?: Date | undefined;
   /* True if user tried to submit the form without filling a required field */
   requiredAlert?: boolean;

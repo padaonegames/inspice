@@ -13,13 +13,13 @@ export interface ShortTextInputCardProps extends ShortTextFieldDefinition {
   required?: boolean;
   /** Text to display whenever value is set to an empty string, or undefined */
   placeholder?: string;
-  /** callback to use whenever the value of the input field is changed */
+  /** Callback to the parent used whenever the value of the input field is changed. */
   onChange?: (value: string) => void;
-  /** callback to use whenever the enter key is pressed while the component is focused */
+  /** Callback to the parent when the "Enter" key is pressed while the component is focused. */
   onEnterPress?: () => void;
-  /** maximum number of characters to allow within the input area */
+  /** Maximum number of characters allowed within the input area. */
   maxLength?: number;
-  /** current value of the input field. Needs to be changed after onChange events to be kept in sync with internal state */
+  /** Current value of the input field. Needs to be changed after onChange events in order to be synchronized with the internal state. */
   value?: string;
   /** Whether this field represents a password (should be hidden) */
   isPassword?: boolean;

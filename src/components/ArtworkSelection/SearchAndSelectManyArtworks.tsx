@@ -163,7 +163,7 @@ export interface SearchAndSelectManyArtworksProps {
    */
   appliedFilter?: GetArtworksFilter;
   /**
-   * callback to the parent of this panel indicating that the user has performed a search action, with
+   * Callback to the parent of this panel indicating that the user has performed a search action, with
    * the text introduced in the searchbox when requesting the search. Searchbox text IS stateful, and will 
    * be kept in the internal state of the component.
    */

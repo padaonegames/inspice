@@ -29,9 +29,10 @@ const Dummy = styled.div`
 `;
 
 export interface ArtworkSelectionCardProps {
-  /** Artwork data to be used to render this component */
+  /** Artwork data to be used to render this component. 
+   *  Contains the Artwork’s information. */
   artworkData: ArtworkData;
-  /** Whether this should be displayed as being selected by the user */
+  /** Whether the card should be displayed if is selected or not. */
   selected: boolean;
   /** Callback to the parent of this panel indicating that this artwork has been selected (Added to selection) */
   onCardSelected?: () => void;

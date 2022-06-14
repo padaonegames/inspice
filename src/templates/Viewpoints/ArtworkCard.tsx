@@ -127,8 +127,12 @@ const CardBackground = styled.div<CardBackgroundProps>`
 `;
 
 interface ArtworkCardProps {
+  /** Data about the artwork shown. Contains id, name, artist, description, date, 
+   *  imageLoc, image, audio, notes and URL. 
+   */
   artworkData: Artwork;
-  onArtworkSelected: () => void;
+  /** Callback to notify the parent if the artwork card has been selected. */
+  onArtworkSelected?: () => void;
 };
 
 const ArtworkCard: React.FC<ArtworkCardProps> = ({ artworkData, onArtworkSelected }) => {
@@ -147,7 +151,7 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({ artworkData, onArtworkSelecte
             {artworkData.artist}
           </InformationText>
           <InformationText>
-            {artworkData.date}
+            {artworkData.date.toDateString()}
           </InformationText>
           <InformationText>
             {artworkData.imageLoc}

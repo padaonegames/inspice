@@ -54,11 +54,12 @@ const SearchIcon = styled(Search)`
 
 export interface SearchBarProps {
   /**
-   * callback to the parent of this panel indicating that the user has performed a search action, with
-   * the text introduced in the searchbox when requesting the search. Searchbox text IS stateful, and will 
+   * Callback to the parent of this panel indicating that the user has performed a search action, with
+   * the text introduced in the searchbox when requesting the search. Searchbox text is stateful, and will 
    * be kept in the internal state of the component.
    */
   onSearchPerformed?: (searchText: string) => void;
+  /** Text to display when the value is empty or undefined */
   placeholder?: string;
 };
 

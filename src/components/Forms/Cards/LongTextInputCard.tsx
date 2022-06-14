@@ -9,21 +9,21 @@ import {
 } from "./cardStyles";
 
 export interface LongTextInputCardProps {
-  /** Main text rendered on top of the component as a prompt for the user, indicating what they must type into the field */
+  /** Main text rendered on top of the component as a prompt for the user, indicating what they must type into the field. */
   promptText: string;
-  /** Text to display whenever value is set to an empty string, or undefined */
+  /** Text to display whenever value is set to an empty string, or undefined. */
   placeholder?: string;
-  /** callback to use whenever the value of the input field is changed */
+  /** Callback used whenever the value of the input field is changed. */
   onChange?: (value: string) => void;
-  /** callback to use whenever the enter key is pressed while the component is focused */
+  /** Callback used whenever the enter key is pressed while the component is focused. */
   onEnterPress?: () => void;
-  /** maximum number of characters to allow within the input area */
+  /** Maximum number of characters to allow within the input area. */
   maxLength?: number;
-  /** current value of the input field. Needs to be changed after onChange events to be kept in sync with internal state */
+  /** Current value of the input field. Needs to be changed after onChange events to be kept in sync with internal state. */
   value?: string;
-  /** whether this field is considered required within the overall form (used to display an asterisk) */
+  /** Whether this field is considered required within the overall form (used to display an asterisk). */
   required?: boolean;
-  /** whether to modify the appearance of this card to reflect that the user tried to submit the form without entering a value for this field */
+  /** Modifies the appearance of the card to reflect that the user tried to submit the form without entering a value for this field. */
   requiredAlert?: boolean;
 }
 
