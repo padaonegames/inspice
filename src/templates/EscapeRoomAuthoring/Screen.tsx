@@ -1,21 +1,28 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { RadioCircleMarked } from "styled-icons/boxicons-regular";
 
 // navigation
-import { ActivityCreationOverviewPanel, ActivityCreationOverviewPanelProps } from '../../../components/Navigation/ActivityCreationOverviewPanel';
+import { ActivityCreationOverviewPanel, ActivityCreationOverviewPanelProps } from '../../components/Navigation/ActivityCreationOverviewPanel';
 
 // services
-import { useAsyncRequest } from '../../../services/useAsyncRequest';
+import { useAsyncRequest } from '../../services/useAsyncRequest';
 
 // steps
-import { State, Step, Steps, StepsConfig } from '../../../components/Navigation/Steps';
-import ActivityInstanceBasicInfoStep from '../../GeneralSteps/ActivityInstanceBasicInfoStep';
-import { CompletedMultistageFormActivityDefinition, InProgressMultistageFormActivityDefinition, MultistageFormStage } from '../../../services/multistageFormActivity.model';
-import DefineMultistageFormStep from './Steps/DefineMultistageFormStep';
+import { State } from '../../components/Navigation/Steps';
+import { CompletedEscapeRoomActivityDefinition, EscapeRoomPuzzleDefinition, InProgressEscapeRoomActivityDefinition, RoomDefinition } from '../../services/escapeRoomActivity.model';
+import { PuzzleSlidesContainer } from './components/PuzzleSlidesContainer';
+import EditablePuzzle, { PuzzleMapping } from './components/EditablePuzzle';
+import { multipleChoicePuzzleFactory } from './components/MutipleChoicePuzzle';
+import { puzzleTypeIcon } from './components/PuzzleSettingsContainer';
 
 const Root = styled.div`
   display: flex;
   flex-direction: column;
+`;
+
+const MultipleChoiceIcon = styled(RadioCircleMarked)`
+  ${puzzleTypeIcon}
 `;
 
 //-------------------------------------------------------
@@ -23,13 +30,13 @@ const Root = styled.div`
 //-------------------------------------------------------
 
 /**
- * Screen to encapsulate the creation flow of a Multistage Form activity.
+ * Screen to encapsulate the creation flow of a Escape Room activity.
  * Component responsible for handling the information fetching and posting logic; actual
- * rendering of this screen is delegated to the *CreateMultistageFormActivityScreenComponent* component.
+ * rendering of this screen is delegated to the *CreateEscapeRoomActivityScreenComponent* component.
  */
-export const CreateMultistageFormActivityScreen = () => {
+export const CreateEscapeRoomScreen = () => {
 
-  const [completedActivity, setCompletedActivity] = useState<CompletedMultistageFormActivityDefinition | undefined>(undefined);
+  const [completedActivity, setCompletedActivity] = useState<CompletedEscapeRoomActivityDefinition | undefined>(undefined);
 
   const submitDefinition = async () => {
     if (!completedActivity) return Promise.reject();
@@ -47,32 +54,31 @@ export const CreateMultistageFormActivityScreen = () => {
 
 
   return (
-    <CreateMultistageFormActivityScreenComponent
+    <CreateEscapeRoomScreenComponent
       initialActivityDefinition={undefined}
     />
   );
 }
 
-interface CreateMultistageFormActivityScreenComponentProps {
+interface CreateEscapeRoomScreenComponentProps {
   /** Initial state that this component will take as base */
-  initialActivityDefinition?: InProgressMultistageFormActivityDefinition | undefined;
+  initialActivityDefinition?: InProgressEscapeRoomActivityDefinition | undefined;
   /** callback to parent notifying of a change within the internal state of this component */
-  onActivityDefinitionChanged?: (value: InProgressMultistageFormActivityDefinition) => void;
+  onActivityDefinitionChanged?: (value: InProgressEscapeRoomActivityDefinition) => void;
   /** callback to parent notifying of activity definition being submitted by the user.
    * Submission does NOT take place within this component. Rather, the action is lifted to
    * the parent so that rendering and communication with the services remain isolated.
    */
-  onSubmitActivityDefinition?: (value: CompletedMultistageFormActivityDefinition) => void;
+  onSubmitActivityDefinition?: (value: CompletedEscapeRoomActivityDefinition) => void;
 }
 
-const sample_base: InProgressMultistageFormActivityDefinition = {
-  activityType: 'Multistage Form',
+const sample_base: InProgressEscapeRoomActivityDefinition = {
+  activityType: 'Escape Room',
   activityTitle: undefined,
   activityAuthor: undefined,
   beginsOn: undefined,
   endsOn: undefined,
-  stages: [],
-  formResponsesDatasetUuid: ''
+  rooms: []
 };
 
 const isStageOneCompleted = (definition: State): boolean => {
@@ -82,7 +88,7 @@ const isStageOneCompleted = (definition: State): boolean => {
     definition['endsOn'] as Date !== undefined;
 };
 
-export const CreateMultistageFormActivityScreenComponent = (props: CreateMultistageFormActivityScreenComponentProps): JSX.Element => {
+export const CreateEscapeRoomScreenComponent = (props: CreateEscapeRoomScreenComponentProps): JSX.Element => {
 
   const {
     initialActivityDefinition,
@@ -91,22 +97,22 @@ export const CreateMultistageFormActivityScreenComponent = (props: CreateMultist
   } = props;
 
   // Initialize internal component state using fields from the provided initialActivityDefinition, if any.
-  // Note here that we are adding the minimum necessary fields to have a valid transformation from State into InProgressMultistageFormActivityDefinition
+  // Note here that we are adding the minimum necessary fields to have a valid transformation from State into InProgressEscapeRoomActivityDefinition
   // by incorporating the base content from sample_base.
   const [activityDefinition, setActivityDefinition] =
     useState<State>(initialActivityDefinition ? { ...sample_base, ...initialActivityDefinition } : { ...sample_base });
 
   useEffect(() => {
     if (!onActivityDefinitionChanged) return;
-    onActivityDefinitionChanged(activityDefinition as unknown as InProgressMultistageFormActivityDefinition);
+    onActivityDefinitionChanged(activityDefinition as unknown as InProgressEscapeRoomActivityDefinition);
   }, [activityDefinition]);
 
   const handleSubmitActivityDefinition = () => {
     if (!onSubmitActivityDefinition) return;
     if (!isStageOneCompleted(activityDefinition)) return;
 
-    const def: CompletedMultistageFormActivityDefinition = {
-      activityType: 'Multistage Form',
+    const def: CompletedEscapeRoomActivityDefinition = {
+      activityType: 'Escape Room',
       activityAuthor: activityDefinition['activityAuthor'] as string,
       activityTitle: activityDefinition['activityTitle'] as string,
       description: activityDefinition['description'] as string,
@@ -114,41 +120,29 @@ export const CreateMultistageFormActivityScreenComponent = (props: CreateMultist
       endsOn: activityDefinition['endsOn'] as Date,
       tags: activityDefinition['tags'] as string[],
       imageSrc: activityDefinition['imageSrc'] as string,
-      stages: activityDefinition['stages'] as MultistageFormStage<any>[],
-      formResponsesDatasetUuid: activityDefinition['responsesDatasetUuid'] as string
+      rooms: activityDefinition['rooms'] as EscapeRoomPuzzleDefinition[]
     };
 
     onSubmitActivityDefinition(def);
   };
 
-  const config: StepsConfig = {
-    navigation: {
-      location: 'before',
-      component: (props: ActivityCreationOverviewPanelProps) =>
-        <ActivityCreationOverviewPanel
-          {...props}
-          stages={[
-            { name: 'Basic Information'.toUpperCase(), completed: isStageOneCompleted(activityDefinition) },
-            { name: 'Edit Stages'.toUpperCase(), completed: false },
-          ]}
-          onSubmitActivity={handleSubmitActivityDefinition}
-          finaItemCaption={'Submit Activity'.toUpperCase()}
-        />
+  const puzzleMappings: PuzzleMapping[] = [
+    {
+      puzzleType: 'multiple-choice',
+      displayName: 'Multiple Choice',
+      iconComponent: <MultipleChoiceIcon />,
+      defaultPuzzlePayload: multipleChoicePuzzleFactory.defaultPuzzleDefinition,
+      editingComponentProducer: multipleChoicePuzzleFactory.puzzleEditingComponent as any
     }
-  };
+  ];
 
   return (
     <Root>
-      <Steps
-        config={config}
-        genState={activityDefinition}
-        setGenState={setActivityDefinition}
-      >
-        <Step title='Basic Information' component={ActivityInstanceBasicInfoStep} />
-        <Step title='Edit Stages' component={DefineMultistageFormStep} />
-      </Steps>
+      <PuzzleSlidesContainer puzzles={[]} selectedPuzzleIndex={0} />
+      <EditablePuzzle
+        puzzleMappings={puzzleMappings} />
     </Root>
   );
 }
 
-export default CreateMultistageFormActivityScreen;
+export default CreateEscapeRoomScreen;

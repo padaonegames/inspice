@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import styled, { css } from "styled-components";
-import { FieldDefinition, FieldType, supportedFieldTypes } from "../../../services/multistageFormActivity.model";
+import {  EditableFieldProps, MultistageFormFieldDefinition } from "../../../services/multistageFormActivity.model";
 import {
   Root,
   RequiredAlertIcon,
@@ -9,21 +9,9 @@ import {
   InputArea,
   SelectFieldTypeDropdownButton
 } from "./cardStyles";
-import { RadioCircleMarked } from "styled-icons/boxicons-regular";
 import { ChevronDown } from "@styled-icons/boxicons-regular/ChevronDown";
-import { ShortText } from "@styled-icons/material/ShortText";
-import { TextLeft } from "@styled-icons/bootstrap/TextLeft";
-import { CalendarEvent } from "@styled-icons/boxicons-regular/CalendarEvent";
-import { Likert } from "@styled-icons/fluentui-system-regular/Likert";
-import { ImageAdd } from "@styled-icons/boxicons-regular/ImageAdd";
-import { CheckboxChecked } from "@styled-icons/fluentui-system-filled/CheckboxChecked";
-import { LinearScale } from "@styled-icons/material-outlined/LinearScale";
-import { Tags } from "@styled-icons/fa-solid/Tags";
 import { Delete } from '@styled-icons/fluentui-system-regular/Delete';
 import CheckBoxInput from "../CheckBoxInput";
-import { EditableMultipleChoiceCardContent } from "./MultipleChoiceCard";
-import { EditableCheckBoxGroupCardContent } from "./CheckBoxGroupInputCard";
-import { EditableShortTextContent } from "./ShortTextInputCard";
 
 const HeaderRow = styled.div`
   display: flex;
@@ -49,7 +37,12 @@ const BottomRow = styled.div`
   margin-top: 0.25em;
 `;
 
-const fieldTypeIcon = css`
+/**
+ * Recommended styles for an icon being passed to EditableFieldCard
+ * component within a list of field Mapping specifications for optimal 
+ * rendering.
+ */
+export const fieldTypeIcon = css`
   color: ${props => props.theme.textColor};
   height: 1.75em;
   width: 1.75em;
@@ -59,42 +52,6 @@ const fieldTypeIcon = css`
 const ExpandDropdownIcon = styled(ChevronDown)`
   ${fieldTypeIcon}
   margin-left: auto;
-`;
-
-const MultipleChoiceIcon = styled(RadioCircleMarked)`
-  ${fieldTypeIcon}
-`;
-
-const ShortTextIcon = styled(ShortText)`
-  ${fieldTypeIcon}
-`;
-
-const LongTextIcon = styled(TextLeft)`
-  ${fieldTypeIcon}
-`;
-
-const DateIcon = styled(CalendarEvent)`
-  ${fieldTypeIcon}
-`;
-
-const LikertIcon = styled(Likert)`
-  ${fieldTypeIcon}
-`;
-
-const ImageUploadIcon = styled(ImageAdd)`
-  ${fieldTypeIcon}
-`;
-
-const CheckboxIcon = styled(CheckboxChecked)`
-  ${fieldTypeIcon}
-`;
-
-const RangeIcon = styled(LinearScale)`
-  ${fieldTypeIcon}
-`;
-
-const TagsIcon = styled(Tags)`
-  ${fieldTypeIcon}
 `;
 
 const DeleteIcon = styled(Delete)`
@@ -160,28 +117,32 @@ export interface EditableFieldCardProps {
   requiredAlert?: boolean;
   /** alert message to be displayed when required alert is set to true */
   alertMessage?: string;
-  /** What type of question/ field this card is representing */
-  fieldDefinition: FieldDefinition;
+  /** What type of question/ field this card is representing (type must be consistent with fieldMappings' name values) */
+  initialFieldDefinition?: MultistageFormFieldDefinition;
+  /** What  mappings we are working with in this editiable field card (available field types and how to render them) */
+  fieldMappings: FieldMapping[];
   /** Callback notifying of field type changing to a new format */
-  onFieldTypeChanged?: (value: FieldType) => void;
+  onFieldTypeChanged?: (value: string) => void;
   /** Callback notifying parent of field changing (including data payload) */
-  onFieldDefinitionChanged?: (value: FieldDefinition) => void;
+  onFieldDefinitionChanged?: (value: MultistageFormFieldDefinition['payload']) => void;
   /** Callback notifying parent component of user wanting to delete this card */
   onCardDeleted?: () => void;
   /** Callback notifying parent component of card getting the focus */
   onCardFocused?: () => void;
 }
 
-const fieldMappings: Map<FieldType, { component: JSX.Element; name: string; }> = new Map();
-fieldMappings.set('short-text', { component: <ShortTextIcon />, name: 'Short Text' });
-fieldMappings.set('long-text', { component: <LongTextIcon />, name: 'Paragraph' });
-fieldMappings.set('multiple-choice', { component: <MultipleChoiceIcon />, name: 'Multiple Choice' });
-fieldMappings.set('likert-scale', { component: <LikertIcon />, name: 'Likert Scale' });
-fieldMappings.set('checkbox', { component: <CheckboxIcon />, name: 'Checkbox' });
-fieldMappings.set('image-upload', { component: <ImageUploadIcon />, name: 'Image Upload' });
-fieldMappings.set('range', { component: <RangeIcon />, name: 'Numeric Range' });
-fieldMappings.set('calendar', { component: <DateIcon />, name: 'Date' });
-fieldMappings.set('tags', { component: <TagsIcon />, name: 'Tag Cloud' });
+export interface FieldMapping {
+  /** What type of field we are working with here*/
+  fieldType: MultistageFormFieldDefinition['type'];
+  /** How to render this option within a list. Defaults to fieldType */
+  displayName?: string;
+  /** What component to place next to the display name */
+  iconComponent?: JSX.Element;
+  /** Generation logic to use to create a form editing component */
+  editingComponentProducer: (editingFormProps: EditableFieldProps<MultistageFormFieldDefinition['payload']>) => JSX.Element;
+  /** Default value for FieldPayload */
+  defaultFieldPayload: MultistageFormFieldDefinition['payload'];
+}
 
 /**
  * Editable version of StepTitleCard for form editing
@@ -192,39 +153,124 @@ export const EditableFieldCard = (props: EditableFieldCardProps): JSX.Element =>
     promptTextPlaceholder = 'Prompt',
     requiredAlert,
     alertMessage,
-    fieldDefinition,
+    initialFieldDefinition,
+    fieldMappings,
     onFieldTypeChanged,
     onFieldDefinitionChanged,
     onCardDeleted,
     onCardFocused
   } = props;
 
+  // managed state for field definition
+  const [fieldDefinition, setFieldDefinition] = useState<MultistageFormFieldDefinition>(initialFieldDefinition ?? {
+    promptText: '',
+    required: false,
+    type: fieldMappings[0].fieldType,
+    payload: fieldMappings[0].defaultFieldPayload
+  });
+
+  // whether the field type dropdown is currently open
+  const [fieldTypeDropdownOpen, setFieldTypeDropdownOpen] = useState<boolean>(false);
+  // reference to the actual DOM element for the prompt area to allow for dynamic resizing
   const promptAreaRef = useRef<HTMLTextAreaElement>(null);
 
-  const [fieldTypeDropdownOpen, setFieldTypeDropdownOpen] = useState<boolean>(false);
-
+  /**
+   * useEffect hook to maintain a consistent height for the
+   * HTMLTextAreaElement used to display the promptText.
+   * Essentialy, this listens for changes in promptText and
+   * modifies container's height dynamically to fit the entire text 
+   * without having to scroll.
+   */
   useEffect(() => {
     if (promptAreaRef.current == null) return;
 
     promptAreaRef.current.style.height = '0px';
     const scrollHeight = promptAreaRef.current.scrollHeight;
     promptAreaRef.current.style.height = scrollHeight + 'px';
-  }, [fieldDefinition.promptText]);
+  }, [fieldDefinition.promptText]); // useEffect
 
-  const handleFieldTypeSelected = (value: FieldType) => {
+  /**
+   * Manage the selection of a new field type from the dropdown
+   * and notify parent component about the change, assuming that
+   * a fitting onFieldTypeChanged callback has been provided.
+   * @param value New field type selected by the user.
+   */
+  const handleFieldTypeSelected = (value: MultistageFormFieldDefinition['type']) => {
+    // create a new field definition that's consistent with both new type and previous information
+    const newFieldDefinition: MultistageFormFieldDefinition = {
+      ...fieldDefinition,
+      type: value,
+      payload: fieldMappings.find(elem => elem.fieldType === value)?.defaultFieldPayload
+    };
+    // update inner state
+    setFieldDefinition(newFieldDefinition);
+    // and notify parent component about the change, if callbacks have been provided for that purpose
     if (onFieldTypeChanged) {
       onFieldTypeChanged(value);
     }
-  };
-
-  const handleFieldDefinitionChanged = (value: Omit<FieldDefinition, 'type' | 'promptText'>) => {
     if (onFieldDefinitionChanged) {
-      onFieldDefinitionChanged({
-        ...fieldDefinition,
-        ...value
-      })
+      onFieldDefinitionChanged(newFieldDefinition);
     }
-  };
+  }; // handleFieldTypeSelected
+
+  /**
+   * Manage any change from child fieldForm components over their
+   * own field payloads to keep the results consistent with general
+   * editing card and notify parent component about the change, assuming that
+   * a fitting onFieldDefinitionChanged callback has been provided.
+   * @param payload New field definition payload after a change within the currently active child form.
+   */
+  const handleFieldPayloadChanged = (payload: MultistageFormFieldDefinition['payload']) => {
+    // create a new field definition that's consistent with both new type and previous information
+    const newFieldDefinition :MultistageFormFieldDefinition = {
+      ...fieldDefinition,
+      payload: payload
+    };
+    // update inner state
+    setFieldDefinition(newFieldDefinition);
+    // and notify parent component about the change, if callbacks have been provided for that purpose
+    if (onFieldDefinitionChanged) {
+      onFieldDefinitionChanged(newFieldDefinition);
+    }
+  }; // handleFieldPayloadChanged
+
+  /**
+   * Manage a change in the required status of this field.
+   * @param value New required status (boolean)
+   */
+  const handleFieldRequiredChanged = (value: boolean) => {
+    // create a new field definition with the new required status
+    const newFieldDefinition: MultistageFormFieldDefinition = {
+      ...fieldDefinition,
+      required: value
+    };
+    // update inner state
+    setFieldDefinition(newFieldDefinition);
+    // and notify parent component about the change, if callbacks have been provided for that purpose
+    if (onFieldDefinitionChanged) {
+      onFieldDefinitionChanged(newFieldDefinition);
+    }
+  }; // handleFieldRequiredChanged
+
+  /**
+   * Manage a change in the prompt text for this field
+   * @param value New prompt text
+   */
+  const handlePromptTextChanged = (value: string) => {
+    // create a new field definition with the new required status
+    const newFieldDefinition: MultistageFormFieldDefinition = {
+      ...fieldDefinition,
+      promptText: value
+    };
+    // update inner state
+    setFieldDefinition(newFieldDefinition);
+    // and notify parent component about the change, if callbacks have been provided for that purpose
+    if (onFieldDefinitionChanged) {
+      onFieldDefinitionChanged(newFieldDefinition);
+    }
+  }; // handlePromptTextChanged
+
+  const selectedField = fieldMappings.find(elem => elem.fieldType === fieldDefinition.type);
 
   return (
     <Root>
@@ -241,49 +287,26 @@ export const EditableFieldCard = (props: EditableFieldCardProps): JSX.Element =>
             placeholder={promptTextPlaceholder}
             maxLength={500}
             value={fieldDefinition.promptText}
-            onChange={event => {
-              if (onFieldDefinitionChanged) {
-                onFieldDefinitionChanged({
-                  ...fieldDefinition,
-                  promptText: event.target.value
-                });
-              }
-            }}
+            onChange={event => handlePromptTextChanged(event.target.value)}
           />
           <SelectFieldTypeDropdownButton onClick={() => setFieldTypeDropdownOpen(prev => !prev)}>
-            <MultipleChoiceIcon />{fieldMappings.get(fieldDefinition.type)?.name ?? fieldDefinition.type} <ExpandDropdownIcon />
+            {selectedField?.iconComponent}{selectedField?.displayName ?? selectedField?.fieldType ?? 'Select a field type'} <ExpandDropdownIcon />
             {fieldTypeDropdownOpen &&
               <DropdownMenu>
-                {supportedFieldTypes.map(elem => (
-                  <DropdownMenuItem onClick={() => handleFieldTypeSelected(elem)}>
-                    {fieldMappings.get(elem)?.component ?? <></>}
-                    {fieldMappings.get(elem)?.name ?? elem}
+                {fieldMappings.map(elem => (
+                  <DropdownMenuItem onClick={() => handleFieldTypeSelected(elem.fieldType)}>
+                    {elem.iconComponent}
+                    {elem.displayName ?? elem.fieldType}
                   </DropdownMenuItem>
                 ))}
               </DropdownMenu>}
           </SelectFieldTypeDropdownButton>
         </HeaderRow>
-        {fieldDefinition.type === 'short-text' && (
-          <EditableShortTextContent
-            fieldDefinition={fieldDefinition}
-          />
-        )}
-        {fieldDefinition.type === 'long-text' && (
-          <></>
-        )}
-        {fieldDefinition.type === 'multiple-choice' && (
-          <EditableMultipleChoiceCardContent
-            addNewOptionLabel='Add new option'
-            fieldDefinition={fieldDefinition}
-            onDefinitionChanged={handleFieldDefinitionChanged}
-          />
-        )}
-        {fieldDefinition.type === 'checkbox' && (
-          <EditableCheckBoxGroupCardContent
-            addNewOptionLabel='Add new option'
-            fieldDefinition={fieldDefinition}
-            onDefinitionChanged={handleFieldDefinitionChanged}
-          />
+        {selectedField && fieldDefinition.payload && (
+          selectedField.editingComponentProducer({
+            fieldPayload: fieldDefinition.payload,
+            onPayloadChanged: handleFieldPayloadChanged
+          })
         )}
         <DottedLine />
         <BottomRow>
@@ -291,14 +314,7 @@ export const EditableFieldCard = (props: EditableFieldCardProps): JSX.Element =>
             style='radio'
             checked={fieldDefinition.required}
             labelText='Required'
-            onCheckedChange={(checked) => {
-              if (onFieldDefinitionChanged) {
-                onFieldDefinitionChanged({
-                  ...fieldDefinition,
-                  required: checked
-                });
-              }
-            }}
+            onCheckedChange={handleFieldRequiredChanged}
           />
           <HorizontalLine />
           <DeleteIcon onClick={onCardDeleted} />

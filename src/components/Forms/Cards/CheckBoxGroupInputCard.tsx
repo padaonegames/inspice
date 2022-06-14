@@ -12,14 +12,13 @@ import {
   CheckboxOption
 } from "./cardStyles";
 
-export interface CheckBoxGroupInputCardProps {
-  /** Main text rendered on top of the component as a prompt for the user, indicating what they must check in the field */
-  promptText: string;
+export interface CheckBoxGroupInputCardProps extends CheckboxGroupFieldDefinition {
+  /** Prompt for the user to fill in this field */
+  promptText?: string;
+  /** Whether this field should always be filled in by the user */
+  required?: boolean;
   onFieldToggle?: (field: string) => void;
   checked?: string[];
-  fields: string[];
-  /** whether this field is considered required within the overall form (used to display an asterisk) */
-  required?: boolean;
   /** whether to modify the appearance of this card to reflect that the user tried to submit the form without entering a value for this field */
   requiredAlert?: boolean;
 }
@@ -69,33 +68,33 @@ export const CheckBoxGroupInputCard = (props: CheckBoxGroupInputCardProps): JSX.
 export interface EditableCheckBoxGroupCardContentProps extends EditableFieldProps<CheckboxGroupFieldDefinition> {
   /** text to display for the add new option label. */
   addNewOptionLabel: string;
-}
+} // EditableCheckBoxGroupCardContentProps
 
 export const EditableCheckBoxGroupCardContent = (props: EditableCheckBoxGroupCardContentProps): JSX.Element => {
 
   const {
-    fieldDefinition,
+    fieldPayload,
     addNewOptionLabel,
-    onDefinitionChanged
+    onPayloadChanged
   } = props;
 
   const {
     fields,
-  } = fieldDefinition;
+  } = fieldPayload;
 
   const handleAddOption = () => {
-    if (!onDefinitionChanged) return;
-    onDefinitionChanged({
-      ...fieldDefinition,
-      fields: [...fieldDefinition.fields, '']
+    if (!onPayloadChanged) return;
+    onPayloadChanged({
+      ...fieldPayload,
+      fields: [...fieldPayload.fields, '']
     })
   };
 
   const handleRemoveOption = (index: number) => {
-    if (!onDefinitionChanged) return;
-    onDefinitionChanged({
-      ...fieldDefinition,
-      fields: fieldDefinition.fields.filter((_, i) => i !== index)
+    if (!onPayloadChanged) return;
+    onPayloadChanged({
+      ...fieldPayload,
+      fields: fieldPayload.fields.filter((_, i) => i !== index)
     })
   };
 

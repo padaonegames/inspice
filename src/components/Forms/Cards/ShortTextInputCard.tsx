@@ -1,17 +1,16 @@
 import { EditableFieldProps, ShortTextFieldDefinition } from "../../../services/multistageFormActivity.model";
 import {
   Root,
-  CardPanel,
-  PromptText,
-  RequiredAsterisk,
   InputText,
-  RequiredQuestionSpan,
-  RequiredAlertIcon
 } from "./cardStyles";
+import FormCard from "./FormCard";
+import { AbstractFormFactory } from "./FormFactory";
 
-export interface ShortTextInputCardProps {
-  /** Main text rendered on top of the component as a prompt for the user, indicating what they must type into the field */
-  promptText: string;
+export interface ShortTextInputCardProps extends ShortTextFieldDefinition {
+  /** Prompt for the user to fill in this field */
+  promptText?: string;
+  /** Whether this field should always be filled in by the user */
+  required?: boolean;
   /** Text to display whenever value is set to an empty string, or undefined */
   placeholder?: string;
   /** callback to use whenever the value of the input field is changed */
@@ -22,89 +21,88 @@ export interface ShortTextInputCardProps {
   maxLength?: number;
   /** current value of the input field. Needs to be changed after onChange events to be kept in sync with internal state */
   value?: string;
-  /** whether this field is considered required within the overall form (used to display an asterisk) */
-  required?: boolean;
-  /** whether to modify the appearance of this card to reflect that the user tried to submit the form without entering a value for this field */
-  requiredAlert?: boolean;
-  /** alert message to be displayed when required alert is set to true */
-  alertMessage?: string;
   /** Whether this field represents a password (should be hidden) */
   isPassword?: boolean;
   /** Proportion of container width to be used for input. 50% (0.5) by default */
   width?: number;
-}
+  /* True if user tried to submit the form without filling a required field */
+  requiredAlert?: boolean;
+  alertMessage?: string;
+} // ShortTextInputCardProps
 
 /** Controlled card component to support input for shorter texts. */
 export const ShortTextInputCard = (props: ShortTextInputCardProps): JSX.Element => {
 
   const {
     promptText,
+    required = false,
+    requiredAlert = false,
     placeholder,
     maxLength,
     value,
-    requiredAlert,
-    required,
-    alertMessage,
     isPassword = false,
     onChange,
     onEnterPress,
-    width = 0.5
+    width = 0.5,
+    alertMessage
   } = props;
 
   return (
-    <Root>
-      <CardPanel requiredAlert={requiredAlert}>
-        <PromptText>
-          {promptText}{required && <RequiredAsterisk> *</RequiredAsterisk>}
-        </PromptText>
-        <InputText
-          textWidth={width}
-          type={isPassword ? 'password' : 'text'}
-          placeholder={placeholder}
-          maxLength={maxLength}
-          value={value}
-          onChange={event => {
-            if (onChange) onChange(event.target.value);
-          }}
-          onKeyPress={(event) => {
-            if (event.key === 'Enter' && onEnterPress) {
-              onEnterPress();
-            }
-          }}
-        />
-        {requiredAlert && (
-          <RequiredQuestionSpan>
-            <RequiredAlertIcon /> {alertMessage ?? 'This question is required.'}
-          </RequiredQuestionSpan>
-        )}
-      </CardPanel>
-    </Root>
+    <FormCard
+      promptText={promptText || ''}
+      required={required}
+      requiredAlert={requiredAlert}
+      alertMessage={alertMessage}
+    >
+      <InputText
+        textWidth={width}
+        type={isPassword ? 'password' : 'text'}
+        placeholder={placeholder}
+        maxLength={maxLength}
+        value={value}
+        onChange={event => {
+          if (onChange) onChange(event.target.value);
+        }}
+        onKeyPress={(event) => {
+          if (event.key === 'Enter' && onEnterPress) {
+            onEnterPress();
+          }
+        }}
+      />
+    </FormCard>
   );
-};
+}; // ShortTextInputCard
 
 export interface EditableShortTextContentProps extends EditableFieldProps<ShortTextFieldDefinition> {
-}
+} // EditableShortTextContentProps
 
-export const EditableShortTextContent = (props: EditableShortTextContentProps): JSX.Element => {
-
-  const {
-    fieldDefinition,
-    onDefinitionChanged
-  } = props;
+export const EditableShortTextContent = (_: EditableShortTextContentProps): JSX.Element => {
 
   return (
     <Root>
       <InputText
+        disabled
         width='95%'
-        placeholder='Placeholder...'
-        value={fieldDefinition.placeholder || ''}
-        onChange={event => {
-          if (onDefinitionChanged) onDefinitionChanged({ ...fieldDefinition, placeholder: event.target.value });
-        }}
+        placeholder='Short Text Answer'
+        value={''}
       />
     </Root>
   );
-};
+}; // EditableShortTextContent
+
+export const shortTextCardFactory: AbstractFormFactory<ShortTextFieldDefinition> = {
+  userFormComponent: (useFormPayload: ShortTextInputCardProps) => (
+    <ShortTextInputCard
+      {...useFormPayload}
+    />
+  ),
+  formEditingComponent: (editingFormProps: EditableShortTextContentProps) => (
+    <EditableShortTextContent
+      {...editingFormProps}
+    />
+  ),
+  defaultFormDefinition: {}
+}; // ShortTextCardFactory
 
 
 export default ShortTextInputCard;
