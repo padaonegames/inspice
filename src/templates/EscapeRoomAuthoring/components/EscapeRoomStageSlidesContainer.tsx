@@ -1,6 +1,6 @@
 import styled from "styled-components";
-import { RoomPuzzle } from "../../../services/escapeRoomActivity.model";
-import { PuzzleSlide } from "./PuzzleSlide";
+import { EscapeRoomStage } from "../../../services/escapeRoomActivity.model";
+import { EscapeRoomStageSlide } from "./EscapeRoomStageSlide";
 
 const Root = styled.div`
   position: fixed;
@@ -87,50 +87,49 @@ const AddItemButton = styled.button`
   }
 `;
 
-export interface PuzzleSlidesContainerProps {
-  /** list of puzzles currently included in active room */
-  puzzles: RoomPuzzle[];
-  /** index of currently selected puzzle in puzzles */
-  selectedPuzzleIndex: number;
-  /** Callback to parent component specifying that user wishes to add a new puzzle to the room */
-  onAddPuzzle?: () => void;
-  /** Callback to parent component specifying that user wishes to select a given puzzle from the room */
-  onSelectPuzzle?: (index: number) => void;
-} // PuzzleSlidesContainerProps
+export interface EscapeRoomStageSlidesContainerProps {
+  /** list of stages currently included in the activity */
+  stages: EscapeRoomStage[];
+  /** index of currently selected stage in stages */
+  selectedStageIndex: number;
+  /** Callback to parent component specifying that user wishes to add a new stage to the activity */
+  onAddStage?: () => void;
+  /** Callback to parent component specifying that user wishes to select a given stage from the activity */
+  onSelectStage?: (index: number) => void;
+} // EscapeRoomStageSlidesContainerProps
 
-export const PuzzleSlidesContainer = (props: PuzzleSlidesContainerProps): JSX.Element => {
+export const EscapeRoomStageSlidesContainer = (props: EscapeRoomStageSlidesContainerProps): JSX.Element => {
 
   const {
-    puzzles,
-    selectedPuzzleIndex,
-    onAddPuzzle,
-    onSelectPuzzle
+    stages,
+    selectedStageIndex,
+    onAddStage,
+    onSelectStage
   } = props;
 
-  const handleSelectPuzzle = (index: number) => {
-    if (onSelectPuzzle) {
-      onSelectPuzzle(index);
+  const handleSelectStage = (index: number) => {
+    if (onSelectStage) {
+      onSelectStage(index);
     }
-  }; // handleSelectPuzzle
+  }; // handleSelectStage
 
   return (
     <Root>
       <SlidesContainer>
-        {puzzles.map((p, i) => (
-          <PuzzleSlide
-            key={p.type + '_' + p.promptText + 'i'}
-            selected={i == selectedPuzzleIndex}
-            prompt={p.promptText ?? 'Prompt'}
-            puzzleType={p.type}
-            onSlideSelected={() => handleSelectPuzzle(i)}
+        {stages.map((s, i) => (
+          <EscapeRoomStageSlide
+            key={s.type + '_' + i}
+            selected={i == selectedStageIndex}
+            stage={s}
+            onSlideSelected={() => handleSelectStage(i)}
           />
         ))}
       </SlidesContainer>
       <ButtonsContainer>
         <AddItemButtonContainer>
-          <AddItemButton onClick={onAddPuzzle}>Add Puzzle</AddItemButton>
+          <AddItemButton onClick={onAddStage}>Add Stage</AddItemButton>
         </AddItemButtonContainer>
       </ButtonsContainer>
     </Root>
   );
-}; // PuzzleSlidesContainer
+}; // EscapeRoomStageSlidesContainer

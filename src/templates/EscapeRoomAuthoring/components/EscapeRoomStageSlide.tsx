@@ -1,4 +1,6 @@
 import styled from "styled-components";
+import { Exit } from "@styled-icons/icomoon/Exit";
+import { EscapeRoomStage } from "../../../services/escapeRoomActivity.model";
 
 interface RootProps {
   selected?: boolean;
@@ -48,10 +50,10 @@ const SlideContainer = styled.div`
   color: rgb(51, 51, 51);
 `;
 
-interface PuzzlePreviewProps {
+interface StagePreviewProps {
   selected?: boolean;
 }
-const PuzzlePreview = styled.div<PuzzlePreviewProps>`
+const StagePreview = styled.div<StagePreviewProps>`
   display: flex;
   flex-direction: column;
   -moz-box-pack: justify;
@@ -109,43 +111,60 @@ const PreviewAnswer = styled.div`
   border-radius: 0.125rem;
 `;
 
-export interface PuzzleSlideProps {
-  /** Type of puzzle represented by this slide */
-  puzzleType: string;
-  // TODO: Generalize to multiple puzzle types
-  prompt: string;
+export interface EscapeRoomStageSlideProps {
+  stage: EscapeRoomStage;
   /** whether this slide is currently selected */
   selected: boolean;
   /** callback to parent notifying of slide being selected by the user */
   onSlideSelected?: () => void;
-} // PuzzleSlideProps
+} // EscapeRoomStageSlideProps
 
-export const PuzzleSlide = (props: PuzzleSlideProps): JSX.Element => {
+export const EscapeRoomStageSlide = (props: EscapeRoomStageSlideProps): JSX.Element => {
 
   const {
-    puzzleType,
-    prompt,
+    stage,
     selected,
     onSlideSelected
   } = props;
+
+  // TODO: Ahora mismo las miniaturas las dibujamos aquí de forma condicional.
+  // Lo ideal sería hacer como con los componentes de edición y que cada componente 
+  // (stage) exponga su propia manera de renderizarse como una slide.
+
+  const renderStagePreview = () => {
+
+    if (stage.type === 'multiple-choice') {
+      return (
+        <>
+          <PreviewTitle>Prompt</PreviewTitle>
+          <PreviewAnswers>
+            {[...Array(stage.payload.answers.length)].map((_, i) => <PreviewAnswer key={i} />)}
+          </PreviewAnswers>
+        </>
+      );
+    }
+
+    if (stage.type === 'room') {
+      // render room preview
+      // const room = stage.room;
+
+      return (
+        <></>
+      );
+    }
+  };
 
   return (
     <Root
       onClick={onSlideSelected}
       selected={selected}
     >
-      <SlideTitle>{puzzleType}</SlideTitle>
+      <SlideTitle>{stage.type}</SlideTitle>
       <SlideContainer>
-        <PuzzlePreview selected={selected}>
-          <PreviewTitle>{prompt}</PreviewTitle>
-          <PreviewAnswers>
-            <PreviewAnswer />
-            <PreviewAnswer />
-            <PreviewAnswer />
-            <PreviewAnswer />
-          </PreviewAnswers>
-        </PuzzlePreview>
+        <StagePreview selected={selected}>
+          {renderStagePreview()}
+        </StagePreview>
       </SlideContainer>
     </Root>
   );
-}; // PuzzleSlide
+}; // EscapeRoomStageSlide

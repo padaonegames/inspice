@@ -5,8 +5,20 @@ import { ActivityInstance, InProgressActivityInstance } from "./activity.model";
 
 export interface InProgressEscapeRoomActivityDefinition extends InProgressActivityInstance {
   activityType: 'Escape Room';
-  rooms: RoomDefinition[];
+  stages: EscapeRoomStage[];
 }
+
+export type EscapeRoomStage = (
+  | { type: 'room', payload: RoomDefinition }
+  | { type: 'multiple-choice', payload: MultipleChoiceFieldDefinition }
+);
+
+export const escapeRoomStageTypes = [
+  'room',
+  'multiple-choice'
+] as const;
+
+export type AvailableEscapeRoomStage = typeof escapeRoomStageTypes[number];
 
 export type CompletedEscapeRoomActivityDefinition = Omit<
   EscapeRoomActivityDefinition,
@@ -20,7 +32,7 @@ export const defaultEscapeRoomActivityDefinition: InProgressEscapeRoomActivityDe
   activityAuthor: undefined,
   beginsOn: undefined,
   endsOn: undefined,
-  rooms: []
+  stages: []
 };
 
 export interface RoomDefinition {
@@ -32,7 +44,13 @@ export interface RoomDefinition {
   puzzles: EscapeRoomPuzzleDefinition[];
 }
 
+export type RoomPuzzleEntryPoint =
+  | { type: 'qr-scan', text: string }
+  | { type: 'ar-scan', image: string };
+
 export interface RoomPuzzle {
+  /** How to access this puzzle within the room (QR code, AR scan, etc) */
+  entryPoint: RoomPuzzleEntryPoint;
   /** Prompt for the user to know what to do in this puzzle */
   promptText?: string;
   /** Type of the field ('multiple-choice', 'find-differences' and so on) */
@@ -48,12 +66,12 @@ export type EscapeRoomPuzzleDefinition = RoomPuzzle &
 
 export interface EscapeRoomActivityDefinition extends ActivityInstance {
   activityType: 'Escape Room',
-  rooms: RoomDefinition[];
+  stages: EscapeRoomStage[];
 }
 
-export interface EditablePuzzleProps<T> {
-  /** Definition to be used to render the stateless editable puzzle component (only the exclusive part of the definition, prompt text and type are edited elsewhere) */
-  puzzlePayload: T;
+export interface EditableItemProps<T> {
+  /** Definition to be used to render the stateless editable item component (only the exclusive part of the definition, prompt text and type are edited elsewhere) */
+  payload: T;
   /** Callback to notify parent component of a change whithin the current definition */
   onPayloadChanged?: (definition: T) => void;
 }

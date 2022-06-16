@@ -1,8 +1,9 @@
 import { useState } from "react";
 import styled, { css } from "styled-components";
-import { PuzzleMapping } from "./EditablePuzzle";
+import { StageMappings } from "./EditableStage";
 import { ChevronDown } from "@styled-icons/boxicons-regular/ChevronDown";
 import { ExtensionPuzzle } from "@styled-icons/ionicons-outline/ExtensionPuzzle";
+import { AvailableEscapeRoomStage, EscapeRoomStage, escapeRoomStageTypes } from "../../../services/escapeRoomActivity.model";
 
 const Root = styled.aside`
   display: flex;
@@ -43,16 +44,16 @@ const fieldIconStyle = css`
   margin-right: 7px;
 `;
 
-const PuzzleIcon = styled(ExtensionPuzzle)`
+const StageIcon = styled(ExtensionPuzzle)`
   ${fieldIconStyle}
 `;
 
 /**
- * Recommended styles for an icon being passed to EditablePuzzle
- * component within a list of puzzle Mapping specifications for optimal 
+ * Recommended styles for an icon being passed to EditableStage
+ * component within a list of stage Mapping specifications for optimal 
  * rendering.
  */
-export const puzzleTypeIcon = css`
+export const stageTypeIcon = css`
   color: ${props => props.theme.textColor};
   height: 1.75em;
   width: 1.75em;
@@ -60,7 +61,7 @@ export const puzzleTypeIcon = css`
 `;
 
 const ExpandDropdownIcon = styled(ChevronDown)`
-  ${puzzleTypeIcon}
+  ${stageTypeIcon}
   margin-left: auto;
 `;
 
@@ -203,50 +204,52 @@ const DuplicateButton = styled.button`
   position: relative;
 `;
 
-export interface PuzzleSettingsContainerProps {
-  /** What  mappings we are working with in this editiable puzzle container (available puzzle types and how to render them) */
-  puzzleMappings: PuzzleMapping[];
+export interface StageSettingsContainerProps {
+  /** What  mappings we are working with in this editiable stage container (available stage types and how to render them) */
+  stageMappings: StageMappings<EscapeRoomStage>;
   /** What mapping we are currently using */
-  selectedPuzzleMapping?: PuzzleMapping;
-  /** Callback notifying of puzzle type changing to a new format */
-  onPuzzleTypeChanged?: (value: string) => void;
-  /** Callback notifying parent component of user wanting to delete this puzzle */
-  onPuzzleDeleted?: () => void;
-  /** Callback notifying parent component of user wanting to duplicate this puzzle */
-  onPuzzleDuplicated?: () => void;
-} // PuzzleSettingsContainerProps
+  selectedStageType: AvailableEscapeRoomStage;
+  /** Callback notifying of stage type changing to a new format */
+  onStageTypeChanged?: (value: AvailableEscapeRoomStage) => void;
+  /** Callback notifying parent component of user wanting to delete this stage */
+  onStageDeleted?: () => void;
+  /** Callback notifying parent component of user wanting to duplicate this stage */
+  onStageDuplicated?: () => void;
+} // StageSettingsContainerProps
 
-export const PuzzleSettingsContainer = (props: PuzzleSettingsContainerProps): JSX.Element => {
+export const StageSettingsContainer = (props: StageSettingsContainerProps): JSX.Element => {
 
   const {
-    puzzleMappings,
-    selectedPuzzleMapping,
-    onPuzzleTypeChanged,
-    onPuzzleDeleted,
-    onPuzzleDuplicated
+    stageMappings,
+    selectedStageType,
+    onStageTypeChanged,
+    onStageDeleted,
+    onStageDuplicated
   } = props;
 
-  const [puzzleTypeDropdownOpen, setPuzzleTypeDropdownOpen] = useState<boolean>(false);
+  const [stageTypeDropdownOpen, setStageTypeDropdownOpen] = useState<boolean>(false);
 
-  const handlePuzzleTypeChanged = (value: string) => {
-    if (onPuzzleTypeChanged) {
-      onPuzzleTypeChanged(value);
+  const selectedStageMapping = stageMappings[selectedStageType];
+
+  const handleStageTypeChanged = (value: AvailableEscapeRoomStage) => {
+    if (onStageTypeChanged) {
+      onStageTypeChanged(value);
     }
-  }; // handlePuzzleTypeChanged
+  }; // handleStageTypeChanged
 
   return (
     <Root>
       <FieldLabel>
-        <PuzzleIcon />
-        Puzzle Type
-        <SelectFieldTypeDropdownButton onClick={() => setPuzzleTypeDropdownOpen(prev => !prev)}>
-          {selectedPuzzleMapping?.iconComponent}{selectedPuzzleMapping?.displayName ?? selectedPuzzleMapping?.puzzleType ?? 'Select a puzzle type'} <ExpandDropdownIcon />
-          {puzzleTypeDropdownOpen &&
+        <StageIcon />
+        Stage Type
+        <SelectFieldTypeDropdownButton onClick={() => setStageTypeDropdownOpen(prev => !prev)}>
+          {selectedStageMapping.iconComponent}{selectedStageMapping?.displayName ?? selectedStageType ?? 'Select a stage type'} <ExpandDropdownIcon />
+          {stageTypeDropdownOpen &&
             <DropdownMenu>
-              {puzzleMappings.map(elem => (
-                <DropdownMenuItem onClick={() => handlePuzzleTypeChanged(elem.puzzleType)}>
-                  {elem.iconComponent}
-                  {elem.displayName ?? elem.puzzleType}
+              {escapeRoomStageTypes.map(elem => (
+                <DropdownMenuItem onClick={() => handleStageTypeChanged(elem)}>
+                  {stageMappings[elem].iconComponent}
+                  {stageMappings[elem].displayName ?? elem}
                 </DropdownMenuItem>
               ))}
             </DropdownMenu>}
@@ -254,9 +257,9 @@ export const PuzzleSettingsContainer = (props: PuzzleSettingsContainerProps): JS
       </FieldLabel>
       <HorizontalLine />
       <ButtonsContainer>
-        <DeleteButton onClick={onPuzzleDeleted}>Delete</DeleteButton>
-        <DuplicateButton onClick={onPuzzleDuplicated}>Duplicate</DuplicateButton>
+        <DeleteButton onClick={onStageDeleted}>Delete</DeleteButton>
+        <DuplicateButton onClick={onStageDuplicated}>Duplicate</DuplicateButton>
       </ButtonsContainer>
     </Root>
   );
-}; // PuzzleSettingsContainer
+}; // StageSettingsContainer

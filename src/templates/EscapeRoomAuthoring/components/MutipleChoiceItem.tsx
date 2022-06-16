@@ -1,9 +1,7 @@
-import { useState } from "react";
 import styled from "styled-components";
-import { EscapeRoomPuzzleDefinition } from "../../../services/escapeRoomActivity.model";
-import { EditablePuzzleProps, MultipleChoiceFieldDefinition } from "../../../services/escapeRoomActivity.model";
+import { EditableItemProps, MultipleChoiceFieldDefinition } from "../../../services/escapeRoomActivity.model";
 import EditableCheckBoxInput from "./EditableCheckBoxInput";
-import { AbstractPuzzleFactory } from "./PuzzleFactory";
+import { AbstractActivityItemFactory } from "./ActivityItemFactory";
 
 interface InputAreaProps {
   width?: string;
@@ -71,15 +69,15 @@ const CheckboxOption = styled.div<CheckBoxOptionProps>`
   box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
 `;
 
-export interface EditableMultipleChoicePuzzleContentProps extends EditablePuzzleProps<MultipleChoiceFieldDefinition> {
+export interface EditableMultipleChoiceItemContentProps extends EditableItemProps<MultipleChoiceFieldDefinition> {
   /** text to display for the add new option label. */
   addNewOptionLabel?: string;
-} // EditableMultipleChoicePuzzleContentProps
+} // EditableMultipleChoiceItemContentProps
 
-export const EditableMultipleChoicePuzzleContent = (props: EditableMultipleChoicePuzzleContentProps): JSX.Element => {
+export const EditableMultipleChoiceItemContent = (props: EditableMultipleChoiceItemContentProps): JSX.Element => {
 
   const {
-    puzzlePayload,
+    payload,
     addNewOptionLabel = 'New option',
     onPayloadChanged
   } = props;
@@ -87,24 +85,24 @@ export const EditableMultipleChoicePuzzleContent = (props: EditableMultipleChoic
   const {
     answers,
     maxAnswers
-  } = puzzlePayload;
+  } = payload;
 
   const handleAddOption = () => {
     if (!onPayloadChanged) return;
     onPayloadChanged({
-      ...puzzlePayload,
-      answers: [...puzzlePayload.answers, '']
+      ...payload,
+      answers: [...payload.answers, '']
     })
   }; // handleAddOption
 
   const handleEditOption = (index: number, value: string) => {
     if (!onPayloadChanged) return;
     onPayloadChanged({
-      ...puzzlePayload,
+      ...payload,
       answers: [
-        ...puzzlePayload.answers.slice(0, index),
+        ...payload.answers.slice(0, index),
         value,
-        ...puzzlePayload.answers.slice(index + 1)
+        ...payload.answers.slice(index + 1)
       ]
     })
   }; // handleEditOption
@@ -112,8 +110,8 @@ export const EditableMultipleChoicePuzzleContent = (props: EditableMultipleChoic
   const handleRemoveOption = (index: number) => {
     if (!onPayloadChanged) return;
     onPayloadChanged({
-      ...puzzlePayload,
-      answers: puzzlePayload.answers.filter((_, i) => i !== index)
+      ...payload,
+      answers: payload.answers.filter((_, i) => i !== index)
     })
   }; // handleRemoveOption
 
@@ -137,35 +135,37 @@ export const EditableMultipleChoicePuzzleContent = (props: EditableMultipleChoic
             />
           </CheckboxOption>
         ))}
-        <CheckboxOption
-          onClick={handleAddOption}
-          key='checkBoxOptionAddNew'
-          backgroundColor='darkgray'
-        >
-          <EditableCheckBoxInput
-            key='editableCheckBoxInputAddNew'
-            labelText=''
-            labelTextPlaceholder={addNewOptionLabel}
-            style='radio'
-            boxSize='2.875rem'
-            enabled={false}
-          />
-        </CheckboxOption>
+        {payload.answers.length < 6 && (
+          <CheckboxOption
+            onClick={handleAddOption}
+            key='checkBoxOptionAddNew'
+            backgroundColor='darkgray'
+          >
+            <EditableCheckBoxInput
+              key='editableCheckBoxInputAddNew'
+              labelText=''
+              labelTextPlaceholder={addNewOptionLabel}
+              style='radio'
+              boxSize='2.875rem'
+              enabled={false}
+            />
+          </CheckboxOption>
+        )}
       </CheckboxList>
     </>
   );
-}; // EditableMultipleChoicePuzzleContent
+}; // EditableMultipleChoiceItemContent
 
-export const multipleChoicePuzzleFactory: AbstractPuzzleFactory<MultipleChoiceFieldDefinition> = {
-  puzzleEditingComponent: (puzzleEditingProps) => (
-    <EditableMultipleChoicePuzzleContent
-      {...puzzleEditingProps}
+export const multipleChoiceItemFactory: AbstractActivityItemFactory<MultipleChoiceFieldDefinition> = {
+  editingComponent: (editingProps) => (
+    <EditableMultipleChoiceItemContent
+      {...editingProps}
     />
   ),
-  defaultPuzzleDefinition: {
+  defaultDefinition: {
     answers: ['', '']
   }
-}; // multipleChoicePuzzleFactory
+}; // multipleChoiceItemFactory
 
 
-export default EditableMultipleChoicePuzzleContent;
+export default EditableMultipleChoiceItemContent;

@@ -1,20 +1,17 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { RadioCircleMarked } from "styled-icons/boxicons-regular";
-
-// navigation
-import { ActivityCreationOverviewPanel, ActivityCreationOverviewPanelProps } from '../../components/Navigation/ActivityCreationOverviewPanel';
+import { Exit } from "@styled-icons/icomoon/Exit";
 
 // services
 import { useAsyncRequest } from '../../services/useAsyncRequest';
 
 // steps
-import { State } from '../../components/Navigation/Steps';
-import { CompletedEscapeRoomActivityDefinition, EscapeRoomPuzzleDefinition, InProgressEscapeRoomActivityDefinition, RoomDefinition, RoomPuzzle } from '../../services/escapeRoomActivity.model';
-import { PuzzleSlidesContainer } from './components/PuzzleSlidesContainer';
-import EditablePuzzle, { PuzzleMapping } from './components/EditablePuzzle';
-import { multipleChoicePuzzleFactory } from './components/MutipleChoicePuzzle';
-import { puzzleTypeIcon } from './components/PuzzleSettingsContainer';
+import { CompletedEscapeRoomActivityDefinition, EscapeRoomPuzzleDefinition, EscapeRoomStage, InProgressEscapeRoomActivityDefinition, RoomPuzzle } from '../../services/escapeRoomActivity.model';
+import { EscapeRoomStageSlidesContainer } from './components/EscapeRoomStageSlidesContainer';
+import EditableStage, { StageMappings } from './components/EditableStage';
+import { multipleChoiceItemFactory } from './components/MutipleChoiceItem';
+import { stageTypeIcon } from './components/StageSettingsContainer';
 import { cloneDeep } from 'lodash';
 
 const Root = styled.div`
@@ -22,9 +19,67 @@ const Root = styled.div`
   flex-direction: column;
 `;
 
+//-------------------------------------------------------
+//                 Stage Mappings
+//-------------------------------------------------------
+
 const MultipleChoiceIcon = styled(RadioCircleMarked)`
-  ${puzzleTypeIcon}
+  ${stageTypeIcon}
 `;
+
+const RoomIcon = styled(Exit)`
+  ${stageTypeIcon}
+`;
+
+export const stageMappings: StageMappings<EscapeRoomStage> = {
+  'room': {
+    displayName: 'Room',
+    iconComponent: <RoomIcon />,
+    editingComponentProducer: () => <></>,
+    defaultStagePayload: {
+      exitCode: '',
+      hints: [],
+      puzzles: []
+    }
+  },
+  'multiple-choice': {
+    displayName: 'Multiple Choice',
+    iconComponent: <MultipleChoiceIcon />,
+    editingComponentProducer: multipleChoiceItemFactory.editingComponent,
+    defaultStagePayload: multipleChoiceItemFactory.defaultDefinition
+  }
+}
+
+//-------------------------------------------------------
+//                    Defaults
+//-------------------------------------------------------
+
+const sample_puzzle: EscapeRoomPuzzleDefinition = {
+  entryPoint: {
+    type: 'qr-scan',
+    text: 'sample QR text'
+  },
+  type: 'multiple-choice',
+  payload: {
+    answers: []
+  }
+};
+
+const sample_stage: EscapeRoomStage = {
+  type: 'multiple-choice',
+  payload: {
+    answers: []
+  }
+};
+
+const sample_base: InProgressEscapeRoomActivityDefinition = {
+  activityType: 'Escape Room',
+  activityTitle: undefined,
+  activityAuthor: undefined,
+  beginsOn: undefined,
+  endsOn: undefined,
+  stages: [sample_stage]
+};
 
 //-------------------------------------------------------
 //                 State Definition
@@ -61,6 +116,10 @@ export const CreateEscapeRoomScreen = () => {
   );
 }
 
+//-------------------------------------------------------
+//                 Escape Room Creation
+//-------------------------------------------------------
+
 interface CreateEscapeRoomScreenComponentProps {
   /** Initial state that this component will take as base */
   initialActivityDefinition?: InProgressEscapeRoomActivityDefinition | undefined;
@@ -72,26 +131,6 @@ interface CreateEscapeRoomScreenComponentProps {
    */
   onSubmitActivityDefinition?: (value: CompletedEscapeRoomActivityDefinition) => void;
 }
-
-const sample_puzzle: EscapeRoomPuzzleDefinition = {
-  type: 'multiple-choice',
-  payload: {
-    answers: []
-  }
-};
-
-const sample_base: InProgressEscapeRoomActivityDefinition = {
-  activityType: 'Escape Room',
-  activityTitle: undefined,
-  activityAuthor: undefined,
-  beginsOn: undefined,
-  endsOn: undefined,
-  rooms: [{
-    exitCode: '',
-    hints: [],
-    puzzles: [sample_puzzle]
-  }]
-};
 
 export const CreateEscapeRoomScreenComponent = (props: CreateEscapeRoomScreenComponentProps): JSX.Element => {
 
@@ -107,9 +146,9 @@ export const CreateEscapeRoomScreenComponent = (props: CreateEscapeRoomScreenCom
   const [activityDefinition, setActivityDefinition] =
     useState<InProgressEscapeRoomActivityDefinition>(initialActivityDefinition ? { ...sample_base, ...initialActivityDefinition } : { ...sample_base });
 
-  // currently selected room from activityDefinition.rooms
-  const [selectedRoom, setSelectedRoom] = useState<number>(0);
-  // currently selected puzzle from activityDefinition.rooms[selectedRoom].puzzles
+  // currently selected stage from activityDefinition.stages
+  const [selectedStage, setSelectedStage] = useState<number>(0);
+  // currently selected puzzle from activityDefinition.stages[selectedStage].puzzles
   const [selectedPuzzle, setSelectedPuzzle] = useState<number>(0);
 
   useEffect(() => {
@@ -129,16 +168,28 @@ export const CreateEscapeRoomScreenComponent = (props: CreateEscapeRoomScreenCom
       endsOn: activityDefinition.endsOn as Date,
       tags: activityDefinition.tags as string[],
       imageSrc: activityDefinition.imageSrc as string,
-      rooms: activityDefinition.rooms as RoomDefinition[]
+      stages: activityDefinition.stages
     };
 
     onSubmitActivityDefinition(def);
   }; // handleSubmitActivityDefinition
 
+  const handleAddStage = () => {
+    setActivityDefinition(prev => {
+      let next = cloneDeep(prev);
+      next.stages = [...next.stages, sample_stage];
+      return next;
+    });
+  }; // handleAddStage
+
   const handleAddPuzzle = () => {
     setActivityDefinition(prev => {
       let next = cloneDeep(prev);
-      next.rooms[selectedRoom].puzzles = [...next.rooms[selectedRoom].puzzles, sample_puzzle];
+      const currentRoom = next.stages[selectedStage];
+      // can only add puzzle to room-type stage
+      if (currentRoom.type !== 'room') return prev;
+
+      currentRoom.payload.puzzles = [...currentRoom.payload.puzzles, sample_puzzle];
       return next;
     });
   }; // handleAddPuzzle
@@ -146,7 +197,11 @@ export const CreateEscapeRoomScreenComponent = (props: CreateEscapeRoomScreenCom
   const handleDeletePuzzle = () => {
     setActivityDefinition(prev => {
       let next = cloneDeep(prev);
-      next.rooms[selectedRoom].puzzles = next.rooms[selectedRoom].puzzles.filter((_, i) => i !== selectedPuzzle);
+      const currentRoom = next.stages[selectedStage];
+      // can only remove puzzle from room-type stage
+      if (currentRoom.type !== 'room') return prev;
+
+      currentRoom.payload.puzzles = (currentRoom.payload.puzzles as EscapeRoomPuzzleDefinition[]).filter((_, i) => i !== selectedPuzzle);
       return next;
     });
   }; // handleDeletePuzzle
@@ -154,8 +209,12 @@ export const CreateEscapeRoomScreenComponent = (props: CreateEscapeRoomScreenCom
   const handleDuplicatePuzzle = () => {
     setActivityDefinition(prev => {
       let next = cloneDeep(prev);
-      const puzzles = next.rooms[selectedRoom].puzzles;
-      next.rooms[selectedRoom].puzzles = [
+      const currentRoom = next.stages[selectedStage];
+      // can only duplicate puzzle within room-type stage
+      if (currentRoom.type !== 'room') return prev;
+
+      const puzzles: EscapeRoomPuzzleDefinition[] = currentRoom.payload.puzzles;
+      currentRoom.payload.puzzles = [
         ...puzzles.slice(0, selectedPuzzle),
         puzzles[selectedPuzzle],
         ...puzzles.slice(selectedPuzzle, puzzles.length)
@@ -167,37 +226,62 @@ export const CreateEscapeRoomScreenComponent = (props: CreateEscapeRoomScreenCom
   const handlePuzzleDefinitionChanged = (puzzleDefinition: EscapeRoomPuzzleDefinition) => {
     setActivityDefinition(prev => {
       let next = cloneDeep(prev);
-      next.rooms[selectedRoom].puzzles[selectedPuzzle] = puzzleDefinition;
+      const currentRoom = next.stages[selectedStage];
+      // can only change puzzle within room-type stage
+      if (currentRoom.type !== 'room') return prev;
+
+      currentRoom.payload.puzzles[selectedPuzzle] = puzzleDefinition;
       return next;
     });
   }; // handlePuzzleDefinitionChanged
 
-  const puzzleMappings: PuzzleMapping[] = [
-    {
-      puzzleType: 'multiple-choice',
-      displayName: 'Multiple Choice',
-      iconComponent: <MultipleChoiceIcon />,
-      defaultPuzzlePayload: multipleChoicePuzzleFactory.defaultPuzzleDefinition,
-      editingComponentProducer: multipleChoicePuzzleFactory.puzzleEditingComponent as any
-    }
-  ];
+  const handleStageDefinitionChanged = (stageDefinition: EscapeRoomStage) => {
+    setActivityDefinition(prev => {
+      let next = cloneDeep(prev);
+      next.stages[selectedStage] = stageDefinition;
+      return next;
+    });
+  }; // handleStageDefinitionChanged
 
-  const puzzles = activityDefinition.rooms[selectedRoom].puzzles;
+  const handleDeleteStage = () => {
+    setActivityDefinition(prev => {
+      let next = cloneDeep(prev);
+      next.stages = [
+        ...next.stages.slice(0, selectedStage),
+        ...next.stages.slice(selectedStage + 1, next.stages.length)
+      ];
+      return next;
+    });
+  }; // handleDeleteStage
+
+  const handleDuplicateStage = () => {
+    setActivityDefinition(prev => {
+      let next = cloneDeep(prev);
+      next.stages = [
+        ...next.stages.slice(0, selectedStage),
+        next.stages[selectedStage],
+        ...next.stages.slice(selectedStage, next.stages.length)
+      ];
+      return next;
+    });
+  }; // handleDuplicateStage
+
+  const currentStage = activityDefinition.stages[selectedStage];
 
   return (
     <Root>
-      <PuzzleSlidesContainer
-        puzzles={puzzles}
-        selectedPuzzleIndex={selectedPuzzle}
-        onAddPuzzle={handleAddPuzzle}
-        onSelectPuzzle={(index) => setSelectedPuzzle(index)}
+      <EscapeRoomStageSlidesContainer
+        stages={activityDefinition.stages}
+        selectedStageIndex={selectedStage}
+        onAddStage={handleAddStage}
+        onSelectStage={(index) => setSelectedStage(index)}
       />
-      <EditablePuzzle
-        puzzleDefinition={puzzles[selectedPuzzle]}
-        puzzleMappings={puzzleMappings}
-        onPuzzleDefinitionChanged={handlePuzzleDefinitionChanged}
-        onPuzzleDeleted={handleDeletePuzzle}
-        onPuzzleDuplicated={handleDuplicatePuzzle}
+      <EditableStage
+        stageDefinition={currentStage}
+        stageMappings={stageMappings}
+        onStageDefinitionChanged={handleStageDefinitionChanged}
+        onStageDeleted={handleDeleteStage}
+        onStageDuplicated={handleDuplicateStage}
       />
     </Root>
   );
