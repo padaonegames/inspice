@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { EscapeRoomStage } from "../../../services/escapeRoomActivity.model";
-import { EscapeRoomStageSlide } from "./EscapeRoomStageSlide";
+import { EscapeRoomStageSlide, EscapeRoomStageSlideProps } from "./EscapeRoomStageSlide";
 
 const Root = styled.div`
   position: fixed;
@@ -87,11 +87,18 @@ const AddItemButton = styled.button`
   }
 `;
 
+export type StageToSlideProducerMapping<T extends EscapeRoomStage> = {
+  /** What type of stage we are working with here*/
+  [P in T['type']]: ((slidePreviewProps: Extract<T, { type: P }>['payload']) => JSX.Element) | undefined;
+}
+
 export interface EscapeRoomStageSlidesContainerProps {
   /** list of stages currently included in the activity */
   stages: EscapeRoomStage[];
   /** index of currently selected stage in stages */
   selectedStageIndex: number;
+  /** What  mappings we are working with in this slides list (available stage types and how to render their previews) */
+  stageMappings: StageToSlideProducerMapping<EscapeRoomStage>;
   /** Callback to parent component specifying that user wishes to add a new stage to the activity */
   onAddStage?: () => void;
   /** Callback to parent component specifying that user wishes to select a given stage from the activity */
@@ -103,6 +110,7 @@ export const EscapeRoomStageSlidesContainer = (props: EscapeRoomStageSlidesConta
   const {
     stages,
     selectedStageIndex,
+    stageMappings,
     onAddStage,
     onSelectStage
   } = props;
@@ -116,14 +124,23 @@ export const EscapeRoomStageSlidesContainer = (props: EscapeRoomStageSlidesConta
   return (
     <Root>
       <SlidesContainer>
-        {stages.map((s, i) => (
-          <EscapeRoomStageSlide
-            key={s.type + '_' + i}
-            selected={i == selectedStageIndex}
-            stage={s}
-            onSlideSelected={() => handleSelectStage(i)}
-          />
-        ))}
+        {stages.map((s, i) => {
+          // This is "unsafe", but in reality due to how stageMappings is defined
+          // it will never really be problematic (s and stageMappings[s.type] are forcefully consistent)
+          const slideProps = {
+            selected: i == selectedStageIndex,
+            stage: s,
+            slidePreviewProducer: stageMappings[s.type],
+            onSlideSelected: () => handleSelectStage(i)
+          } as EscapeRoomStageSlideProps;
+
+          return (
+            <EscapeRoomStageSlide
+              key={s.type + '_' + i}
+              {...slideProps}
+            />
+          );
+        })}
       </SlidesContainer>
       <ButtonsContainer>
         <AddItemButtonContainer>

@@ -130,7 +130,7 @@ export const EditableCheckBoxInput = (props: EditableCheckBoxInputProps): JSX.El
           if (onLabelTextChanged) onLabelTextChanged(event.target.value);
         }}
       />
-      {enabled && <RemoveOptionIcon onClick={onObjectRemoved}/>}
+      {enabled && onObjectRemoved && <RemoveOptionIcon onClick={onObjectRemoved}/>}
     </Container>
   );
 };

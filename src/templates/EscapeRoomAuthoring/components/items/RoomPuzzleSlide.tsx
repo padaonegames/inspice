@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { EscapeRoomStage } from "../../../services/escapeRoomActivity.model";
+import { EscapeRoomPuzzleDefinition } from "../../../../services/escapeRoomActivity.model";
 
 interface RootProps {
   selected?: boolean;
@@ -7,17 +7,17 @@ interface RootProps {
 const Root = styled.div<RootProps>`
   box-sizing: border-box;
   height: 100%;
-  width: 100%;
   background-color: transparent;
   user-select: none;
   padding: 12px 16px 12px 0px;
   display: block;
   border: 0px none;
+  border-radius: 0.5rem;
   font-size: 0.875rem;
   font-weight: 500;
   font-family: ${props => props.theme.contentFont};
   color: rgb(51, 51, 51);
-  max-height: 141px;
+  min-width: 141px;
   ${props => props.selected && `
   background-color: rgb(234, 244, 252);
   `}
@@ -45,14 +45,15 @@ const SlideContainer = styled.div`
   flex-direction: column;
   flex: 1 1 0%;
   height: calc(100% - 1.25rem);
+  width: 100%;
   box-sizing: border-box;
   color: rgb(51, 51, 51);
 `;
 
-interface StagePreviewProps {
+interface PuzzlePreviewProps {
   selected?: boolean;
 }
-const StagePreview = styled.div<StagePreviewProps>`
+const PuzzlePreview = styled.div<PuzzlePreviewProps>`
   display: flex;
   flex-direction: column;
   -moz-box-pack: justify;
@@ -78,56 +79,24 @@ const StagePreview = styled.div<StagePreviewProps>`
   }
 `;
 
-const PreviewTitle = styled.div`
-  margin-bottom: 0.25rem;
-  color: rgb(110, 110, 110);
-  text-align: center;
-  font-size: 0.75rem;
-  line-height: 1.33;
-  letter-spacing: 0.2px;
-  max-height: 1.5rem;
-  max-width: 100%;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-`;
-
-const PreviewAnswers = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  margin-top: 3px;
-  color: rgb(178, 178, 178);
-`;
-
-const PreviewAnswer = styled.div`
-  position: relative;
-  width: calc(100% - 0.125rem);
-  height: 7px;
-  margin-bottom: 3px;
-  border: 1px solid rgb(229, 229, 229);
-  border-radius: 0.125rem;
-`;
-
-type EscapeRoomStageSlidePropsBase<T extends EscapeRoomStage> = {
+type RoomPuzzleSlidePropsBase<T extends EscapeRoomPuzzleDefinition> = {
   [P in T['type']]: {
-    stage: Extract<EscapeRoomStage, { type: P }>;
+    puzzle: Extract<EscapeRoomPuzzleDefinition, { type: P }>;
     /** whether this slide is currently selected */
     selected: boolean;
-    /** component to render the contents of the slide based on the stage payload */
-    slidePreviewProducer?: (props: Extract<EscapeRoomStage, { type: P }>['payload']) => JSX.Element;
+    /** component to render the contents of the slide based on the puzzle payload */
+    slidePreviewProducer?: (props: Extract<EscapeRoomPuzzleDefinition, { type: P }>['payload']) => JSX.Element;
     /** callback to parent notifying of slide being selected by the user */
     onSlideSelected?: () => void;
   }
-} // EscapeRoomStageSlidePropsBase
+} // RoomPuzzleSlidePropsBase
 
-export type EscapeRoomStageSlideProps = EscapeRoomStageSlidePropsBase<EscapeRoomStage>[keyof EscapeRoomStageSlidePropsBase<EscapeRoomStage>];
+export type RoomPuzzleSlideProps = RoomPuzzleSlidePropsBase<EscapeRoomPuzzleDefinition>[keyof RoomPuzzleSlidePropsBase<EscapeRoomPuzzleDefinition>];
 
-export const EscapeRoomStageSlide = (props: EscapeRoomStageSlideProps): JSX.Element => {
+export const RoomPuzzleSlide = (props: RoomPuzzleSlideProps): JSX.Element => {
 
   const {
-    stage,
+    puzzle,
     selected,
     slidePreviewProducer,
     onSlideSelected
@@ -138,12 +107,40 @@ export const EscapeRoomStageSlide = (props: EscapeRoomStageSlideProps): JSX.Elem
       onClick={onSlideSelected}
       selected={selected}
     >
-      <SlideTitle>{stage.type}</SlideTitle>
+      <SlideTitle>{puzzle.type}</SlideTitle>
       <SlideContainer>
-        <StagePreview selected={selected}>
-          {slidePreviewProducer && slidePreviewProducer(stage.payload as any)}
-        </StagePreview>
+        <PuzzlePreview selected={selected}>
+          {slidePreviewProducer && slidePreviewProducer(puzzle.payload as any)}
+        </PuzzlePreview>
       </SlideContainer>
     </Root>
   );
-}; // EscapeRoomStageSlide
+}; // RoomPuzzleSlide
+
+export interface RoomSettingsSlideProps {
+  /** whether this slide is currently selected */
+  selected: boolean;
+  /** callback to parent notifying of slide being selected by the user */
+  onSlideSelected?: () => void;
+}
+export const RoomSettingsSlide = (props: RoomSettingsSlideProps): JSX.Element => {
+
+  const {
+    selected,
+    onSlideSelected
+  } = props;
+
+  return (
+    <Root
+      onClick={onSlideSelected}
+      selected={selected}
+    >
+      <SlideTitle>Room Settings</SlideTitle>
+      <SlideContainer>
+        <PuzzlePreview selected={selected}>
+          
+        </PuzzlePreview>
+      </SlideContainer>
+    </Root>
+  );
+}; // RoomPuzzleSlide

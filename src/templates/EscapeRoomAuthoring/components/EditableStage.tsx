@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { AvailableEscapeRoomStage, EditableItemProps, EscapeRoomStage } from "../../../services/escapeRoomActivity.model";
-import { PromptField } from "./PromptField";
+import { PromptField } from "./items/PromptField";
 import { StageSettingsContainer } from "./StageSettingsContainer";
 
 const ContentWrapper = styled.main`
@@ -24,6 +24,7 @@ const Content = styled.div`
 `;
 
 const ContentBackground = styled.div`
+  position: relative;
   display: flex;
   flex-direction: column;
   overflow-x: hidden;
@@ -134,10 +135,6 @@ export const EditableStageComponent = (props: EditableStageComponentProps): JSX.
     <ContentWrapper>
       <Content>
         <ContentBackground>
-          <PromptField
-            promptText={stageDefinition.type}
-            promptPlaceholder='Start typing your prompt'
-          />
           {
             selectedStage.editingComponentProducer({
               payload: stageDefinition.payload as any,

@@ -10,7 +10,7 @@ export interface InProgressEscapeRoomActivityDefinition extends InProgressActivi
 
 export type EscapeRoomStage = (
   | { type: 'room', payload: RoomDefinition }
-  | { type: 'multiple-choice', payload: MultipleChoiceFieldDefinition }
+  | { type: 'multiple-choice', payload: MultipleChoiceItemDefinition }
 );
 
 export const escapeRoomStageTypes = [
@@ -48,20 +48,14 @@ export type RoomPuzzleEntryPoint =
   | { type: 'qr-scan', text: string }
   | { type: 'ar-scan', image: string };
 
-export interface RoomPuzzle {
+interface RoomPuzzle {
   /** How to access this puzzle within the room (QR code, AR scan, etc) */
   entryPoint: RoomPuzzleEntryPoint;
-  /** Prompt for the user to know what to do in this puzzle */
-  promptText?: string;
-  /** Type of the field ('multiple-choice', 'find-differences' and so on) */
-  type: string;
-  /** payload or data needed to render the puzzle */
-  payload: any;
 }
 
 export type EscapeRoomPuzzleDefinition = RoomPuzzle &
   (
-    | { type: 'multiple-choice', payload: MultipleChoiceFieldDefinition }
+    | { type: 'multiple-choice', payload: MultipleChoiceItemDefinition }
   );
 
 export interface EscapeRoomActivityDefinition extends ActivityInstance {
@@ -76,7 +70,9 @@ export interface EditableItemProps<T> {
   onPayloadChanged?: (definition: T) => void;
 }
 
-export interface MultipleChoiceFieldDefinition {
+export interface MultipleChoiceItemDefinition {
+  /** Prompt that this item displays answers for */
+  prompt: string;
   /** answers to choose from */
   answers: string[];
   /** maximum number of answers to allow */

@@ -1,7 +1,8 @@
 import styled from "styled-components";
-import { EditableItemProps, MultipleChoiceFieldDefinition } from "../../../services/escapeRoomActivity.model";
-import EditableCheckBoxInput from "./EditableCheckBoxInput";
-import { AbstractActivityItemFactory } from "./ActivityItemFactory";
+import { EditableItemProps, MultipleChoiceItemDefinition } from "../../../../services/escapeRoomActivity.model";
+import EditableCheckBoxInput from "../EditableCheckBoxInput";
+import { AbstractActivityItemFactory } from "../ActivityItemFactory";
+import { PromptField } from "./PromptField";
 
 interface InputAreaProps {
   width?: string;
@@ -69,7 +70,39 @@ const CheckboxOption = styled.div<CheckBoxOptionProps>`
   box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
 `;
 
-export interface EditableMultipleChoiceItemContentProps extends EditableItemProps<MultipleChoiceFieldDefinition> {
+const PreviewTitle = styled.div`
+  margin-bottom: 0.25rem;
+  color: rgb(110, 110, 110);
+  text-align: center;
+  font-size: 0.75rem;
+  line-height: 1.33;
+  letter-spacing: 0.2px;
+  max-height: 1.5rem;
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+`;
+
+const PreviewAnswers = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 3px;
+  color: rgb(178, 178, 178);
+`;
+
+const PreviewAnswer = styled.div`
+  position: relative;
+  width: calc(100% - 0.125rem);
+  height: 7px;
+  margin-bottom: 3px;
+  border: 1px solid rgb(229, 229, 229);
+  border-radius: 0.125rem;
+`;
+
+export interface EditableMultipleChoiceItemContentProps extends EditableItemProps<MultipleChoiceItemDefinition> {
   /** text to display for the add new option label. */
   addNewOptionLabel?: string;
 } // EditableMultipleChoiceItemContentProps
@@ -115,10 +148,23 @@ export const EditableMultipleChoiceItemContent = (props: EditableMultipleChoiceI
     })
   }; // handleRemoveOption
 
+  const handleEditPrompt = (value: string) => {
+    if (!onPayloadChanged) return;
+    onPayloadChanged({
+      ...payload,
+      prompt: value
+    })
+  }; // handleEditPrompt
+
   const availableColors = ['#e21b3c', '#1368ce', '#d89e00', '#26890c', '#0aa3a3', '#864cbf'];
 
   return (
     <>
+      <PromptField
+        promptText={payload.prompt}
+        promptPlaceholder='Start typing your prompt'
+        onPromptChange={handleEditPrompt}
+      />
       <CheckboxList>
         {answers.map((elem, i) => (
           <CheckboxOption
@@ -156,13 +202,31 @@ export const EditableMultipleChoiceItemContent = (props: EditableMultipleChoiceI
   );
 }; // EditableMultipleChoiceItemContent
 
-export const multipleChoiceItemFactory: AbstractActivityItemFactory<MultipleChoiceFieldDefinition> = {
+export const MultipleChoiceItemStageSlide = (props: MultipleChoiceItemDefinition): JSX.Element => {
+
+  const {
+    prompt,
+    answers
+  } = props;
+
+  return (
+    <>
+      <PreviewTitle>{prompt}</PreviewTitle>
+      <PreviewAnswers>
+        {[...Array(answers.length)].map((_, i) => <PreviewAnswer key={i} />)}
+      </PreviewAnswers>
+    </>
+  );
+}; // MultipleChoiceItemStageSlide
+
+export const multipleChoiceItemFactory: AbstractActivityItemFactory<MultipleChoiceItemDefinition> = {
   editingComponent: (editingProps) => (
     <EditableMultipleChoiceItemContent
       {...editingProps}
     />
   ),
   defaultDefinition: {
+    prompt: '',
     answers: ['', '']
   }
 }; // multipleChoiceItemFactory
