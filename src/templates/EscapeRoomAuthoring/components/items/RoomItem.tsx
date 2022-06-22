@@ -2,9 +2,10 @@ import styled from "styled-components";
 import { EditableItemProps, EscapeRoomPuzzleDefinition, RoomDefinition } from "../../../../services/escapeRoomActivity.model";
 import { AbstractActivityItemFactory } from "../ActivityItemFactory";
 import { PuzzleToSlideProducerMapping, RoomPuzzleSlidesContainer } from "./RoomPuzzleSlidesContainer";
-import { MultipleChoiceItemStageSlide } from "./MutipleChoiceItem";
+import { multipleChoiceItemFactory, MultipleChoiceItemStageSlide } from "./MutipleChoiceItem";
 import { useState } from "react";
 import { RoomSettingsEditor } from "./RoomSettingsEditor";
+import { PuzzleEntryPointEditor } from "./PuzzleEntryPointEditor";
 
 interface InputAreaProps {
   width?: string;
@@ -37,8 +38,25 @@ export const InputArea = styled.textarea<InputAreaProps>`
   }
 `;
 
-export const puzzleMappings: PuzzleToSlideProducerMapping<EscapeRoomPuzzleDefinition> = {
+export const puzzleToSlidesMappings: PuzzleToSlideProducerMapping<EscapeRoomPuzzleDefinition> = {
   "multiple-choice": MultipleChoiceItemStageSlide
+};
+
+export type PuzzleToEditorProducerMapping<T extends EscapeRoomPuzzleDefinition> = {
+  /** What type of puzzle we are working with here*/
+  [P in T['type']]: {
+    /** Generation logic to use to create a form editing component */
+    editingComponentProducer: (editingFormProps: EditableItemProps<Extract<T, { type: P }>['payload']>) => JSX.Element;
+    /** Default value for StagePayload */
+    defaultStagePayload: Extract<T, { type: P }>['payload'];
+  }
+}
+
+export const puzzleToEditorsMappings: PuzzleToEditorProducerMapping<EscapeRoomPuzzleDefinition> = {
+  "multiple-choice": {
+    editingComponentProducer: multipleChoiceItemFactory.editingComponent,
+    defaultStagePayload: multipleChoiceItemFactory.defaultDefinition
+  }
 };
 
 const sample_puzzle: EscapeRoomPuzzleDefinition = {
@@ -122,34 +140,50 @@ export const EditableRoomItemContent = (props: EditableRoomItemContentProps): JS
     });
   }; // handleDuplicatePuzzle
 
-  const handlePuzzleDefinitionChanged = (index: number, puzzleDefinition: EscapeRoomPuzzleDefinition) => {
+  const handlePuzzlePayloadChanged = (index: number, puzzlePayload: EscapeRoomPuzzleDefinition['payload']) => {
     if (!onPayloadChanged) return;
     onPayloadChanged({
       ...payload,
       puzzles: [
         ...puzzles.slice(0, index),
-        puzzleDefinition,
+        {
+          ...puzzles[index],
+          payload: puzzlePayload
+        },
         ...puzzles.slice(index + 1, puzzles.length)
       ]
     });
-  }; // handlePuzzleDefinitionChanged
+  }; // handlePuzzlePayloadChanged
+
+  const currentPuzzle = selectedPuzzle !== 'room-settings' ? puzzles[selectedPuzzle] : undefined;
 
   return (
     <>
       <RoomPuzzleSlidesContainer
-        puzzleMappings={puzzleMappings}
+        puzzleMappings={puzzleToSlidesMappings}
         selectedPuzzleIndex={selectedPuzzle}
         onSelectRoomSettings={() => setSelectedPuzzle('room-settings')}
         onSelectPuzzle={setSelectedPuzzle}
         puzzles={puzzles}
         onAddPuzzle={handleAddPuzzle}
       />
-      <RoomSettingsEditor
-        hints={hints}
-        exitCode={exitCode}
-        onHintsChanged={handleHintsChanged}
-        onExitCodeChanged={handleEditExitCode}
-      />
+      {selectedPuzzle === 'room-settings' &&
+        <RoomSettingsEditor
+          hints={hints}
+          exitCode={exitCode}
+          onHintsChanged={handleHintsChanged}
+          onExitCodeChanged={handleEditExitCode}
+        />
+      }
+      {currentPuzzle && selectedPuzzle !== 'room-settings' && (
+        <>
+          <PuzzleEntryPointEditor />
+          {puzzleToEditorsMappings[currentPuzzle.type].editingComponentProducer({
+            payload: currentPuzzle.payload as any,
+            onPayloadChanged: (value) => handlePuzzlePayloadChanged(selectedPuzzle, value)
+          })}
+        </>
+      )}
     </>
   );
 }; // EditableRoomItemContent

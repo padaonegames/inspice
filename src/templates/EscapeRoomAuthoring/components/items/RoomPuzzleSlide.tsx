@@ -18,6 +18,7 @@ const Root = styled.div<RootProps>`
   font-family: ${props => props.theme.contentFont};
   color: rgb(51, 51, 51);
   min-width: 141px;
+  max-width: 141px;
   ${props => props.selected && `
   background-color: rgb(234, 244, 252);
   `}
@@ -25,6 +26,7 @@ const Root = styled.div<RootProps>`
 
 const SlideTitle = styled.div`
   display: flex;
+  z-index: 999999;
   flex: 0 1 auto;
   -moz-box-pack: start;
   justify-content: flex-start;

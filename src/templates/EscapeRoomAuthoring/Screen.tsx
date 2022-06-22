@@ -7,7 +7,7 @@ import { Exit } from "@styled-icons/icomoon/Exit";
 import { useAsyncRequest } from '../../services/useAsyncRequest';
 
 // steps
-import { CompletedEscapeRoomActivityDefinition, EscapeRoomPuzzleDefinition, EscapeRoomStage, InProgressEscapeRoomActivityDefinition } from '../../services/escapeRoomActivity.model';
+import { CompletedEscapeRoomActivityDefinition, EscapeRoomPuzzleDefinition, EscapeRoomStage, InProgressEscapeRoomActivityDefinition, ItemDefinition } from '../../services/escapeRoomActivity.model';
 import { EscapeRoomStageSlidesContainer, StageToSlideProducerMapping } from './components/EscapeRoomStageSlidesContainer';
 import EditableStage, { StageMappings } from './components/EditableStage';
 import { multipleChoiceItemFactory, MultipleChoiceItemStageSlide } from './components/items/MutipleChoiceItem';
@@ -32,7 +32,10 @@ const RoomIcon = styled(Exit)`
   ${stageTypeIcon}
 `;
 
-export const stageMappings: StageMappings<EscapeRoomStage> = {
+// TODO: include an extract modifier to select only those items that 
+// belong to the actual set of selectable stages. Likely the best way to go about this would be to export
+// a type here with the "filtered" item definition options
+export const stageMappings: StageMappings<ItemDefinition> = {
   'room': {
     displayName: 'Room',
     iconComponent: <RoomIcon />,

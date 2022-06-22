@@ -5,10 +5,15 @@ import { ActivityInstance, InProgressActivityInstance } from "./activity.model";
 
 export interface InProgressEscapeRoomActivityDefinition extends InProgressActivityInstance {
   activityType: 'Escape Room';
-  stages: EscapeRoomStage[];
+  stages: ItemDefinition[];
 }
 
 export type EscapeRoomStage = (
+  | { type: 'room', payload: RoomDefinition }
+  | { type: 'multiple-choice', payload: MultipleChoiceItemDefinition }
+);
+
+export type ItemDefinition = (
   | { type: 'room', payload: RoomDefinition }
   | { type: 'multiple-choice', payload: MultipleChoiceItemDefinition }
 );

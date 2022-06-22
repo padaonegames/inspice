@@ -106,7 +106,7 @@ const AddItemButton = styled.button`
 
 export type PuzzleToSlideProducerMapping<T extends EscapeRoomPuzzleDefinition> = {
   /** What type of puzzle we are working with here*/
-  [P in T['type']]: ((slidePreviewProps: Extract<T, { type: P }>['payload']) => JSX.Element) | undefined;
+  [P in T['type']]: ((slidePreviewProps: Extract<T, { type: P }>['payload']) => JSX.Element);
 }
 
 export interface RoomPuzzleSlidesContainerProps {
@@ -169,7 +169,12 @@ export const RoomPuzzleSlidesContainer = (props: RoomPuzzleSlidesContainerProps)
         </SlidesContainer>
         <ButtonsContainer>
           <AddItemButtonContainer>
-            <AddItemButton onClick={onAddPuzzle}><AddIcon /></AddItemButton>
+            <AddItemButton
+              onClick={onAddPuzzle}
+              title="Add Puzzle"
+            >
+              <AddIcon />
+            </AddItemButton>
           </AddItemButtonContainer>
         </ButtonsContainer>
       </Root>
