@@ -13,6 +13,7 @@ import EditableStage, { StageMappings } from './components/EditableStage';
 import { multipleChoiceItemFactory, MultipleChoiceItemStageSlide } from './components/items/MutipleChoiceItem';
 import { waitingCodeItemFactory, WaitingCodeItemStageSlide } from './components/items/WaitingCodeItem';
 import { qrScanItemFactory, QRScanItemStageSlide } from './components/items/QRScanItem';
+import { arScanItemFactory, ARScanItemStageSlide } from './components/items/ARScanItem';
 
 import { stageTypeIcon } from './components/StageSettingsContainer';
 import {Wondering2} from "@styled-icons/icomoon/Wondering2"
@@ -70,6 +71,12 @@ export const stageMappings: StageMappings<SupportedStage> = {
     iconComponent: <QRCodeIcon />,
     editingComponentProducer: qrScanItemFactory.editingComponent,
     defaultStagePayload: qrScanItemFactory.defaultDefinition
+  },
+  'ar-scan': {
+    displayName: 'AR Scan',
+    iconComponent: <QRCodeIcon />,
+    editingComponentProducer: arScanItemFactory.editingComponent,
+    defaultStagePayload: arScanItemFactory.defaultDefinition
   }
 };
 
@@ -77,7 +84,8 @@ export const stageSlidesMappings: StageToSlideProducerMapping<SupportedStage> = 
   'room': undefined,
   'multiple-choice': MultipleChoiceItemStageSlide,
   'waiting-code': WaitingCodeItemStageSlide,
-  "qr-scan":QRScanItemStageSlide
+  "qr-scan":QRScanItemStageSlide,
+  "ar-scan":ARScanItemStageSlide
 };
 
 //-------------------------------------------------------

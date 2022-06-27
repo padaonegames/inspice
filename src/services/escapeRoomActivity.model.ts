@@ -16,7 +16,8 @@ export const escapeRoomStageTypes = [
   'room',
   'multiple-choice',
   'waiting-code',
-  'qr-scan'
+  'qr-scan',
+  'ar-scan'
 ] as const; // escapeRoomStageTypes
 
 export type AvailableEscapeRoomStageType = typeof escapeRoomStageTypes[number];

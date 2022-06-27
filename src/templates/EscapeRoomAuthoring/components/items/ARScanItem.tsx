@@ -1,11 +1,12 @@
-import { EditableItemProps, QrScanItemDefinition } from "../../../../services/escapeRoomActivity.model";
+import { EditableItemProps, ArScanItemDefinition } from "../../../../services/escapeRoomActivity.model";
 import { AbstractActivityItemFactory } from "../ActivityItemFactory";
 import { PromptField } from "./PromptField";
-import {QRCodeCanvas} from "qrcode.react";
 
 import styled from "styled-components";
-import { QrCode} from "@styled-icons/material/QrCode";
 import {Download} from "@styled-icons/bootstrap/Download"
+import { ScanObject } from "styled-icons/fluentui-system-filled";
+import Dropzone from 'react-dropzone';
+import { useState } from 'react';
 
 const PreviewTitle = styled.div`
   margin-bottom: 0rem;
@@ -21,7 +22,13 @@ const PreviewTitle = styled.div`
   text-overflow: ellipsis;
 `;
 
-const PreviewQR = styled.div`
+
+interface ImagePreviewProps {
+  src?: string;
+}
+
+
+const PreviewAR = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -96,7 +103,7 @@ const DownloadIcon = styled(Download)`
 
 
 
-const QrCodeIcon = styled(QrCode)`
+const ArCodeIcon = styled(ScanObject)`
   color: ${props => props.theme.textColor};
   height: 1.75em;
   width: auto;
@@ -120,13 +127,15 @@ const CheckboxList = styled.div`
 `;
 
 
+const defaultImage = "https://cdn3.vectorstock.com/i/1000x1000/60/67/example-rubber-stamp-vector-12386067.jpg";
 
-export interface EditableWaitingCodeItemContentProps extends EditableItemProps<QrScanItemDefinition> {
+export interface EditableWaitingCodeItemContentProps extends EditableItemProps<ArScanItemDefinition> {
   /** text to display for the add new option label. */
   addNewOptionLabel?: string;
 } // EditableWaitingCodeItemContentProps
 
-export const EditableQRScanItemContent = (props: EditableWaitingCodeItemContentProps): JSX.Element => {
+export const EditableARScanItemContent = (props: EditableWaitingCodeItemContentProps): JSX.Element => {
+
 
   const {
     payload,
@@ -134,94 +143,69 @@ export const EditableQRScanItemContent = (props: EditableWaitingCodeItemContentP
     onPayloadChanged
   } = props;
 
+  const [imageToShow, setImageToShow] = useState<File | null>(null);
   const {
-    encodedText
+    imageSrc
   } = payload;
 
-  const handleEditcode = (value: string) => {
-    if (!onPayloadChanged) return;
-    onPayloadChanged({
-      ...payload,
-      encodedText: value
-    })
-  }; // handleEditcode
+  const handleOnDrop = (files:any, rejectedFiles:any)=>{
+    if (files[0] instanceof File){
+     setImageToShow(files[0] as File); 
+    }
+  }
 
-  const downloadQR = () => {
-    if(encodedText=== "") return;
-
-    const canvas = document.getElementById("qr-generator");
-    if(!canvas) return;
-
-    const canvasElement = canvas as HTMLCanvasElement;
-    const pngUrl = canvasElement.toDataURL("image/png").replace("image/png", "image/octet-stream");
-
-    let downloadLink = document.createElement("a");
-    downloadLink.href = pngUrl;
-    downloadLink.download = encodedText+".png";
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
-    document.body.removeChild(downloadLink);
-  };
-
-
-  const availableColors = ['#e21b3c', '#1368ce', '#d89e00', '#26890c', '#0aa3a3', '#864cbf'];
 
   return (
     <>
-
       <CheckboxList>
         <CheckboxTitle>
-          <QrCodeIcon />
-          QR Code
+          <ArCodeIcon />
+          Image to Scan
         </CheckboxTitle>    
+        <img src= {imageToShow !==null ? window.URL.createObjectURL(imageToShow) : defaultImage} width={200} height ={200}></img>
 
-        <QRCodeCanvas id="qr-generator" value={payload.encodedText} size={400} fgColor="black" bgColor="white" level="H" includeMargin= {true}  />
-        <PromptField
-          promptText={payload.encodedText}
-          promptPlaceholder='Value to create a new QR'
-          onPromptChange={handleEditcode}
-        />
+        <Dropzone onDrop={handleOnDrop} multiple= {false}>
+          {({getRootProps, getInputProps}) => (
+            <section>
+              <div {...getRootProps()} >
+                <input {...getInputProps()} />
+                <p>Drag 'n' drop some files here, or click to select files</p>
+              </div>
+            </section>
+          )}
+        </Dropzone>
 
-        {encodedText=== "" ? <></> : 
-          <>
-            <DownloadButton onClick={downloadQR}>
-                <DownloadIcon/>
-            </DownloadButton>  
-          </>
-        }
-        </CheckboxList>
-
+      </CheckboxList>
     </>
   );
-}; // EditableQRScanItemContent
+}; // EditableARScanItemContent
 
-export const QRScanItemStageSlide = (props: QrScanItemDefinition): JSX.Element => {
+export const ARScanItemStageSlide = (props: ArScanItemDefinition): JSX.Element => {
 
   const {
-    encodedText
+    imageSrc
   } = props;
 
   return (
     <>
-      <PreviewTitle>{encodedText=== ""? "Empty QR" : encodedText}</PreviewTitle>
-
-      <PreviewQR>  
-        <QRCodeCanvas value={encodedText}  size={50} fgColor="black" bgColor="white" level="H"  />
-      </PreviewQR>
+      <PreviewTitle>{imageSrc=== ""? "Empty Image" : imageSrc}</PreviewTitle>
+      <PreviewAR>  
+        <img src= {defaultImage} width={50} height ={50}></img>
+      </PreviewAR>
     </>
   );
-}; // QRScanItemStageSlide
+}; // ARScanItemStageSlide
 
-export const qrScanItemFactory: AbstractActivityItemFactory<QrScanItemDefinition> = {
+export const arScanItemFactory: AbstractActivityItemFactory<ArScanItemDefinition> = {
   editingComponent: (editingProps) => (
-    <EditableQRScanItemContent
+    <EditableARScanItemContent
       {...editingProps}
     />
   ),
   defaultDefinition: {
-    encodedText: '',
+    imageSrc: '',
   }
-}; // QRScanItemFactory
+}; // ARScanItemFactory
 
 
-export default EditableQRScanItemContent;
+export default EditableARScanItemContent;
