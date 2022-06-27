@@ -9,11 +9,14 @@ export type ItemDefinition = (
   | { type: 'multiple-choice', payload: MultipleChoiceItemDefinition }
   | { type: 'qr-scan', payload: QrScanItemDefinition }
   | { type: 'ar-scan', payload: ArScanItemDefinition }
+  | { type: 'waiting-code', payload: WaitingCodeDefinition }
 ); // ItemDefinition
 
 export const escapeRoomStageTypes = [
   'room',
-  'multiple-choice'
+  'multiple-choice',
+  'waiting-code',
+  'qr-scan'
 ] as const; // escapeRoomStageTypes
 
 export type AvailableEscapeRoomStageType = typeof escapeRoomStageTypes[number];
@@ -24,7 +27,9 @@ export type SupportedStage =
   }>; // SupportedStage
 
 export const escapeRoomPuzzleTypes = [
-  'multiple-choice'
+  'multiple-choice',
+  // 'waiting-code'
+  // 'qr-scan'
 ] as const; // escapeRoomPuzzleTypes
 
 export type AvailableEscapeRoomPuzzleType = typeof escapeRoomPuzzleTypes[number];
@@ -145,3 +150,12 @@ export interface QrScanItemDefinition {
 export interface ArScanItemDefinition {
   imageSrc: string;
 } // ArScanItemDefinition
+
+export interface WaitingCodeDefinition  {
+  /** Password to enter in order to continue in the game */
+  code: string;
+  /** hints shown before requesting the password */
+  texts: string[];
+  /** maximum number of texts to show */
+  maxTexts?: number;
+}

@@ -2,10 +2,12 @@ import styled from "styled-components";
 import { default_room, default_room_block, EditableItemProps, RoomDefinition, SupportedPuzzle } from "../../../../services/escapeRoomActivity.model";
 import { AbstractActivityItemFactory } from "../ActivityItemFactory";
 import { multipleChoiceItemFactory, MultipleChoiceItemStageSlide } from "./MutipleChoiceItem";
+import { waitingCodeItemFactory, WaitingCodeItemStageSlide } from "./WaitingCodeItem";
 import { useState } from "react";
 import { RoomSettingsEditor } from "./RoomSettingsEditor";
 import { PuzzleEntryPointEditor } from "./PuzzleEntryPointEditor";
 import { ItemToSlideProducerMapping, RoomBlockSlidesContainer } from "./RoomBlockSlidesContainer";
+import { qrScanItemFactory, QRScanItemStageSlide } from "./QRScanItem";
 
 interface InputAreaProps {
   width?: string;

@@ -11,7 +11,13 @@ import { CompletedEscapeRoomActivityDefinition, default_room, InProgressEscapeRo
 import { EscapeRoomStageSlidesContainer, StageToSlideProducerMapping } from './components/EscapeRoomStageSlidesContainer';
 import EditableStage, { StageMappings } from './components/EditableStage';
 import { multipleChoiceItemFactory, MultipleChoiceItemStageSlide } from './components/items/MutipleChoiceItem';
+import { waitingCodeItemFactory, WaitingCodeItemStageSlide } from './components/items/WaitingCodeItem';
+import { qrScanItemFactory, QRScanItemStageSlide } from './components/items/QRScanItem';
+
 import { stageTypeIcon } from './components/StageSettingsContainer';
+import {Wondering2} from "@styled-icons/icomoon/Wondering2"
+import { QrCode } from "@styled-icons/material/QrCode";
+
 import { cloneDeep } from 'lodash';
 import { roomItemFactory } from './components/items/RoomItem';
 
@@ -32,6 +38,14 @@ const RoomIcon = styled(Exit)`
   ${stageTypeIcon}
 `;
 
+const WaitingCodeIcon = styled(Wondering2)`
+  ${stageTypeIcon}
+`;
+
+const QRCodeIcon = styled(QrCode)`
+  ${stageTypeIcon}
+`;
+
 export const stageMappings: StageMappings<SupportedStage> = {
   'room': {
     displayName: 'Room',
@@ -44,12 +58,26 @@ export const stageMappings: StageMappings<SupportedStage> = {
     iconComponent: <MultipleChoiceIcon />,
     editingComponentProducer: multipleChoiceItemFactory.editingComponent,
     defaultStagePayload: multipleChoiceItemFactory.defaultDefinition
+  },
+  'waiting-code': {
+    displayName: 'Waiting Code',
+    iconComponent: <WaitingCodeIcon />,
+    editingComponentProducer: waitingCodeItemFactory.editingComponent,
+    defaultStagePayload: waitingCodeItemFactory.defaultDefinition
+  },
+  'qr-scan': {
+    displayName: 'QR Scan',
+    iconComponent: <QRCodeIcon />,
+    editingComponentProducer: qrScanItemFactory.editingComponent,
+    defaultStagePayload: qrScanItemFactory.defaultDefinition
   }
 };
 
 export const stageSlidesMappings: StageToSlideProducerMapping<SupportedStage> = {
   'room': undefined,
-  'multiple-choice': MultipleChoiceItemStageSlide
+  'multiple-choice': MultipleChoiceItemStageSlide,
+  'waiting-code': WaitingCodeItemStageSlide,
+  "qr-scan":QRScanItemStageSlide
 };
 
 //-------------------------------------------------------
