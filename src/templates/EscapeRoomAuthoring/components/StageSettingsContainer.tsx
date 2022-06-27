@@ -3,7 +3,7 @@ import styled, { css } from "styled-components";
 import { StageMappings } from "./EditableStage";
 import { ChevronDown } from "@styled-icons/boxicons-regular/ChevronDown";
 import { ExtensionPuzzle } from "@styled-icons/ionicons-outline/ExtensionPuzzle";
-import { AvailableEscapeRoomStage, EscapeRoomStage, escapeRoomStageTypes } from "../../../services/escapeRoomActivity.model";
+import { AvailableEscapeRoomStageType, escapeRoomStageTypes, SupportedStage } from "../../../services/escapeRoomActivity.model";
 
 const Root = styled.aside`
   display: flex;
@@ -206,11 +206,11 @@ const DuplicateButton = styled.button`
 
 export interface StageSettingsContainerProps {
   /** What  mappings we are working with in this editiable stage container (available stage types and how to render them) */
-  stageMappings: StageMappings<EscapeRoomStage>;
+  stageMappings: StageMappings<SupportedStage>;
   /** What mapping we are currently using */
-  selectedStageType: AvailableEscapeRoomStage;
+  selectedStageType: AvailableEscapeRoomStageType;
   /** Callback notifying of stage type changing to a new format */
-  onStageTypeChanged?: (value: AvailableEscapeRoomStage) => void;
+  onStageTypeChanged?: (value: AvailableEscapeRoomStageType) => void;
   /** Callback notifying parent component of user wanting to delete this stage */
   onStageDeleted?: () => void;
   /** Callback notifying parent component of user wanting to duplicate this stage */
@@ -231,7 +231,7 @@ export const StageSettingsContainer = (props: StageSettingsContainerProps): JSX.
 
   const selectedStageMapping = stageMappings[selectedStageType];
 
-  const handleStageTypeChanged = (value: AvailableEscapeRoomStage) => {
+  const handleStageTypeChanged = (value: AvailableEscapeRoomStageType) => {
     if (onStageTypeChanged) {
       onStageTypeChanged(value);
     }
