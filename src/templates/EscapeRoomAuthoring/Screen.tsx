@@ -232,6 +232,37 @@ export const CreateEscapeRoomScreenComponent = (props: CreateEscapeRoomScreenCom
 
   const currentStage = activityDefinition.stages[selectedStage];
 
+  const duplicateStage= (index:number) => {
+    setActivityDefinition(prev => {
+      let next = cloneDeep(prev);
+      next.stages = [
+        ...next.stages.slice(0, index),
+        next.stages[index],
+        ...next.stages.slice(index, next.stages.length)
+      ];
+      return next;
+    });
+
+    //Changes index if necesary to continue displaying the same stage
+    setSelectedStage(prev => index<prev ? prev+1 : prev);
+  }; //duplicateStage
+
+  const deleteStage = (index: number) => {
+    setActivityDefinition(prev => {
+      let next = cloneDeep(prev);
+      next.stages = [
+        ...next.stages.slice(0, index),
+        ...next.stages.slice(index + 1, next.stages.length)
+      ];
+      return next;
+    });
+
+     //Changes index if necesary to continue displaying the same stage
+    setSelectedStage(prev => index<prev ? prev-1 : prev);
+  }; //deleteStage
+
+
+
   return (
     <Root>
       <EscapeRoomStageSlidesContainer
@@ -240,6 +271,8 @@ export const CreateEscapeRoomScreenComponent = (props: CreateEscapeRoomScreenCom
         selectedStageIndex={selectedStage}
         onAddStage={handleAddStage}
         onSelectStage={(index) => setSelectedStage(index)}
+        handleDuplicateStage = {duplicateStage}
+        handleDeleteStage = {deleteStage}
       />
       <EditableStage
         stageDefinition={currentStage}

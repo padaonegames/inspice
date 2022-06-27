@@ -103,6 +103,9 @@ export interface EscapeRoomStageSlidesContainerProps {
   onAddStage?: () => void;
   /** Callback to parent component specifying that user wishes to select a given stage from the activity */
   onSelectStage?: (index: number) => void;
+
+  handleDuplicateStage?: (index: number) => void;
+  handleDeleteStage?: (index: number) => void;
 } // EscapeRoomStageSlidesContainerProps
 
 export const EscapeRoomStageSlidesContainer = (props: EscapeRoomStageSlidesContainerProps): JSX.Element => {
@@ -112,7 +115,9 @@ export const EscapeRoomStageSlidesContainer = (props: EscapeRoomStageSlidesConta
     selectedStageIndex,
     stageMappings,
     onAddStage,
-    onSelectStage
+    onSelectStage,
+    handleDuplicateStage,
+    handleDeleteStage
   } = props;
 
   const handleSelectStage = (index: number) => {
@@ -131,7 +136,11 @@ export const EscapeRoomStageSlidesContainer = (props: EscapeRoomStageSlidesConta
             selected: i == selectedStageIndex,
             stage: s,
             slidePreviewProducer: stageMappings[s.type],
-            onSlideSelected: () => handleSelectStage(i)
+            onSlideSelected: () => handleSelectStage(i),
+
+            index: i,
+            duplicateStage: handleDuplicateStage,
+            deleteStage: handleDeleteStage
           } as EscapeRoomStageSlideProps;
 
           return (

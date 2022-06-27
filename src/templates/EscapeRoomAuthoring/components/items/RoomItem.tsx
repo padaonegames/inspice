@@ -8,6 +8,7 @@ import { RoomSettingsEditor } from "./RoomSettingsEditor";
 import { PuzzleEntryPointEditor } from "./PuzzleEntryPointEditor";
 import { ItemToSlideProducerMapping, RoomBlockSlidesContainer } from "./RoomBlockSlidesContainer";
 import { qrScanItemFactory, QRScanItemStageSlide } from "./QRScanItem";
+import { pull } from "lodash";
 
 interface InputAreaProps {
   width?: string;
@@ -122,6 +123,26 @@ export const EditableRoomItemContent = (props: EditableRoomItemContentProps): JS
     });
   }; // handleDuplicateBlock
 
+
+  const handleDuplicatePuzzle = (blockIndex: number, puzzleIndex: number) => {
+    if (!onPayloadChanged) return;
+    onPayloadChanged({
+      ...payload,
+      blocks: [
+        ...blocks.slice(0, blockIndex),
+        {
+          ...blocks[blockIndex],
+          puzzles: [
+            ...blocks[blockIndex].puzzles.slice(0, puzzleIndex),
+            ...blocks[blockIndex].puzzles.slice(puzzleIndex + 1, blocks[blockIndex].puzzles.length)
+          ]
+        },
+        ...blocks.slice(blockIndex + 1, blocks.length)
+      ]
+    });
+  }
+
+
   const handlePuzzlePayloadChanged = (blockIndex: number, puzzleIndex: number, puzzlePayload: SupportedPuzzle['payload']) => {
     if (!onPayloadChanged) return;
     onPayloadChanged({
@@ -148,20 +169,28 @@ export const EditableRoomItemContent = (props: EditableRoomItemContentProps): JS
 
   return (
     <>
+    {/* List of blocks on the top of the editor */}
       <RoomBlockSlidesContainer
         itemMappings={puzzleToSlidesMappings}
         selectedBlockIndex={selectedBlock}
         onSelectRoomSettings={() => setSelectedBlock('room-settings')}
         onSelectBlock={setSelectedBlock}
         onAddBlock={handleAddBlock}
+        onDeleteBlock = {handleDeleteBlock}
+        onDuplicateBlock = {handleDuplicateBlock}
+        onDuplicatePuzzle = {handleDuplicatePuzzle}
         blocks={blocks}
       />
+
+      {/* Editor for the room specific settings */}
       {selectedBlock === 'room-settings' &&
         <RoomSettingsEditor
           hints={hints}
           onHintsChanged={handleHintsChanged}
         />
       }
+
+      {/* Entry point of the block and sequence of puzzles after that */}
       {currentBlock && selectedBlock !== 'room-settings' && (
         <>
           <PuzzleEntryPointEditor />

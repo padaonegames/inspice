@@ -1,10 +1,15 @@
-import styled from "styled-components";
+import { useState } from 'react';
 import { RoomBlock, SupportedPuzzle } from "../../../../services/escapeRoomActivity.model";
+
+import styled from "styled-components";
+import {Bin} from "@styled-icons/icomoon/Bin";
+import {Copy} from "@styled-icons/boxicons-regular/Copy";
 
 interface RootProps {
   selected?: boolean;
 }
 const Root = styled.div<RootProps>`
+  position: relative;
   box-sizing: border-box;
   height: 100%;
   background-color: transparent;
@@ -31,6 +36,7 @@ const Root = styled.div<RootProps>`
 `;
 
 const PuzzleSlide = styled.div`
+  position: relative;
   box-sizing: border-box;
   height: 100%;
   background-color: transparent;
@@ -46,6 +52,7 @@ const PuzzleSlide = styled.div`
   font-family: ${props => props.theme.contentFont};
   color: rgb(51, 51, 51);
   width: auto;
+  background-color: rgba(248, 188, 188);
 `;
 
 const SlideTitle = styled.div`
@@ -105,6 +112,56 @@ const ItemPreview = styled.div<ItemPreviewProps>`
   }
 `;
 
+
+interface SliceButtonProps {
+  X?: number;
+  Y?: number;
+}
+
+const SliceButton = styled.div<SliceButtonProps>`
+  position: absolute;
+  left: ${props => props.X}%;
+  top: ${props => props.Y}%;
+  padding: 3px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 0%;
+  box-sizing: border-box;
+  color: rgb(247, 0, 255);
+  background-color:rgb(222, 222, 222);
+  border-radius: 0.75rem;
+  &:hover {
+    transition: border background-color visibility  1s;
+    border: 3px solid rgb(200, 200, 200);
+    background-color:  rgb(180, 180, 180);
+  }
+`;
+
+const DuplicateIcon = styled(Copy)`
+  color: rgb(0, 0, 0);
+  height: 1.25em;
+  width: 1.25em;
+`
+const DeleteIcon = styled(Bin)`
+  color: rgb(0, 0, 0);
+  height: 1.25em;
+  width: 1.25em;
+`
+
+const SlidesContainer = styled.div`
+  position: relative;
+  cursor: pointer;
+  display: flex;
+  flex-direction: row;
+  flex: 1 1 0%;
+  height: calc(100% - 1.25rem);
+  box-sizing: border-box;
+  color: rgb(51, 51, 51);
+  background-color: rgb(225, 132, 132);
+`;
+
+
 export type RoomPuzzleToSlideMappings<T extends SupportedPuzzle> = {
   [P in T['type']]?: (props: Extract<SupportedPuzzle, { type: P }>['payload']) => JSX.Element;
 } // RoomPuzzleToSlideMappings
@@ -114,8 +171,15 @@ export interface RoomBlockSlideProps {
   selected?: boolean;
   /** callback to parent notifying of slide being selected by the user */
   onSlideSelected?: () => void;
+  /** callback to parent notifying that user wants to delete this block */
+  onBlockDeleted?: () => void;
+  /** callback to parent notifying that user wants to delete this block */
+  onBlockDuplicated?: () => void;
+  /** callback to parent notifying that user wants to delete this block */
+  onDuplicatedPuzzle?: (blockIndex: number, puzzleIndex:number) => void;
   /** Block whose preview we wish to render */
   block: RoomBlock;
+  blockIndex:number;
   /** Mappings between block puzzle types and slide view producers (instructions on how to render a given preview) */
   puzzleMappings: RoomPuzzleToSlideMappings<SupportedPuzzle>;
 } // RoomBlockSlideProps
@@ -123,31 +187,61 @@ export interface RoomBlockSlideProps {
 
 export const RoomBlockSlide = (props: RoomBlockSlideProps): JSX.Element => {
 
+  const [mouseOverMe, setMouseOverMe] = useState<boolean>(false);
+
   const {
     puzzleMappings,
     selected = false,
     block,
-    onSlideSelected
+    blockIndex,
+    onSlideSelected,
+    onBlockDeleted,
+    onBlockDuplicated,
+    onDuplicatedPuzzle
   } = props;
 
   return (
-    <Root
-      onClick={onSlideSelected}
-      selected={selected}
-    >
-      {block.puzzles.map((puzzle, _) => {
-        const slideRenderer = puzzleMappings[puzzle.type];
-        return (
-          <PuzzleSlide>
-            <SlideTitle>{puzzle.type}</SlideTitle>
-            <SlideContainer>
-              <ItemPreview selected={selected}>
-                {slideRenderer && slideRenderer(puzzle.payload as any)}
-              </ItemPreview>
-            </SlideContainer>
-          </PuzzleSlide>
-        );
-      })}
+    <Root selected={selected} onMouseLeave = {()=>setMouseOverMe(prev => false)}  onMouseEnter={()=>setMouseOverMe(prev => true)} >
+
+      <SlidesContainer  onClick={onSlideSelected}>
+        {block.puzzles.map((puzzle, i) => {
+          const slideRenderer = puzzleMappings[puzzle.type];
+          return (
+            <PuzzleSlide>
+              {/* Duplicate slice button */}
+              {/* <SliceButton Y={5} X={75}  onClick={ e=>{onBlockDeleted && onBlockDeleted()}}>
+                <DuplicateIcon></DuplicateIcon>
+              </SliceButton> */}
+
+              <SlideTitle>{puzzle.type}</SlideTitle>
+              <SlideContainer>
+                <ItemPreview selected={selected}>
+                  {slideRenderer && slideRenderer(puzzle.payload as any)}
+                </ItemPreview>
+              </SlideContainer>
+
+            </PuzzleSlide>
+          );
+        })}
+
+      </SlidesContainer>
+
+      { mouseOverMe ? 
+      <>
+        {/* Duplicate slice button */}
+        <SliceButton Y={5} X={95}  onClick={ e=>{onBlockDeleted && onBlockDeleted()}}>
+          <DeleteIcon></DeleteIcon>
+        </SliceButton>
+
+        {/* Duplicate slice button */}
+        <SliceButton Y={35} X={95}  onClick={ e=>{onBlockDuplicated && onBlockDuplicated()}}>
+          <DuplicateIcon></DuplicateIcon>
+        </SliceButton>
+      </>
+      :
+      <></>
+      }
+
     </Root>
   );
 }; // RoomBlockSlide
