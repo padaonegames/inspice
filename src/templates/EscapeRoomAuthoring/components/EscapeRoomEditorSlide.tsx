@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { EscapeRoomStage } from "../../../services/escapeRoomActivity.model";
+import { ItemDefinition, SupportedPuzzle, SupportedStage } from "../../../services/escapeRoomActivity.model";
 
 interface RootProps {
   selected?: boolean;
@@ -78,53 +78,21 @@ const StagePreview = styled.div<StagePreviewProps>`
   }
 `;
 
-const PreviewTitle = styled.div`
-  margin-bottom: 0.25rem;
-  color: rgb(110, 110, 110);
-  text-align: center;
-  font-size: 0.75rem;
-  line-height: 1.33;
-  letter-spacing: 0.2px;
-  max-height: 1.5rem;
-  max-width: 100%;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-`;
-
-const PreviewAnswers = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  margin-top: 3px;
-  color: rgb(178, 178, 178);
-`;
-
-const PreviewAnswer = styled.div`
-  position: relative;
-  width: calc(100% - 0.125rem);
-  height: 7px;
-  margin-bottom: 3px;
-  border: 1px solid rgb(229, 229, 229);
-  border-radius: 0.125rem;
-`;
-
-type EscapeRoomStageSlidePropsBase<T extends EscapeRoomStage> = {
+type EscapeRoomStageSlidePropsBase<T extends ItemDefinition> = {
   [P in T['type']]: {
-    stage: Extract<EscapeRoomStage, { type: P }>;
+    stage: Extract<ItemDefinition, { type: P }>;
     /** whether this slide is currently selected */
     selected: boolean;
     /** component to render the contents of the slide based on the stage payload */
-    slidePreviewProducer?: (props: Extract<EscapeRoomStage, { type: P }>['payload']) => JSX.Element;
+    slidePreviewProducer?: (props: Extract<ItemDefinition, { type: P }>['payload']) => JSX.Element;
     /** callback to parent notifying of slide being selected by the user */
     onSlideSelected?: () => void;
   }
 } // EscapeRoomStageSlidePropsBase
 
-export type EscapeRoomStageSlideProps = EscapeRoomStageSlidePropsBase<EscapeRoomStage>[keyof EscapeRoomStageSlidePropsBase<EscapeRoomStage>];
+type EscapeRoomEditorSlideProps<T extends ItemDefinition> = EscapeRoomStageSlidePropsBase<T>[keyof EscapeRoomStageSlidePropsBase<T>];
 
-export const EscapeRoomStageSlide = (props: EscapeRoomStageSlideProps): JSX.Element => {
+const EscapeRoomEditorSlide = <T extends ItemDefinition,>(props: EscapeRoomEditorSlideProps<T>): JSX.Element => {
 
   const {
     stage,
@@ -146,4 +114,10 @@ export const EscapeRoomStageSlide = (props: EscapeRoomStageSlideProps): JSX.Elem
       </SlideContainer>
     </Root>
   );
-}; // EscapeRoomStageSlide
+}; // EscapeRoomEditorSlide
+
+export type EscapeRoomStageSlideProps = EscapeRoomEditorSlideProps<SupportedStage>;
+export const EscapeRoomStageSlide = (props: EscapeRoomStageSlideProps) => EscapeRoomEditorSlide(props);
+
+export type EscapeRoomPuzzleSlideProps = EscapeRoomEditorSlideProps<SupportedPuzzle>;
+export const EscapeRoomPuzzleSlide = (props: EscapeRoomPuzzleSlideProps) => EscapeRoomEditorSlide(props);

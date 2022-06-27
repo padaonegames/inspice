@@ -1,7 +1,7 @@
 import styled from "styled-components";
-import { EscapeRoomPuzzleDefinition } from "../../../../services/escapeRoomActivity.model";
-import { RoomPuzzleSlide, RoomPuzzleSlideProps, RoomSettingsSlide } from "./RoomPuzzleSlide";
 import { Add } from "@styled-icons/fluentui-system-filled/Add";
+import { RoomBlock, SupportedPuzzle } from "../../../../services/escapeRoomActivity.model";
+import { RoomBlockSlide, RoomBlockSlideProps, RoomSettingsSlide } from "./RoomBlockSlide";
 
 const Root = styled.div`
   position: absolute;
@@ -11,8 +11,7 @@ const Root = styled.div`
   display: flex;
   flex-direction: row;
   -moz-box-align: center;
-  align-items: center;
-  bottom: unset;
+  align-blocks: center;
   width: 96%;
   height: 8.5rem;
 
@@ -20,7 +19,7 @@ const Root = styled.div`
 
   border-radius: 0 0 1.25rem 1.25rem;
   box-shadow: #d3d4d5 0px -4px 0px 0px inset;
-  padding: 0 0.75rem;
+  padding: 0 0.5rem;
 `;
 
 const VerticalSpace = styled.div`
@@ -50,7 +49,7 @@ const ButtonsContainer = styled.div`
   display: flex;
   flex-direction: column;
   -moz-box-align: center;
-  align-items: center;
+  align-blocks: center;
   -moz-box-pack: start;
   justify-content: center;
   min-height: 100%;
@@ -60,7 +59,7 @@ const ButtonsContainer = styled.div`
   z-index: 9999;
 `;
 
-const AddItemButtonContainer = styled.div`
+const AddBlockButtonContainer = styled.div`
   display: flex;
   flex-direction: column;
   background: rgb(255, 255, 255) none repeat scroll 0% 0%;
@@ -70,7 +69,7 @@ const AddItemButtonContainer = styled.div`
   margin-bottom: 0.5rem;
 `;
 
-const AddItemButton = styled.button`
+const AddBlockButton = styled.button`
   width: 100%;
   margin: 0px;
   border: 0px none;
@@ -104,81 +103,83 @@ const AddItemButton = styled.button`
   }
 `;
 
-export type PuzzleToSlideProducerMapping<T extends EscapeRoomPuzzleDefinition> = {
+export type ItemToSlideProducerMapping<T extends SupportedPuzzle> = {
   /** What type of puzzle we are working with here*/
   [P in T['type']]: ((slidePreviewProps: Extract<T, { type: P }>['payload']) => JSX.Element);
 }
 
-export interface RoomPuzzleSlidesContainerProps {
-  /** list of puzzles currently included in the activity */
-  puzzles: EscapeRoomPuzzleDefinition[];
-  /** index of currently selected puzzle in puzzles */
-  selectedPuzzleIndex: number | 'room-settings';
+export interface RoomBlockSlidesContainerProps {
+  /** list of blocks currently included in the room */
+  blocks: RoomBlock[];
+  /** index of currently selected block in blocks */
+  selectedBlockIndex: number | 'room-settings';
   /** What  mappings we are working with in this slides list (available puzzle types and how to render their previews) */
-  puzzleMappings: PuzzleToSlideProducerMapping<EscapeRoomPuzzleDefinition>;
-  /** Callback to parent component specifying that user wishes to add a new puzzle to the activity */
-  onAddPuzzle?: () => void;
-  /** Callback to parent component specifying that user wishes to select a given puzzle from the activity */
-  onSelectPuzzle?: (index: number) => void;
+  itemMappings: ItemToSlideProducerMapping<SupportedPuzzle>;
+  /** Callback to parent component specifying that user wishes to add a new block to the room */
+  onAddBlock?: () => void;
+  /** Callback to parent component specifying that user wishes to select a given block from the room blocks */
+  onSelectBlock?: (index: number) => void;
   /** Callback to parent component specifying that user wishes to go back to the room settings editor */
   onSelectRoomSettings?: () => void;
-} // RoomPuzzleSlidesContainerProps
+} // RoomBlockSlidesContainerProps
 
-export const RoomPuzzleSlidesContainer = (props: RoomPuzzleSlidesContainerProps): JSX.Element => {
+export const RoomBlockSlidesContainer = (props: RoomBlockSlidesContainerProps): JSX.Element => {
 
   const {
-    puzzles,
-    selectedPuzzleIndex,
-    puzzleMappings,
-    onAddPuzzle,
-    onSelectPuzzle,
+    blocks,
+    selectedBlockIndex,
+    itemMappings,
+    onAddBlock,
+    onSelectBlock,
     onSelectRoomSettings
   } = props;
 
-  const handleSelectPuzzle = (index: number) => {
-    if (onSelectPuzzle) {
-      onSelectPuzzle(index);
+  const handleSelectBlock = (index: number) => {
+    if (onSelectBlock) {
+      onSelectBlock(index);
     }
-  }; // handleSelectPuzzle
+  }; // handleSelectBlock
 
   return (
     <>
       <Root>
         <SlidesContainer>
           <RoomSettingsSlide
-            selected={selectedPuzzleIndex === 'room-settings'}
+            selected={selectedBlockIndex === 'room-settings'}
             onSlideSelected={onSelectRoomSettings}
           />
-          {puzzles.map((s, i) => {
-            // This is "unsafe", but in reality due to how puzzleMappings is defined
-            // it will never really be problematic (s and puzzleMappings[s.type] are forcefully consistent)
+          {blocks.map((block, i) => {
+            // This is "unsafe", but in reality due to how itemMappings is defined
+            // it will never really be problematic (s and itemMappings[s.type] are forcefully consistent)
             const slideProps = {
-              selected: i == selectedPuzzleIndex,
-              puzzle: s,
-              slidePreviewProducer: puzzleMappings[s.type],
-              onSlideSelected: () => handleSelectPuzzle(i)
-            } as RoomPuzzleSlideProps;
+              puzzleMappings: itemMappings,
+              selected: i == selectedBlockIndex,
+              block: block,
+              onSlideSelected: () => handleSelectBlock(i)
+            } as RoomBlockSlideProps;
 
             return (
-              <RoomPuzzleSlide
-                key={s.type + '_' + i}
-                {...slideProps}
-              />
+              <>
+                <RoomBlockSlide
+                  key={block.blockName + '_' + i}
+                  {...slideProps}
+                />
+              </>
             );
           })}
         </SlidesContainer>
         <ButtonsContainer>
-          <AddItemButtonContainer>
-            <AddItemButton
-              onClick={onAddPuzzle}
-              title="Add Puzzle"
+          <AddBlockButtonContainer>
+            <AddBlockButton
+              onClick={onAddBlock}
+              title="Add Block"
             >
               <AddIcon />
-            </AddItemButton>
-          </AddItemButtonContainer>
+            </AddBlockButton>
+          </AddBlockButtonContainer>
         </ButtonsContainer>
       </Root>
       <VerticalSpace />
     </>
   );
-}; // RoomPuzzleSlidesContainer
+}; // RoomBlockSlidesContainer

@@ -7,7 +7,7 @@ import { Exit } from "@styled-icons/icomoon/Exit";
 import { useAsyncRequest } from '../../services/useAsyncRequest';
 
 // steps
-import { CompletedEscapeRoomActivityDefinition, EscapeRoomPuzzleDefinition, EscapeRoomStage, InProgressEscapeRoomActivityDefinition, ItemDefinition } from '../../services/escapeRoomActivity.model';
+import { CompletedEscapeRoomActivityDefinition, default_room, InProgressEscapeRoomActivityDefinition, SupportedStage } from '../../services/escapeRoomActivity.model';
 import { EscapeRoomStageSlidesContainer, StageToSlideProducerMapping } from './components/EscapeRoomStageSlidesContainer';
 import EditableStage, { StageMappings } from './components/EditableStage';
 import { multipleChoiceItemFactory, MultipleChoiceItemStageSlide } from './components/items/MutipleChoiceItem';
@@ -32,10 +32,7 @@ const RoomIcon = styled(Exit)`
   ${stageTypeIcon}
 `;
 
-// TODO: include an extract modifier to select only those items that 
-// belong to the actual set of selectable stages. Likely the best way to go about this would be to export
-// a type here with the "filtered" item definition options
-export const stageMappings: StageMappings<ItemDefinition> = {
+export const stageMappings: StageMappings<SupportedStage> = {
   'room': {
     displayName: 'Room',
     iconComponent: <RoomIcon />,
@@ -50,7 +47,7 @@ export const stageMappings: StageMappings<ItemDefinition> = {
   }
 };
 
-export const stageSlidesMappings: StageToSlideProducerMapping<EscapeRoomStage> = {
+export const stageSlidesMappings: StageToSlideProducerMapping<SupportedStage> = {
   'room': undefined,
   'multiple-choice': MultipleChoiceItemStageSlide
 };
@@ -59,13 +56,9 @@ export const stageSlidesMappings: StageToSlideProducerMapping<EscapeRoomStage> =
 //                    Defaults
 //-------------------------------------------------------
 
-const sample_stage: EscapeRoomStage = {
+const sample_stage: SupportedStage = {
   type: 'room',
-  payload: {
-    exitCode: '',
-    puzzles: [],
-    hints: []
-  }
+  payload: default_room
 };
 
 const sample_base: InProgressEscapeRoomActivityDefinition = {
@@ -178,7 +171,7 @@ export const CreateEscapeRoomScreenComponent = (props: CreateEscapeRoomScreenCom
     });
   }; // handleAddStage
 
-  const handleStageDefinitionChanged = (stageDefinition: EscapeRoomStage) => {
+  const handleStageDefinitionChanged = (stageDefinition: SupportedStage) => {
     setActivityDefinition(prev => {
       let next = cloneDeep(prev);
       next.stages[selectedStage] = stageDefinition;

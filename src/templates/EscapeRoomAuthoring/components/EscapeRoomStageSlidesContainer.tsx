@@ -1,6 +1,6 @@
 import styled from "styled-components";
-import { EscapeRoomStage } from "../../../services/escapeRoomActivity.model";
-import { EscapeRoomStageSlide, EscapeRoomStageSlideProps } from "./EscapeRoomStageSlide";
+import { SupportedStage } from "../../../services/escapeRoomActivity.model";
+import { EscapeRoomStageSlide, EscapeRoomStageSlideProps } from "./EscapeRoomEditorSlide";
 
 const Root = styled.div`
   position: fixed;
@@ -87,18 +87,18 @@ const AddItemButton = styled.button`
   }
 `;
 
-export type StageToSlideProducerMapping<T extends EscapeRoomStage> = {
+export type StageToSlideProducerMapping<T extends SupportedStage> = {
   /** What type of stage we are working with here*/
   [P in T['type']]: ((slidePreviewProps: Extract<T, { type: P }>['payload']) => JSX.Element) | undefined;
 }
 
 export interface EscapeRoomStageSlidesContainerProps {
   /** list of stages currently included in the activity */
-  stages: EscapeRoomStage[];
+  stages: SupportedStage[];
   /** index of currently selected stage in stages */
   selectedStageIndex: number;
   /** What  mappings we are working with in this slides list (available stage types and how to render their previews) */
-  stageMappings: StageToSlideProducerMapping<EscapeRoomStage>;
+  stageMappings: StageToSlideProducerMapping<SupportedStage>;
   /** Callback to parent component specifying that user wishes to add a new stage to the activity */
   onAddStage?: () => void;
   /** Callback to parent component specifying that user wishes to select a given stage from the activity */

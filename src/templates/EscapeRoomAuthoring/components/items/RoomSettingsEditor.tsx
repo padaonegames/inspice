@@ -82,10 +82,6 @@ const CheckboxOption = styled.div<CheckBoxOptionProps>`
 `;
 
 export interface RoomSettingsEditorProps {
-  /** Code that the user will need to enter in order to exit the room */
-  exitCode: string;
-  /** callback to parent component notifying of a change in the exitCode */
-  onExitCodeChanged?: (value: string) => void;
   /** list of hints that will be shown to the user while playing the current room */
   hints: string[];
   /** callback to parent component notifying of a change in the list of hints (this includes adding, removing or editing a hint) */
@@ -95,8 +91,6 @@ export interface RoomSettingsEditorProps {
 export const RoomSettingsEditor = (props: RoomSettingsEditorProps): JSX.Element => {
 
   const {
-    exitCode,
-    onExitCodeChanged,
     hints,
     onHintsChanged
   } = props;
@@ -124,23 +118,6 @@ export const RoomSettingsEditor = (props: RoomSettingsEditorProps): JSX.Element 
 
   return (
     <>
-      <CheckboxList>
-        <CheckboxTitle>
-          <ExitCodeIcon />
-          Exit Code
-        </CheckboxTitle>
-        <CheckboxOption
-          backgroundColor={availableColors[0]}
-        >
-          <EditableCheckBoxInput
-            labelText={exitCode}
-            labelTextPlaceholder='Input exit code...'
-            style='radio'
-            boxSize='0'
-            onLabelTextChanged={onExitCodeChanged}
-          />
-        </CheckboxOption>
-      </CheckboxList>
       <CheckboxList>
         <CheckboxTitle>
           <HintsIcon />

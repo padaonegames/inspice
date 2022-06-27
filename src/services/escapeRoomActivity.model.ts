@@ -1,29 +1,61 @@
-//------------------------------------------
-//          ACTIVITY DEFINITIONS
-//------------------------------------------
 import { ActivityInstance, InProgressActivityInstance } from "./activity.model";
 
-export interface InProgressEscapeRoomActivityDefinition extends InProgressActivityInstance {
-  activityType: 'Escape Room';
-  stages: ItemDefinition[];
-}
-
-export type EscapeRoomStage = (
-  | { type: 'room', payload: RoomDefinition }
-  | { type: 'multiple-choice', payload: MultipleChoiceItemDefinition }
-);
+// ---------------------------------------------------------------
+//           ITEM DEFINITIONS (STAGES + PUZZLES)
+// ---------------------------------------------------------------
 
 export type ItemDefinition = (
   | { type: 'room', payload: RoomDefinition }
   | { type: 'multiple-choice', payload: MultipleChoiceItemDefinition }
-);
+  | { type: 'qr-scan', payload: QrScanItemDefinition }
+  | { type: 'ar-scan', payload: ArScanItemDefinition }
+); // ItemDefinition
 
 export const escapeRoomStageTypes = [
   'room',
   'multiple-choice'
-] as const;
+] as const; // escapeRoomStageTypes
 
-export type AvailableEscapeRoomStage = typeof escapeRoomStageTypes[number];
+export type AvailableEscapeRoomStageType = typeof escapeRoomStageTypes[number];
+
+export type SupportedStage =
+  Extract<ItemDefinition, {
+    type: AvailableEscapeRoomStageType
+  }>; // SupportedStage
+
+export const escapeRoomPuzzleTypes = [
+  'multiple-choice'
+] as const; // escapeRoomPuzzleTypes
+
+export type AvailableEscapeRoomPuzzleType = typeof escapeRoomPuzzleTypes[number];
+
+export type SupportedPuzzle =
+  Extract<ItemDefinition, {
+    type: AvailableEscapeRoomPuzzleType
+  }>; // SupportedPuzzle
+
+/** Default puzzle definition */
+export const default_puzzle: SupportedPuzzle = {
+  type: 'multiple-choice',
+  payload: {
+    prompt: '',
+    answers: []
+  }
+}; // default_puzzle
+
+// ---------------------------------------------------------------
+//                    ACTIVITY DEFINITIONS
+// ---------------------------------------------------------------
+
+export interface EscapeRoomActivityDefinition extends ActivityInstance {
+  activityType: 'Escape Room',
+  stages: SupportedStage[];
+}
+
+export interface InProgressEscapeRoomActivityDefinition extends InProgressActivityInstance {
+  activityType: 'Escape Room';
+  stages: SupportedStage[];
+} // InProgressEscapeRoomActivityDefinition
 
 export type CompletedEscapeRoomActivityDefinition = Omit<
   EscapeRoomActivityDefinition,
@@ -40,33 +72,51 @@ export const defaultEscapeRoomActivityDefinition: InProgressEscapeRoomActivityDe
   stages: []
 };
 
+// ---------------------------------------------------------------
+//                    ROOM  DEFINITIONS
+// ---------------------------------------------------------------
+
 export interface RoomDefinition {
-  /** Code that the user must input to successfully exit the room */
-  exitCode: string;
   /** list of hints and clues that will be shown to the user throughout the puzzles */
   hints: string[];
-  /** Set of puzzles contained within the room that may be solved in any order */
-  puzzles: EscapeRoomPuzzleDefinition[];
+  /** Set of blocks of puzzles contained within the room that may be triggered in any order */
+  blocks: RoomBlock[];
+  /** Block whose completion will lead to an advancement in the adventure */
+  exitBlock: RoomBlock;
+  /** maximum time (in minutes) that will be allocated to complete the current room's searches and puzzles */
+  availableTime: number;
 }
 
-export type RoomPuzzleEntryPoint =
-  | { type: 'qr-scan', text: string }
-  | { type: 'ar-scan', image: string };
+export const default_room: RoomDefinition = {
+  hints: [],
+  blocks: [],
+  availableTime: 20,
+  exitBlock: {
+    blockName: 'Solve Room',
+    blockDescription: '',
+    puzzles: []
+  }
+}; // default_room
 
-interface RoomPuzzle {
-  /** How to access this puzzle within the room (QR code, AR scan, etc) */
-  entryPoint: RoomPuzzleEntryPoint;
+export interface RoomBlock {
+  /**display name for a room block (name that will be rendered when choosing what block to play next by the user) */
+  blockName: string;
+  /** description that will be shown to the user before actually playing the block itself (with contents of the block and general hints) */
+  blockDescription: string;
+  /** Sequence of (ordered) puzzles and items to be displayed after selecting this room block */
+  puzzles: SupportedPuzzle[];
 }
 
-export type EscapeRoomPuzzleDefinition = RoomPuzzle &
-  (
-    | { type: 'multiple-choice', payload: MultipleChoiceItemDefinition }
-  );
+/** Default definition for a Room Block */
+export const default_room_block: RoomBlock = {
+  blockName: '',
+  blockDescription: '',
+  puzzles: [default_puzzle, default_puzzle]
+}; // default_room_block
 
-export interface EscapeRoomActivityDefinition extends ActivityInstance {
-  activityType: 'Escape Room',
-  stages: EscapeRoomStage[];
-}
+// ---------------------------------------------------------------
+//                            UTILS
+// ---------------------------------------------------------------
 
 export interface EditableItemProps<T> {
   /** Definition to be used to render the stateless editable item component (only the exclusive part of the definition, prompt text and type are edited elsewhere) */
@@ -75,6 +125,10 @@ export interface EditableItemProps<T> {
   onPayloadChanged?: (definition: T) => void;
 }
 
+// ---------------------------------------------------------------
+//                    ITEM DEFINITIONS
+// ---------------------------------------------------------------
+
 export interface MultipleChoiceItemDefinition {
   /** Prompt that this item displays answers for */
   prompt: string;
@@ -82,4 +136,12 @@ export interface MultipleChoiceItemDefinition {
   answers: string[];
   /** maximum number of answers to allow */
   maxAnswers?: number;
-}
+} // MultipleChoiceItemDefinition
+
+export interface QrScanItemDefinition {
+  encodedText: string;
+} // QrScanItemDefinition
+
+export interface ArScanItemDefinition {
+  imageSrc: string;
+} // ArScanItemDefinition

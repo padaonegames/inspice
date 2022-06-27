@@ -1,6 +1,5 @@
 import styled from "styled-components";
-import { AvailableEscapeRoomStage, EditableItemProps, EscapeRoomStage } from "../../../services/escapeRoomActivity.model";
-import { PromptField } from "./items/PromptField";
+import { AvailableEscapeRoomStageType, EditableItemProps, SupportedStage } from "../../../services/escapeRoomActivity.model";
 import { StageSettingsContainer } from "./StageSettingsContainer";
 
 const ContentWrapper = styled.main`
@@ -38,20 +37,20 @@ const ContentBackground = styled.div`
 
 export interface EditableStageComponentProps {
   /** What type of question/ stage this is representing (type must be consistent with stageMappings' name values) */
-  stageDefinition?: EscapeRoomStage;
+  stageDefinition?: SupportedStage;
   /** What mappings we are working with in this editable stage (available stage types and how to render them) */
-  stageMappings: StageMappings<EscapeRoomStage>;
+  stageMappings: StageMappings<SupportedStage>;
   /** Callback notifying of stage type changing to a new format */
   onStageTypeChanged?: (value: string) => void;
   /** Callback notifying parent of stage changing */
-  onStageDefinitionChanged?: (value: EscapeRoomStage) => void;
+  onStageDefinitionChanged?: (value: SupportedStage) => void;
   /** Callback notifying parent component of user wanting to delete this stage */
   onStageDeleted?: () => void;
   /** Callback notifying parent component of user wanting to duplicate this stage */
   onStageDuplicated?: () => void;
 }
 
-export type StageMappings<T extends EscapeRoomStage> = {
+export type StageMappings<T extends SupportedStage> = {
   /** What type of stage we are working with here*/
   [P in T['type']]: {
     /** How to render this option within a list. Defaults to stageType */
@@ -87,7 +86,7 @@ export const EditableStageComponent = (props: EditableStageComponentProps): JSX.
    * a fitting onStageTypeChanged callback has been provided.
    * @param value New stage type selected by the user.
    */
-  const handleStageTypeSelected = (value: AvailableEscapeRoomStage) => {
+  const handleStageTypeSelected = (value: AvailableEscapeRoomStageType) => {
     // create a new stage definition that's consistent with both new type and previous information
     const payload = stageMappings[value].defaultStagePayload;
 
@@ -98,7 +97,7 @@ export const EditableStageComponent = (props: EditableStageComponentProps): JSX.
       ...stageDefinition,
       type: value,
       payload: payload
-    } as EscapeRoomStage;
+    } as SupportedStage;
 
     // and notify parent component about the change, if callbacks have been provided for that purpose
     if (onStageTypeChanged) {
@@ -116,12 +115,12 @@ export const EditableStageComponent = (props: EditableStageComponentProps): JSX.
    * a fitting onStageDefinitionChanged callback has been provided.
    * @param payload New stage definition payload after a change within the currently active child form.
    */
-  const handleStagePayloadChanged = (payload: EscapeRoomStage['payload']) => {
+  const handleStagePayloadChanged = (payload: SupportedStage['payload']) => {
     // create a new stage definition that's consistent with both new type and previous information
     const newStageDefinition = {
       ...stageDefinition,
       payload: payload
-    } as EscapeRoomStage;
+    } as SupportedStage;
 
     // and notify parent component about the change, if callbacks have been provided for that purpose
     if (onStageDefinitionChanged) {
