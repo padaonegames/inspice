@@ -66,6 +66,27 @@ const PuzzleCard = styled.div`
   box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
 `;
 
+const HorizontalContainer = styled.div`
+  display: flex;
+  background-color: transparent;
+  flex-direction: row;
+  align-items: left;
+  // background-color: rgb(0,0,255);
+  border-bottom: 2px solid #dadce0;
+
+  border-radius: 1.25rem;
+`;
+
+const HorizontalLine = styled.div`
+  display: flex;
+  border-bottom: 2px solid #dadce0;
+  width: 100%;
+  height: 1px;
+  background-color:  rgb(180,180,180);
+  padding-top: 1px;
+`;
+
+
 ////////////////////////////////////////////////////////////////////////////////////////
 
 export const fieldTypeIcon = css`
@@ -76,14 +97,15 @@ export const fieldTypeIcon = css`
 `;
 
 
-const HorizontalLine = styled.div`
-  height: 1.75em;
-  width: 0.5em;
-  border-style: solid;
-  border-color: lightgray;
-  border-width: 0px 2px 0px 0px;
-  margin: 0 0.5em;
-`;
+// const HorizontalLine = styled.div`
+//   height: 1px;
+//   width: 100;
+//   padding-top: 0.5em;
+//   border-style: solid;
+//   border-color: rgb(255,0,0);
+//   border-width: 0px 2px 0px 0px;
+//   margin: 0 0.5em;
+// `;
 
 const DeleteIcon = styled(Delete)`
   ${fieldTypeIcon}
@@ -137,6 +159,8 @@ const DropdownMenuItem = styled.a`
 `;
 
 const SelectFieldTypeDropdownButton = styled.span`
+  position: absolute;
+  right:0;
   font-size: 0.9em;
   font-weight: 200;
   font-family: ${props => props.theme.contentFont};
@@ -148,7 +172,7 @@ const SelectFieldTypeDropdownButton = styled.span`
   position: relative;
 
   height: 2.5em;
-  width: 100%;
+  width: 50%;
 
   background-color: transparent;
   border-radius: 5px;
@@ -251,22 +275,27 @@ export const RoomPuzzleSettingsEditor = (props: RoomPuzzleSettingsEditorProps): 
     <>
 
       <PuzzleCard  onMouseEnter={ () => setShowAddPuzzle(true)}  onMouseLeave = { () => setShowAddPuzzle(false)} >
-        <CheckboxTitle>
-          <HintsIcon />
-          Puzzle number {index+1}
-        </CheckboxTitle>
-        <SelectFieldTypeDropdownButton onClick={() => setStageTypeDropdownOpen(prev => !prev)}>
-          {<HintsIcon/>}{ currentTypeSelected } <ExpandDropdownIcon />
-          {stageTypeDropdownOpen &&
-            <DropdownMenu>
-              {escapeRoomPuzzleTypes.map((elem, i) => (
-                <DropdownMenuItem onClick={() => {handlePuzzleTypeChanged(elem); setCurrentTypeSelected(stageMappings[elem].displayName ? stageMappings[elem].displayName :"Select a stage type")}}>
-                  {stageMappings[elem].iconComponent}
-                  {stageMappings[elem].displayName ?? elem}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenu>}
-        </SelectFieldTypeDropdownButton>
+
+        <HorizontalContainer>
+          <CheckboxTitle>
+            <HintsIcon />
+            Puzzle number {index+1}
+          </CheckboxTitle>
+          <SelectFieldTypeDropdownButton onClick={() => setStageTypeDropdownOpen(prev => !prev)}>
+            {<HintsIcon/>}{ currentTypeSelected } <ExpandDropdownIcon />
+            {stageTypeDropdownOpen &&
+              <DropdownMenu>
+                {escapeRoomPuzzleTypes.map((elem, i) => (
+                  <DropdownMenuItem onClick={() => {handlePuzzleTypeChanged(elem); setCurrentTypeSelected(stageMappings[elem].displayName ? stageMappings[elem].displayName :"Select a stage type")}}>
+                    {stageMappings[elem].iconComponent}
+                    {stageMappings[elem].displayName ?? elem}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenu>}
+          </SelectFieldTypeDropdownButton>
+        </HorizontalContainer>
+
+        <HorizontalLine/>
 
 
         {/* Puzzle Editor */}
@@ -279,8 +308,10 @@ export const RoomPuzzleSettingsEditor = (props: RoomPuzzleSettingsEditorProps): 
 
         {/* Buttons to duplicate and delete a puzzle from a room block */}
         <HorizontalLine/>
-        <DeleteIcon onClick={ () => {handlePuzzleDelete()}}/>
-        <CopyIcon onClick={() => {handlePuzzleDuplicate()}} />
+        <HorizontalContainer>
+          <DeleteIcon onClick={ () => {handlePuzzleDelete()}}/>
+          <CopyIcon onClick={() => {handlePuzzleDuplicate()}} />
+        </HorizontalContainer>
 
         { showAddPuzzle ? 
         <>

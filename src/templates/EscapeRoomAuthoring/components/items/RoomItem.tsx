@@ -5,59 +5,37 @@ import { waitingCodeItemFactory, WaitingCodeItemStageSlide } from "./WaitingCode
 import { useState } from "react";
 import { RoomSettingsEditor } from "./RoomSettingsEditor";
 import { RoomPuzzleSettingsEditor } from "./RoomPuzzleSettingsEditor";
-import { PuzzleEntryPointEditor } from "./PuzzleEntryPointEditor";
 import { ItemToSlideProducerMapping, RoomBlockSlidesContainer } from "./RoomBlockSlidesContainer";
 import { qrScanItemFactory, QRScanItemStageSlide } from "./QRScanItem";
-import { pull } from "lodash";
 import { arScanItemFactory, ARScanItemStageSlide } from "./ARScanItem";
 
 
 import styled from "styled-components";
 import {Download} from "@styled-icons/bootstrap/Download"
+import { PromptField } from "./PromptField";
 
 
-interface InputAreaProps {
-  width?: string;
-  height?: string;
-  dimBackground?: boolean;
-}
-export const InputArea = styled.textarea<InputAreaProps>`
-  font-size: 0.9em;
-  font-weight: 200;
-  font-family: ${props => props.theme.contentFont};
-  line-height: 135%;
-  width: ${props => props.width ?? '100%'};
-  height: ${props => props.height ?? '6em'};
-  margin-top: 10px;
-  color: ${props => props.theme.textColor};
-  border: none;
-  outline: none;
-  padding: 0.65em;
-  background-color: ${props => props.dimBackground ? '#f8f9fa' : 'transparent'};
-  resize: none;
-  overflow-y: hidden;
+const SettingsContainer = styled.div`
+  margin-top: 5px;
+  display: flex;
+  background-color: transparent;
+  flex-direction: column;
+  align-items: left;
 
-  text-align: center;
+  border-bottom: 2px solid #dadce0;
+  padding: 0.75em;
 
-  border-radius: 0.25rem;
+  background-color:  #dbdbdb;
+
+  border-radius: 1.25rem;
   box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
-
-  &:focus {
-    box-shadow: #c44c49 0px -4px 0px 0px inset;
-  }
 `;
 
-//Components for the button to download the QR
-const DownloadButton = styled.div`
-
-  position: relative;
-
+const TitleContainer = styled.div`
   font-size: 1em;
   font-weight: 500;
   font-family: ${props => props.theme.contentFont};
   line-height: 135%;
-
- 
 
   margin-top: 0.25em;
   margin-bottom: 0.25em;
@@ -71,24 +49,18 @@ const DownloadButton = styled.div`
   display: flex;
   align-items: center;
 
-  background-color: rgb(75, 170, 100);
+  background-color: white;
 
   border-radius: 1rem;
   box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
-
-  &:hover {
-    transition: border 0.25s;
-    border: 3px solid rgb(200, 200, 200);
-  }
-
 `;
-const DownloadIcon = styled(Download)`
+
+const HintsIcon = styled(Download)`
   color: ${props => props.theme.textColor};
   height: 1.75em;
-  width: auto;
+  width: 1.75em;
+  margin-right: 0.5em;
 `;
-
-
 
 
 export const puzzleToSlidesMappings: ItemToSlideProducerMapping<SupportedPuzzle> = {
@@ -146,6 +118,10 @@ export const EditableRoomItemContent = (props: EditableRoomItemContentProps): JS
 
   const [selectedBlock, setSelectedBlock] = useState<number | 'room-settings'>('room-settings');
 
+
+    //////////////////////////////Methods to manipulate room settings ////////////////////////////
+
+
   const handleHintsChanged = (value: string[]) => {
     if (!onPayloadChanged) return;
     onPayloadChanged({
@@ -153,6 +129,40 @@ export const EditableRoomItemContent = (props: EditableRoomItemContentProps): JS
       hints: value
     })
   }; // handleHintsChanged
+
+  //////////////////////////////Methods to manipulate room settings ////////////////////////////
+
+
+
+  //////////////////////////////Methods to manipulate entire blocks ////////////////////////////
+
+  const handleChangeBlockName = (index:number, name: string) => {
+    if (!onPayloadChanged) return;
+    onPayloadChanged({
+      ...payload,
+      blocks: [
+        ...blocks.slice(0, index),
+        { ...blocks[index],
+          blockName: name
+        },
+        ...blocks.slice(index + 1, blocks.length)
+      ]
+    });
+  }
+
+  const handleChangeBlockDescription = (index:number, description: string) => {
+    if (!onPayloadChanged) return;
+    onPayloadChanged({
+      ...payload,
+      blocks: [
+        ...blocks.slice(0, index),
+        { ...blocks[index],
+          blockDescription: description
+        },
+        ...blocks.slice(index + 1, blocks.length)
+      ]
+    });
+  }
 
   const handleAddBlock = () => {
     if (!onPayloadChanged) return;
@@ -188,6 +198,10 @@ export const EditableRoomItemContent = (props: EditableRoomItemContentProps): JS
     });
   }; // handleDuplicateBlock
 
+  //////////////////////////////Methods to manipulate entire blocks ////////////////////////////
+
+
+  //////////////////////////////Methods to manipulate block puzzles////////////////////////////
 
   const handleDuplicatePuzzle = (blockIndex: number, puzzleIndex: number) => {
     if (!onPayloadChanged) return;
@@ -206,7 +220,7 @@ export const EditableRoomItemContent = (props: EditableRoomItemContentProps): JS
         ...blocks.slice(blockIndex + 1, blocks.length)
       ]
     });
-  }
+  } //handleDuplicatePuzzle
 
   const handleDeletePuzzle = (blockIndex: number, puzzleIndex: number) => {
     if (!onPayloadChanged) return;
@@ -224,7 +238,7 @@ export const EditableRoomItemContent = (props: EditableRoomItemContentProps): JS
         ...blocks.slice(blockIndex + 1, blocks.length)
       ]
     });
-  }
+  } //handleDeletePuzzle
 
 
   const handlePuzzlePayloadChanged = (blockIndex: number, puzzleIndex: number, puzzlePayload: SupportedPuzzle['payload']) => {
@@ -270,7 +284,7 @@ export const EditableRoomItemContent = (props: EditableRoomItemContentProps): JS
         ...blocks.slice(blockIndex + 1, blocks.length)
       ] as RoomBlock[]
     });
-  }; // handlePuzzlePayloadChanged
+  }; // handlePuzzleTypeChanged
 
 
   const handleAddNewPuzzle = (blockIndex:number, puzzleIndex: number) => {
@@ -290,7 +304,9 @@ export const EditableRoomItemContent = (props: EditableRoomItemContentProps): JS
         ...blocks.slice(blockIndex + 1, blocks.length)
       ]
     });
-  }
+  } //handleAddNewPuzzle
+
+  //////////////////////////////Methods to manipulate block puzzles////////////////////////////
 
 
   const currentBlock = selectedBlock !== 'room-settings' ? blocks[selectedBlock] : undefined;
@@ -322,9 +338,22 @@ export const EditableRoomItemContent = (props: EditableRoomItemContentProps): JS
       {currentBlock && selectedBlock !== 'room-settings' && (
         <>
 
+          <SettingsContainer>
+            {/* Block name and description */}
+            <TitleContainer>
+              <HintsIcon />
+              Block Title
+            </TitleContainer>
+            <PromptField promptText={currentBlock.blockName} promptPlaceholder='Give this block a title' onPromptChange={(value) => {handleChangeBlockName(selectedBlock, value)}} />
+            <TitleContainer>
+              <HintsIcon />
+              Block Description
+            </TitleContainer>
+            <PromptField promptText={currentBlock.blockDescription} promptPlaceholder='Give this block a description' onPromptChange={(value) => {handleChangeBlockDescription(selectedBlock, value)}} />
+          </SettingsContainer>
+
           {/* Sequence of editors to configure a rooms block of puzzles */}
           {currentBlock.puzzles.map((puzzle, i) => (
-
            <RoomPuzzleSettingsEditor puzzle={puzzle} index = {i} 
             handlePuzzlePayloadChanged = {(value)=>{handlePuzzlePayloadChanged(selectedBlock,i,value)}}
             handlePuzzleTypeChanged = {(value) => {handlePuzzleTypeChanged(selectedBlock,i,value)}}
@@ -333,10 +362,6 @@ export const EditableRoomItemContent = (props: EditableRoomItemContentProps): JS
             handleAddNewPuzzle = {(value) => {handleAddNewPuzzle(selectedBlock,value)}}
             />
            ))}
-
-            {/* <DownloadButton onClick={() =>{handleAddNewPuzzle(selectedBlock.toString() === 'room-settings' ? 0 : selectedBlock as number, 0)}}>
-                <DownloadIcon/>
-            </DownloadButton>   */}
         </>
       )}
     </>
