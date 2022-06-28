@@ -29,8 +29,9 @@ export type SupportedStage =
 
 export const escapeRoomPuzzleTypes = [
   'multiple-choice',
-  // 'waiting-code'
-  // 'qr-scan'
+  'waiting-code',
+  'qr-scan',
+  'ar-scan'
 ] as const; // escapeRoomPuzzleTypes
 
 export type AvailableEscapeRoomPuzzleType = typeof escapeRoomPuzzleTypes[number];
@@ -48,6 +49,9 @@ export const default_puzzle: SupportedPuzzle = {
     answers: []
   }
 }; // default_puzzle
+
+/** Default puzzle definition */
+
 
 // ---------------------------------------------------------------
 //                    ACTIVITY DEFINITIONS

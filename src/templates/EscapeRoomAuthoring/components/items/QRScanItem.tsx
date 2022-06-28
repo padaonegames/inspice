@@ -175,7 +175,7 @@ export const EditableQRScanItemContent = (props: EditableWaitingCodeItemContentP
           QR Code
         </CheckboxTitle>    
 
-        <QRCodeCanvas id="qr-generator" value={payload.encodedText} size={400} fgColor="black" bgColor="white" level="H" includeMargin= {true}  />
+        <QRCodeCanvas id="qr-generator" value={payload.encodedText} size={200} fgColor="black" bgColor="white" level="H" includeMargin= {true}  />
         <PromptField
           promptText={payload.encodedText}
           promptPlaceholder='Value to create a new QR'
