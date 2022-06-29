@@ -96,15 +96,20 @@ const NavigateBeforeIcon = styled(NavigateBefore) <NavIconProps>`
 `;
 
 export interface FindArtworkProps {
+  /** Groups several Artworks and clues for them to be identified. */
   stageData: StageData;
+  /** List of artworks with their respective information. */
   imagesData: ArtworkData[];
-  onStageCompleted: () => void;
-  onPointsUpdate: (value: number) => void;
+  /** Callback to the parent to notify when all have been guessed. */
+  onStageCompleted?: () => void;
+  /** Callback to the parent to notify the points have changed. */
+  onPointsUpdate?: (value: number) => void;
+  /** The score achieved by the user. */
   score: number;
 };
 
 /**
- * <img src="media://FindArtwork.PNG" alt="FindArtwork">
+ * This component is responsible for the complete find artwork game experience. It has all the stage information and the artworks to be displayed in the game and is checking the points of the game.
  */
 export const FindArtwork: React.FC<FindArtworkProps> = ({
   stageData,
@@ -129,11 +134,11 @@ export const FindArtwork: React.FC<FindArtworkProps> = ({
       // correcta
       setFlippedCards(Array(imagesData.length).fill(true));
       setStageCompleted(true);
-      onPointsUpdate(+100);
+      if(onPointsUpdate!== undefined){onPointsUpdate(+100);}
     }
     else {
       // incorrecta
-      onPointsUpdate(-40);
+    if(onPointsUpdate!== undefined){onPointsUpdate(-40);}
       setFlippedCards(prev => {
         let aux = prev.slice();
         aux[index] = true;
@@ -143,7 +148,7 @@ export const FindArtwork: React.FC<FindArtworkProps> = ({
   };
 
   const handleClueOpened = (value: number) => {
-    onPointsUpdate(-value);
+    if(onPointsUpdate!== undefined){onPointsUpdate(-value);}
   };
 
   return (

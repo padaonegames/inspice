@@ -38,9 +38,12 @@ const AccordionPanel = styled.div<AccordionPanelProps>`
   transition: height 0.2s ease-out;
 `;
 
-interface AccordionItemProps {
+export interface AccordionItemProps {
+  /** Artwork that will be shown when the item is opened. */
   artwork: Artwork;
+  /** List of questions and responses about the artwork. */
   responses: Response[];
+  /** If the item is open or closed, */
   defaultToggled?: boolean;
 };
 

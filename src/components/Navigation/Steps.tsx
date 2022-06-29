@@ -92,31 +92,31 @@ type ExclusiveStepProps<T> = Omit<T, keyof StepComponentProps>;
  * automáticamente simplemente por el hecho de estar en un entorno `Steps`.
  */
 export interface StepComponentProps {
-  /** Order number of the current step component */
+  /** Order number of the current step component. */
   order: number;
-  /** Title of the current step component */
+  /** Title of the current step component. */
   title: string;
-  /** Function to move to the next step */
+  /** Function to move to the next step. */
   next: () => void;
-  /** Function to move to the previous step */
+  /** Function to move to the previous step. */
   prev: () => void;
-  /** Function to jump to the given step */
+  /** Function to jump to the given step. */
   jump: (step: number) => void;
-  /** Function to check if the step is the first */
+  /** Function to check if the step is the first. */
   isFirst: () => boolean;
-  /** Function to check if the step is the last */
+  /** Function to check if the step is the last. */
   isLast: () => boolean;
-  /** Function to check if the step has any previous step*/
+  /** Function to check if the step has any previous step. */
   hasPrev: () => boolean;
-  /** Function to check if the step has any next step*/
+  /** Function to check if the step has any next step. */
   hasNext: () => boolean;
-  /** Array of all available steps' title and order number*/
+  /** Array of all available steps' title and order number. */
   stepList: StepEntry[];
-  /** Combined state value of all steps */
+  /** Combined state value of all steps. */
   state: State;
-  /** Function to set/update state by key */
+  /** Function to set/update state by key. */
   setState: <T>(key: string, setValue: React.SetStateAction<T>, initialValue: T) => void;
-  /** Function to retrieve a state value by key */
+  /** Function to retrieve a state value by key. */
   getState: <T>(key: string, defaultValue: T) => T;
 };
 

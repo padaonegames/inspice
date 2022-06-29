@@ -105,6 +105,13 @@ const NavigationElem = styled.ul<NavigationElemProps>`
   }
 `;
 
+export interface NavigationWarning {
+  /** What route we are navigating from */
+  from: string;
+  /** Text that will be shown to the user when attempting to navigate away from given route */
+  warningText: string;
+} // NavigationWarning
+
 export interface NavMenuElem {
   /** Navigation path for sidebar option */
   to: string;
@@ -112,13 +119,15 @@ export interface NavMenuElem {
   title: string;
   /** Icon to be rendered next to element's title */
   icon: StyledIcon;
-};
+}; // NavMenuElem
 
 interface SideMenuProps {
   /** Whether side menu should be open */
   open?: boolean;
   /** List of navigation entries to be rendered within the menu */
   entries: NavMenuElem[];
+  /** Guards to warn user about a possible loss of progress when transitioning from a given route */
+  navigationWarnings?: NavigationWarning[];
   /** Callback to use when component is closed from an internal action */
   onClose?: () => void;
 };
@@ -132,6 +141,7 @@ export const SideMenu = (props: SideMenuProps): JSX.Element => {
   const {
     open = false,
     entries,
+    navigationWarnings = [],
     onClose
   } = props;
 
@@ -153,6 +163,19 @@ export const SideMenu = (props: SideMenuProps): JSX.Element => {
                 <NavigationElem
                   selected={pathname.includes(elem.to)}
                   onClick={() => {
+                    // don't do anything if we are already at the destination
+                    if (pathname.includes(elem.to)) return;
+
+                    // before actually navigating to the new route, check whether there exists 
+                    // a route warning. If there is one, render a window confirmation prompt to
+                    // warn the user about their progress being possibly lost before transitioning.
+                    const warning = navigationWarnings.find(w => pathname.includes(w.from));
+
+                    if(warning !== undefined) {
+                      const reallyClose = window.confirm(warning.warningText);
+                      if (!reallyClose) return;
+                    }
+
                     if (onClose) {
                       onClose();
                     }
@@ -184,6 +207,6 @@ export const SideMenu = (props: SideMenuProps): JSX.Element => {
       </Root>
     </>
   );
-};
+}; // SideMenu
 
 export default SideMenu;

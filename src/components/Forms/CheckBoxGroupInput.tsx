@@ -54,10 +54,17 @@ const CheckBoxContainer = styled.div`
 `;
 
 export interface CheckBoxGroupInputProps {
+  /** Name of the checkbox field. */
   fieldText: string;
+  /** Array where each component has a lable for a separate checkbox. */
   labelList: string[];
+  /** Array where it's saved if each lable is checked or not. */
   checked: boolean[];
+  /** Array containing labels of the checkboxes that are checked by default. */
   initialAllowedInputTypes?: string[];
+  /** Callback that is responsible for the action after checkbox 
+   * toggles. It accepts the checkbox lable as its input. 
+   */
   onCheckBoxToggled: (label: string) => void;
 };
 

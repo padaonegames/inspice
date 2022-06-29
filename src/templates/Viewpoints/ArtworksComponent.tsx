@@ -71,8 +71,12 @@ const NavigateBeforeIcon = styled(NavigateBefore) <NavIconProps>`
 `;
 
 interface ArtworksComponentProps {
+  /** List of artworks, each contain its id, name, artist, description, date, imageLoc, 
+   *  image, audio, notes and URL. */
   artworks: Artwork[];
-  onArtworkClicked: (id: string) => void;
+  /** Callback that will be used whenever an artwork is selected in the list 
+   *  of available artworks, with the id of the selected artwork as a parameter. */
+  onArtworkClicked?: (id: string) => void;
 };
 
 const ArtworksComponent: React.FC<ArtworksComponentProps> = ({ artworks, onArtworkClicked }) => {
@@ -97,7 +101,7 @@ const ArtworksComponent: React.FC<ArtworksComponentProps> = ({ artworks, onArtwo
                 <ArtworkCard
                   key={im._id}
                   artworkData={im}
-                  onArtworkSelected={() => onArtworkClicked(im._id)}
+                  onArtworkSelected={() => { if (onArtworkClicked !== undefined) { onArtworkClicked(im._id); } }}
                 />
               ))}
             </ArtworksContainer>

@@ -13,7 +13,7 @@ import InspectArtworkStep from './Steps/InspectArtworkStep';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import ArtworkStoriesPanel from '../components/ArtworkStoriesPanel/ArtworkStoriesPanel';
 import GeneralArtworkDetail from '../components/GeneralArtworkDetail';
-import { NavMenuElem } from '../../../components/Layout/SideMenu';
+import { NavigationWarning, NavMenuElem } from '../../../components/Layout/SideMenu';
 import ActivityScreen from '../../../screens/ActivityScreen';
 import { QrCode } from 'styled-icons/remix-line';
 import { Home } from '@styled-icons/boxicons-regular/Home';
@@ -25,7 +25,7 @@ import CreateStoryFlow from '../components/ArtworkStoriesPanel/CreateStoryFlow';
 import GuardedRoute from '../../../auth/GuardedRoute';
 import StoryViewStep from './Steps/StoryViewStep';
 import { useTranslation } from 'react-i18next';
-import RecommendationsStep, { RecommendationsByEmotionsScreen } from '../components/ArtworkStoriesPanel/CreateStorySteps/RecommedationsStep';
+import RecommendationsStep, { RecommendationsByEmotionsScreen } from '../components/ArtworkStoriesPanel/CreateStorySteps/RecommendationsStep';
 
 const Root = styled.div`
   display: flex;
@@ -170,6 +170,13 @@ const GamGameUserFlow = ({ activityDefinition, artworks, artworkCount }: GamGame
     },
   ];
 
+  const gamGameNavigationWarnings: NavigationWarning[] = [
+    {
+      from: 'stories/create',
+      warningText: t('areYouSureYouWantToExitStoryCreation')
+    }
+  ];
+
   return (
     <Root>
       <GamGameActivityContext.Provider value={{ artworks, activity: activityDefinition }}>
@@ -180,6 +187,7 @@ const GamGameUserFlow = ({ activityDefinition, artworks, artworkCount }: GamGame
               <ActivityScreen
                 activityTitle='GAM - GAM Game'
                 navigationEntries={gamGameNavigationConfig}
+                navigationWarnings={gamGameNavigationWarnings}
               />}>
             <Route path='home' element={<GeneralInformationStep />} />
             <Route path='collection' element={<CollectionStep />} />

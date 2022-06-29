@@ -39,7 +39,8 @@ export type IntendedUser = typeof intendedUsers[number];
 export const supportedActivities = [
   'Treasure Hunt',
   'GAM Game',
-  'Multistage Form'
+  'Multistage Form',
+  'Escape Room'
 ] as const;
 
 export type SupportedActivity = typeof supportedActivities[number];

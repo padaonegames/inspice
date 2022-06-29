@@ -225,35 +225,35 @@ export interface ProgressLineProps {
   currentItem: number;
   /**
    * List of available stages to select from. Each entry contains information about the 
-   * name of the stage and whether or not it has already been completed by the user.
-   * Also specifies whether stage can be removed when clicking on edit stages.
+   * name of the stage and whether it has already been completed by the user or not.
+   * Also specifies if stage can be removed when clicking on edit stages.
    * Names will be used to display the label for each stage.
    */
   items: { name: string, completed: boolean, canBeRemoved?: boolean }[];
   /**
-   * Caption/ label for last button at the end of the stage sequence, generally used as a submission
+   * Caption/label for the last button at the end of the stage sequence, generally used as a submission
    * button for the activity built during the creation process. If not provided, this last button 
    * will not be rendered.
    */
   finalItemCaption?: string;
   /**
-   * Whether we are in edit mode, thus allowing for the reordering/ removal of items (if removalAllowed == true).
+   * Whether we are in edit mode, allowing reorder/remove items (if removalAllowed == true).
    */
   editing?: boolean;
   /**
-   * Whether we are allow to remove elements in edit mode.
+   * Whether we are allow to remove elements in edit mode or not.
    */
   removalAllowed?: boolean;
   /**
-   * Callback to notify parent component about a specific item being selected (by index).
+   * Callback to notify the parent component about a specific item being selected (by index).
    */
   onItemSelected?: (index: number) => void;
   /**
-   * Callback to notify parent component about the user trying to remove an item from te list (by index).
+   * Callback to notify the parent component about the removal of an item from the list by the user (by index).
    */
   onRemoveItem?: (index: number) => void;
   /**
-   * Callback to notify parent component about the task being submitted (submit button clicked).
+   * Callback to notify the parent component about the task being submitted (submit button clicked).
    */
   onSubmit?: () => void;
 };

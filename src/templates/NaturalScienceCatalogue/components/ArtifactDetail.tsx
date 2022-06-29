@@ -13,6 +13,7 @@ const EditIcon = styled(Edit)`
 `;
 
 export interface ArtifactDetailProps {
+  /** Information and details about the artifact */
   artifactData: MncnArtifact;
 };
 

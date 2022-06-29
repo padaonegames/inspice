@@ -77,13 +77,18 @@ const CardBackground = styled.div<CardBackgroundProps>`
 `;
 
 export interface ArtworkCorrectProps {
+  /** If the image is flipped it's shown, otherwise is hidden. */
   flipped: boolean;
+  /** Path to the source image of the artwork which is used as the background of the card. */
   image: string;
+  /** Title of the artwork card. */
   title: string;
 };
 
 /**
- * <img src="media://ArtworkCorrect.PNG" alt="ArtworkCorrect">
+ * This card is being use the find artwork game when the player successfully selects the correct artwork. 
+ * It contains the background image and a title text to inform the player that it is the correct artwork. 
+ * There is also a boolean that is being passed to acknowledge the fact that this card has been flipped.
  */
 export const ArtworkCorrect: React.FC<ArtworkCorrectProps> = ({ flipped, image, title }) => {
 

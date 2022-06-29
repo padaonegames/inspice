@@ -150,8 +150,11 @@ const CardBackground = styled.div<CardBackgroundProps>`
 
 
 export interface ArtworkSelectedCardProps {
+  /** Boolean indicating if the artwork card is flipped or not. */
   flipped: boolean;
+  /** The artworkData object containing the card’s information. */
   artworkData: ArtworkData;
+  /** Callback to notify the parent when the card is deselected. */
   onArtworkDeselected: () => void;
 };
 

@@ -45,13 +45,19 @@ export interface InProgressGamGameStoryDefinitionData {
   imageSrc?: string;
 }
 
+/** list of available text templates that can be used to input a user's impression about an artwork */
+export const availableTextTemplates = ['itMakesMeThinkAbout', 'itRemindsMeOf', 'itMakesMeFeel'] as const;
+
+export type AvailableTextTemplate = typeof availableTextTemplates[number];
+
+export type AnswersToTemplates = {
+  [T in AvailableTextTemplate]: string;
+};
+
 /** Multimedia data associated with a given story (texts, emojis, tags) */
 export interface GamGameStoryPartMutimediaData {
-  /** What template is being used for the associated text. This is the part that the user cannot modify directly,
-   * instead needing to select a fixed text as a start for their answers */
-  textTemplate: string;
-  /** Text written by the user about the artwork */
-  text: string;
+  /** For each available text template, answer provided by the user, if any */
+  answersToTemplates: AnswersToTemplates;
   /** List of emojis that the user has placed on top of the artwork (+ positions) */
   emojis: StoryPartEmoji[];
   /** List of tags that the user has placed on top of the artwork (+ positions) */

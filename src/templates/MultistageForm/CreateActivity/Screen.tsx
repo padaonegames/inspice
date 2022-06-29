@@ -114,7 +114,7 @@ export const CreateMultistageFormActivityScreenComponent = (props: CreateMultist
       endsOn: activityDefinition['endsOn'] as Date,
       tags: activityDefinition['tags'] as string[],
       imageSrc: activityDefinition['imageSrc'] as string,
-      stages: activityDefinition['stages'] as MultistageFormStage[],
+      stages: activityDefinition['stages'] as MultistageFormStage<any>[],
       formResponsesDatasetUuid: activityDefinition['responsesDatasetUuid'] as string
     };
 

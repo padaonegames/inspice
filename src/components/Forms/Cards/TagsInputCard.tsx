@@ -17,19 +17,19 @@ import {
 } from "./cardStyles";
 
 export interface TagsInputCardProps {
-  /** Main text rendered on top of the component as a prompt for the user, indicating what they must do with the tags manager */
+  /** Main text rendered on top of the component as a prompt for the user, indicating what they must do with the tags manager. */
   promptText: string;
-  /** callback to use whenever a card has been created or removed. `value` provides a complete list of tags in use */
+  /** Callback to use when a card has been created or removed. The parameter `value` provides a complete list of tags in use. */
   onChange?: (value: string[]) => void;
-  /** maximum number of tags to allow for */
+  /** Maximum number of tags allowed. */
   maxTags?: number;
-  /** minimum number of tags to allow for */
+  /** Minimum number of tags allowed. */
   minTags?: number;
-  /** current value of the input field. Needs to be changed after onChange events to be kept in sync with internal state */
+  /** Current value of the input field. Needs to be changed after onChange events in order to be synchronized with the internal state. */
   value?: string[];
-  /** whether this field is considered required within the overall form (used to display an asterisk) */
+  /** If this field is considered required within the overall form (used to display an asterisk). */
   required?: boolean;
-  /** whether to modify the appearance of this card to reflect that the user tried to submit the form without entering a value for this field */
+  /** Modifies the appearance of the card to reflect that the user tried to submit the form without entering a required value. */
   requiredAlert?: boolean;
 }
 

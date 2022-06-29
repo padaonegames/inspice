@@ -20,7 +20,9 @@ const fadeOut = keyframes`
 `;
 
 interface FaderContainerProps {
+  /** A boolean to decide whether the content should be shown or not. */
   show: boolean;
+  /** Value which indicates how long will take for the content to fade away. Value in seconds. */
   transitionTime: number;
 };
 

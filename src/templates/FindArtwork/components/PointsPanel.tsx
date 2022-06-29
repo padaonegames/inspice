@@ -34,11 +34,12 @@ const PointsCorner = styled.div`
 `;
 
 export interface PointsPanelProps {
+  /** Score of the user updated. */
   points: number
 };
 
 /**
- * <img src="media://PointsPanel.PNG" alt="PointsPanel">
+ * A simple box to show the user the total points that they have.
  */
 export const PointsPanel: React.FC<PointsPanelProps> = ({ points }) => {
 

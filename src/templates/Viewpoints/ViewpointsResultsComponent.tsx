@@ -88,7 +88,9 @@ const LoadingIcon = styled(LoaderCircle)`
 `;
 
 export interface ArtworkResponses {
+  /** Artwork which the questions are about. */
   artwork: Artwork;
+  /** Responses to de the artwork questions. */
   responses: Response[];
 };
 

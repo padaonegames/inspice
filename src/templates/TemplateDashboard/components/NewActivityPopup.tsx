@@ -117,7 +117,9 @@ const TemplateText = styled.span`
 `;
 
 export interface NewActivityPopupProps {
+  /** Callback to notify the parent which template has been selected. */
   onTemplateSelected?: (template: SupportedActivity) => void;
+  /** Callback to notify the parent if the user has closed the pop-up. */
   onPopupClose?: () => void;
 };
 

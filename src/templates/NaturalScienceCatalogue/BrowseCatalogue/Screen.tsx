@@ -133,11 +133,12 @@ export const MncnCatalogueBrowsingScreen = (): JSX.Element => {
 };
 
 
-interface MncnCatalogueBrowsingScreenViewProps {
+export interface MncnCatalogueBrowsingScreenViewProps {
+  /** Artifacts list to browse through. */
   artifacts: MncnArtifact[];
 }
 
-const MncnCatalogueBrowsingScreenView = (props: MncnCatalogueBrowsingScreenViewProps): JSX.Element => {
+export const MncnCatalogueBrowsingScreenView = (props: MncnCatalogueBrowsingScreenViewProps): JSX.Element => {
 
   const { artifacts } = props;
 

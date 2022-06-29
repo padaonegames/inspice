@@ -124,8 +124,11 @@ const OptionText = styled.span`
 `;
 
 interface ResponsesPopupProps {
+  /** User resposes to the questions about the artwork. */
   responses: Response[];
+  /** Title of the questions*/
   titleText?: string;
+
   togglePopup?: () => void;
 };
 

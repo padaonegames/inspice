@@ -64,7 +64,7 @@ const LoadingText = styled.div`
 `;
 
 export interface LoadingOverlayProps {
-  /** Message to display */
+  /** Message to be display. */
   message?: string;
 };
 

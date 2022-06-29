@@ -61,11 +61,17 @@ const CardPanel = styled.div<CardPanelProps>`
 `;
 
 export interface CardProps {
+  /** Title of the box. */
   cardTitle?: string;
+  /** Alignment of the title. */
   titleAlign?: 'left' | 'right' | 'center' | 'justify';
+  /** Width of the box. */
   width?: string;
+  /** Maximum width possible for the card */
   maxWidth?: string;
+  /** Content orientation of the card. */
   flexDirection?: 'row' | 'column';
+  /** React node component that can act as a child to the box. */
   children?: React.ReactNode;
 };
 

@@ -196,7 +196,7 @@ const CardBackground = styled.div<CardBackgroundProps>`
 export interface ArtworkFrontProps {
   artworkData: ArtworkData;
   flipped: boolean;
-  onArtworkSelected: () => void;
+  onArtworkSelected?: () => void;
   /**
    * Callback to the parent of this panel indicating that an artwork has been clicked from the panel.
    * Note that this is different from selection, as clicking on an artwork just means that the user wishes

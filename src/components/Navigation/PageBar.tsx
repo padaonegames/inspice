@@ -28,7 +28,7 @@ export const Root = styled.div`
 `;
 
 export interface PageBarProps {
-  /** Currently displayed/ selected page. */
+  /** Currently displayed/selected page. */
   currentPage: number;
   /** Total number of pages to take into account */
   numberOfPages: number;
