@@ -71,6 +71,7 @@ export const RecommendationsByEmotionsScreen = (): JSX.Element => {
     }
     return recommendations;
   };
+
   const [fetchRecommendationsRequest] = useAsyncRequest(fetchRecommendations, [location]);
 
   if (!(fetchRecommendationsRequest.kind === 'success')) {
@@ -85,7 +86,65 @@ export const RecommendationsByEmotionsScreen = (): JSX.Element => {
       onNextClicked={handleNextClicked}
     />
   );
-};
+}; // RecommendationsByEmotionsScreen
+
+interface RecommendationsFromStoryComponentProps {
+  /** what type of relationship between artworks we are aiming for */
+  relation: 'opposite' | 'similar';
+  /** Metadata for all artworks included in the activity */
+  artworks: ArtworkData[];
+  /** artwork ids to be taken into account when querying for recommended artworks */
+  artworksIncluded: string[];
+  /** callback to parent specifying what to do when next button is clicked */
+  onNextClicked?: () => void;
+  /** callback to parent specifying what to do when recommended artwork is selected */
+  onArtworkSelected?: (artworkId: string) => void;
+} // RecommendationsFromStoryComponentProps
+
+export const RecommendationsFromStoryComponent = (props: RecommendationsFromStoryComponentProps): JSX.Element => {
+
+  const {
+    relation,
+    artworks,
+    artworksIncluded,
+    onArtworkSelected,
+    onNextClicked
+  } = props;
+
+  const { t } = useTranslation('gamGame');
+
+  const fetchRecommendations = async () => {
+    const recommendations: ArtworkData[] = [];
+    for (let artwork of artworksIncluded) {
+      const response = await gamArtworksService.fetchRecommendationsByEmotion(relation, artwork);
+      if (response.kind === 'ok') {
+        for (let newArtwork of response.data) {
+          if (recommendations.findIndex(elem => elem.id === newArtwork.id) < 0 /* not yet in recommendations list */
+            && artworks.findIndex(elem => elem.id === newArtwork.id) >= 0 /* included in activity (metadata available) */
+            && artworksIncluded.findIndex(elem => elem === newArtwork.id) < 0 /* not yet in story */) {
+            recommendations.push(newArtwork);
+          }
+        }
+      }
+    }
+    return recommendations;
+  }; // fetchRecommendations
+  
+  const [fetchRecommendationsRequest] = useAsyncRequest(fetchRecommendations, []);
+
+  if (!(fetchRecommendationsRequest.kind === 'success')) {
+    return <LoadingOverlay message={t('fetchingRecommendations')} />;
+  }
+
+  return (
+    <RecommendationsStep
+      artworks={fetchRecommendationsRequest.result}
+      relation={relation}
+      onArtworkSelected={onArtworkSelected}
+      onNextClicked={onNextClicked}
+    />
+  );
+} // RecommendationsFromStoryComponent
 
 interface RecommendationsStepProps {
   /** artwork data to render recommended pieces */
@@ -126,6 +185,6 @@ export const RecommendationsStep = (props: RecommendationsStepProps): JSX.Elemen
       </StepTitleCard>
     </StepRoot>
   );
-};
+}; // RecommendationsStep
 
 export default RecommendationsStep;

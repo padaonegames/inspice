@@ -36,7 +36,7 @@ export const ContinueOrSubmitStep = (props: ContinueOrSubmitStepProps): JSX.Elem
         <ArtworkListDottedLine />
         <ButtonsContainer>
           <ProgressButton
-            style={{ alignSelf: 'center', backgroundColor: '#f5b1a3' }}
+            style={{ alignSelf: 'center' }}
             enabled
             onClick={onSubmitClicked}
           >

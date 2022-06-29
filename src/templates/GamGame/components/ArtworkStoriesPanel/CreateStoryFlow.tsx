@@ -5,11 +5,13 @@ import { GamGameActivityContext } from "../../UserPerspective/Screen";
 import ContinueOrSubmitStep from "./CreateStorySteps/ContinueOrSubmitStep";
 import CreateStoryPartStep from "./CreateStorySteps/CreateStoryPartStep";
 import IntroStep from "./CreateStorySteps/IntroStep";
-import RecommendationsStep from "./CreateStorySteps/RecommedationsStep";
+import { RecommendationsFromStoryComponent } from "./CreateStorySteps/RecommendationsStep";
 import SelectArtworkStep from "./CreateStorySteps/SelectArtworkStep";
 import SubmitStoryStep from "./CreateStorySteps/SubmitStoryStep";
 
-type CreateStoryStatus = 'intro' | 'select-artwork' | 'create-story-part' | 'continue-or-submit' | 'submit';
+type CreateStoryStatus = 'intro' | 'select-artwork' | 'create-story-part' | 'continue-or-submit' | 'recommendation-similar' | 'recommendation-opposite' | 'submit';
+/** What sort of status we are selecting the current artwork from */
+type ArtworkSelectionStatus = 'select-artwork' | 'recommendation-opposite' | 'recommendation-similar';
 
 export const CreateStoryFlow = (): JSX.Element => {
 
@@ -18,6 +20,7 @@ export const CreateStoryFlow = (): JSX.Element => {
   const navigate = useNavigate();
 
   const [status, setStatus] = useState<CreateStoryStatus>('intro');
+  const [artworkSelectionStatus, setArtworkSelectionStatus] = useState<ArtworkSelectionStatus>('select-artwork');
 
   const [storyParts, setStoryParts] = useState<GamGameStoryPart[]>([]);
   const [currentArtwork, setCurrentArtwork] = useState<string | undefined>(undefined);
@@ -33,7 +36,14 @@ export const CreateStoryFlow = (): JSX.Element => {
 
     setStoryParts(prev => ([...prev, storyPart]));
 
-    if (storyParts.length + 1 >= activity.maxArtworks) {
+    if (artworkSelectionStatus === 'recommendation-similar') {
+      setStatus('recommendation-opposite');
+      setArtworkSelectionStatus('recommendation-opposite');
+    }
+    else if (artworkSelectionStatus === 'recommendation-opposite') {
+      setStatus('submit');
+    }
+    else if (storyParts.length + 1 >= activity.maxArtworks) {
       // reached maximum number of story parts, move on to submit
       setStatus('submit');
     }
@@ -51,7 +61,7 @@ export const CreateStoryFlow = (): JSX.Element => {
 
   const handleQuitStoryPart = () => {
     setCurrentArtwork(undefined);
-    setStatus('select-artwork');
+    setStatus(artworkSelectionStatus);
   };
 
   const handleContinueStory = () => {
@@ -59,18 +69,20 @@ export const CreateStoryFlow = (): JSX.Element => {
   };
 
   const handleSubmitStory = () => {
-    setStatus('submit');
+    setStatus('recommendation-similar');
+    setArtworkSelectionStatus('recommendation-similar');
   };
 
   const handleStorySubmitted = () => {
     console.log("story submitted")
-    navigate({
+    /*navigate({
       pathname: `/gam-game/consumer/visit/${activity._id}/recommendations`,
       search: `?${createSearchParams([
         ['relation', 'similar'],
         ['artworksIncluded', JSON.stringify(storyParts.map(part => part.artworkId))]
       ])}`
-    });
+    });*/
+    navigate(`/gam-game/consumer/visit/${activity._id}/home`);
   };
 
   if (status === 'intro') {
@@ -104,6 +116,30 @@ export const CreateStoryFlow = (): JSX.Element => {
       <ContinueOrSubmitStep
         onContinueClicked={handleContinueStory}
         onSubmitClicked={handleSubmitStory}
+      />
+    );
+  }
+
+  if (status === 'recommendation-similar') {
+    return (
+      <RecommendationsFromStoryComponent
+        artworks={artworks}
+        relation='similar'
+        artworksIncluded={storyParts.map(part => part.artworkId)}
+        onArtworkSelected={handleArtworkSelected}
+        onNextClicked={() => setStatus('recommendation-opposite')}
+      />
+    );
+  }
+
+  if (status === 'recommendation-opposite') {
+    return (
+      <RecommendationsFromStoryComponent
+        artworks={artworks}
+        relation='opposite'
+        artworksIncluded={storyParts.map(part => part.artworkId)}
+        onArtworkSelected={handleArtworkSelected}
+        onNextClicked={() => setStatus('submit')}
       />
     );
   }
