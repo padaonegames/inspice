@@ -12,14 +12,16 @@ const Root = styled.div<RootProps>`
   position: relative;
   box-sizing: border-box;
   height: 100%;
+  width: min-content;
   background-color: transparent;
   user-select: none;
-  padding: 12px 16px 12px 0px;
+  padding: 10px 0px 10px 0px;
   display: flex;
   flex-direction: row;
-  flex: 1 1 auto;
+  flex: 0 0 auto;
+  justify-content: space-around;
   border: 0px none;
-  border-radius: 0.5rem;
+  border-radius: 1.25rem;
 
   ${props => !props.selected && `
   border: 1px dashed black;
@@ -35,6 +37,7 @@ const Root = styled.div<RootProps>`
   margin-right: 1em;
 `;
 
+//Entire slide of a puzzle
 const PuzzleSlide = styled.div`
   position: relative;
   box-sizing: border-box;
@@ -42,6 +45,7 @@ const PuzzleSlide = styled.div`
   background-color: transparent;
   user-select: none;
   padding: 12px 16px 12px 0px;
+  margin: 0px 10px 0px 10px;
   display: flex;
   flex-direction: column;
   border: 0px none;
@@ -51,7 +55,7 @@ const PuzzleSlide = styled.div`
   font-weight: 500;
   font-family: ${props => props.theme.contentFont};
   color: rgb(51, 51, 51);
-  width: auto;
+  width: max-content;
   background-color: rgba(248, 188, 188);
 `;
 
@@ -86,6 +90,8 @@ const SlideContainer = styled.div`
 interface ItemPreviewProps {
   selected?: boolean;
 }
+
+//Preview inside puzzle block
 const ItemPreview = styled.div<ItemPreviewProps>`
   display: flex;
   flex-direction: column;
@@ -149,13 +155,16 @@ const DeleteIcon = styled(Bin)`
   width: 1.25em;
 `
 
+//Container of the multiple slides that can be added to a block
 const SlidesContainer = styled.div`
   position: relative;
   cursor: pointer;
   display: flex;
   flex-direction: row;
-  flex: 1 1 0%;
-  height: calc(100% - 1.25rem);
+  flex: 0 0 0%;
+  //height: calc(100% - 1.25rem);
+  height: 100%;
+ 
   box-sizing: border-box;
   color: rgb(51, 51, 51);
   background-color: rgb(225, 132, 132);
@@ -201,18 +210,13 @@ export const RoomBlockSlide = (props: RoomBlockSlideProps): JSX.Element => {
   } = props;
 
   return (
-    <Root selected={selected} onMouseLeave = {()=>setMouseOverMe(prev => false)}  onMouseEnter={()=>setMouseOverMe(prev => true)} >
+    <Root selected={selected} onMouseLeave = {()=>setMouseOverMe(false)}  onMouseEnter={()=>setMouseOverMe(true)}  onClick={onSlideSelected}>
 
-      <SlidesContainer  onClick={onSlideSelected}>
+      <SlidesContainer>
         {block.puzzles.map((puzzle, i) => {
           const slideRenderer = puzzleMappings[puzzle.type];
           return (
             <PuzzleSlide>
-              {/* Duplicate slice button */}
-              {/* <SliceButton Y={5} X={75}  onClick={ e=>{onBlockDeleted && onBlockDeleted()}}>
-                <DuplicateIcon></DuplicateIcon>
-              </SliceButton> */}
-
               <SlideTitle>{puzzle.type}</SlideTitle>
               <SlideContainer>
                 <ItemPreview selected={selected}>

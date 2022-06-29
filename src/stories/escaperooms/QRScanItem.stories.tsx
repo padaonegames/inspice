@@ -23,5 +23,5 @@ Default.args = {
 
 export const Alternative = Template.bind({});
 Alternative.args = {
-  payload: {encodedText: "hola"}
+  payload: {encodedText: "Hello"}
 };

@@ -36,6 +36,9 @@ const SlidesContainer = styled.div`
   width: 90%;
   overflow-x: auto;
   margin: 0px 0px;
+  //background-color: transparent;
+  background-color: rgba(220,220,220,0.5);
+  border-radius: 0 0 1.25rem 1.25rem;
 `;
 
 const AddIcon = styled(Add)`

@@ -18,6 +18,7 @@ import {AddCircle} from "@styled-icons/fluentui-system-regular/AddCircle"
 
 
 const SettingsContainer = styled.div`
+  position:relative;
   margin-top: 5px;
   display: flex;
   background-color: transparent;
@@ -52,6 +53,37 @@ const TitleContainer = styled.div`
   align-items: center;
 
   background-color: white;
+
+  border-radius: 1rem;
+  box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
+`;
+
+interface SelectedProps {
+  selected: boolean;
+}
+
+const Selected = styled.div<SelectedProps>`
+  position: absolute;
+  top: 5%;
+  right: 5%;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: ${props => props.theme.contentFont};
+  line-height: 135%;
+
+  margin-top: 0.25em;
+  margin-bottom: 0.25em;
+  padding: 0.75em 1.25em;
+  border-top: none;
+  color: black;
+  line-height: 135%;
+  width: fit-content;
+  text-align: center;
+
+  display: flex;
+  align-items: center;
+
+  background-color: ${props => props.selected ? "yellow" : "white"};
 
   border-radius: 1rem;
   box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
@@ -104,6 +136,13 @@ const AddPuzzleIcon = styled(AddCircle)`
 `;
 
 const HintsIcon = styled(Download)`
+  color: ${props => props.theme.textColor};
+  height: 1.75em;
+  width: 1.75em;
+  margin-right: 0.5em;
+`;
+
+const SelectedIcon = styled(Download)`
   color: ${props => props.theme.textColor};
   height: 1.75em;
   width: 1.75em;
@@ -165,6 +204,7 @@ export const EditableRoomItemContent = (props: EditableRoomItemContentProps): JS
 
   const [selectedBlock, setSelectedBlock] = useState<number | 'room-settings'>('room-settings');
   const [selectedPuzzleIndex, setSelectedPuzzleIndex] = useState<number>(-1);
+  const [exitBlockIndex, setExitBlockIndex] = useState<number>(-1);
 
     //////////////////////////////Methods to manipulate room settings ////////////////////////////
 
@@ -195,7 +235,7 @@ export const EditableRoomItemContent = (props: EditableRoomItemContentProps): JS
         ...blocks.slice(index + 1, blocks.length)
       ]
     });
-  }
+  }  //handleChangeBlockName
 
   const handleChangeBlockDescription = (index:number, description: string) => {
     if (!onPayloadChanged) return;
@@ -209,7 +249,17 @@ export const EditableRoomItemContent = (props: EditableRoomItemContentProps): JS
         ...blocks.slice(index + 1, blocks.length)
       ]
     });
-  }
+  }  //handleChangeBlockDescription
+
+  const handleChangeExitBlock = (index:number) =>{
+    if (!onPayloadChanged) return;
+    onPayloadChanged({
+      ...payload,
+      exitBlock:payload.blocks[index] 
+    });
+
+    setExitBlockIndex(index);
+  }  //handleChangeExitBlock
 
   const handleAddBlock = () => {
     if (!onPayloadChanged) return;
@@ -285,8 +335,6 @@ export const EditableRoomItemContent = (props: EditableRoomItemContentProps): JS
         ...blocks.slice(blockIndex + 1, blocks.length)
       ]
     });
-
-    // if(blocks[blockIndex].puzzles.length ===1) setSelectedPuzzleIndex(-1);
   } //handleDeletePuzzle
 
 
@@ -406,6 +454,14 @@ export const EditableRoomItemContent = (props: EditableRoomItemContentProps): JS
               Block Description
             </TitleContainer>
             <PromptField promptText={currentBlock.blockDescription} promptPlaceholder='Give this block a description' onPromptChange={(value) => {handleChangeBlockDescription(selectedBlock, value)}} />
+          
+
+            {/* Button to control the block that lets you continue in the adventure */}
+            <Selected  onClick={() => {handleChangeExitBlock(selectedBlock)}} selected ={selectedBlock === exitBlockIndex} >
+              <SelectedIcon />
+              Exit Block
+            </Selected>
+
           </SettingsContainer>
 
           {/* In case we want to add a puzzle at the beginning of the room block*/}
