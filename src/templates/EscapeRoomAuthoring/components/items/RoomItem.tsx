@@ -8,11 +8,13 @@ import { RoomPuzzleSettingsEditor } from "./RoomPuzzleSettingsEditor";
 import { ItemToSlideProducerMapping, RoomBlockSlidesContainer } from "./RoomBlockSlidesContainer";
 import { qrScanItemFactory, QRScanItemStageSlide } from "./QRScanItem";
 import { arScanItemFactory, ARScanItemStageSlide } from "./ARScanItem";
+import { PromptField } from "./PromptField";
 
 
 import styled from "styled-components";
 import {Download} from "@styled-icons/bootstrap/Download"
-import { PromptField } from "./PromptField";
+import {AddCircle} from "@styled-icons/fluentui-system-regular/AddCircle"
+
 
 
 const SettingsContainer = styled.div`
@@ -55,13 +57,58 @@ const TitleContainer = styled.div`
   box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
 `;
 
+const CenteredContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  // background-color:  rgba(255,0,0,1);
+`;
+
+//Components for the button to add a new Puzzle to the room block
+const AddPuzzleButton = styled.div`
+
+  position: relative;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: ${props => props.theme.contentFont};
+  line-height: 135%;
+
+  margin-top: 0.25em;
+  margin-bottom: 0.25em;
+  padding: 0.75em 1.25em;
+  border-top: none;
+  color: black;
+  line-height: 135%;
+  width: fit-content;
+  
+  display: flex;
+  text-align: center;
+  align-items: center;
+
+  background-color: rgb(255, 255, 255);
+
+  border-radius: 1rem;
+  box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
+
+  &:hover {
+    transition: border 0.25s;
+    border: 3px solid rgb(200, 200, 200);
+  }
+
+`;
+
+const AddPuzzleIcon = styled(AddCircle)`
+  color: ${props => props.theme.textColor};
+  height: 1.75em;
+  width: auto;
+`;
+
 const HintsIcon = styled(Download)`
   color: ${props => props.theme.textColor};
   height: 1.75em;
   width: 1.75em;
   margin-right: 0.5em;
 `;
-
 
 export const puzzleToSlidesMappings: ItemToSlideProducerMapping<SupportedPuzzle> = {
   "multiple-choice": MultipleChoiceItemStageSlide,
@@ -117,7 +164,7 @@ export const EditableRoomItemContent = (props: EditableRoomItemContentProps): JS
   } = payload;
 
   const [selectedBlock, setSelectedBlock] = useState<number | 'room-settings'>('room-settings');
-
+  const [selectedPuzzleIndex, setSelectedPuzzleIndex] = useState<number>(-1);
 
     //////////////////////////////Methods to manipulate room settings ////////////////////////////
 
@@ -238,6 +285,8 @@ export const EditableRoomItemContent = (props: EditableRoomItemContentProps): JS
         ...blocks.slice(blockIndex + 1, blocks.length)
       ]
     });
+
+    // if(blocks[blockIndex].puzzles.length ===1) setSelectedPuzzleIndex(-1);
   } //handleDeletePuzzle
 
 
@@ -287,6 +336,11 @@ export const EditableRoomItemContent = (props: EditableRoomItemContentProps): JS
   }; // handlePuzzleTypeChanged
 
 
+  const handleSelectedPuzzleIndexChanged = (index:number) => {
+    setSelectedPuzzleIndex(index);
+  }
+
+
   const handleAddNewPuzzle = (blockIndex:number, puzzleIndex: number) => {
     if (!onPayloadChanged) return;
     onPayloadChanged({
@@ -313,6 +367,7 @@ export const EditableRoomItemContent = (props: EditableRoomItemContentProps): JS
 
   return (
     <>
+    {/* Top side of the screen with slides that represent the blocks avaliable in this room */}
     {/* List of blocks on the top of the editor */}
       <RoomBlockSlidesContainer
         itemMappings={puzzleToSlidesMappings}
@@ -326,6 +381,8 @@ export const EditableRoomItemContent = (props: EditableRoomItemContentProps): JS
         blocks={blocks}
       />
 
+
+      {/* Body of the screen with the editor of the specifcc block thar we are editing  */}
       {/* Editor for the room specific settings */}
       {selectedBlock === 'room-settings' &&
         <RoomSettingsEditor
@@ -334,12 +391,11 @@ export const EditableRoomItemContent = (props: EditableRoomItemContentProps): JS
         />
       }
 
-      {/* Entry point of the block and sequence of puzzles after that */}
+      {/* Sequence of puzzles that are avaliable in a specific room block */}
       {currentBlock && selectedBlock !== 'room-settings' && (
         <>
-
-          <SettingsContainer>
-            {/* Block name and description */}
+        {/* Element that contains the information relative to the room block */}
+          <SettingsContainer onMouseEnter={ () => {setSelectedPuzzleIndex(-1)}}>
             <TitleContainer>
               <HintsIcon />
               Block Title
@@ -352,15 +408,38 @@ export const EditableRoomItemContent = (props: EditableRoomItemContentProps): JS
             <PromptField promptText={currentBlock.blockDescription} promptPlaceholder='Give this block a description' onPromptChange={(value) => {handleChangeBlockDescription(selectedBlock, value)}} />
           </SettingsContainer>
 
-          {/* Sequence of editors to configure a rooms block of puzzles */}
+          {/* In case we want to add a puzzle at the beginning of the room block*/}
+          {selectedPuzzleIndex === -1 && (
+            <CenteredContainer>
+              <AddPuzzleButton onClick={() =>{handleAddNewPuzzle(selectedBlock,-1)}}>
+                <AddPuzzleIcon/>
+              </AddPuzzleButton>  
+            </CenteredContainer>
+          )}
+
+
+          {/* Sequence of editors to configure a room's block of puzzles */}
           {currentBlock.puzzles.map((puzzle, i) => (
+            <>
            <RoomPuzzleSettingsEditor puzzle={puzzle} index = {i} 
             handlePuzzlePayloadChanged = {(value)=>{handlePuzzlePayloadChanged(selectedBlock,i,value)}}
             handlePuzzleTypeChanged = {(value) => {handlePuzzleTypeChanged(selectedBlock,i,value)}}
             handlePuzzleDelete = {() => {handleDeletePuzzle(selectedBlock,i)}} 
             handlePuzzleDuplicate = {() => {handleDuplicatePuzzle(selectedBlock,i)}}
-            handleAddNewPuzzle = {(value) => {handleAddNewPuzzle(selectedBlock,value)}}
+            handleSelectedPuzzleChanged = {() => {handleSelectedPuzzleIndexChanged(i)}}
             />
+
+            {/* Button that allows to add a new puzzle right after the one specified by "selectedPuzzleIndex" */}
+            {i === selectedPuzzleIndex ? 
+              <>
+                <CenteredContainer>
+                  <AddPuzzleButton onClick={() =>{handleAddNewPuzzle(selectedBlock,i)}}>
+                    <AddPuzzleIcon/>
+                  </AddPuzzleButton>  
+                </CenteredContainer>
+              </> : 
+              <></>}
+            </>
            ))}
         </>
       )}

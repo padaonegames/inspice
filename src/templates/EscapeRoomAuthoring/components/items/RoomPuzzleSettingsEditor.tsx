@@ -14,7 +14,7 @@ import { Delete } from '@styled-icons/fluentui-system-regular/Delete';
 import {Copy} from "@styled-icons/boxicons-regular/Copy";
 import { ChevronDown } from "@styled-icons/boxicons-regular/ChevronDown";
 import {Download} from "@styled-icons/bootstrap/Download"
-
+import {AddCircle} from "@styled-icons/fluentui-system-regular/AddCircle"
 
 
 
@@ -50,12 +50,35 @@ const CheckboxTitle = styled.div`
   box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
 `;
 
+const EditorContainer = styled.div`
+  margin-top: 5px;
+  display: flex;
+  background-color: transparent;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.75em;
+  background-color:  transparent;
+  border-radius: 1.25rem;
+
+  // box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
+  // border-bottom: 2px solid #dadce0;
+
+  &:hover {
+    background-color: rgba(191,232,255,0.5);
+    box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
+    border-bottom: 2px solid #dadce0;
+  }
+
+`;
+
 const PuzzleCard = styled.div`
+  position:relative;
   margin-top: 5px;
   display: flex;
   background-color: transparent;
   flex-direction: column;
   align-items: left;
+  width:100%;
 
   border-bottom: 2px solid #dadce0;
   padding: 0.75em;
@@ -66,15 +89,39 @@ const PuzzleCard = styled.div`
   box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
 `;
 
-const HorizontalContainer = styled.div`
+const HeaderContainer = styled.div`
+  position: relative;
   display: flex;
+  justify-content: space-between;
   background-color: transparent;
   flex-direction: row;
-  align-items: left;
   // background-color: rgb(0,0,255);
   border-bottom: 2px solid #dadce0;
-
   border-radius: 1.25rem;
+`;
+
+const BottomContainer = styled.div`
+  position: relative;
+  display: flex;
+  justify-content: flex-end;
+  flex-direction: row;
+  align-items: right;
+  background-color: transparent;
+  //background-color: rgb(0,0,255);
+  border-bottom: 2px solid #dadce0;
+  border-radius: 1.25rem;
+`;
+
+const ButtonContainer = styled.div`
+  padding: 0.75em;
+  background-color:  transparent;
+  border-radius: 1.5rem;
+  &:hover {
+    background-color: rgba(180,180,180,1);
+    // box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
+    // border-bottom: 2px solid #dadce0;
+  }
+
 `;
 
 const HorizontalLine = styled.div`
@@ -93,19 +140,7 @@ export const fieldTypeIcon = css`
   color: ${props => props.theme.textColor};
   height: 1.75em;
   width: 1.75em;
-  margin-right: 0.75em;
 `;
-
-
-// const HorizontalLine = styled.div`
-//   height: 1px;
-//   width: 100;
-//   padding-top: 0.5em;
-//   border-style: solid;
-//   border-color: rgb(255,0,0);
-//   border-width: 0px 2px 0px 0px;
-//   margin: 0 0.5em;
-// `;
 
 const DeleteIcon = styled(Delete)`
   ${fieldTypeIcon}
@@ -127,7 +162,7 @@ const ExpandDropdownIcon = styled(ChevronDown)`
 
 const DropdownMenu = styled.div`
   position: absolute;
-  left: 0;
+  right: 0;
   top: 2.5em;
   background-color: ${props => props.theme.cardBackground};
   min-width: 160px;
@@ -160,7 +195,6 @@ const DropdownMenuItem = styled.a`
 
 const SelectFieldTypeDropdownButton = styled.span`
   position: absolute;
-  right:0;
   font-size: 0.9em;
   font-weight: 200;
   font-family: ${props => props.theme.contentFont};
@@ -174,7 +208,7 @@ const SelectFieldTypeDropdownButton = styled.span`
   height: 2.5em;
   width: 50%;
 
-  background-color: transparent;
+  background-color: rgb(250,250,250);
   border-radius: 5px;
   box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 0.1rem 0px;
   border: 1px solid #dadce0;
@@ -191,7 +225,7 @@ const SelectFieldTypeDropdownButton = styled.span`
 `;
 
 //Components for the button to download the QR
-const DownloadButton = styled.div`
+const AddPuzzleButton = styled.div`
 
   position: relative;
 
@@ -214,7 +248,7 @@ const DownloadButton = styled.div`
   display: flex;
   align-items: center;
 
-  background-color: rgb(75, 170, 100);
+  background-color: rgb(255, 255, 255);
 
   border-radius: 1rem;
   box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
@@ -231,6 +265,11 @@ const DownloadIcon = styled(Download)`
   width: auto;
 `;
 
+const AddPuzzleIcon = styled(AddCircle)`
+  color: ${props => props.theme.textColor};
+  height: 1.75em;
+  width: auto;
+`;
 
 
 export interface RoomPuzzleSettingsEditorProps {
@@ -246,7 +285,7 @@ export interface RoomPuzzleSettingsEditorProps {
   /** callback to parent component notifying that the user wants to duplicate a puzzle */
   handlePuzzleDuplicate: () => void;
 
-  handleAddNewPuzzle: (index:number) =>void;
+  handleSelectedPuzzleChanged: () =>void;
 }
 
 export const RoomPuzzleSettingsEditor = (props: RoomPuzzleSettingsEditorProps): JSX.Element => {
@@ -258,12 +297,11 @@ export const RoomPuzzleSettingsEditor = (props: RoomPuzzleSettingsEditorProps): 
     handlePuzzleTypeChanged,
     handlePuzzleDelete,
     handlePuzzleDuplicate,
-    handleAddNewPuzzle
+    handleSelectedPuzzleChanged
   } = props;
 
   const [stageTypeDropdownOpen, setStageTypeDropdownOpen] = useState<boolean>(false);
   const [currentTypeSelected, setCurrentTypeSelected] = useState<string | undefined>("Select a stage type");
-  const [showAddPuzzle, setShowAddPuzzle] = useState<boolean>(false);
 
   useEffect(() => {
     setCurrentTypeSelected(stageMappings[puzzle.type].displayName ? stageMappings[puzzle.type].displayName :"Select a stage type");
@@ -272,11 +310,13 @@ export const RoomPuzzleSettingsEditor = (props: RoomPuzzleSettingsEditorProps): 
   }, [puzzle]);
 
   return (
-    <>
 
-      <PuzzleCard  onMouseEnter={ () => setShowAddPuzzle(true)}  onMouseLeave = { () => setShowAddPuzzle(false)} >
+    
+    <EditorContainer  onMouseEnter={ () => handleSelectedPuzzleChanged()} >
+      <PuzzleCard >
 
-        <HorizontalContainer>
+        {/* Upper side of the card (Title and selector) */}
+        <HeaderContainer>
           <CheckboxTitle>
             <HintsIcon />
             Puzzle number {index+1}
@@ -293,7 +333,7 @@ export const RoomPuzzleSettingsEditor = (props: RoomPuzzleSettingsEditorProps): 
                 ))}
               </DropdownMenu>}
           </SelectFieldTypeDropdownButton>
-        </HorizontalContainer>
+        </HeaderContainer>
 
         <HorizontalLine/>
 
@@ -306,23 +346,18 @@ export const RoomPuzzleSettingsEditor = (props: RoomPuzzleSettingsEditorProps): 
           })
         }
 
-        {/* Buttons to duplicate and delete a puzzle from a room block */}
         <HorizontalLine/>
-        <HorizontalContainer>
-          <DeleteIcon onClick={ () => {handlePuzzleDelete()}}/>
-          <CopyIcon onClick={() => {handlePuzzleDuplicate()}} />
-        </HorizontalContainer>
-
-        { showAddPuzzle ? 
-        <>
-        <DownloadButton onClick={() =>{handleAddNewPuzzle(index)}}>
-                <DownloadIcon/>
-        </DownloadButton>  
-        </>
-        : <></>}
+        {/* Buttons to duplicate and delete a puzzle from a room block */}
+        <BottomContainer>
+          <ButtonContainer onClick={ () => {handlePuzzleDelete()}}>
+            <DeleteIcon />
+          </ButtonContainer>
+          <ButtonContainer  onClick={() => {handlePuzzleDuplicate()}}>
+            <CopyIcon  />
+          </ButtonContainer>
+        </BottomContainer>
 
       </PuzzleCard>
-      
-    </>
+    </EditorContainer>
   );
 }; // RoomSettingsEditor
