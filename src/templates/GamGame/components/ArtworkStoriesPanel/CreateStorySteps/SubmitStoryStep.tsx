@@ -66,13 +66,11 @@ export const SubmitStoryStep = (props: SubmitStoryStepProps): JSX.Element => {
     <StepRoot>
       <StepTitleCard
         stepTitle={t('submitStory')}
-        stepDescription={t('beforeSubmittingYourStory')}
       >
         <ArtworkListDottedLine />
         <ShortTextInputCard
           width={1}
           promptText={t('writeTitleForYourStory')}
-          placeholder={`${t('yourStorysTitleHere')}...`}
           value={title}
           onChange={(val) => setTitle(val)}
           alertMessage={errorMessage}

@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { ThemeContext } from '../../theme/ThemeStore';
 import { LightMode } from '@styled-icons/material-sharp/LightMode';
 import { DarkMode } from '@styled-icons/material-sharp/DarkMode';
-import SideMenu, { NavMenuElem } from './SideMenu';
+import SideMenu, { NavigationWarning, NavMenuElem } from './SideMenu';
 import { Menu } from "styled-icons/ionicons-solid";
 import { Language } from "@styled-icons/fa-solid/Language";
 
@@ -86,14 +86,17 @@ export interface HeaderProps {
   activityTitle?: string;
   /** Navigation Entries to be rendered within the associated side menu for the current template */
   navigationEntries?: NavMenuElem[];
-};
+  /** Guards to warn user about a possible loss of progress when transitioning from a given route */
+  navigationWarnings?: NavigationWarning[];
+}; // HeaderProps
 
 /** Basic Header component with support for theme and localization management, as well as for in-template navigation via side menu */
 export const Header = (props: HeaderProps) => {
 
   const {
     activityTitle = '',
-    navigationEntries = []
+    navigationEntries = [],
+    navigationWarnings = []
   } = props;
 
   const { t, i18n } = useTranslation('app');
@@ -129,10 +132,11 @@ export const Header = (props: HeaderProps) => {
       <SideMenu
         open={openMenu}
         entries={navigationEntries}
+        navigationWarnings={navigationWarnings}
         onClose={() => setOpenMenu(false)}
       />
     </>
   );
-}
+} // Header
 
 export default Header;

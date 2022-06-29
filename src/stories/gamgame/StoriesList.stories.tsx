@@ -48,8 +48,11 @@ const tag2: StoryPartTag={
 const tags: StoryPartTag[] = [tag1, tag2];
 
 const storyPartMult: GamGameStoryPartMutimediaData = {
-  textTemplate: 'plantilla',
-  text: 'texto',
+  answersToTemplates: {
+    'itMakesMeFeel': 'sad',
+    'itMakesMeThinkAbout': 'sadness',
+    'itRemindsMeOf': 'agony'
+  },
   emojis: emojis,
   tags: tags
 }

@@ -3,8 +3,8 @@ import { ComponentMeta, ComponentStory } from '@storybook/react/dist/ts3.9/clien
 import ArtworkStoriesList from '../../templates/GamGame/components/ArtworkStoriesPanel/ArtworkStoriesList';
 import { ArtworkData } from '../../services/artwork.model';
 import * as SampleImage from '../assets/head_of_a_girl.jpg';
-import {GamGameStoryDefinitionData, GamGameStoryPart, GamGameStoryPartMutimediaData} from '../../services/gamGameActivity.model'
-import {StoryPartEmoji, StoryPartTag} from "../../services/gamGameActivity.model";
+import { GamGameStoryDefinitionData, GamGameStoryPart, GamGameStoryPartMutimediaData } from '../../services/gamGameActivity.model'
+import { StoryPartEmoji, StoryPartTag } from "../../services/gamGameActivity.model";
 
 
 export default {
@@ -19,27 +19,27 @@ export default {
   ],
 } as ComponentMeta<typeof ArtworkStoriesList>;
 
-const emoji1: StoryPartEmoji={
+const emoji1: StoryPartEmoji = {
   emoji: '🤩',
   locationX: 0,
   locationY: 0
 };
 
-const emoji2: StoryPartEmoji={
-  emoji: '🧐'  ,
+const emoji2: StoryPartEmoji = {
+  emoji: '🧐',
   locationX: 10,
   locationY: 0
 };
 
 const emojis: StoryPartEmoji[] = [emoji1, emoji2];
 
-const tag1: StoryPartTag={
+const tag1: StoryPartTag = {
   tag: 'chachipistachi',
   locationX: 5,
   locationY: 5
 }
 
-const tag2: StoryPartTag={
+const tag2: StoryPartTag = {
   tag: 'Olee',
   locationX: 30,
   locationY: 0
@@ -48,27 +48,30 @@ const tag2: StoryPartTag={
 const tags: StoryPartTag[] = [tag1, tag2];
 
 const storyPartMult: GamGameStoryPartMutimediaData = {
-  textTemplate: 'Plantilla',
-  text: 'texto',
+  answersToTemplates: {
+    'itMakesMeFeel': 'sad',
+    'itMakesMeThinkAbout': 'sadness',
+    'itRemindsMeOf': 'agony'
+  },
   emojis: emojis,
   tags: tags
 }
 
 
-const storyPart: GamGameStoryPart={
+const storyPart: GamGameStoryPart = {
   artworkId: 'id obra',
   multimediaData: storyPartMult
 }
-const storyParts: GamGameStoryPart[] = [ storyPart,  storyPart];
+const storyParts: GamGameStoryPart[] = [storyPart, storyPart];
 
-const storyDef : GamGameStoryDefinitionData = {
+const storyDef: GamGameStoryDefinitionData = {
   _id: 'id',
   title: 'Título',
   activityId: 'id actividad',
   parts: storyParts
 }
 
-const storyDefs : GamGameStoryDefinitionData[] = [storyDef, storyDef];
+const storyDefs: GamGameStoryDefinitionData[] = [storyDef, storyDef];
 
 
 const sample: ArtworkData = {

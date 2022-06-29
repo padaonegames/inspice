@@ -1,6 +1,18 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import lineBackground from './../../../components/line-header-point.png';
 import { Cross } from '@styled-icons/entypo/Cross';
+import { RightArrowCircle } from '@styled-icons/boxicons-regular/RightArrowCircle';
+
+const arrowStyle = css`
+  width: auto;
+  height: 2.25rem;
+  color: white;
+  margin: auto;
+`;
+
+export const NextArrowIcon = styled(RightArrowCircle)`
+  ${arrowStyle}
+`;
 
 export const Root = styled.div`
   display: flex;
@@ -266,6 +278,15 @@ export const StoryDisplayHeaderRow = styled.div`
   align-items: center;
   justify-content: space-between;
   margin: 5px 0 5px 0;
+`;
+
+export const StoryDisplayBottomRow = styled.div`
+  display: flex;
+  flex-direction: row;
+  padding: 5px 12px;
+  align-items: center;
+  justify-content: flex-end;
+  margin: 0 0 1em 0;
 `;
 
 export const StoryDisplayQuitIcon = styled(Cross)`

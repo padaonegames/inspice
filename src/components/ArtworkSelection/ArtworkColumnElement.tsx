@@ -40,9 +40,11 @@ export const CardColumnElement = (props: CardColumnElementProps): JSX.Element =>
           <CardTitle>
             {artworkData.title}
           </CardTitle>
+          {/*
           <CardInfo>
             {artworkData.info}
           </CardInfo>
+          */}
           <CardAuthor>
             {artworkData.author}
           </CardAuthor>
