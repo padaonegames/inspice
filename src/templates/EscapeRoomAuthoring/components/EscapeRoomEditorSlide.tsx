@@ -1,10 +1,16 @@
-import styled from "styled-components";
+import { useState } from 'react';
 import { ItemDefinition, SupportedPuzzle, SupportedStage } from "../../../services/escapeRoomActivity.model";
+
+import styled from "styled-components";
+import {Bin} from "@styled-icons/icomoon/Bin";
+import {Copy} from "@styled-icons/boxicons-regular/Copy";
+
 
 interface RootProps {
   selected?: boolean;
 }
 const Root = styled.div<RootProps>`
+  position: relative; 
   box-sizing: border-box;
   height: 100%;
   width: 100%;
@@ -22,6 +28,42 @@ const Root = styled.div<RootProps>`
   background-color: rgb(234, 244, 252);
   `}
 `;
+
+
+interface SliceButtonProps {
+  heigh?: number ;
+}
+
+const SliceButton = styled.div<SliceButtonProps>`
+  position: absolute;
+  top: ${props => props.heigh}%;
+  padding: 3px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 0%;
+  box-sizing: border-box;
+  color: rgb(247, 0, 255);
+  background-color:rgb(222, 222, 222);
+  border-radius: 0.75rem;
+  &:hover {
+    transition: border background-color visibility  1s;
+    border: 3px solid rgb(200, 200, 200);
+    background-color:  rgb(180, 180, 180);
+  }
+`;
+
+const DuplicateIcon = styled(Copy)`
+  color: rgb(0, 0, 0);
+  height: 1.25em;
+  width: 1.25em;
+`
+const DeleteIcon = styled(Bin)`
+  color: rgb(0, 0, 0);
+  height: 1.25em;
+  width: 1.25em;
+`
+
 
 const SlideTitle = styled.div`
   display: flex;
@@ -78,6 +120,8 @@ const StagePreview = styled.div<StagePreviewProps>`
   }
 `;
 
+
+
 type EscapeRoomStageSlidePropsBase<T extends ItemDefinition> = {
   [P in T['type']]: {
     stage: Extract<ItemDefinition, { type: P }>;
@@ -87,32 +131,58 @@ type EscapeRoomStageSlidePropsBase<T extends ItemDefinition> = {
     slidePreviewProducer?: (props: Extract<ItemDefinition, { type: P }>['payload']) => JSX.Element;
     /** callback to parent notifying of slide being selected by the user */
     onSlideSelected?: () => void;
+
+    index: number;
+
+    duplicateStage: (index:number)=> void;
+    deleteStage: (index:number)=> void;
   }
 } // EscapeRoomStageSlidePropsBase
+
 
 type EscapeRoomEditorSlideProps<T extends ItemDefinition> = EscapeRoomStageSlidePropsBase<T>[keyof EscapeRoomStageSlidePropsBase<T>];
 
 const EscapeRoomEditorSlide = <T extends ItemDefinition,>(props: EscapeRoomEditorSlideProps<T>): JSX.Element => {
 
+  const [mouseOverMe, setMouseOverMe] = useState<boolean>(false);
+
   const {
     stage,
     selected,
     slidePreviewProducer,
-    onSlideSelected
+    onSlideSelected,
+
+    index,
+    duplicateStage,
+    deleteStage
   } = props;
 
   return (
-    <Root
-      onClick={onSlideSelected}
-      selected={selected}
-    >
-      <SlideTitle>{stage.type}</SlideTitle>
-      <SlideContainer>
-        <StagePreview selected={selected}>
-          {slidePreviewProducer && slidePreviewProducer(stage.payload as any)}
-        </StagePreview>
-      </SlideContainer>
-    </Root>
+    <Root selected={selected} onMouseLeave = {()=>setMouseOverMe(prev => false)}  onMouseEnter={()=>setMouseOverMe(prev => true)}>
+
+    <SlideTitle>{index+1 + " " + stage.type}</SlideTitle>
+    <SlideContainer  onClick={onSlideSelected}>
+      <StagePreview selected={selected}>
+        {slidePreviewProducer && slidePreviewProducer(stage.payload as any)}
+      </StagePreview>
+    </SlideContainer>
+
+    {mouseOverMe ? 
+    <>
+      {/* Duplicate slice button */}
+      <SliceButton heigh={35}  onClick={ e=>{ duplicateStage && duplicateStage(index)}}>
+        <DuplicateIcon></DuplicateIcon>
+      </SliceButton>
+
+      {/* Duplicate slice button */}
+      <SliceButton heigh={65} onClick={ e=>{ deleteStage && deleteStage(index)}} >
+        <DeleteIcon></DeleteIcon>
+      </SliceButton>
+    </>
+    :
+    <></>}
+
+  </Root>
   );
 }; // EscapeRoomEditorSlide
 

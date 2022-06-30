@@ -36,6 +36,9 @@ const SlidesContainer = styled.div`
   width: 90%;
   overflow-x: auto;
   margin: 0px 0px;
+  //background-color: transparent;
+  background-color: rgba(220,220,220,0.5);
+  border-radius: 0 0 1.25rem 1.25rem;
 `;
 
 const AddIcon = styled(Add)`
@@ -121,6 +124,12 @@ export interface RoomBlockSlidesContainerProps {
   onSelectBlock?: (index: number) => void;
   /** Callback to parent component specifying that user wishes to go back to the room settings editor */
   onSelectRoomSettings?: () => void;
+  /** Callback to parent component specifying that user wishes to delete a block of puzzles from current room */
+  onDeleteBlock?: (index:number) => void;
+  /** Callback to parent component specifying that user wishes to delete a block of puzzles from current room */
+  onDuplicateBlock?: (index:number) => void;
+  /** Callback to parent component specifying that user wishes to delete a block of puzzles from current room */
+  onDuplicatePuzzle?: (blockIndex:number, puzzleIndex:number) => void;
 } // RoomBlockSlidesContainerProps
 
 export const RoomBlockSlidesContainer = (props: RoomBlockSlidesContainerProps): JSX.Element => {
@@ -131,7 +140,10 @@ export const RoomBlockSlidesContainer = (props: RoomBlockSlidesContainerProps): 
     itemMappings,
     onAddBlock,
     onSelectBlock,
-    onSelectRoomSettings
+    onSelectRoomSettings,
+    onDeleteBlock,
+    onDuplicateBlock,
+    onDuplicatePuzzle
   } = props;
 
   const handleSelectBlock = (index: number) => {
@@ -139,6 +151,25 @@ export const RoomBlockSlidesContainer = (props: RoomBlockSlidesContainerProps): 
       onSelectBlock(index);
     }
   }; // handleSelectBlock
+
+  const handleDeleteBlock = (index: number) => {
+    if (onDeleteBlock) {
+      onDeleteBlock(index);
+    }
+  }; // handleDeleteBlock
+
+  const handleDuplicateBlock = (index: number) => {
+    if (onDuplicateBlock) {
+      onDuplicateBlock(index);
+    }
+  }; // handleDeleteBlock
+
+  const handleDuplicatePuzzle = (blockIndex: number, puzzleIndex: number) => {
+    if (onDuplicatePuzzle) {
+      onDuplicatePuzzle(blockIndex, puzzleIndex);
+    }
+  }; // handleDeleteBlock
+
 
   return (
     <>
@@ -155,7 +186,11 @@ export const RoomBlockSlidesContainer = (props: RoomBlockSlidesContainerProps): 
               puzzleMappings: itemMappings,
               selected: i == selectedBlockIndex,
               block: block,
-              onSlideSelected: () => handleSelectBlock(i)
+              blockIndex: i,
+              onSlideSelected: () => handleSelectBlock(i),
+              onBlockDeleted: () => handleDeleteBlock(i),
+              onBlockDuplicated: () => handleDuplicateBlock(i),
+              onPuzzleDuplicated: { handleDuplicatePuzzle}
             } as RoomBlockSlideProps;
 
             return (
@@ -168,6 +203,8 @@ export const RoomBlockSlidesContainer = (props: RoomBlockSlidesContainerProps): 
             );
           })}
         </SlidesContainer>
+
+        {/* Button to the upper right side of the editor to add a new block of puzzles to the room */}
         <ButtonsContainer>
           <AddBlockButtonContainer>
             <AddBlockButton
