@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { EditableItemProps, MultipleChoiceItemDefinition } from "../../../../services/escapeRoomActivity.model";
+import { EditableItemProps, MultipleChoiceItemDefinition, NarrativeItemDefinition } from "../../../../services/escapeRoomActivity.model";
 import EditableCheckBoxInput from "../EditableCheckBoxInput";
 import { AbstractActivityItemFactory } from "../ActivityItemFactory";
 import { PromptField } from "./PromptField";
@@ -102,12 +102,12 @@ const PreviewAnswer = styled.div`
   border-radius: 0.125rem;
 `;
 
-export interface EditableMultipleChoiceItemContentProps extends EditableItemProps<MultipleChoiceItemDefinition> {
+export interface EditableNarrativeItemContentProps extends EditableItemProps<NarrativeItemDefinition> {
   /** text to display for the add new option label. */
   addNewOptionLabel?: string;
-} // EditableMultipleChoiceItemContentProps
+} // EditableNarrativeItemContentProps
 
-export const EditableMultipleChoiceItemContent = (props: EditableMultipleChoiceItemContentProps): JSX.Element => {
+export const EditableNarrativeItemContent = (props: EditableNarrativeItemContentProps): JSX.Element => {
 
   const {
     payload,
@@ -116,15 +116,14 @@ export const EditableMultipleChoiceItemContent = (props: EditableMultipleChoiceI
   } = props;
 
   const {
-    answers,
-    maxAnswers
+    dialogs
   } = payload;
 
   const handleAddOption = () => {
     if (!onPayloadChanged) return;
     onPayloadChanged({
       ...payload,
-      answers: [...payload.answers, '']
+      dialogs: [...payload.dialogs, '']
     })
   }; // handleAddOption
 
@@ -132,10 +131,10 @@ export const EditableMultipleChoiceItemContent = (props: EditableMultipleChoiceI
     if (!onPayloadChanged) return;
     onPayloadChanged({
       ...payload,
-      answers: [
-        ...payload.answers.slice(0, index),
+      dialogs: [
+        ...payload.dialogs.slice(0, index),
         value,
-        ...payload.answers.slice(index + 1)
+        ...payload.dialogs.slice(index + 1)
       ]
     })
   }; // handleEditOption
@@ -144,103 +143,54 @@ export const EditableMultipleChoiceItemContent = (props: EditableMultipleChoiceI
     if (!onPayloadChanged) return;
     onPayloadChanged({
       ...payload,
-      answers: payload.answers.filter((_, i) => i !== index)
+      dialogs: payload.dialogs.filter((_, i) => i !== index)
     })
   }; // handleRemoveOption
 
-  const handleEditPrompt = (value: string) => {
-    if (!onPayloadChanged) return;
-    onPayloadChanged({
-      ...payload,
-      prompt: value
-    })
-  }; // handleEditPrompt
+  // const handleEditPrompt = (value: string) => {
+  //   if (!onPayloadChanged) return;
+  //   onPayloadChanged({
+  //     ...payload,
+  //     prompt: value
+  //   })
+  // }; // handleEditPrompt
 
-  const handleCheckOption = (index: number) => {
-    if (!onPayloadChanged) return;
-    onPayloadChanged({
-      ...payload,
-      correctAnswerIndex: index,
-    })
-  }; // handleEditPrompt
 
   const availableColors = ['#e21b3c', '#1368ce', '#d89e00', '#26890c', '#0aa3a3', '#864cbf'];
 
   return (
     <>
-      <PromptField
-        promptText={payload.prompt}
-        promptPlaceholder='Start typing your prompt'
-        onPromptChange={handleEditPrompt}
-      />
-      <CheckboxList>
-        {answers.map((elem, i) => (
-          <CheckboxOption
-            backgroundColor={availableColors[i % availableColors.length]}
-            key={`checkBoxOption${i}`}
-          >
-            <EditableCheckBoxInput
-              key={`editableCheckBoxInput${i}`}
-              labelText={elem}
-              style='radio'
-              checked= {i===payload.correctAnswerIndex}
-              boxSize='2.875rem'
-              onObjectRemoved={() => handleRemoveOption(i)}
-              onCheckBoxChecked ={() => handleCheckOption(i)}
-              onLabelTextChanged={(value) => handleEditOption(i, value)}
-            />
-          </CheckboxOption>
-        ))}
-        {payload.answers.length < 6 && (
-          <CheckboxOption
-            onClick={handleAddOption}
-            key='checkBoxOptionAddNew'
-            backgroundColor='darkgray'
-          >
-            <EditableCheckBoxInput
-              key='editableCheckBoxInputAddNew'
-              labelText=''
-              labelTextPlaceholder={addNewOptionLabel}
-              style='radio'
-              boxSize='0'
-              enabled={false}
-            />
-          </CheckboxOption>
-        )}
-      </CheckboxList>
+      
     </>
   );
 }; // EditableMultipleChoiceItemContent
 
-export const MultipleChoiceItemStageSlide = (props: MultipleChoiceItemDefinition): JSX.Element => {
+export const NarrativeItemStageSlide = (props: NarrativeItemDefinition): JSX.Element => {
 
   const {
-    prompt,
-    answers
+    dialogs
   } = props;
 
   return (
     <>
-      <PreviewTitle>{prompt}</PreviewTitle>
+      {/* <PreviewTitle>{prompt}</PreviewTitle> */}
       <PreviewAnswers>
-        {[...Array(answers.length)].map((_, i) => <PreviewAnswer key={i} />)}
+        {[...Array(dialogs.length)].map((_, i) => <PreviewAnswer key={i} />)}
       </PreviewAnswers>
     </>
   );
-}; // MultipleChoiceItemStageSlide
+}; // narrativeItemStageSlide
 
-export const multipleChoiceItemFactory: AbstractActivityItemFactory<MultipleChoiceItemDefinition> = {
+export const narrativeItemFactory: AbstractActivityItemFactory<NarrativeItemDefinition> = {
   editingComponent: (editingProps) => (
-    <EditableMultipleChoiceItemContent
+    <EditableNarrativeItemContent
       {...editingProps}
     />
   ),
   defaultDefinition: {
-    prompt: '',
-    correctAnswerIndex:-1,
-    answers: ['', '']
+    dialogs: ['', '']
   }
-}; // multipleChoiceItemFactory
+}; // narrativeItemFactory
 
 
-export default EditableMultipleChoiceItemContent;
+export default EditableNarrativeItemContent;

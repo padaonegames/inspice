@@ -7,13 +7,18 @@ import { Exit } from "@styled-icons/icomoon/Exit";
 import { useAsyncRequest } from '../../services/useAsyncRequest';
 
 // steps
-import { CompletedEscapeRoomActivityDefinition, default_room, InProgressEscapeRoomActivityDefinition, SupportedStage } from '../../services/escapeRoomActivity.model';
+import { CompletedEscapeRoomActivityDefinition, default_room,default_escape_room_settings, InProgressEscapeRoomActivityDefinition, SupportedStage } from '../../services/escapeRoomActivity.model';
 import { EscapeRoomStageSlidesContainer, StageToSlideProducerMapping } from './components/EscapeRoomStageSlidesContainer';
 import EditableStage, { StageMappings } from './components/EditableStage';
 import { multipleChoiceItemFactory, MultipleChoiceItemStageSlide } from './components/items/MutipleChoiceItem';
 import { waitingCodeItemFactory, WaitingCodeItemStageSlide } from './components/items/WaitingCodeItem';
 import { qrScanItemFactory, QRScanItemStageSlide } from './components/items/QRScanItem';
 import { arScanItemFactory, ARScanItemStageSlide } from './components/items/ARScanItem';
+import { loadSceneItemFactory, LoadSceneItemStageSlide } from './components/items/LoadSceneItem';
+import { narrativeItemFactory, NarrativeItemStageSlide } from './components/items/NarrativeItem';
+import { escapeRoomSettingsItemFactory, EscapeRoomSettingsItemStageSlide } from './components/items/EscapeRoomSettingsItem';
+
+
 
 import { stageTypeIcon } from './components/StageSettingsContainer';
 import {Wondering2} from "@styled-icons/icomoon/Wondering2"
@@ -21,6 +26,7 @@ import { QrCode } from "@styled-icons/material/QrCode";
 
 import { cloneDeep } from 'lodash';
 import { roomItemFactory } from './components/items/RoomItem';
+import EditableUnlockPasswordItemContent, { unlockPasswordItemFactory, UnlockPasswordItemStageSlide } from './components/items/UnlockPasswordtem';
 
 const Root = styled.div`
   display: flex;
@@ -48,6 +54,12 @@ const QRCodeIcon = styled(QrCode)`
 `;
 
 export const stageMappings: StageMappings<SupportedStage> = {
+  'escape-room-settings': {
+    displayName: 'Settings',
+    iconComponent: <RoomIcon />,
+    editingComponentProducer: escapeRoomSettingsItemFactory.editingComponent,
+    defaultStagePayload: escapeRoomSettingsItemFactory.defaultDefinition
+  },
   'room': {
     displayName: 'Room',
     iconComponent: <RoomIcon />,
@@ -77,20 +89,49 @@ export const stageMappings: StageMappings<SupportedStage> = {
     iconComponent: <QRCodeIcon />,
     editingComponentProducer: arScanItemFactory.editingComponent,
     defaultStagePayload: arScanItemFactory.defaultDefinition
+  },
+  'load-scene': {
+    displayName: 'Load Scene ',
+    iconComponent: <QRCodeIcon />,
+    editingComponentProducer: loadSceneItemFactory.editingComponent,
+    defaultStagePayload: loadSceneItemFactory.defaultDefinition
+  },
+  'narrative': {
+    displayName: 'Narrative Scene',
+    iconComponent: <QRCodeIcon />,
+    editingComponentProducer: narrativeItemFactory.editingComponent,
+    defaultStagePayload: narrativeItemFactory.defaultDefinition
+  },
+  'unlock-password': {
+    displayName: 'Unlock Password',
+    iconComponent: <QRCodeIcon />,
+    editingComponentProducer: unlockPasswordItemFactory.editingComponent,
+    defaultStagePayload: unlockPasswordItemFactory.defaultDefinition
   }
 };
 
 export const stageSlidesMappings: StageToSlideProducerMapping<SupportedStage> = {
+  'escape-room-settings': EscapeRoomSettingsItemStageSlide,
   'room': undefined,
   'multiple-choice': MultipleChoiceItemStageSlide,
   'waiting-code': WaitingCodeItemStageSlide,
   "qr-scan":QRScanItemStageSlide,
-  "ar-scan":ARScanItemStageSlide
+  "ar-scan":ARScanItemStageSlide,
+  "load-scene": LoadSceneItemStageSlide,
+  "narrative":NarrativeItemStageSlide,
+  "unlock-password": UnlockPasswordItemStageSlide
 };
 
 //-------------------------------------------------------
 //                    Defaults
 //-------------------------------------------------------
+
+
+
+const settings: SupportedStage = {
+  type: 'escape-room-settings',
+  payload: default_escape_room_settings
+};
 
 const sample_stage: SupportedStage = {
   type: 'room',
@@ -103,7 +144,7 @@ const sample_base: InProgressEscapeRoomActivityDefinition = {
   activityAuthor: undefined,
   beginsOn: undefined,
   endsOn: undefined,
-  stages: [sample_stage]
+  stages: [settings]
 };
 
 //-------------------------------------------------------

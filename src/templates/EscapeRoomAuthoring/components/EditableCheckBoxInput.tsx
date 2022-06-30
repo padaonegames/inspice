@@ -1,5 +1,7 @@
+import { useState } from 'react';
 import styled from 'styled-components';
 import { Cross } from '@styled-icons/entypo/Cross';
+import {CheckCircle} from "@styled-icons/bootstrap/CheckCircle"
 
 /* Create a custom checkbox */
 interface CheckMarkProps {
@@ -7,13 +9,32 @@ interface CheckMarkProps {
   type: 'radio' | 'checkbox';
 };
 
-const CheckMark = styled.span<CheckMarkProps>`
+const CheckMark = styled.div<CheckMarkProps>`
+  position:relative;
   height: ${props => props.size ?? '1.5em'};
   width: ${props => props.size ?? '1.5em'};
-  background-color: #eee;
+  // background-color: rgba(238,238,238,1);
+  background-color:rgba(50,50,50,1);
   margin-right: 1em;
+  align-items: right;
 
   ${props => props.type === 'radio' && 'border-radius: 50%;'}
+
+  &:hover {
+    background-color: rgba(120,120,120,1);
+  }
+`;
+
+const OptionCheckedIcon = styled(CheckCircle)`
+  position: absolute;
+  left:7px;
+  top:7px;
+  height: 2em;
+  width: 2em;
+  padding: 0.1em;
+  cursor: pointer;
+  border-radius: 50%;
+  color: white;
 `;
 
 const RemoveOptionIcon = styled(Cross)`
@@ -95,10 +116,14 @@ export interface EditableCheckBoxInputProps {
   style?: 'radio' | 'checkbox';
   /** whether this input should be enabled */
   enabled?: boolean;
+  /** wheter this input is checked or not */
+  checked?: boolean;
   /** callback to parent specifying that label Text has been modified by the user */
   onLabelTextChanged?: (value: string) => void;
   /** callback to parent specifying that user wishes to delete this option */
   onObjectRemoved?: () => void;
+  /** callback from parent specifying that user has checked this option */
+  onCheckBoxChecked?: ()=> void;
   /** Placeholder to show if labelText is an empty string */
   labelTextPlaceholder?: string;
 };
@@ -109,18 +134,24 @@ export const EditableCheckBoxInput = (props: EditableCheckBoxInputProps): JSX.El
     boxSize = '25px',
     style = 'checkbox',
     enabled = true,
+    checked = false,
     labelText,
     onLabelTextChanged,
     onObjectRemoved,
+    onCheckBoxChecked,
     labelTextPlaceholder = 'Write an answer...'
   } = props;
 
+  const [isChecked, setIsChecked] = useState<boolean>(checked);
+
   return (
-    <Container enabled={enabled}>
-      <CheckMark
-        type={style}
-        size={boxSize}
-      />
+    <Container enabled={enabled} >
+      {/* render checked or unchecked depending on what the father componente tells us */}
+      <CheckMark type={style} size={boxSize} onClick={()=>{onCheckBoxChecked && onCheckBoxChecked()}}>
+        {checked && <OptionCheckedIcon/>}
+      </CheckMark>
+      
+
       <InputText
         readOnly={!enabled}
         placeholder={labelTextPlaceholder}

@@ -1,13 +1,18 @@
+import { useState } from "react";
 import { default_puzzle, default_room, default_room_block, EditableItemProps, RoomBlock, RoomDefinition, SupportedPuzzle } from "../../../../services/escapeRoomActivity.model";
 import { AbstractActivityItemFactory } from "../ActivityItemFactory";
+
 import { multipleChoiceItemFactory, MultipleChoiceItemStageSlide } from "./MutipleChoiceItem";
 import { waitingCodeItemFactory, WaitingCodeItemStageSlide } from "./WaitingCodeItem";
-import { useState } from "react";
+import { arScanItemFactory, ARScanItemStageSlide } from "./ARScanItem";
+import { qrScanItemFactory, QRScanItemStageSlide } from "./QRScanItem";
+import { loadSceneItemFactory, LoadSceneItemStageSlide } from "./LoadSceneItem";
+import { narrativeItemFactory, NarrativeItemStageSlide } from "./NarrativeItem";
+import { unlockPasswordItemFactory, UnlockPasswordItemStageSlide } from "./UnlockPasswordtem";
+
 import { RoomSettingsEditor } from "./RoomSettingsEditor";
 import { RoomPuzzleSettingsEditor } from "./RoomPuzzleSettingsEditor";
 import { ItemToSlideProducerMapping, RoomBlockSlidesContainer } from "./RoomBlockSlidesContainer";
-import { qrScanItemFactory, QRScanItemStageSlide } from "./QRScanItem";
-import { arScanItemFactory, ARScanItemStageSlide } from "./ARScanItem";
 import { PromptField } from "./PromptField";
 
 
@@ -153,7 +158,10 @@ export const puzzleToSlidesMappings: ItemToSlideProducerMapping<SupportedPuzzle>
   "multiple-choice": MultipleChoiceItemStageSlide,
   "waiting-code" : WaitingCodeItemStageSlide,
   "qr-scan" : QRScanItemStageSlide,
-  "ar-scan" : ARScanItemStageSlide
+  "ar-scan" : ARScanItemStageSlide,
+  "load-scene": LoadSceneItemStageSlide,
+  "narrative": NarrativeItemStageSlide,
+  "unlock-password": UnlockPasswordItemStageSlide
 }; // puzzleToSlidesMappings
 
 export type PuzzleToEditorProducerMapping<T extends SupportedPuzzle> = {
@@ -182,7 +190,19 @@ export const puzzleToEditorsMappings: PuzzleToEditorProducerMapping<SupportedPuz
   "ar-scan": {
     editingComponentProducer: arScanItemFactory.editingComponent,
     defaultStagePayload: arScanItemFactory.defaultDefinition
-  }
+  },
+  "load-scene": {
+    editingComponentProducer: loadSceneItemFactory.editingComponent,
+    defaultStagePayload: loadSceneItemFactory.defaultDefinition
+  },
+  "narrative":{
+    editingComponentProducer: narrativeItemFactory.editingComponent,
+    defaultStagePayload: narrativeItemFactory.defaultDefinition
+  },
+  "unlock-password":{
+    editingComponentProducer: unlockPasswordItemFactory.editingComponent,
+    defaultStagePayload: unlockPasswordItemFactory.defaultDefinition
+  },
 }; // puzzleToEditorsMappings
 
 export interface EditableRoomItemContentProps extends EditableItemProps<RoomDefinition> {

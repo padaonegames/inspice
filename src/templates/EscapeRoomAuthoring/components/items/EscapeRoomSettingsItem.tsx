@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { EditableItemProps, MultipleChoiceItemDefinition } from "../../../../services/escapeRoomActivity.model";
+import { EditableItemProps, EscapeRoomSettingsDefinition, WaitingCodeDefinition } from "../../../../services/escapeRoomActivity.model";
 import EditableCheckBoxInput from "../EditableCheckBoxInput";
 import { AbstractActivityItemFactory } from "../ActivityItemFactory";
 import { PromptField } from "./PromptField";
@@ -48,6 +48,7 @@ const CheckboxList = styled.div`
 
 interface CheckBoxOptionProps {
   backgroundColor?: string;
+  borderRadius?:string;
 }
 const CheckboxOption = styled.div<CheckBoxOptionProps>`
   margin-top: 0.25em;
@@ -66,7 +67,7 @@ const CheckboxOption = styled.div<CheckBoxOptionProps>`
 
   background-color: ${props => props.backgroundColor || 'transparent'};
 
-  border-radius: 0.25rem;
+  border-radius: ${props => props.borderRadius || '0.25rem'};
   box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
 `;
 
@@ -102,145 +103,101 @@ const PreviewAnswer = styled.div`
   border-radius: 0.125rem;
 `;
 
-export interface EditableMultipleChoiceItemContentProps extends EditableItemProps<MultipleChoiceItemDefinition> {
+export interface EditableEscapeRoomSettingsItemContentProps extends EditableItemProps<EscapeRoomSettingsDefinition> {
   /** text to display for the add new option label. */
   addNewOptionLabel?: string;
-} // EditableMultipleChoiceItemContentProps
+} // EditableWaitingCodeItemContentProps
 
-export const EditableMultipleChoiceItemContent = (props: EditableMultipleChoiceItemContentProps): JSX.Element => {
+export const EditableEscapeRoomSettingsItemContent = (props: EditableEscapeRoomSettingsItemContentProps): JSX.Element => {
 
   const {
     payload,
-    addNewOptionLabel = 'New option',
+    addNewOptionLabel = 'New Text',
     onPayloadChanged
   } = props;
 
   const {
-    answers,
-    maxAnswers
+    title,
+    description
   } = payload;
 
   const handleAddOption = () => {
     if (!onPayloadChanged) return;
-    onPayloadChanged({
-      ...payload,
-      answers: [...payload.answers, '']
-    })
+    // onPayloadChanged({
+    //   ...payload,
+    //   texts: [...payload.texts, '']
+    // })
   }; // handleAddOption
 
   const handleEditOption = (index: number, value: string) => {
     if (!onPayloadChanged) return;
-    onPayloadChanged({
-      ...payload,
-      answers: [
-        ...payload.answers.slice(0, index),
-        value,
-        ...payload.answers.slice(index + 1)
-      ]
-    })
+    // onPayloadChanged({
+    //   ...payload,
+    //   texts: [
+    //     ...payload.texts.slice(0, index),
+    //     value,
+    //     ...payload.texts.slice(index + 1)
+    //   ]
+    // })
   }; // handleEditOption
 
   const handleRemoveOption = (index: number) => {
     if (!onPayloadChanged) return;
-    onPayloadChanged({
-      ...payload,
-      answers: payload.answers.filter((_, i) => i !== index)
-    })
+    // onPayloadChanged({
+    //   ...payload,
+    //   texts: payload.texts.filter((_, i) => i !== index)
+    // })
   }; // handleRemoveOption
 
-  const handleEditPrompt = (value: string) => {
+  const handleEditTitle = (value: string) => {
     if (!onPayloadChanged) return;
     onPayloadChanged({
       ...payload,
-      prompt: value
+      title: value
     })
-  }; // handleEditPrompt
-
-  const handleCheckOption = (index: number) => {
-    if (!onPayloadChanged) return;
-    onPayloadChanged({
-      ...payload,
-      correctAnswerIndex: index,
-    })
-  }; // handleEditPrompt
+  }; // handleEditcode
 
   const availableColors = ['#e21b3c', '#1368ce', '#d89e00', '#26890c', '#0aa3a3', '#864cbf'];
 
   return (
     <>
       <PromptField
-        promptText={payload.prompt}
-        promptPlaceholder='Start typing your prompt'
-        onPromptChange={handleEditPrompt}
+        promptText={payload.title}
+        promptPlaceholder='Code to solve this puzzle'
+        onPromptChange={handleEditTitle}
       />
-      <CheckboxList>
-        {answers.map((elem, i) => (
-          <CheckboxOption
-            backgroundColor={availableColors[i % availableColors.length]}
-            key={`checkBoxOption${i}`}
-          >
-            <EditableCheckBoxInput
-              key={`editableCheckBoxInput${i}`}
-              labelText={elem}
-              style='radio'
-              checked= {i===payload.correctAnswerIndex}
-              boxSize='2.875rem'
-              onObjectRemoved={() => handleRemoveOption(i)}
-              onCheckBoxChecked ={() => handleCheckOption(i)}
-              onLabelTextChanged={(value) => handleEditOption(i, value)}
-            />
-          </CheckboxOption>
-        ))}
-        {payload.answers.length < 6 && (
-          <CheckboxOption
-            onClick={handleAddOption}
-            key='checkBoxOptionAddNew'
-            backgroundColor='darkgray'
-          >
-            <EditableCheckBoxInput
-              key='editableCheckBoxInputAddNew'
-              labelText=''
-              labelTextPlaceholder={addNewOptionLabel}
-              style='radio'
-              boxSize='0'
-              enabled={false}
-            />
-          </CheckboxOption>
-        )}
-      </CheckboxList>
     </>
   );
-}; // EditableMultipleChoiceItemContent
+}; // EditableWaitingCodeItemContent
 
-export const MultipleChoiceItemStageSlide = (props: MultipleChoiceItemDefinition): JSX.Element => {
+export const EscapeRoomSettingsItemStageSlide = (props: EscapeRoomSettingsDefinition): JSX.Element => {
 
   const {
-    prompt,
-    answers
+    title,
+    description
   } = props;
 
   return (
     <>
-      <PreviewTitle>{prompt}</PreviewTitle>
+      <PreviewTitle>{title}</PreviewTitle>
       <PreviewAnswers>
-        {[...Array(answers.length)].map((_, i) => <PreviewAnswer key={i} />)}
+        {description}
       </PreviewAnswers>
     </>
   );
-}; // MultipleChoiceItemStageSlide
+}; // EscapeRoomSettingsItemStageSlide
 
-export const multipleChoiceItemFactory: AbstractActivityItemFactory<MultipleChoiceItemDefinition> = {
+export const escapeRoomSettingsItemFactory: AbstractActivityItemFactory<EscapeRoomSettingsDefinition> = {
   editingComponent: (editingProps) => (
-    <EditableMultipleChoiceItemContent
+    <EditableEscapeRoomSettingsItemContent
       {...editingProps}
     />
   ),
   defaultDefinition: {
-    prompt: '',
-    correctAnswerIndex:-1,
-    answers: ['', '']
+    title: '',
+    description: ''
   }
-}; // multipleChoiceItemFactory
+}; // waitingCodeItemFactory
 
 
-export default EditableMultipleChoiceItemContent;
+export default EditableEscapeRoomSettingsItemContent;

@@ -5,19 +5,28 @@ import { ActivityInstance, InProgressActivityInstance } from "./activity.model";
 // ---------------------------------------------------------------
 
 export type ItemDefinition = (
+  | { type: 'escape-room-settings', payload: EscapeRoomSettingsDefinition }
   | { type: 'room', payload: RoomDefinition }
   | { type: 'multiple-choice', payload: MultipleChoiceItemDefinition }
   | { type: 'qr-scan', payload: QrScanItemDefinition }
   | { type: 'ar-scan', payload: ArScanItemDefinition }
   | { type: 'waiting-code', payload: WaitingCodeDefinition }
-); // ItemDefinition
+  | { type: 'load-scene', payload: LoadSceneDefinition }
+  | { type: 'narrative', payload: NarrativeItemDefinition }
+  | { type: 'unlock-password', payload: UnlockPasswordItemDefinition }
+
+  ); // ItemDefinition
 
 export const escapeRoomStageTypes = [
+  'escape-room-settings',
   'room',
   'multiple-choice',
   'waiting-code',
   'qr-scan',
-  'ar-scan'
+  'ar-scan',
+  'load-scene',
+  'narrative',
+  'unlock-password'
 ] as const; // escapeRoomStageTypes
 
 export type AvailableEscapeRoomStageType = typeof escapeRoomStageTypes[number];
@@ -31,7 +40,10 @@ export const escapeRoomPuzzleTypes = [
   'multiple-choice',
   'waiting-code',
   'qr-scan',
-  'ar-scan'
+  'ar-scan',
+  'load-scene',
+  'narrative',
+  'unlock-password'
 ] as const; // escapeRoomPuzzleTypes
 
 export type AvailableEscapeRoomPuzzleType = typeof escapeRoomPuzzleTypes[number];
@@ -46,6 +58,7 @@ export const default_puzzle: SupportedPuzzle = {
   type: 'multiple-choice',
   payload: {
     prompt: '',
+    correctAnswerIndex:0,
     answers: []
   }
 }; // default_puzzle
@@ -108,6 +121,11 @@ export const default_room: RoomDefinition = {
   }
 }; // default_room
 
+export const default_escape_room_settings: EscapeRoomSettingsDefinition = {
+  title: "No Title",
+  description: "No Description"
+}; // default_escape_room_settings
+
 export interface RoomBlock {
   /**display name for a room block (name that will be rendered when choosing what block to play next by the user) */
   blockName: string;
@@ -139,11 +157,20 @@ export interface EditableItemProps<T> {
 //                    ITEM DEFINITIONS
 // ---------------------------------------------------------------
 
+export interface EscapeRoomSettingsDefinition  {
+  /** Password to enter in order to continue in the game */
+  title: string;
+  /** hints shown before requesting the password */
+  description: string;
+}
+
 export interface MultipleChoiceItemDefinition {
   /** Prompt that this item displays answers for */
   prompt: string;
   /** answers to choose from */
   answers: string[];
+  /** index of the answer that is considered correct */
+  correctAnswerIndex: number;
   /** maximum number of answers to allow */
   maxAnswers?: number;
 } // MultipleChoiceItemDefinition
@@ -163,4 +190,22 @@ export interface WaitingCodeDefinition  {
   texts: string[];
   /** maximum number of texts to show */
   maxTexts?: number;
+}
+
+export interface LoadSceneDefinition  {
+  /** Name of the scene that is going to be loaded */
+  sceneName: string;
+}
+
+export interface UnlockPasswordItemDefinition  {
+  /** Password that needs to be solved to exit a room */
+  password: string;
+
+  /** Description to help give context to solve the password */
+  description:string;
+}
+
+export interface NarrativeItemDefinition  {
+  /** Name of the scene that is going to be loaded */
+  dialogs: string[];
 }
