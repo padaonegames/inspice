@@ -1,6 +1,8 @@
 import styled from "styled-components";
 import { SupportedStage } from "../../../services/escapeRoomActivity.model";
 import { EscapeRoomStageSlide, EscapeRoomStageSlideProps } from "./EscapeRoomEditorSlide";
+import { EscapeRoomSettings, EscapeRoomSettingsStageSlide } from "./items/EscapeRoomSettings";
+
 
 const Root = styled.div`
   position: fixed;
@@ -23,7 +25,7 @@ const SlidesContainer = styled.div`
   display: block;
   position: relative;
   z-index: 4;
-  height: 80%;
+  height: 67%; //80%
   width: 100%;
   overflow-y: auto;
   margin: 0px 0px;
@@ -93,6 +95,8 @@ export type StageToSlideProducerMapping<T extends SupportedStage> = {
 }
 
 export interface EscapeRoomStageSlidesContainerProps {
+
+  escapeRoomTitle?:string
   /** list of stages currently included in the activity */
   stages: SupportedStage[];
   /** index of currently selected stage in stages */
@@ -106,18 +110,22 @@ export interface EscapeRoomStageSlidesContainerProps {
 
   handleDuplicateStage?: (index: number) => void;
   handleDeleteStage?: (index: number) => void;
+
+  handleGoToSettings: () => void;
 } // EscapeRoomStageSlidesContainerProps
 
 export const EscapeRoomStageSlidesContainer = (props: EscapeRoomStageSlidesContainerProps): JSX.Element => {
 
   const {
+    escapeRoomTitle="No title asigned",
     stages,
     selectedStageIndex,
     stageMappings,
     onAddStage,
     onSelectStage,
     handleDuplicateStage,
-    handleDeleteStage
+    handleDeleteStage,
+    handleGoToSettings
   } = props;
 
   const handleSelectStage = (index: number) => {
@@ -128,6 +136,7 @@ export const EscapeRoomStageSlidesContainer = (props: EscapeRoomStageSlidesConta
 
   return (
     <Root>
+      <EscapeRoomSettingsStageSlide title={escapeRoomTitle} goToSettings={handleGoToSettings}></EscapeRoomSettingsStageSlide>
       <SlidesContainer>
         {stages.map((s, i) => {
           // This is "unsafe", but in reality due to how stageMappings is defined

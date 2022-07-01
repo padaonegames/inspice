@@ -1,13 +1,10 @@
 import { useEffect, useState } from 'react';
-import styled from 'styled-components';
-import { RadioCircleMarked } from "styled-icons/boxicons-regular";
-import { Exit } from "@styled-icons/icomoon/Exit";
 
 // services
 import { useAsyncRequest } from '../../services/useAsyncRequest';
 
 // steps
-import { CompletedEscapeRoomActivityDefinition, default_room,default_escape_room_settings, InProgressEscapeRoomActivityDefinition, SupportedStage } from '../../services/escapeRoomActivity.model';
+import { CompletedEscapeRoomActivityDefinition, default_room, InProgressEscapeRoomActivityDefinition, SupportedStage } from '../../services/escapeRoomActivity.model';
 import { EscapeRoomStageSlidesContainer, StageToSlideProducerMapping } from './components/EscapeRoomStageSlidesContainer';
 import EditableStage, { StageMappings } from './components/EditableStage';
 import { multipleChoiceItemFactory, MultipleChoiceItemStageSlide } from './components/items/MutipleChoiceItem';
@@ -16,17 +13,25 @@ import { qrScanItemFactory, QRScanItemStageSlide } from './components/items/QRSc
 import { arScanItemFactory, ARScanItemStageSlide } from './components/items/ARScanItem';
 import { loadSceneItemFactory, LoadSceneItemStageSlide } from './components/items/LoadSceneItem';
 import { narrativeItemFactory, NarrativeItemStageSlide } from './components/items/NarrativeItem';
-import { escapeRoomSettingsItemFactory, EscapeRoomSettingsItemStageSlide } from './components/items/EscapeRoomSettingsItem';
+import EscapeRoomSettings from './components/items/EscapeRoomSettings';
 
 
 
 import { stageTypeIcon } from './components/StageSettingsContainer';
-import {Wondering2} from "@styled-icons/icomoon/Wondering2"
-import { QrCode } from "@styled-icons/material/QrCode";
 
 import { cloneDeep } from 'lodash';
 import { roomItemFactory } from './components/items/RoomItem';
 import EditableUnlockPasswordItemContent, { unlockPasswordItemFactory, UnlockPasswordItemStageSlide } from './components/items/UnlockPasswordtem';
+
+import styled from 'styled-components';
+import { QrCode } from "@styled-icons/material/QrCode";
+import { Quiz } from "@styled-icons/material/Quiz";
+import {ClockHistory} from "@styled-icons/bootstrap/ClockHistory"
+import { Exit } from "@styled-icons/icomoon/Exit";
+import {ScanObject} from "@styled-icons/fluentui-system-filled/ScanObject"
+import {Unity} from "@styled-icons/fa-brands/Unity"
+import {HistoryEdu} from "@styled-icons/material-rounded/HistoryEdu"
+import {Password} from "@styled-icons/fluentui-system-filled/Password"
 
 const Root = styled.div`
   display: flex;
@@ -37,7 +42,7 @@ const Root = styled.div`
 //                 Stage Mappings
 //-------------------------------------------------------
 
-const MultipleChoiceIcon = styled(RadioCircleMarked)`
+const MultipleChoiceIcon = styled(Quiz)`
   ${stageTypeIcon}
 `;
 
@@ -45,7 +50,7 @@ const RoomIcon = styled(Exit)`
   ${stageTypeIcon}
 `;
 
-const WaitingCodeIcon = styled(Wondering2)`
+const WaitingCodeIcon = styled(ClockHistory)`
   ${stageTypeIcon}
 `;
 
@@ -53,13 +58,23 @@ const QRCodeIcon = styled(QrCode)`
   ${stageTypeIcon}
 `;
 
+const ScanObjectIcon = styled(ScanObject)`
+  ${stageTypeIcon}
+`;
+
+const UnityIcon = styled(Unity)`
+  ${stageTypeIcon}
+`;
+
+const NarrativeIcon = styled(HistoryEdu)`
+  ${stageTypeIcon}
+`;
+
+const UnlockPasswordIcon = styled(Password)`
+  ${stageTypeIcon}
+`;
+
 export const stageMappings: StageMappings<SupportedStage> = {
-  'escape-room-settings': {
-    displayName: 'Settings',
-    iconComponent: <RoomIcon />,
-    editingComponentProducer: escapeRoomSettingsItemFactory.editingComponent,
-    defaultStagePayload: escapeRoomSettingsItemFactory.defaultDefinition
-  },
   'room': {
     displayName: 'Room',
     iconComponent: <RoomIcon />,
@@ -86,32 +101,31 @@ export const stageMappings: StageMappings<SupportedStage> = {
   },
   'ar-scan': {
     displayName: 'AR Scan',
-    iconComponent: <QRCodeIcon />,
+    iconComponent: <ScanObjectIcon />,
     editingComponentProducer: arScanItemFactory.editingComponent,
     defaultStagePayload: arScanItemFactory.defaultDefinition
   },
   'load-scene': {
     displayName: 'Load Scene ',
-    iconComponent: <QRCodeIcon />,
+    iconComponent: <UnityIcon />,
     editingComponentProducer: loadSceneItemFactory.editingComponent,
     defaultStagePayload: loadSceneItemFactory.defaultDefinition
   },
   'narrative': {
-    displayName: 'Narrative Scene',
-    iconComponent: <QRCodeIcon />,
+    displayName: 'Narrative',
+    iconComponent: <NarrativeIcon />,
     editingComponentProducer: narrativeItemFactory.editingComponent,
     defaultStagePayload: narrativeItemFactory.defaultDefinition
   },
   'unlock-password': {
     displayName: 'Unlock Password',
-    iconComponent: <QRCodeIcon />,
+    iconComponent: <UnlockPasswordIcon />,
     editingComponentProducer: unlockPasswordItemFactory.editingComponent,
     defaultStagePayload: unlockPasswordItemFactory.defaultDefinition
   }
 };
 
 export const stageSlidesMappings: StageToSlideProducerMapping<SupportedStage> = {
-  'escape-room-settings': EscapeRoomSettingsItemStageSlide,
   'room': undefined,
   'multiple-choice': MultipleChoiceItemStageSlide,
   'waiting-code': WaitingCodeItemStageSlide,
@@ -128,10 +142,7 @@ export const stageSlidesMappings: StageToSlideProducerMapping<SupportedStage> = 
 
 
 
-const settings: SupportedStage = {
-  type: 'escape-room-settings',
-  payload: default_escape_room_settings
-};
+
 
 const sample_stage: SupportedStage = {
   type: 'room',
@@ -144,7 +155,7 @@ const sample_base: InProgressEscapeRoomActivityDefinition = {
   activityAuthor: undefined,
   beginsOn: undefined,
   endsOn: undefined,
-  stages: [settings]
+  stages: [sample_stage]
 };
 
 //-------------------------------------------------------
@@ -217,6 +228,8 @@ export const CreateEscapeRoomScreenComponent = (props: CreateEscapeRoomScreenCom
   // currently selected puzzle from activityDefinition.stages[selectedStage].puzzles
   const [selectedPuzzle, setSelectedPuzzle] = useState<number>(0);
 
+  const [showSettings, setShowSettings] = useState<boolean>(true);
+
   useEffect(() => {
     if (!onActivityDefinitionChanged) return;
     onActivityDefinitionChanged(activityDefinition as unknown as InProgressEscapeRoomActivityDefinition);
@@ -239,6 +252,16 @@ export const CreateEscapeRoomScreenComponent = (props: CreateEscapeRoomScreenCom
 
     onSubmitActivityDefinition(def);
   }; // handleSubmitActivityDefinition
+
+
+  const handleEscapeRoomTitleChanged = (title:string) => {
+    setActivityDefinition(prev => {
+      let next = cloneDeep(prev);
+      next.activityTitle= title;
+      return next;
+    });
+  }
+
 
   const handleAddStage = () => {
     setActivityDefinition(prev => {
@@ -315,23 +338,48 @@ export const CreateEscapeRoomScreenComponent = (props: CreateEscapeRoomScreenCom
   return (
     <Root>
       <EscapeRoomStageSlidesContainer
+        escapeRoomTitle={activityDefinition.activityTitle}
         stages={activityDefinition.stages}
         stageMappings={stageSlidesMappings}
         selectedStageIndex={selectedStage}
         onAddStage={handleAddStage}
-        onSelectStage={(index) => setSelectedStage(index)}
+        onSelectStage={(index) => {setSelectedStage(index); setShowSettings(false)}}
         handleDuplicateStage = {duplicateStage}
         handleDeleteStage = {deleteStage}
+        handleGoToSettings = {()=>{setShowSettings(true)}}
       />
+      
+      {showSettings === false && 
       <EditableStage
-        stageDefinition={currentStage}
-        stageMappings={stageMappings}
-        onStageDefinitionChanged={handleStageDefinitionChanged}
-        onStageDeleted={handleDeleteStage}
-        onStageDuplicated={handleDuplicateStage}
+      stageDefinition={currentStage}
+      stageMappings={stageMappings}
+      onStageDefinitionChanged={handleStageDefinitionChanged}
+      onStageDeleted={handleDeleteStage}
+      onStageDuplicated={handleDuplicateStage}
       />
+    }
+    {
+      showSettings &&
+      <EscapeRoomSettings onSettingsChanged={newConfig => { setActivityDefinition(newConfig); } }
+        escapeRoom={activityDefinition}
+        escapeRoomTitle={activityDefinition.activityTitle ? activityDefinition.activityTitle : ""}
+        escapeRoomDescription={""} 
+        onTitleChanged={ title => {handleEscapeRoomTitleChanged(title)}}
+        onDescriptionChanged= {() => {}}
+        ></EscapeRoomSettings>
+    }
     </Root>
   );
 }
+
+/*const sample_base: InProgressEscapeRoomActivityDefinition = {
+  activityType: 'Escape Room',
+  activityTitle: undefined,
+  activityAuthor: undefined,
+  beginsOn: undefined,
+  endsOn: undefined,
+  stages: [settings]
+}; */
+
 
 export default CreateEscapeRoomScreen;

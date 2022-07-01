@@ -1,8 +1,23 @@
-import styled from "styled-components";
 import { EditableItemProps, LoadSceneDefinition } from "../../../../services/escapeRoomActivity.model";
 import EditableCheckBoxInput from "../EditableCheckBoxInput";
 import { AbstractActivityItemFactory } from "../ActivityItemFactory";
 import { PromptField } from "./PromptField";
+
+
+import styled from "styled-components";
+import { stageTypeIcon } from '../../components/StageSettingsContainer';
+import {Unity} from "@styled-icons/fa-brands/Unity"
+
+
+const UnityIcon = styled(Unity)`
+  position: relative;
+  color: rgb(0, 0, 0);
+  height: 1.25em;
+  width: 1.25em;
+`
+
+
+
 
 interface InputAreaProps {
   width?: string;
@@ -35,41 +50,48 @@ export const InputArea = styled.textarea<InputAreaProps>`
   }
 `;
 
+const CheckboxTitle = styled.div`
+  position: relative;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: ${props => props.theme.contentFont};
+  line-height: 135%;
+
+  margin-top: 0.25em;
+  margin-bottom: 0.25em;
+  padding: 0.75em 1.25em;
+  border-top: none;
+  color: black;
+  line-height: 135%;
+  width: fit-content;
+  text-align: left;
+
+  display: flex;
+  align-items: center;
+
+  background-color: white;
+
+  border-radius: 1rem;
+  box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
+`;
+
 const CheckboxList = styled.div`
   margin-top: 5px;
   display: flex;
-  background-color: transparent;
+  background-color: rgba(255,255,0,0.5);
   flex-direction: column;
   align-items: left;
 
   border-bottom: 2px solid #dadce0;
-  padding: 5px 0;
-`;
+  padding: 0.75em;
 
-interface CheckBoxOptionProps {
-  backgroundColor?: string;
-  borderRadius?:string;
-}
-const CheckboxOption = styled.div<CheckBoxOptionProps>`
-  margin-top: 0.25em;
-  margin-bottom: 0.25em;
-  padding: 0.75em 0 0.75em 0.75em;
-  border-top: none;
-  font-size: 1em;
-  font-weight: 200;
-  font-family: ${props => props.theme.contentFont};
-  color: white;
-  line-height: 135%;
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  align-content: center;
+  background-color:  #dbdbdb;
 
-  background-color: ${props => props.backgroundColor || 'transparent'};
-
-  border-radius: ${props => props.borderRadius || '0.25rem'};
+  border-radius: 1.25rem;
   box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
 `;
+
+
 
 const PreviewTitle = styled.div`
   margin-bottom: 0.25rem;
@@ -94,14 +116,16 @@ const PreviewAnswers = styled.div`
   color: rgb(178, 178, 178);
 `;
 
-const PreviewAnswer = styled.div`
-  position: relative;
-  width: calc(100% - 0.125rem);
-  height: 7px;
-  margin-bottom: 3px;
-  border: 1px solid rgb(229, 229, 229);
-  border-radius: 0.125rem;
+
+const SlideContainer = styled.div`
+  width:80%;
+  height:80%;
+  background-color: rgba(255,0,0,0.5);
+  flex-direction: column;
+  align-items: center;
+  border-radius: 1.25rem;
 `;
+
 
 export interface EditableLoadSceneItemContentProps extends EditableItemProps<LoadSceneDefinition> {
   /** text to display for the add new option label. */
@@ -133,11 +157,17 @@ export const EditableLoadSceneItemContent = (props: EditableLoadSceneItemContent
 
   return (
     <>
+    <CheckboxList>
+      <CheckboxTitle> 
+        Scene to load
+        <UnityIcon/>
+      </CheckboxTitle>
       <PromptField
         promptText={payload.sceneName}
-        promptPlaceholder='Scene to load'
+        promptPlaceholder='Scene name'
         onPromptChange={handleEditSceneName}
-      />
+        />
+      </CheckboxList>
     </>
   );
 }; // EditableLoadSceneItemContent
@@ -150,7 +180,11 @@ export const LoadSceneItemStageSlide = (props: LoadSceneDefinition): JSX.Element
 
   return (
     <>
-      <PreviewTitle>{sceneName}</PreviewTitle>
+    
+      <PreviewTitle>{'Load "'+ sceneName +'"'}</PreviewTitle>
+      <UnityIcon/>
+      {/* <PreviewAnswers>
+      </PreviewAnswers> */}
     </>
   );
 }; // LoadSceneItemStageSlide

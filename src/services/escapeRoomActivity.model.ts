@@ -5,7 +5,6 @@ import { ActivityInstance, InProgressActivityInstance } from "./activity.model";
 // ---------------------------------------------------------------
 
 export type ItemDefinition = (
-  | { type: 'escape-room-settings', payload: EscapeRoomSettingsDefinition }
   | { type: 'room', payload: RoomDefinition }
   | { type: 'multiple-choice', payload: MultipleChoiceItemDefinition }
   | { type: 'qr-scan', payload: QrScanItemDefinition }
@@ -18,7 +17,6 @@ export type ItemDefinition = (
   ); // ItemDefinition
 
 export const escapeRoomStageTypes = [
-  'escape-room-settings',
   'room',
   'multiple-choice',
   'waiting-code',
@@ -85,11 +83,16 @@ export type CompletedEscapeRoomActivityDefinition = Omit<
   "_id"
 >;
 
+export interface InProgressEscapeRoomActivityDefinition extends InProgressActivityInstance {
+  activityType: 'Escape Room';
+  stages: SupportedStage[];
+} // InProgressEscapeRoomActivityDefinition
+
 export const defaultEscapeRoomActivityDefinition: InProgressEscapeRoomActivityDefinition =
 {
   activityType: 'Escape Room',
-  activityTitle: undefined,
-  activityAuthor: undefined,
+  activityTitle: '',
+  activityAuthor: '',
   beginsOn: undefined,
   endsOn: undefined,
   stages: []
@@ -121,10 +124,6 @@ export const default_room: RoomDefinition = {
   }
 }; // default_room
 
-export const default_escape_room_settings: EscapeRoomSettingsDefinition = {
-  title: "No Title",
-  description: "No Description"
-}; // default_escape_room_settings
 
 export interface RoomBlock {
   /**display name for a room block (name that will be rendered when choosing what block to play next by the user) */
@@ -156,13 +155,6 @@ export interface EditableItemProps<T> {
 // ---------------------------------------------------------------
 //                    ITEM DEFINITIONS
 // ---------------------------------------------------------------
-
-export interface EscapeRoomSettingsDefinition  {
-  /** Password to enter in order to continue in the game */
-  title: string;
-  /** hints shown before requesting the password */
-  description: string;
-}
 
 export interface MultipleChoiceItemDefinition {
   /** Prompt that this item displays answers for */

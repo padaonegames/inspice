@@ -160,27 +160,27 @@ const EscapeRoomEditorSlide = <T extends ItemDefinition,>(props: EscapeRoomEdito
   return (
     <Root selected={selected} onMouseLeave = {()=>setMouseOverMe(prev => false)}  onMouseEnter={()=>setMouseOverMe(prev => true)}>
 
-    <SlideTitle>{index+1 + " " + stage.type}</SlideTitle>
-    <SlideContainer  onClick={onSlideSelected}>
-      <StagePreview selected={selected}>
-        {slidePreviewProducer && slidePreviewProducer(stage.payload as any)}
-      </StagePreview>
-    </SlideContainer>
+      <SlideTitle>{index+1 + " " + stage.type}</SlideTitle>
+      <SlideContainer  onClick={onSlideSelected}>
+        <StagePreview selected={selected}>
+          {slidePreviewProducer && slidePreviewProducer(stage.payload as any)}
+        </StagePreview>
+      </SlideContainer>
 
-    {mouseOverMe ? 
-    <>
-      {/* Duplicate slice button */}
-      <SliceButton heigh={35}  onClick={ e=>{ duplicateStage && duplicateStage(index)}}>
-        <DuplicateIcon></DuplicateIcon>
-      </SliceButton>
+      {mouseOverMe ? 
+      <>
+        {/* Duplicate slice button */}
+        <SliceButton heigh={35}  onClick={ e=>{ duplicateStage && duplicateStage(index)}}>
+          <DuplicateIcon></DuplicateIcon>
+        </SliceButton>
 
-      {/* Duplicate slice button */}
-      <SliceButton heigh={65} onClick={ e=>{ deleteStage && deleteStage(index)}} >
-        <DeleteIcon></DeleteIcon>
-      </SliceButton>
-    </>
-    :
-    <></>}
+        {/* Duplicate slice button */}
+        <SliceButton heigh={65} onClick={ e=>{ deleteStage && deleteStage(index)}} >
+          <DeleteIcon></DeleteIcon>
+        </SliceButton>
+      </>
+      :
+      <></>}
 
   </Root>
   );
