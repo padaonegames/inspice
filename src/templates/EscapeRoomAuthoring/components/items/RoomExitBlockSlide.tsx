@@ -13,7 +13,8 @@ const Root = styled.div<RootProps>`
   box-sizing: border-box;
   height: 100%;
   width: min-content;
-  background-color: transparent;
+  // background-color: transparent;
+  background-color: rgba(255,255,0,1);
   user-select: none;
   padding: 10px 0px 10px 0px;
   display: flex;
@@ -175,7 +176,7 @@ export type RoomPuzzleToSlideMappings<T extends SupportedPuzzle> = {
   [P in T['type']]?: (props: Extract<SupportedPuzzle, { type: P }>['payload']) => JSX.Element;
 } // RoomPuzzleToSlideMappings
 
-export interface RoomBlockSlideProps {
+export interface RoomExitBlockSlideProps {
   /** whether this slide is currently selected */
   selected?: boolean;
   /** callback to parent notifying of slide being selected by the user */
@@ -184,34 +185,32 @@ export interface RoomBlockSlideProps {
   onBlockDeleted?: () => void;
   /** callback to parent notifying that user wants to delete this block */
   onBlockDuplicated?: () => void;
+  /** callback to parent notifying that user wants to delete this block */
+  onDuplicatedPuzzle?: (blockIndex: number, puzzleIndex:number) => void;
   /** Block whose preview we wish to render */
-  block: RoomBlock;
+  exitBlock: RoomBlock;
+
   blockIndex:number;
   /** Mappings between block puzzle types and slide view producers (instructions on how to render a given preview) */
   puzzleMappings: RoomPuzzleToSlideMappings<SupportedPuzzle>;
 } // RoomBlockSlideProps
 
 
-export const RoomBlockSlide = (props: RoomBlockSlideProps): JSX.Element => {
+export const RoomExitBlockSlide = (props: RoomExitBlockSlideProps): JSX.Element => {
 
-  const [mouseOverMe, setMouseOverMe] = useState<boolean>(false);
 
   const {
     puzzleMappings,
     selected = false,
-    block,
+    exitBlock,
     blockIndex,
     onSlideSelected,
-    onBlockDeleted,
-    onBlockDuplicated,
-
-  } = props;
+  } = props
 
   return (
-    <Root selected={selected} onMouseLeave = {()=>setMouseOverMe(false)}  onMouseEnter={()=>setMouseOverMe(true)}  onClick={onSlideSelected}>
-
+    <Root selected={selected}  onClick={onSlideSelected}>
       <SlidesContainer>
-        {block.puzzles.map((puzzle, i) => {
+        {exitBlock.puzzles.map((puzzle, i) => {
           const slideRenderer = puzzleMappings[puzzle.type];
           return (
             <PuzzleSlide>
@@ -221,29 +220,11 @@ export const RoomBlockSlide = (props: RoomBlockSlideProps): JSX.Element => {
                   {slideRenderer && slideRenderer(puzzle.payload as any)}
                 </ItemPreview>
               </SlideContainer>
-
             </PuzzleSlide>
           );
         })}
 
       </SlidesContainer>
-
-      { mouseOverMe ? 
-      <>
-        {/* Duplicate slice button */}
-        <SliceButton Y={5} X={95}  onClick={ e=>{onBlockDeleted && onBlockDeleted()}}>
-          <DeleteIcon></DeleteIcon>
-        </SliceButton>
-
-        {/* Duplicate slice button */}
-        <SliceButton Y={35} X={95}  onClick={ e=>{onBlockDuplicated && onBlockDuplicated()}}>
-          <DuplicateIcon></DuplicateIcon>
-        </SliceButton>
-      </>
-      :
-      <></>
-      }
-
     </Root>
   );
 }; // RoomBlockSlide
@@ -274,4 +255,4 @@ export const RoomSettingsSlide = (props: RoomSettingsSlideProps): JSX.Element =>
       </PuzzleSlide>
     </Root>
   );
-}; // RoomSettingsSlide
+}; // RoomExitBlockSlide

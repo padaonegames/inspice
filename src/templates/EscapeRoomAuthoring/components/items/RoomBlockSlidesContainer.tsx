@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { Add } from "@styled-icons/fluentui-system-filled/Add";
 import { RoomBlock, SupportedPuzzle } from "../../../../services/escapeRoomActivity.model";
 import { RoomBlockSlide, RoomBlockSlideProps, RoomSettingsSlide } from "./RoomBlockSlide";
+import { RoomExitBlockSlide } from "./RoomExitBlockSlide";
 
 const Root = styled.div`
   position: absolute;
@@ -114,8 +115,10 @@ export type ItemToSlideProducerMapping<T extends SupportedPuzzle> = {
 export interface RoomBlockSlidesContainerProps {
   /** list of blocks currently included in the room */
   blocks: RoomBlock[];
+  /** block that lets the user exit a room */
+  exitBlock: RoomBlock;
   /** index of currently selected block in blocks */
-  selectedBlockIndex: number | 'room-settings';
+  selectedBlockIndex: number | 'room-settings' | 'exit-block';
   /** What  mappings we are working with in this slides list (available puzzle types and how to render their previews) */
   itemMappings: ItemToSlideProducerMapping<SupportedPuzzle>;
   /** Callback to parent component specifying that user wishes to add a new block to the room */
@@ -124,26 +127,27 @@ export interface RoomBlockSlidesContainerProps {
   onSelectBlock?: (index: number) => void;
   /** Callback to parent component specifying that user wishes to go back to the room settings editor */
   onSelectRoomSettings?: () => void;
+  /** Callback to parent component specifying that user wishes to go to the room's exit block */
+  onSelectRoomExitBlock?: () =>void;
   /** Callback to parent component specifying that user wishes to delete a block of puzzles from current room */
   onDeleteBlock?: (index:number) => void;
   /** Callback to parent component specifying that user wishes to delete a block of puzzles from current room */
   onDuplicateBlock?: (index:number) => void;
-  /** Callback to parent component specifying that user wishes to delete a block of puzzles from current room */
-  onDuplicatePuzzle?: (blockIndex:number, puzzleIndex:number) => void;
 } // RoomBlockSlidesContainerProps
 
 export const RoomBlockSlidesContainer = (props: RoomBlockSlidesContainerProps): JSX.Element => {
 
   const {
     blocks,
+    exitBlock,
     selectedBlockIndex,
     itemMappings,
     onAddBlock,
     onSelectBlock,
     onSelectRoomSettings,
+    onSelectRoomExitBlock,
     onDeleteBlock,
     onDuplicateBlock,
-    onDuplicatePuzzle
   } = props;
 
   const handleSelectBlock = (index: number) => {
@@ -164,21 +168,15 @@ export const RoomBlockSlidesContainer = (props: RoomBlockSlidesContainerProps): 
     }
   }; // handleDeleteBlock
 
-  const handleDuplicatePuzzle = (blockIndex: number, puzzleIndex: number) => {
-    if (onDuplicatePuzzle) {
-      onDuplicatePuzzle(blockIndex, puzzleIndex);
-    }
-  }; // handleDeleteBlock
 
 
   return (
     <>
       <Root>
         <SlidesContainer>
-          <RoomSettingsSlide
-            selected={selectedBlockIndex === 'room-settings'}
-            onSlideSelected={onSelectRoomSettings}
-          />
+          <RoomSettingsSlide selected={selectedBlockIndex === 'room-settings'} onSlideSelected={onSelectRoomSettings}/>
+          <RoomExitBlockSlide exitBlock={exitBlock} blockIndex={0} puzzleMappings={itemMappings} onSlideSelected={onSelectRoomExitBlock}/>
+
           {blocks.map((block, i) => {
             // This is "unsafe", but in reality due to how itemMappings is defined
             // it will never really be problematic (s and itemMappings[s.type] are forcefully consistent)
@@ -189,8 +187,7 @@ export const RoomBlockSlidesContainer = (props: RoomBlockSlidesContainerProps): 
               blockIndex: i,
               onSlideSelected: () => handleSelectBlock(i),
               onBlockDeleted: () => handleDeleteBlock(i),
-              onBlockDuplicated: () => handleDuplicateBlock(i),
-              onPuzzleDuplicated: { handleDuplicatePuzzle}
+              onBlockDuplicated: () => handleDuplicateBlock(i)
             } as RoomBlockSlideProps;
 
             return (
