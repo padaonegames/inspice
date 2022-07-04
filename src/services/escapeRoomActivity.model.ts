@@ -200,4 +200,6 @@ export interface UnlockPasswordItemDefinition  {
 export interface NarrativeItemDefinition  {
   /** Name of the scene that is going to be loaded */
   dialogs: string[];
+
+  characters: string[];
 }

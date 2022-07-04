@@ -1,8 +1,33 @@
-import styled from "styled-components";
+import { useState } from "react";
 import { EditableItemProps, MultipleChoiceItemDefinition, NarrativeItemDefinition } from "../../../../services/escapeRoomActivity.model";
 import EditableCheckBoxInput from "../EditableCheckBoxInput";
 import { AbstractActivityItemFactory } from "../ActivityItemFactory";
 import { PromptField } from "./PromptField";
+
+
+import styled from "styled-components";
+import {Unity} from "@styled-icons/fa-brands/Unity"
+import {UserCircle} from "@styled-icons/boxicons-regular/UserCircle"
+import {AddCircle} from "@styled-icons/fluentui-system-regular/AddCircle"
+
+
+
+
+const UnityIcon = styled(Unity)`
+  position: relative;
+  color: rgb(0, 0, 0);
+  height: 100%;
+`
+const UserIcon = styled(UserCircle)`
+  position: relative;
+  color: rgb(0, 0, 0);
+  height: 100%;
+`
+const AddIcon = styled(AddCircle)`
+  position: relative;
+  color: rgb(0, 0, 0);
+  height: 100%;
+`
 
 interface InputAreaProps {
   width?: string;
@@ -35,55 +60,301 @@ export const InputArea = styled.textarea<InputAreaProps>`
   }
 `;
 
-const CheckboxList = styled.div`
-  margin-top: 5px;
-  display: flex;
-  background-color: transparent;
-  flex-direction: column;
-  align-items: left;
 
-  border-bottom: 2px solid #dadce0;
-  padding: 5px 0;
-`;
-
-interface CheckBoxOptionProps {
-  backgroundColor?: string;
-}
-const CheckboxOption = styled.div<CheckBoxOptionProps>`
-  margin-top: 0.25em;
-  margin-bottom: 0.25em;
-  padding: 0.75em 0 0.75em 0.75em;
-  border-top: none;
+const Title = styled.div`
+  position: relative;
   font-size: 1em;
-  font-weight: 200;
+  font-weight: 500;
   font-family: ${props => props.theme.contentFont};
-  color: white;
+  line-height: 135%;
+
+  margin-bottom: 0.25em;
+  border-top: none;
+  color: black;
   line-height: 135%;
   width: 100%;
+  height:15%;
+  
   display: flex;
-  flex-direction: row;
-  align-content: center;
+  align-items: center;
+  text-align: center;
 
-  background-color: ${props => props.backgroundColor || 'transparent'};
-
-  border-radius: 0.25rem;
+  background-color: rgba(230,230,230,1);
   box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
 `;
 
-const PreviewTitle = styled.div`
-  margin-bottom: 0.25rem;
-  color: rgb(110, 110, 110);
-  text-align: center;
-  font-size: 0.75rem;
-  line-height: 1.33;
-  letter-spacing: 0.2px;
-  max-height: 1.5rem;
-  max-width: 100%;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+
+const HorizontalLine = styled.div`
+  height: 1.75em;
+  width: 0.5em;
+  border-style: solid;
+  border-color: lightgray;
+  border-width: 0px 2px 0px 0px;
+  margin: 0 0.5em;
+`;
+const VerticalLine = styled.div`
+  height: 1.75em;
+  width: 0.5em;
+  border-style: solid;
+  border-color: lightgray;
+  border-width: 0px 2px 0px 0px;
+  margin: 0 0.5em;
+
 `;
 
+
+
+///////////////////////////////////////////////////////Character slides 
+const CharacterInteractionList = styled.div`
+  position:relative;
+  margin-top: 5px;
+  align-items: center;
+  width: 15%;
+  height: 100%;
+  border-bottom: 2px solid #dadce0;
+  padding: 0.75em;
+  background-color: rgba(185,185,185,1);
+  border-radius: 1.25rem 0 0 1.25rem;
+  box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
+
+  border-bottom: 2px solid rgba(0,0,0,1);
+  border-top: 2px solid rgba(0,0,0,1);
+  border-left: 2px solid rgba(0,0,0,1);
+  border-right: 2px solid rgba(0,0,0,1);
+  `;
+  const InteractionListTitle = styled.div`
+  position:relative;
+  align-items: center;
+  text-align:center;
+  width: 100%;
+  height: 10%;
+  border-bottom: 2px solid #dadce0;
+  background-color: rgba(255,255,255,0.5);
+  box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
+
+  border-bottom: 2px solid rgba(0,0,0,1);
+  border-top: 2px solid rgba(0,0,0,1);
+  border-left: 2px solid rgba(0,0,0,1);
+  border-right: 2px solid rgba(0,0,0,1);
+  `;
+  
+  const CharacterSlidesContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 4;
+  height: 80%;
+  width: 100%;
+  overflow-y: auto;
+  overflow-x:hidden;
+  align-items: center;
+  margin: 0px 0px;
+  //background-color: transparent;
+  background-color: rgba(220,220,220,0.5);
+
+  border-bottom: 2px solid rgba(0,0,0,1);
+  border-top: 2px solid rgba(0,0,0,1);
+  border-left: 2px solid rgba(0,0,0,1);
+  border-right: 2px solid rgba(0,0,0,1);
+`;
+
+//Entire slide of a puzzle
+const CharacterSlide = styled.div`
+  position: relative;
+  box-sizing: border-box;
+  height: max-content;
+  width: 90%;
+  background-color: transparent;
+  user-select: none;
+  padding: 0px 0px 0px 0px;
+  margin: 10px 0px 10px 0px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align:center;
+
+  border: 2px solid rgba(0,0,0,1);
+  border-radius: 0.5rem;
+
+  font-size: 0.875rem;
+  font-weight: 500;
+  font-family: ${props => props.theme.contentFont};
+  color: rgb(51, 51, 51);
+  background-color: rgba(230, 230, 230,0.75);
+`;
+
+const CharacterSlideTitle = styled.div`
+  position: relative;
+  height: 30%;
+  width: 100%;
+  align-items: center;
+  font-size: 0.875rem;
+  font-weight: 500;
+  font-family: ${props => props.theme.contentFont};
+  border-radius: 0.5rem 0.5rem 0 0;
+  background-color: rgba(100, 100, 100,0.75);
+`;
+
+const CharacterSlidePreview = styled.img`
+  // width: 50px;
+  height: 50px;
+  display: block;
+`;
+
+  /////////////////////////////////////////////////Character interaction
+  const InteractionContent = styled.div`
+  margin-top: 5px;
+  display: flex;
+  flex-direction: row;
+  align-items: left;
+  width: 85%;
+  height:100%;
+  border-bottom: 2px solid #dadce0;
+  padding: 0.75em;
+  // background-color:  #dbdbdb;
+  background-color: rgba(200,200,200,1);
+  border-radius: 0 1.25rem 1.25rem 0;
+  box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
+
+  border-bottom: 2px solid rgba(0,0,0,1);
+  border-top: 2px solid rgba(0,0,0,1);
+  border-left: 2px solid rgba(0,0,0,1);
+  border-right: 2px solid rgba(0,0,0,1);
+  `;
+  
+  ///Dialog
+  const CharacterInteractionContent = styled.div`
+  margin-top: 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 80%;
+  border-bottom: 2px solid #dadce0;
+  padding: 0.75em;
+  // background-color:  #dbdbdb;
+  background-color: rgba(100,100,100,1);
+  border-radius: 0 1.25rem 1.25rem 0;
+  box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
+
+  border-bottom: 2px solid rgba(0,0,0,1);
+  border-top: 2px solid rgba(0,0,0,1);
+  border-left: 2px solid rgba(0,0,0,1);
+  border-right: 2px solid rgba(0,0,0,1);
+  `;
+  const Root = styled.div`
+    margin-top: 5px;
+    display: flex;
+    flex-direction: row;
+    align-items: left;
+
+    height: 400px;
+    max-height: 500px;
+    border-bottom: 2px solid #dadce0;
+    padding: 0.75em;
+    // background-color:  #dbdbdb;
+    background-color: rgba(255,255,255,0.5);
+    border-radius: 1.25rem;
+    box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
+  `;
+  
+  //Character selector
+  const CharacterSelectorContent = styled.div`
+  margin-top: 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  width: 20%;
+  border-bottom: 2px solid #dadce0;
+  padding: 0.75em;
+  // background-color:  #dbdbdb;
+  background-color: rgba(250,250,250,1);
+  border-radius: 1.25rem 0 0 1.25rem;
+  box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
+
+  
+  border-bottom: 2px solid rgba(0,0,0,1);
+  border-top: 2px solid rgba(0,0,0,1);
+  border-left: 2px solid rgba(0,0,0,1);
+  border-right: 2px solid rgba(0,0,0,1);
+`;
+
+const CharacterPreview = styled.img`
+  width: 100%;
+  display: block;
+`;
+
+
+//DropDown
+const DropdownMenu = styled.div`
+  position: absolute;
+  right: 0;
+  top: 2.5em;
+  background-color: ${props => props.theme.cardBackground};
+  min-width: 160px;
+  width: 100%;
+  box-shadow: rgba(37, 7, 107, 0.35) 0px 2px 4px 0px;
+  z-index: 25;
+  display: flex;
+  flex-direction: column;
+  border-radius: 0.25rem;
+`;
+
+const DropdownMenuItem = styled.a`
+  color: ${props => props.theme.textColor};
+  padding: 0.5em 0.85em;
+  margin-top: 0.2em;
+  margin-bottom: 0.2em;
+  text-decoration: none;
+  height: 2.5em;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: start;
+  font-family: ${props => props.theme.contentFont};
+
+  &:hover {
+    background-color: #eeeeee;
+  }
+`;
+
+const SelectFieldTypeDropdownButton = styled.span`
+  position: absolute;
+  font-size: 0.9em;
+  font-weight: 200;
+  font-family: ${props => props.theme.contentFont};
+  line-height: 135%;
+  margin-top: 10px;
+  cursor: pointer;
+  color: ${props => props.theme.textColor};
+
+  position: relative;
+
+  height: 2.5em;
+  width: 80%;
+
+  background-color: rgb(250,250,250);
+  border-radius: 5px;
+  box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 0.1rem 0px;
+  border: 1px solid #dadce0;
+  cursor: pointer;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0 0.85em;
+
+  &:hover {
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 0px 0.25rem 0px;
+  }
+`;
+
+
+
+
+
+////////////////////Slides
 const PreviewAnswers = styled.div`
   display: flex;
   align-items: center;
@@ -102,12 +373,36 @@ const PreviewAnswer = styled.div`
   border-radius: 0.125rem;
 `;
 
+
+
+
+const AddNewInteractionButton = styled.div`
+  display:flex;
+  justify-content: center;
+  height:10%;
+  background-color: rgba(250,250,250,1);
+
+  border-bottom: 2px solid rgba(0,0,0,1);
+  border-top: 2px solid rgba(0,0,0,1);
+  border-left: 2px solid rgba(0,0,0,1);
+  border-right: 2px solid rgba(0,0,0,1);
+`;
+
+
+
 export interface EditableNarrativeItemContentProps extends EditableItemProps<NarrativeItemDefinition> {
   /** text to display for the add new option label. */
   addNewOptionLabel?: string;
 } // EditableNarrativeItemContentProps
 
 export const EditableNarrativeItemContent = (props: EditableNarrativeItemContentProps): JSX.Element => {
+
+  const availableColors = ['#e21b3c', '#1368ce', '#d89e00', '#26890c', '#0aa3a3', '#864cbf'];
+  const [stageTypeDropdownOpen, setStageTypeDropdownOpen] = useState<boolean>(false);
+  const [characterSelected, setCurrentTypeSelected] = useState<string | undefined>("Select a character");
+  const [characterSelectedIndex, setCharacterSelectedIndex] = useState<number>(0);
+  const [dialogSelected, setDialogSelected] = useState<number>(-1);
+
 
   const {
     payload,
@@ -119,11 +414,12 @@ export const EditableNarrativeItemContent = (props: EditableNarrativeItemContent
     dialogs
   } = payload;
 
-  const handleAddOption = () => {
+  const handleAddDialog = () => {
     if (!onPayloadChanged) return;
     onPayloadChanged({
       ...payload,
-      dialogs: [...payload.dialogs, '']
+      dialogs: [...payload.dialogs, ''],
+      characters: [...payload.characters, 'Nuevo']
     })
   }; // handleAddOption
 
@@ -147,20 +443,77 @@ export const EditableNarrativeItemContent = (props: EditableNarrativeItemContent
     })
   }; // handleRemoveOption
 
-  // const handleEditPrompt = (value: string) => {
-  //   if (!onPayloadChanged) return;
-  //   onPayloadChanged({
-  //     ...payload,
-  //     prompt: value
-  //   })
-  // }; // handleEditPrompt
+  const handleCharacterselected = (index: number) => {
+    setCharacterSelectedIndex(index);
+  }; // handleEditPrompt
 
-
-  const availableColors = ['#e21b3c', '#1368ce', '#d89e00', '#26890c', '#0aa3a3', '#864cbf'];
+  const handleCharacterDialogChanged = (index: number, value: string) => {
+    if (!onPayloadChanged) return;
+    onPayloadChanged({
+      ...payload,
+      dialogs: [
+        ...payload.dialogs.slice(0, index),
+        value,
+        ...payload.dialogs.slice(index + 1)
+      ]
+    })
+  }; // handleEditOption
 
   return (
     <>
+    <Root>
+                                                                            {/* List of dialogs this item has */}
+      <CharacterInteractionList>
+        <InteractionListTitle>
+          Title
+        </InteractionListTitle>
+
+        <CharacterSlidesContainer>
+          {payload.dialogs.map((elem, i) => (
+            <CharacterSlide onMouseDown={()=>{setDialogSelected(i)}}>
+              <CharacterSlideTitle>
+                <p> {i+1+"º " + payload.characters[i]}</p>
+              </CharacterSlideTitle>
+              <CharacterSlidePreview  src="https://stickerly.pstatic.net/sticker_pack/9uCc66lpT8KQrI1v0zlIQ/B9D9U3/9/357db9fd-cdf3-45bf-968f-ae8a34e5b389.png" />
+           </CharacterSlide>
+          ))}
+        </CharacterSlidesContainer>
+
+        <AddNewInteractionButton>
+          <AddIcon onClick={()=>{handleAddDialog()}} />
+        </AddNewInteractionButton>
+      </CharacterInteractionList>
+
+                                                                            {/* Character option select */}
       
+      {(dialogSelected !== -1 || false) && <>
+      
+        <InteractionContent>
+          <CharacterSelectorContent>
+            <CharacterPreview src="https://stickerly.pstatic.net/sticker_pack/9uCc66lpT8KQrI1v0zlIQ/B9D9U3/9/357db9fd-cdf3-45bf-968f-ae8a34e5b389.png"></CharacterPreview>
+            <SelectFieldTypeDropdownButton onClick={() => setStageTypeDropdownOpen(prev => !prev)}>
+              { characterSelected } <UserIcon />
+              {stageTypeDropdownOpen &&
+                <DropdownMenu>
+                  {payload.characters.map((elem, i) => (
+                    <DropdownMenuItem onClick={() => {setCharacterSelectedIndex(i); setCurrentTypeSelected(payload.characters[i]==='' ?"Select a character" : payload.characters[i])}}>
+                      {elem}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenu>}
+            </SelectFieldTypeDropdownButton>
+          </CharacterSelectorContent>
+
+          {/* Text Character says */}
+          <CharacterInteractionContent>
+            <Title>
+              { characterSelectedIndex===-1 ? "Who is going to say something?" : "What is "+ payload.characters[dialogSelected]+" going to say?"}
+            </Title>
+            <PromptField promptText={payload.dialogs[dialogSelected]} promptPlaceholder='What is going to be said' onPromptChange={(value) => {handleCharacterDialogChanged(dialogSelected,value)}} />
+          </CharacterInteractionContent>
+        </InteractionContent>
+                </>}
+    </Root>
     </>
   );
 }; // EditableMultipleChoiceItemContent
@@ -188,7 +541,8 @@ export const narrativeItemFactory: AbstractActivityItemFactory<NarrativeItemDefi
     />
   ),
   defaultDefinition: {
-    dialogs: ['', '']
+    dialogs: [],
+    characters: []
   }
 }; // narrativeItemFactory
 

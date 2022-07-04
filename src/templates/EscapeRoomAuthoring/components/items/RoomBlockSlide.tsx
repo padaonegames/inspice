@@ -42,6 +42,7 @@ const PuzzleSlide = styled.div`
   position: relative;
   box-sizing: border-box;
   height: 100%;
+  width: max-content;
   background-color: transparent;
   user-select: none;
   padding: 12px 16px 12px 0px;
@@ -55,7 +56,6 @@ const PuzzleSlide = styled.div`
   font-weight: 500;
   font-family: ${props => props.theme.contentFont};
   color: rgb(51, 51, 51);
-  width: max-content;
   background-color: rgba(248, 188, 188);
 `;
 
