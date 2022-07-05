@@ -13,6 +13,7 @@ interface InputAreaProps {
   width?: string;
   height?: string;
   dimBackground?: boolean;
+  textAlignment?:string;
 }
 export const InputArea = styled.textarea<InputAreaProps>`
   font-size: 0.9em;
@@ -30,7 +31,7 @@ export const InputArea = styled.textarea<InputAreaProps>`
   resize: none;
   overflow-y: hidden;
 
-  text-align: center;
+  text-align: ${props => props.textAlignment};;
 
   border-radius: 0.25rem;
   box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
@@ -45,6 +46,10 @@ export interface PromptFieldProps {
   promptText: string;
   /** Placeholder text to display while no text has been provided */
   promptPlaceholder?: string;
+  /** Alignment that is going to be aplied to the text */
+  textAlignment?:string;
+  /** Initial height of the input text */
+  initialHeight?:string;
   /** callback to notify parent of text changing within the input area */
   onPromptChange?: (value: string) => void;
 } // PromptFieldProps
@@ -54,6 +59,8 @@ export const PromptField = (props: PromptFieldProps): JSX.Element => {
   const {
     promptText,
     promptPlaceholder = 'Start typing your prompt',
+    textAlignment='center',
+    initialHeight= '3em',
     onPromptChange
   } = props;
 
@@ -90,7 +97,8 @@ export const PromptField = (props: PromptFieldProps): JSX.Element => {
       <InputArea
         dimBackground
         width='100%'
-        height='3em'
+        height={initialHeight}
+        textAlignment={textAlignment}
         ref={promptAreaRef}
         placeholder={promptPlaceholder}
         maxLength={500}

@@ -487,7 +487,6 @@ export const EditableNarrativeItemContent = (props: EditableNarrativeItemContent
                                                                             {/* Character option select */}
       
       {(dialogSelected !== -1 || false) && <>
-      
         <InteractionContent>
           <CharacterSelectorContent>
             <CharacterPreview src="https://stickerly.pstatic.net/sticker_pack/9uCc66lpT8KQrI1v0zlIQ/B9D9U3/9/357db9fd-cdf3-45bf-968f-ae8a34e5b389.png"></CharacterPreview>
@@ -509,7 +508,7 @@ export const EditableNarrativeItemContent = (props: EditableNarrativeItemContent
             <Title>
               { characterSelectedIndex===-1 ? "Who is going to say something?" : "What is "+ payload.characters[dialogSelected]+" going to say?"}
             </Title>
-            <PromptField promptText={payload.dialogs[dialogSelected]} promptPlaceholder='What is going to be said' onPromptChange={(value) => {handleCharacterDialogChanged(dialogSelected,value)}} />
+            <PromptField promptText={payload.dialogs[dialogSelected]} promptPlaceholder='What is going to be said' onPromptChange={(value) => {handleCharacterDialogChanged(dialogSelected,value)}} textAlignment={"left"} initialHeight={"15em"}/>
           </CharacterInteractionContent>
         </InteractionContent>
                 </>}

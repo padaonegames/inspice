@@ -38,12 +38,17 @@ export const InputArea = styled.textarea<InputAreaProps>`
 const CheckboxList = styled.div`
   margin-top: 5px;
   display: flex;
-  background-color: transparent;
+  background-color: rgba(255,255,0,0.5);
   flex-direction: column;
   align-items: left;
 
   border-bottom: 2px solid #dadce0;
-  padding: 5px 0;
+  padding: 0.75em;
+
+  background-color:  #dbdbdb;
+
+  border-radius: 1.25rem;
+  box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
 `;
 
 interface CheckBoxOptionProps {
@@ -155,7 +160,9 @@ export const EditableUnlockPasswordItemContent = (props: EditableUnlockPasswordI
 
   return (
     <>
-      
+    <CheckboxList>
+      <PromptField promptText={""} promptPlaceholder='Start typing your prompt' onPromptChange={()=>{}}/>
+    </CheckboxList>
     </>
   );
 }; // EditableMultipleChoiceItemContent
@@ -184,7 +191,7 @@ export const unlockPasswordItemFactory: AbstractActivityItemFactory<UnlockPasswo
     />
   ),
   defaultDefinition: {
-    password: '',
+    password: [0,0,0,0],
     description: ''
   }
 }; // narrativeItemFactory

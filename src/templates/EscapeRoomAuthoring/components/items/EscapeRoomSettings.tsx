@@ -5,7 +5,11 @@ import { PromptField } from "./PromptField";
 
 import styled from "styled-components";
 import {Settings} from "@styled-icons/fluentui-system-filled/Settings"
+import {UserPlus} from "@styled-icons/boxicons-regular/UserPlus"
+import {Bin} from "@styled-icons/icomoon/Bin";
 
+import propertyService from "../../../../services/property.service";
+import { useState } from "react";
 
 
 const SettingsIcon = styled(Settings)`
@@ -16,19 +20,83 @@ const SettingsIcon = styled(Settings)`
   width: 1.25em;
 `
 
-const ContentWrapper = styled.main`
+const AddCharacterIcon = styled(UserPlus)`
+  color: ${props => props.theme.textColor};
+  height: 1.75em;
+  width: auto;
+`;
+
+const DeleteIcon = styled(Bin)`
+  position:absolute;
+  right:0%;
+  height: 2em;
+  width: 2em;
+
+  color: rgb(0, 0, 0);
+  &:hover {
+    color: rgb(255, 0, 0);
+  }
+`
+
+const Wrapper = styled.main`
   position: relative;
-   left: 12%;
+  left: 12%;
   height: 100%;
   width: 88%;
   display: flex;
   flex-direction: column;
-
+  align-items: center;
   overflow: hidden;
   margin: 0px;
   padding: 0px;
   border: 0px none;
   font: inherit;
+`;
+
+
+const CharacterContainer = styled.div`
+margin-top: 5px;
+display: flex;
+flex-direction: row;
+align-items: left;
+width:50%;
+max-height: 500px;
+border-bottom: 2px solid #dadce0;
+padding: 0.75em;
+background-color: rgba(100,100,100,1);
+border-radius: 1.25rem;
+box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
+`;
+const CharacterPreviewContainer = styled.div`
+display: flex;
+flex-direction: column;
+align-items: center;
+width:30%;
+padding: 0.75em 0.75em 0.75em 0.75em;
+background-color: rgba(150,150,150,1);
+border-radius: 1.25rem 0 0 1.25rem;
+`;
+
+
+const CharactersContainer = styled.div`
+margin-top: 5px;
+display: flex;
+flex-direction: column;
+align-items: center;
+width:100%;
+padding: 0.75em;
+background-color: rgba(0,0,0,0.5);
+border-radius: 1.25rem;
+box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
+`;
+
+const CharacterInfoContainer = styled.div`
+display: flex;
+flex-direction: column;
+align-items: space-between;
+width:100%;
+background-color: rgba(180,180,180,1);
+border-radius: 0 1.25rem 1.25rem 0;
 `;
 
 
@@ -91,22 +159,15 @@ const PreviewAnswers = styled.div`
 
 const Root = styled.div`
   position: relative; 
-  // box-sizing: border-box;
   height: 10%;
   width: 100%;
-  background-color: rgba(255,0,0,0.5);
-  user-select: none;
-  padding: 12px 16px 12px 0px;
-  display: block;
-  border: 10px;
-  // border-radius: 0% 0% 20% 0%;
+  background-color: rgba(150,150,150,0.5);
+  box-shadow: rgba(255, 0, 0, 1) 0px px 0px 0px;
+  border-radius: 0% 0% 0% 0%;
   border-color:red;
   font-size: 0.875rem;
   font-weight: 500;
   font-family: ${props => props.theme.contentFont};
-  color: rgb(51, 51, 51);
-  max-height: 141px;
-
 `;
 
 const CheckboxTitle = styled.div`
@@ -133,7 +194,34 @@ const CheckboxTitle = styled.div`
   box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
 `;
 
-const CheckboxList = styled.div`
+
+const CharacterTitle = styled.div`
+  font-size: 1em;
+  font-weight: 500;
+  font-family: ${props => props.theme.contentFont};
+  line-height: 135%;
+
+  margin-top: 0.25em;
+  margin-bottom: 0.25em;
+  padding: 0.75em 1.25em;
+  border-top: none;
+  color: black;
+  line-height: 135%;
+  width: fit-content;
+  height:20%;
+  text-align: center;
+
+  display: flex;
+  align-items: center;
+
+  background-color: white;
+
+  border-radius: 1rem;
+  box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
+`;
+
+const ContainerWrapper = styled.div`
+  width: 100%;
   margin-top: 5px;
   display: flex;
   background-color: transparent;
@@ -149,6 +237,138 @@ const CheckboxList = styled.div`
   box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
 `;
 
+const GeneralSettingsContainer = styled.div`
+  width: 100%;
+  margin-top: 5px;
+  display: flex;
+  background-color: transparent;
+  flex-direction: column;
+  align-items: center;
+  text-align:center;
+
+  border-bottom: 2px solid #dadce0;
+  background-color:  #dbdbdb;
+
+  border-radius: 1.25rem;
+  box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
+`;
+
+const SettingsDiv = styled.div`
+  width: 95%;
+  margin-top: 5px;
+  display: flex;
+  background-color: transparent;
+  flex-direction: column;
+  align-items: left;
+  text-align:center;
+
+  margin-bottom: 2rem;
+
+  border-bottom: 2px solid #dadce0;
+  background-color:  rgba(0,0,0,0.5);
+
+  box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
+`;
+
+const GeneralSettingsTitle = styled.div`
+  font-size: 1em;
+  font-weight: 500;
+  font-family: ${props => props.theme.contentFont};
+  line-height: 135%;
+
+  margin-top: 1em;
+  margin-bottom: 0.25em;
+  padding: 0.75em 1.25em;
+  border-top: none;
+  color: black;
+  line-height: 135%;
+  width: 95%;
+  text-align: center;
+
+  display: flex;
+  align-items: center;
+
+  background-color: white;
+
+  border-radius: 1rem;
+  box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
+`;
+
+
+const CharacterPreview = styled.img`
+  width:100%;
+  display: block;
+`;
+
+
+
+
+const AddPuzzleButton = styled.div`
+
+  position: relative;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: ${props => props.theme.contentFont};
+  line-height: 135%;
+
+  margin-top: 0.25em;
+  margin-bottom: 0.25em;
+  padding: 0.75em 1.25em;
+  border-top: none;
+  color: black;
+  line-height: 135%;
+  width: fit-content;
+  
+  display: flex;
+  text-align: center;
+  align-items: center;
+
+  background-color: rgb(255, 255, 255);
+
+  border-radius: 1rem;
+  box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
+
+  &:hover {
+    transition: border 0.25s;
+    border: 3px solid rgb(200, 200, 200);
+  }
+
+`;
+
+
+
+//////////////////V2
+
+interface GridProps {
+  elements: number;
+  elementsPerRow:number;
+}
+const Grid = styled.div<GridProps>`
+  display: inline-grid;
+  grid-template-columns: repeat(min(${props=>props.elementsPerRow},${props=>props.elements}),${props=> {return props.elements<props.elementsPerRow?100/props.elements : 100/props.elementsPerRow}}%) ;
+  grid-row-gap: 50px;
+  width:100%;
+  background-color: rgba(0,0,0,0.5);
+  box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
+  `;
+
+const CharacterContainerV2 = styled.div`
+  place-self:center;
+  position:relative;
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  text-align:left;
+  width:300px;
+  background-color: rgba(200,200,200,1);
+  box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
+  `;
+  
+const CharacterPreviewV2 = styled.img`
+  padding: 0 0 20px 0;
+  width:300px;
+  display: block;
+`;
 
 
 
@@ -158,6 +378,7 @@ export interface EscapeRoomSettingsProps {
   escapeRoom: InProgressEscapeRoomActivityDefinition;
   /** text to display for the add new option label. */
   escapeRoomTitle:string;
+  escapeRoomCharacters:string[];
   escapeRoomDescription: string;
   onTitleChanged: (title:string)=>void;
   onDescriptionChanged: (title:string)=>void;
@@ -169,6 +390,7 @@ export const EscapeRoomSettings = (props: EscapeRoomSettingsProps): JSX.Element 
   const {
     escapeRoom,
     escapeRoomTitle,
+    escapeRoomCharacters,
     escapeRoomDescription,
     onSettingsChanged
   } = props;
@@ -184,18 +406,107 @@ export const EscapeRoomSettings = (props: EscapeRoomSettingsProps): JSX.Element 
   }; // handleEditcode
 
 
+  const handleAddCharacter = ()=>{
+    if (!onSettingsChanged) return;
+    onSettingsChanged({
+      ...escapeRoom,
+      characters: [
+        ...escapeRoom.characters,
+        "New Character"
+      ]
+    })
+  }
+
+  const handleDeleteCharacter = (index:number)=>{
+    if (!onSettingsChanged) return;
+    onSettingsChanged({
+      ...escapeRoom,
+      characters: [
+        ...escapeRoom.characters.slice(0, index),
+        ...escapeRoom.characters.slice(index + 1, escapeRoom.characters.length)
+      ]
+    })
+  }
+
+  const handleCharacterNameChanged = (value:string, index:number) =>{
+    if (!onSettingsChanged) return;
+    onSettingsChanged({
+      ...escapeRoom,
+      characters: [
+        ...escapeRoom.characters.slice(0, index),
+        value,
+        ...escapeRoom.characters.slice(index + 1, escapeRoom.characters.length)
+      ]
+    })
+  }
+
+  const [version, setVersion] = useState<boolean>(true);
+
+
   return (
     <>
-        <ContentWrapper>
+      <Wrapper>
+        {/* <Container> */}
+            <GeneralSettingsContainer>
+              <GeneralSettingsTitle> Settings </GeneralSettingsTitle>
+              <SettingsDiv>
+                <CheckboxTitle> Escape Room Title </CheckboxTitle>
+                <PromptField promptText={escapeRoomTitle} promptPlaceholder='Code to solve this puzzle' onPromptChange={handleEditTitle} />
+             
+              <CheckboxTitle onMouseDown={()=>setVersion(prev=>!prev)}> Characters </CheckboxTitle>
 
-      <CheckboxList>
-        <CheckboxTitle>
-          {/* <HintsIcon /> */}
-          Escape Room
-        </CheckboxTitle>
-      </CheckboxList>
-      <PromptField promptText={escapeRoomTitle} promptPlaceholder='Code to solve this puzzle' onPromptChange={handleEditTitle} />
-        </ContentWrapper>
+            {version && 
+            <>
+            {/* V1 */}
+            <CharactersContainer>
+              {escapeRoomCharacters.map((characterName, index) => (
+                <CharacterContainer>
+                  {/* Character image */}
+                   <CharacterPreviewContainer>
+                     <CharacterPreview  src="https://stickerly.pstatic.net/sticker_pack/9uCc66lpT8KQrI1v0zlIQ/B9D9U3/9/357db9fd-cdf3-45bf-968f-ae8a34e5b389.png" />
+                     <CheckboxTitle> Select Image? </CheckboxTitle>
+                   </CharacterPreviewContainer>
+
+                   {/* Character data */}
+                   <CharacterInfoContainer>
+                     <CharacterTitle> Name </CharacterTitle>
+                     <PromptField promptText={characterName} promptPlaceholder='Character Name' onPromptChange={(value)=>handleCharacterNameChanged(value,index)} />
+                     {/* <CharacterTitle> Some more data? </CharacterTitle>
+                     <PromptField promptText={characterName} promptPlaceholder='Something extra' onPromptChange={(value)=>handleCharacterNameChanged(value,index)} /> */}
+                 </CharacterInfoContainer>
+                </CharacterContainer>
+                ))}
+              </CharactersContainer>
+                </>
+              }
+
+              {!version && 
+              
+              <>
+              {/* V2 */}
+              <Grid elements={escapeRoomCharacters.length} elementsPerRow={4}>
+                {escapeRoomCharacters.map((characterName, index) => (
+                  <CharacterContainerV2>
+                    <DeleteIcon onMouseDown={()=>{handleDeleteCharacter(index)}} />
+                    <CharacterPreviewV2  src="https://stickerly.pstatic.net/sticker_pack/9uCc66lpT8KQrI1v0zlIQ/B9D9U3/9/357db9fd-cdf3-45bf-968f-ae8a34e5b389.png" />
+                    
+                      <h4><b> Name</b></h4>
+                      <PromptField promptText={characterName} promptPlaceholder='Something extra' onPromptChange={(value)=>handleCharacterNameChanged(value,index)} />                
+                      
+                  </CharacterContainerV2>
+                ))}
+              </Grid>
+                </>}
+
+                 {/* In case we want to add a puzzle at the beginning of the room block*/}
+                 <AddPuzzleButton onClick={() =>{handleAddCharacter()}}>
+                   <AddCharacterIcon/>
+                 </AddPuzzleButton>  
+
+              </SettingsDiv>
+
+            </GeneralSettingsContainer>
+      </Wrapper>
     </>
   );
 }; // EditableWaitingCodeItemContent
@@ -224,7 +535,4 @@ export const EscapeRoomSettingsStageSlide = (props:EscapeRoomSettingsStageSlideP
     </Root>
   );
 }; // EscapeRoomSettingsItemStageSlide
-
-
-
 export default EscapeRoomSettings;

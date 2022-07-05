@@ -32,6 +32,7 @@ import {ScanObject} from "@styled-icons/fluentui-system-filled/ScanObject"
 import {Unity} from "@styled-icons/fa-brands/Unity"
 import {HistoryEdu} from "@styled-icons/material-rounded/HistoryEdu"
 import {Password} from "@styled-icons/fluentui-system-filled/Password"
+import React from 'react';
 
 const Root = styled.div`
   display: flex;
@@ -155,7 +156,8 @@ const sample_base: InProgressEscapeRoomActivityDefinition = {
   activityAuthor: undefined,
   beginsOn: undefined,
   endsOn: undefined,
-  stages: [sample_stage]
+  stages: [sample_stage],
+  characters:[]
 };
 
 //-------------------------------------------------------
@@ -333,6 +335,35 @@ export const CreateEscapeRoomScreenComponent = (props: CreateEscapeRoomScreenCom
     setSelectedStage(prev => index<prev ? prev-1 : prev);
   }; //deleteStage
 
+  //  interface EscapeRoomContext {
+  //   /** Data object for currently authenticated user (or undefined if not authenticated) */
+  //   userData: UserData | undefined;
+  //   /** API JWT token for current session */
+  //   accessToken: string | undefined;
+  //   /** Helper method to modify currently authenticated user from useContext hook */
+  //   setUserData: (newData: UserData | undefined) => void;
+  //   /** Helper method to modify current access token from useContext hook */
+  //   setAccessToken: (newToken: string | undefined) => void;
+  // }
+//   interface EscapeRoomContext  {
+//     // activityType: string;
+//     // stages: SupportedStage[];
+//     // characters:string[];
+//     escapeRoomData: InProgressEscapeRoomActivityDefinition;
+//   } // InProgressEscapeRoomActivityDefinition
+
+//   // export interface InProgressEscapeRoomActivityDefinition extends InProgressActivityInstance {
+//   //   activityType: 'Escape Room';
+//   //   stages: SupportedStage[];
+//   //   characters:string[];
+//   // } // InProgressEscapeRoomActivityDefinition
+
+// const ERContext = React.createContext<EscapeRoomContext>({
+//   // activityType: 'Escape Room',
+//   // stages: [],
+//   // characters: []
+//   escapeRoomData: activityDefinition
+// });
 
 
   return (
@@ -350,18 +381,25 @@ export const CreateEscapeRoomScreenComponent = (props: CreateEscapeRoomScreenCom
       />
       
       {showSettings === false && 
-      <EditableStage
-      stageDefinition={currentStage}
-      stageMappings={stageMappings}
-      onStageDefinitionChanged={handleStageDefinitionChanged}
-      onStageDeleted={handleDeleteStage}
-      onStageDuplicated={handleDuplicateStage}
-      />
+
+      // <ERContext.Provider value={{
+      //   escapeRoomData
+      // }}>
+
+        <EditableStage
+        stageDefinition={currentStage}
+        stageMappings={stageMappings}
+        onStageDefinitionChanged={handleStageDefinitionChanged}
+        onStageDeleted={handleDeleteStage}
+        onStageDuplicated={handleDuplicateStage}
+        />
+      // </ERContext.Provider>
     }
     {
       showSettings &&
       <EscapeRoomSettings onSettingsChanged={newConfig => { setActivityDefinition(newConfig); } }
         escapeRoom={activityDefinition}
+        escapeRoomCharacters={activityDefinition.characters}
         escapeRoomTitle={activityDefinition.activityTitle ? activityDefinition.activityTitle : ""}
         escapeRoomDescription={""} 
         onTitleChanged={ title => {handleEscapeRoomTitleChanged(title)}}
@@ -371,15 +409,5 @@ export const CreateEscapeRoomScreenComponent = (props: CreateEscapeRoomScreenCom
     </Root>
   );
 }
-
-/*const sample_base: InProgressEscapeRoomActivityDefinition = {
-  activityType: 'Escape Room',
-  activityTitle: undefined,
-  activityAuthor: undefined,
-  beginsOn: undefined,
-  endsOn: undefined,
-  stages: [settings]
-}; */
-
 
 export default CreateEscapeRoomScreen;

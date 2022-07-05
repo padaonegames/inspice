@@ -22,12 +22,13 @@ const Root = styled.div`
 `;
 
 const SlidesContainer = styled.div`
-  display: block;
   position: relative;
-  z-index: 4;
-  height: 67%; //80%
+  
+  height: 77%;
   width: 100%;
+  background-color: rgba(0,0,0,0.1);
   overflow-y: auto;
+  overflow-x:hidden;
   margin: 0px 0px;
 `;
 

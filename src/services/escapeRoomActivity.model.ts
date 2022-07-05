@@ -76,6 +76,7 @@ export interface EscapeRoomActivityDefinition extends ActivityInstance {
 export interface InProgressEscapeRoomActivityDefinition extends InProgressActivityInstance {
   activityType: 'Escape Room';
   stages: SupportedStage[];
+  characters:string[];
 } // InProgressEscapeRoomActivityDefinition
 
 export type CompletedEscapeRoomActivityDefinition = Omit<
@@ -83,10 +84,10 @@ export type CompletedEscapeRoomActivityDefinition = Omit<
   "_id"
 >;
 
-export interface InProgressEscapeRoomActivityDefinition extends InProgressActivityInstance {
-  activityType: 'Escape Room';
-  stages: SupportedStage[];
-} // InProgressEscapeRoomActivityDefinition
+// export interface InProgressEscapeRoomActivityDefinition extends InProgressActivityInstance {
+//   activityType: 'Escape Room';
+//   stages: SupportedStage[];
+// } // InProgressEscapeRoomActivityDefinition
 
 export const defaultEscapeRoomActivityDefinition: InProgressEscapeRoomActivityDefinition =
 {
@@ -95,6 +96,7 @@ export const defaultEscapeRoomActivityDefinition: InProgressEscapeRoomActivityDe
   activityAuthor: '',
   beginsOn: undefined,
   endsOn: undefined,
+  characters:[],
   stages: []
 };
 
@@ -150,6 +152,8 @@ export interface EditableItemProps<T> {
   payload: T;
   /** Callback to notify parent component of a change whithin the current definition */
   onPayloadChanged?: (definition: T) => void;
+
+  // characters?: string[];
 }
 
 // ---------------------------------------------------------------
@@ -191,7 +195,7 @@ export interface LoadSceneDefinition  {
 
 export interface UnlockPasswordItemDefinition  {
   /** Password that needs to be solved to exit a room */
-  password: string;
+  password: number[];
 
   /** Description to help give context to solve the password */
   description:string;
