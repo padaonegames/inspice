@@ -84,11 +84,6 @@ export type CompletedEscapeRoomActivityDefinition = Omit<
   "_id"
 >;
 
-// export interface InProgressEscapeRoomActivityDefinition extends InProgressActivityInstance {
-//   activityType: 'Escape Room';
-//   stages: SupportedStage[];
-// } // InProgressEscapeRoomActivityDefinition
-
 export const defaultEscapeRoomActivityDefinition: InProgressEscapeRoomActivityDefinition =
 {
   activityType: 'Escape Room',

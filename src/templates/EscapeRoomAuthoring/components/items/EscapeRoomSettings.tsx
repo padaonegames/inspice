@@ -9,7 +9,8 @@ import {UserPlus} from "@styled-icons/boxicons-regular/UserPlus"
 import {Bin} from "@styled-icons/icomoon/Bin";
 
 import propertyService from "../../../../services/property.service";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { EscapeRoomContext } from "../../EscapeRoomContext";
 
 
 const SettingsIcon = styled(Settings)`
@@ -394,12 +395,17 @@ export const EscapeRoomSettings = (props: EscapeRoomSettingsProps): JSX.Element 
     escapeRoomDescription,
     onSettingsChanged
   } = props;
+  const {escapeRoomData, setEscapeRoomData} = useContext(EscapeRoomContext);
 
 
 
   const handleEditTitle = (value: string) => {
     if (!onSettingsChanged) return;
     onSettingsChanged({
+      ...escapeRoom,
+      activityTitle: value
+    })
+    setEscapeRoomData({
       ...escapeRoom,
       activityTitle: value
     })
@@ -415,6 +421,13 @@ export const EscapeRoomSettings = (props: EscapeRoomSettingsProps): JSX.Element 
         "New Character"
       ]
     })
+    setEscapeRoomData({
+      ...escapeRoom,
+      characters: [
+        ...escapeRoom.characters,
+        "New Character"
+      ]
+    });
   }
 
   const handleDeleteCharacter = (index:number)=>{
@@ -426,11 +439,26 @@ export const EscapeRoomSettings = (props: EscapeRoomSettingsProps): JSX.Element 
         ...escapeRoom.characters.slice(index + 1, escapeRoom.characters.length)
       ]
     })
+    setEscapeRoomData({
+      ...escapeRoom,
+      characters: [
+        ...escapeRoom.characters.slice(0, index),
+        ...escapeRoom.characters.slice(index + 1, escapeRoom.characters.length)
+      ]
+    })
   }
 
   const handleCharacterNameChanged = (value:string, index:number) =>{
     if (!onSettingsChanged) return;
     onSettingsChanged({
+      ...escapeRoom,
+      characters: [
+        ...escapeRoom.characters.slice(0, index),
+        value,
+        ...escapeRoom.characters.slice(index + 1, escapeRoom.characters.length)
+      ]
+    })
+    setEscapeRoomData({
       ...escapeRoom,
       characters: [
         ...escapeRoom.characters.slice(0, index),

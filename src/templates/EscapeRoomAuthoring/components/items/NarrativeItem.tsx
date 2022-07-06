@@ -1,6 +1,4 @@
-import { useState } from "react";
-import { EditableItemProps, MultipleChoiceItemDefinition, NarrativeItemDefinition } from "../../../../services/escapeRoomActivity.model";
-import EditableCheckBoxInput from "../EditableCheckBoxInput";
+import { EditableItemProps, NarrativeItemDefinition } from "../../../../services/escapeRoomActivity.model";
 import { AbstractActivityItemFactory } from "../ActivityItemFactory";
 import { PromptField } from "./PromptField";
 
@@ -10,7 +8,8 @@ import {Unity} from "@styled-icons/fa-brands/Unity"
 import {UserCircle} from "@styled-icons/boxicons-regular/UserCircle"
 import {AddCircle} from "@styled-icons/fluentui-system-regular/AddCircle"
 
-
+import { useState, useContext } from "react";
+import {EscapeRoomContext} from "../../EscapeRoomContext"
 
 
 const UnityIcon = styled(Unity)`
@@ -82,27 +81,6 @@ const Title = styled.div`
   background-color: rgba(230,230,230,1);
   box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
 `;
-
-
-const HorizontalLine = styled.div`
-  height: 1.75em;
-  width: 0.5em;
-  border-style: solid;
-  border-color: lightgray;
-  border-width: 0px 2px 0px 0px;
-  margin: 0 0.5em;
-`;
-const VerticalLine = styled.div`
-  height: 1.75em;
-  width: 0.5em;
-  border-style: solid;
-  border-color: lightgray;
-  border-width: 0px 2px 0px 0px;
-  margin: 0 0.5em;
-
-`;
-
-
 
 ///////////////////////////////////////////////////////Character slides 
 const CharacterInteractionList = styled.div`
@@ -397,12 +375,12 @@ export interface EditableNarrativeItemContentProps extends EditableItemProps<Nar
 
 export const EditableNarrativeItemContent = (props: EditableNarrativeItemContentProps): JSX.Element => {
 
-  const availableColors = ['#e21b3c', '#1368ce', '#d89e00', '#26890c', '#0aa3a3', '#864cbf'];
   const [stageTypeDropdownOpen, setStageTypeDropdownOpen] = useState<boolean>(false);
   const [characterSelected, setCurrentTypeSelected] = useState<string | undefined>("Select a character");
   const [characterSelectedIndex, setCharacterSelectedIndex] = useState<number>(0);
   const [dialogSelected, setDialogSelected] = useState<number>(-1);
 
+  const {escapeRoomData} = useContext(EscapeRoomContext);
 
   const {
     payload,
@@ -419,33 +397,10 @@ export const EditableNarrativeItemContent = (props: EditableNarrativeItemContent
     onPayloadChanged({
       ...payload,
       dialogs: [...payload.dialogs, ''],
-      characters: [...payload.characters, 'Nuevo']
+      characters: [...payload.characters, "New Dialog"]
     })
   }; // handleAddOption
 
-  const handleEditOption = (index: number, value: string) => {
-    if (!onPayloadChanged) return;
-    onPayloadChanged({
-      ...payload,
-      dialogs: [
-        ...payload.dialogs.slice(0, index),
-        value,
-        ...payload.dialogs.slice(index + 1)
-      ]
-    })
-  }; // handleEditOption
-
-  const handleRemoveOption = (index: number) => {
-    if (!onPayloadChanged) return;
-    onPayloadChanged({
-      ...payload,
-      dialogs: payload.dialogs.filter((_, i) => i !== index)
-    })
-  }; // handleRemoveOption
-
-  const handleCharacterselected = (index: number) => {
-    setCharacterSelectedIndex(index);
-  }; // handleEditPrompt
 
   const handleCharacterDialogChanged = (index: number, value: string) => {
     if (!onPayloadChanged) return;
@@ -459,15 +414,27 @@ export const EditableNarrativeItemContent = (props: EditableNarrativeItemContent
     })
   }; // handleEditOption
 
+  const handleCharacterCharacterSelectedInDialog= (characterIndex: number) => {
+    if (!onPayloadChanged) return;
+    setCharacterSelectedIndex(characterIndex);
+    setCurrentTypeSelected(escapeRoomData.characters[characterIndex])
+    onPayloadChanged({
+      ...payload,
+      characters: [
+        ...payload.characters.slice(0, characterIndex),
+        escapeRoomData.characters[characterIndex],
+        ...payload.characters.slice(characterIndex + 1)
+      ]
+    })
+  }; // handleEditOption
+
   return (
     <>
     <Root>
                                                                             {/* List of dialogs this item has */}
       <CharacterInteractionList>
-        <InteractionListTitle>
-          Title
-        </InteractionListTitle>
-
+        <InteractionListTitle> Title </InteractionListTitle>
+        {/* Slides of the multiple parts that are going to take place in the narrative */}
         <CharacterSlidesContainer>
           {payload.dialogs.map((elem, i) => (
             <CharacterSlide onMouseDown={()=>{setDialogSelected(i)}}>
@@ -488,34 +455,41 @@ export const EditableNarrativeItemContent = (props: EditableNarrativeItemContent
       
       {(dialogSelected !== -1 || false) && <>
         <InteractionContent>
+          {/* Selector of the character that is going to say something in this dialog */}
           <CharacterSelectorContent>
             <CharacterPreview src="https://stickerly.pstatic.net/sticker_pack/9uCc66lpT8KQrI1v0zlIQ/B9D9U3/9/357db9fd-cdf3-45bf-968f-ae8a34e5b389.png"></CharacterPreview>
+            
+            {/* Drop down menu with the multiple characters that can participate in the narrative */}
             <SelectFieldTypeDropdownButton onClick={() => setStageTypeDropdownOpen(prev => !prev)}>
-              { characterSelected } <UserIcon />
+              { payload.characters[dialogSelected]==="New Dialog" ? "Select a character" : payload.characters[dialogSelected] } 
+              <UserIcon/>
               {stageTypeDropdownOpen &&
                 <DropdownMenu>
-                  {payload.characters.map((elem, i) => (
-                    <DropdownMenuItem onClick={() => {setCharacterSelectedIndex(i); setCurrentTypeSelected(payload.characters[i]==='' ?"Select a character" : payload.characters[i])}}>
-                      {elem}
-                    </DropdownMenuItem>
-                  ))}
-                </DropdownMenu>}
+                  {escapeRoomData.characters.map((elem, i) => (<DropdownMenuItem onClick={() => {handleCharacterCharacterSelectedInDialog(i); }}> {elem} </DropdownMenuItem>))}
+                </DropdownMenu>
+              }
             </SelectFieldTypeDropdownButton>
           </CharacterSelectorContent>
 
-          {/* Text Character says */}
+          {/* Part of the editor to specify what the character is going to say in a specific dialog part*/}
           <CharacterInteractionContent>
             <Title>
-              { characterSelectedIndex===-1 ? "Who is going to say something?" : "What is "+ payload.characters[dialogSelected]+" going to say?"}
+              { payload.characters[dialogSelected]==="New Dialog" ? "Who is going to say something?" : "What is "+ payload.characters[dialogSelected]+" going to say?"}
             </Title>
             <PromptField promptText={payload.dialogs[dialogSelected]} promptPlaceholder='What is going to be said' onPromptChange={(value) => {handleCharacterDialogChanged(dialogSelected,value)}} textAlignment={"left"} initialHeight={"15em"}/>
           </CharacterInteractionContent>
         </InteractionContent>
-                </>}
+      </>}
     </Root>
     </>
   );
 }; // EditableMultipleChoiceItemContent
+
+
+
+
+
+
 
 export const NarrativeItemStageSlide = (props: NarrativeItemDefinition): JSX.Element => {
 

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 
 // services
 import { useAsyncRequest } from '../../services/useAsyncRequest';
@@ -33,6 +33,8 @@ import {Unity} from "@styled-icons/fa-brands/Unity"
 import {HistoryEdu} from "@styled-icons/material-rounded/HistoryEdu"
 import {Password} from "@styled-icons/fluentui-system-filled/Password"
 import React from 'react';
+import {EscapeRoomContext, EscapeRoomContextProvider} from "./EscapeRoomContext"
+
 
 const Root = styled.div`
   display: flex;
@@ -211,6 +213,7 @@ interface CreateEscapeRoomScreenComponentProps {
   onSubmitActivityDefinition?: (value: CompletedEscapeRoomActivityDefinition) => void;
 }
 
+
 export const CreateEscapeRoomScreenComponent = (props: CreateEscapeRoomScreenComponentProps): JSX.Element => {
 
   const {
@@ -227,10 +230,10 @@ export const CreateEscapeRoomScreenComponent = (props: CreateEscapeRoomScreenCom
 
   // currently selected stage from activityDefinition.stages
   const [selectedStage, setSelectedStage] = useState<number>(0);
-  // currently selected puzzle from activityDefinition.stages[selectedStage].puzzles
-  const [selectedPuzzle, setSelectedPuzzle] = useState<number>(0);
 
+  // State that specifies what should be displayer on the screen (Escape room general settings or one of its editors)
   const [showSettings, setShowSettings] = useState<boolean>(true);
+
 
   useEffect(() => {
     if (!onActivityDefinitionChanged) return;
@@ -335,36 +338,10 @@ export const CreateEscapeRoomScreenComponent = (props: CreateEscapeRoomScreenCom
     setSelectedStage(prev => index<prev ? prev-1 : prev);
   }; //deleteStage
 
-  //  interface EscapeRoomContext {
-  //   /** Data object for currently authenticated user (or undefined if not authenticated) */
-  //   userData: UserData | undefined;
-  //   /** API JWT token for current session */
-  //   accessToken: string | undefined;
-  //   /** Helper method to modify currently authenticated user from useContext hook */
-  //   setUserData: (newData: UserData | undefined) => void;
-  //   /** Helper method to modify current access token from useContext hook */
-  //   setAccessToken: (newToken: string | undefined) => void;
-  // }
-//   interface EscapeRoomContext  {
-//     // activityType: string;
-//     // stages: SupportedStage[];
-//     // characters:string[];
-//     escapeRoomData: InProgressEscapeRoomActivityDefinition;
-//   } // InProgressEscapeRoomActivityDefinition
 
-//   // export interface InProgressEscapeRoomActivityDefinition extends InProgressActivityInstance {
-//   //   activityType: 'Escape Room';
-//   //   stages: SupportedStage[];
-//   //   characters:string[];
-//   // } // InProgressEscapeRoomActivityDefinition
-
-// const ERContext = React.createContext<EscapeRoomContext>({
-//   // activityType: 'Escape Room',
-//   // stages: [],
-//   // characters: []
-//   escapeRoomData: activityDefinition
-// });
-
+  const handleSettingsChanged = (value: InProgressEscapeRoomActivityDefinition) => {
+    setActivityDefinition(value);
+  }; // handleSettingsChanged
 
   return (
     <Root>
@@ -380,32 +357,20 @@ export const CreateEscapeRoomScreenComponent = (props: CreateEscapeRoomScreenCom
         handleGoToSettings = {()=>{setShowSettings(true)}}
       />
       
-      {showSettings === false && 
-
-      // <ERContext.Provider value={{
-      //   escapeRoomData
-      // }}>
-
-        <EditableStage
-        stageDefinition={currentStage}
-        stageMappings={stageMappings}
-        onStageDefinitionChanged={handleStageDefinitionChanged}
-        onStageDeleted={handleDeleteStage}
-        onStageDuplicated={handleDuplicateStage}
-        />
-      // </ERContext.Provider>
-    }
-    {
-      showSettings &&
-      <EscapeRoomSettings onSettingsChanged={newConfig => { setActivityDefinition(newConfig); } }
-        escapeRoom={activityDefinition}
-        escapeRoomCharacters={activityDefinition.characters}
-        escapeRoomTitle={activityDefinition.activityTitle ? activityDefinition.activityTitle : ""}
-        escapeRoomDescription={""} 
-        onTitleChanged={ title => {handleEscapeRoomTitleChanged(title)}}
-        onDescriptionChanged= {() => {}}
-        ></EscapeRoomSettings>
-    }
+      <EscapeRoomContextProvider>
+        {/* Editors for the multiple stages avaliable in an escape room game */}
+        {showSettings === false && 
+          <EditableStage stageDefinition={currentStage} stageMappings={stageMappings} onStageDefinitionChanged={handleStageDefinitionChanged}
+           onStageDeleted={handleDeleteStage} onStageDuplicated={handleDuplicateStage} />
+        }
+        {/* Editor for basic configuration of the escape room like name, description or characters */}
+        {
+          showSettings &&
+          <EscapeRoomSettings onSettingsChanged={newConfig => { handleSettingsChanged(newConfig); } } escapeRoom={activityDefinition}
+          escapeRoomCharacters={activityDefinition.characters} escapeRoomTitle={activityDefinition.activityTitle ? activityDefinition.activityTitle : ""}
+          escapeRoomDescription={""} onTitleChanged={ title => {handleEscapeRoomTitleChanged(title)}} onDescriptionChanged= {() => {}}/>
+        }
+      </EscapeRoomContextProvider>
     </Root>
   );
 }
