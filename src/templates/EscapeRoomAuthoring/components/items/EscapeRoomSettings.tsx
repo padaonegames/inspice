@@ -1,14 +1,11 @@
-import { EditableItemProps, InProgressEscapeRoomActivityDefinition, WaitingCodeDefinition } from "../../../../services/escapeRoomActivity.model";
-import EditableCheckBoxInput from "../EditableCheckBoxInput";
-import { AbstractActivityItemFactory } from "../ActivityItemFactory";
+import { InProgressEscapeRoomActivityDefinition, default_character, CharacterDefinition } from "../../../../services/escapeRoomActivity.model";
 import { PromptField } from "./PromptField";
 
 import styled from "styled-components";
 import {Settings} from "@styled-icons/fluentui-system-filled/Settings"
 import {UserPlus} from "@styled-icons/boxicons-regular/UserPlus"
-import {Bin} from "@styled-icons/icomoon/Bin";
+import { Cross } from '@styled-icons/entypo/Cross';
 
-import propertyService from "../../../../services/property.service";
 import { useContext, useState } from "react";
 import { EscapeRoomContext } from "../../EscapeRoomContext";
 
@@ -27,9 +24,9 @@ const AddCharacterIcon = styled(UserPlus)`
   width: auto;
 `;
 
-const DeleteIcon = styled(Bin)`
+const DeleteIcon = styled(Cross)`
   position:absolute;
-  right:0%;
+  right:5px;
   height: 2em;
   width: 2em;
 
@@ -71,9 +68,10 @@ box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
 const CharacterPreviewContainer = styled.div`
 display: flex;
 flex-direction: column;
+justify-content: space-between;
 align-items: center;
 width:30%;
-padding: 0.75em 0.75em 0.75em 0.75em;
+padding: 0 10px 0 10px;
 background-color: rgba(150,150,150,1);
 border-radius: 1.25rem 0 0 1.25rem;
 `;
@@ -92,9 +90,11 @@ box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
 `;
 
 const CharacterInfoContainer = styled.div`
+position:relative;
 display: flex;
 flex-direction: column;
 align-items: space-between;
+padding:0 10px 10px 10px;
 width:100%;
 background-color: rgba(180,180,180,1);
 border-radius: 0 1.25rem 1.25rem 0;
@@ -132,32 +132,6 @@ export const InputArea = styled.textarea<InputAreaProps>`
     box-shadow: #c44c49 0px -4px 0px 0px inset;
   }
 `;
-
-
-const PreviewTitle = styled.div`
-  margin-bottom: 0.25rem;
-  color: rgb(110, 110, 110);
-  text-align: center;
-  font-size: 0.75rem;
-  line-height: 1.33;
-  letter-spacing: 0.2px;
-  max-height: 1.5rem;
-  max-width: 100%;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-`;
-
-const PreviewAnswers = styled.div`
-  display: flex;
-  align-items: center;
-  text-align:center;
-  justify-content: center;
-  flex-wrap: wrap;
-  margin-top: 3px;
-  color: rgb(0, 0, 0);
-`;
-
 const Root = styled.div`
   position: relative; 
   height: 10%;
@@ -195,47 +169,25 @@ const CheckboxTitle = styled.div`
   box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
 `;
 
-
-const CharacterTitle = styled.div`
+const SelectCharacterButton = styled.div`
   font-size: 1em;
   font-weight: 500;
   font-family: ${props => props.theme.contentFont};
   line-height: 135%;
 
-  margin-top: 0.25em;
-  margin-bottom: 0.25em;
-  padding: 0.75em 1.25em;
-  border-top: none;
   color: black;
   line-height: 135%;
-  width: fit-content;
-  height:20%;
-  text-align: center;
-
-  display: flex;
-  align-items: center;
-
-  background-color: white;
-
-  border-radius: 1rem;
-  box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
-`;
-
-const ContainerWrapper = styled.div`
   width: 100%;
-  margin-top: 5px;
-  display: flex;
-  background-color: transparent;
-  flex-direction: column;
-  align-items: left;
+  text-align: center;
+  padding: 10px 0px 10px 0px;
+  margin: 0px 0px 10px 0px;
+  background-color: rgba(240,240,240,1);
+  border-radius: 0.5rem;
 
-  border-bottom: 2px solid #dadce0;
-  padding: 0.75em;
-
-  background-color:  #dbdbdb;
-
-  border-radius: 1.25rem;
-  box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
+  &:hover {
+    transition: border 0.25s;
+    border: 3px solid rgb(0, 0, 0);
+  }
 `;
 
 const GeneralSettingsContainer = styled.div`
@@ -302,8 +254,6 @@ const CharacterPreview = styled.img`
 `;
 
 
-
-
 const AddPuzzleButton = styled.div`
 
   position: relative;
@@ -336,42 +286,16 @@ const AddPuzzleButton = styled.div`
 
 `;
 
-
-
-//////////////////V2
-
-interface GridProps {
-  elements: number;
-  elementsPerRow:number;
-}
-const Grid = styled.div<GridProps>`
-  display: inline-grid;
-  grid-template-columns: repeat(min(${props=>props.elementsPerRow},${props=>props.elements}),${props=> {return props.elements<props.elementsPerRow?100/props.elements : 100/props.elementsPerRow}}%) ;
-  grid-row-gap: 50px;
-  width:100%;
-  background-color: rgba(0,0,0,0.5);
-  box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
-  `;
-
-const CharacterContainerV2 = styled.div`
-  place-self:center;
+const DataLine = styled.div`
   position:relative;
-  display: flex;
-  flex-direction: column;
-  align-items: left;
-  text-align:left;
-  width:300px;
-  background-color: rgba(200,200,200,1);
-  box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
-  `;
-  
-const CharacterPreviewV2 = styled.img`
-  padding: 0 0 20px 0;
-  width:300px;
-  display: block;
+  height: 1.25em;
+  width: fit-content;
+  margin-top:10px;
+
+  border-style: solid;
+  border-color: lightgray;
+  border-width: 0px 0px 2px 0px;
 `;
-
-
 
 
 export interface EscapeRoomSettingsProps {
@@ -379,7 +303,7 @@ export interface EscapeRoomSettingsProps {
   escapeRoom: InProgressEscapeRoomActivityDefinition;
   /** text to display for the add new option label. */
   escapeRoomTitle:string;
-  escapeRoomCharacters:string[];
+  escapeRoomCharacters:CharacterDefinition[];
   escapeRoomDescription: string;
   onTitleChanged: (title:string)=>void;
   onDescriptionChanged: (title:string)=>void;
@@ -418,14 +342,14 @@ export const EscapeRoomSettings = (props: EscapeRoomSettingsProps): JSX.Element 
       ...escapeRoom,
       characters: [
         ...escapeRoom.characters,
-        "New Character"
+        default_character
       ]
     })
     setEscapeRoomData({
       ...escapeRoom,
       characters: [
         ...escapeRoom.characters,
-        "New Character"
+        default_character
       ]
     });
   }
@@ -454,7 +378,9 @@ export const EscapeRoomSettings = (props: EscapeRoomSettingsProps): JSX.Element 
       ...escapeRoom,
       characters: [
         ...escapeRoom.characters.slice(0, index),
-        value,
+        {...escapeRoom.characters[index],
+          name: value
+        },
         ...escapeRoom.characters.slice(index + 1, escapeRoom.characters.length)
       ]
     })
@@ -462,79 +388,110 @@ export const EscapeRoomSettings = (props: EscapeRoomSettingsProps): JSX.Element 
       ...escapeRoom,
       characters: [
         ...escapeRoom.characters.slice(0, index),
-        value,
+        {...escapeRoom.characters[index],
+          name: value
+        },
         ...escapeRoom.characters.slice(index + 1, escapeRoom.characters.length)
       ]
     })
   }
 
-  const [version, setVersion] = useState<boolean>(true);
 
+  const handleCharacterDescriptionChanged = (value:string, index:number) =>{
+    if (!onSettingsChanged) return;
+    onSettingsChanged({
+      ...escapeRoom,
+      characters: [
+        ...escapeRoom.characters.slice(0, index),
+        {...escapeRoom.characters[index],
+          description: value
+        },
+        ...escapeRoom.characters.slice(index + 1, escapeRoom.characters.length)
+      ]
+    })
+    setEscapeRoomData({
+      ...escapeRoom,
+      characters: [
+        ...escapeRoom.characters.slice(0, index),
+        {...escapeRoom.characters[index],
+          description: value
+        },
+        ...escapeRoom.characters.slice(index + 1, escapeRoom.characters.length)
+      ]
+    })
+  }
 
   return (
-    <>
-      <Wrapper>
-        {/* <Container> */}
-        <GeneralSettingsContainer>
-          <GeneralSettingsTitle> Settings </GeneralSettingsTitle>
-          <SettingsDiv>
-            <CheckboxTitle> Escape Room Title </CheckboxTitle>
-            <PromptField promptText={escapeRoomTitle} promptPlaceholder='Code to solve this puzzle' onPromptChange={handleEditTitle} />
+    <Wrapper>
+      {/* <Container> */}
+      <GeneralSettingsContainer>
+        <GeneralSettingsTitle> Settings </GeneralSettingsTitle>
+        <SettingsDiv>
+          <CheckboxTitle> Escape Room Title </CheckboxTitle>
+          <PromptField promptText={escapeRoomTitle} promptPlaceholder='Code to solve this puzzle' onPromptChange={handleEditTitle} />
 
-            <CheckboxTitle onMouseDown={()=>setVersion(prev=>!prev)}> Characters </CheckboxTitle>
-            {version && 
-            <>
-            {/* V1 */}
-            <CharactersContainer>
-              {escapeRoomCharacters.map((characterName, index) => (
-                <CharacterContainer>
-                  {/* Character image */}
-                   <CharacterPreviewContainer>
-                     <CharacterPreview  src="https://stickerly.pstatic.net/sticker_pack/9uCc66lpT8KQrI1v0zlIQ/B9D9U3/9/357db9fd-cdf3-45bf-968f-ae8a34e5b389.png" />
-                     <CheckboxTitle> Select Image? </CheckboxTitle>
-                   </CharacterPreviewContainer>
+          <CheckboxTitle> Characters </CheckboxTitle>
+          <CharactersContainer>
+            {escapeRoomCharacters.map((character, index) => (
+              <CharacterContainer>
+                {/* Character image */}
+                  <CharacterPreviewContainer>
+                    <CharacterPreview  src="https://stickerly.pstatic.net/sticker_pack/9uCc66lpT8KQrI1v0zlIQ/B9D9U3/9/357db9fd-cdf3-45bf-968f-ae8a34e5b389.png" />
+                    <SelectCharacterButton> Select Image </SelectCharacterButton>
+                  </CharacterPreviewContainer>
 
-                   {/* Character data */}
-                   <CharacterInfoContainer>
-                     <CharacterTitle> Name </CharacterTitle>
-                     <PromptField promptText={characterName} promptPlaceholder='Character Name' onPromptChange={(value)=>handleCharacterNameChanged(value,index)} />
-                     {/* <CharacterTitle> Some more data? </CharacterTitle>
-                     <PromptField promptText={characterName} promptPlaceholder='Something extra' onPromptChange={(value)=>handleCharacterNameChanged(value,index)} /> */}
-                 </CharacterInfoContainer>
-                </CharacterContainer>
-                ))}
-              </CharactersContainer>
-                </>
-              }
+                  {/* Character data */}
+                  <CharacterInfoContainer>
+                    <DeleteIcon onMouseDown={()=>{handleDeleteCharacter(index)}}/>
+                    <DataLine>Character Name</DataLine>
+                    <PromptField promptText={character.name} promptPlaceholder='Character Name' onPromptChange={(value)=>handleCharacterNameChanged(value,index)} textAlignment="left"/>
+                    <DataLine>Character Description</DataLine>
+                    <PromptField promptText={character.description} promptPlaceholder='Something extra' onPromptChange={(value)=>handleCharacterDescriptionChanged(value,index)} textAlignment="left" initialHeight="100px"/>
+                  </CharacterInfoContainer>
+              </CharacterContainer>
+              ))}
+            </CharactersContainer>
 
-              {!version && 
-              
-              <>
-              {/* V2 */}
-              <Grid elements={escapeRoomCharacters.length} elementsPerRow={4}>
-                {escapeRoomCharacters.map((characterName, index) => (
-                  <CharacterContainerV2>
-                    <DeleteIcon onMouseDown={()=>{handleDeleteCharacter(index)}} />
-                    <CharacterPreviewV2  src="https://stickerly.pstatic.net/sticker_pack/9uCc66lpT8KQrI1v0zlIQ/B9D9U3/9/357db9fd-cdf3-45bf-968f-ae8a34e5b389.png" />
-                    
-                      <h4><b> Name</b></h4>
-                      <PromptField promptText={characterName} promptPlaceholder='Something extra' onPromptChange={(value)=>handleCharacterNameChanged(value,index)} />                
-                      
-                  </CharacterContainerV2>
-                ))}
-              </Grid>
-                </>}
-            {/* In case we want to add a puzzle at the beginning of the room block*/}
-            <AddPuzzleButton onClick={() =>{handleAddCharacter()}}>
-              <AddCharacterIcon/>
-            </AddPuzzleButton>  
+          {/* In case we want to add a puzzle at the beginning of the room block*/}
+          <AddPuzzleButton onClick={() =>{handleAddCharacter()}}>
+            <AddCharacterIcon/>
+          </AddPuzzleButton>  
 
-          </SettingsDiv>
-        </GeneralSettingsContainer>
-      </Wrapper>
-    </>
+        </SettingsDiv>
+      </GeneralSettingsContainer>
+    </Wrapper>
   );
 }; // EditableWaitingCodeItemContent
+
+
+
+
+
+
+const PreviewTitle = styled.div`
+  margin-bottom: 0.25rem;
+  color: rgb(110, 110, 110);
+  text-align: center;
+  font-size: 0.75rem;
+  line-height: 1.33;
+  letter-spacing: 0.2px;
+  max-height: 1.5rem;
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+`;
+
+const PreviewAnswers = styled.div`
+  display: flex;
+  align-items: center;
+  text-align:center;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 3px;
+  color: rgb(0, 0, 0);
+`;
+
 
 
 export interface EscapeRoomSettingsStageSlideProps{

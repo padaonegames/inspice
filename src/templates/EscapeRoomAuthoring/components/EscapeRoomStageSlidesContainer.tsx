@@ -23,13 +23,25 @@ const Root = styled.div`
 
 const SlidesContainer = styled.div`
   position: relative;
-  
   height: 77%;
   width: 100%;
   background-color: rgba(0,0,0,0.1);
-  overflow-y: auto;
+  overflow-y:auto; //scroll to always show
   overflow-x:hidden;
   margin: 0px 0px;
+  scrollbar-gutter:stable;
+  ::-webkit-scrollbar {
+    width: 8px;
+    z-index:1000;
+  }
+  ::-webkit-scrollbar-track {
+      -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
+      border-radius: 10px;
+  }
+  ::-webkit-scrollbar-thumb {
+      border-radius: 10px;
+      -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+  }
 `;
 
 const ButtonsContainer = styled.div`

@@ -76,7 +76,7 @@ export interface EscapeRoomActivityDefinition extends ActivityInstance {
 export interface InProgressEscapeRoomActivityDefinition extends InProgressActivityInstance {
   activityType: 'Escape Room';
   stages: SupportedStage[];
-  characters:string[];
+  characters:CharacterDefinition[];
 } // InProgressEscapeRoomActivityDefinition
 
 export type CompletedEscapeRoomActivityDefinition = Omit<
@@ -94,6 +94,19 @@ export const defaultEscapeRoomActivityDefinition: InProgressEscapeRoomActivityDe
   characters:[],
   stages: []
 };
+
+export interface CharacterDefinition   {
+  name: string,
+  description: string;
+  id:string;
+}
+
+export const default_character:CharacterDefinition= {
+  name: "New Character",
+  description: "New Character Description",
+  id:""
+}
+
 
 // ---------------------------------------------------------------
 //                    ROOM  DEFINITIONS

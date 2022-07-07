@@ -99,7 +99,9 @@ const CharacterInteractionList = styled.div`
   border-top: 2px solid rgba(0,0,0,1);
   border-left: 2px solid rgba(0,0,0,1);
   border-right: 2px solid rgba(0,0,0,1);
-  `;
+`;
+
+
   const InteractionListTitle = styled.div`
   position:relative;
   align-items: center;
@@ -127,13 +129,26 @@ const CharacterInteractionList = styled.div`
   overflow-x:hidden;
   align-items: center;
   margin: 0px 0px;
-  //background-color: transparent;
   background-color: rgba(220,220,220,0.5);
 
   border-bottom: 2px solid rgba(0,0,0,1);
   border-top: 2px solid rgba(0,0,0,1);
   border-left: 2px solid rgba(0,0,0,1);
   border-right: 2px solid rgba(0,0,0,1);
+
+  scrollbar-gutter:stable;
+  ::-webkit-scrollbar {
+    width: 8px;
+    z-index:1000;
+  }
+  ::-webkit-scrollbar-track {
+      -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
+      border-radius: 10px;
+  }
+  ::-webkit-scrollbar-thumb {
+      border-radius: 10px;
+      -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+  }
 `;
 
 //Entire slide of a puzzle
@@ -417,12 +432,12 @@ export const EditableNarrativeItemContent = (props: EditableNarrativeItemContent
   const handleCharacterCharacterSelectedInDialog= (characterIndex: number) => {
     if (!onPayloadChanged) return;
     setCharacterSelectedIndex(characterIndex);
-    setCurrentTypeSelected(escapeRoomData.characters[characterIndex])
+    setCurrentTypeSelected(escapeRoomData.characters[characterIndex].name)
     onPayloadChanged({
       ...payload,
       characters: [
         ...payload.characters.slice(0, dialogSelected),
-        escapeRoomData.characters[characterIndex],
+        escapeRoomData.characters[characterIndex].name,
         ...payload.characters.slice(dialogSelected + 1)
       ]
     })

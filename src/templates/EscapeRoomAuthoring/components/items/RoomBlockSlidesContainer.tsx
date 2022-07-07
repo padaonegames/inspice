@@ -35,11 +35,24 @@ const SlidesContainer = styled.div`
   z-index: 4;
   height: 85%;
   width: 90%;
-  overflow-x: auto;
-  margin: 0px 0px;
-  //background-color: transparent;
+  overflow-x: scroll;
+  overflow-y:clip;
   background-color: rgba(220,220,220,0.5);
-  border-radius: 0 0 1.25rem 1.25rem;
+  border-radius: 0 0 0.25rem 0.25rem;
+
+  scrollbar-gutter:stable;
+  ::-webkit-scrollbar {
+    height: 8px;
+    width:8px;
+  }
+  ::-webkit-scrollbar-track {
+      -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
+      border-radius: 10px;
+  }
+  ::-webkit-scrollbar-thumb {
+      border-radius: 10px;
+      -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+  }
 `;
 
 const AddIcon = styled(Add)`
