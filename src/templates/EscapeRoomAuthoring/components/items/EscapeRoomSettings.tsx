@@ -475,14 +475,13 @@ export const EscapeRoomSettings = (props: EscapeRoomSettingsProps): JSX.Element 
     <>
       <Wrapper>
         {/* <Container> */}
-            <GeneralSettingsContainer>
-              <GeneralSettingsTitle> Settings </GeneralSettingsTitle>
-              <SettingsDiv>
-                <CheckboxTitle> Escape Room Title </CheckboxTitle>
-                <PromptField promptText={escapeRoomTitle} promptPlaceholder='Code to solve this puzzle' onPromptChange={handleEditTitle} />
-             
-              <CheckboxTitle onMouseDown={()=>setVersion(prev=>!prev)}> Characters </CheckboxTitle>
+        <GeneralSettingsContainer>
+          <GeneralSettingsTitle> Settings </GeneralSettingsTitle>
+          <SettingsDiv>
+            <CheckboxTitle> Escape Room Title </CheckboxTitle>
+            <PromptField promptText={escapeRoomTitle} promptPlaceholder='Code to solve this puzzle' onPromptChange={handleEditTitle} />
 
+            <CheckboxTitle onMouseDown={()=>setVersion(prev=>!prev)}> Characters </CheckboxTitle>
             {version && 
             <>
             {/* V1 */}
@@ -525,15 +524,13 @@ export const EscapeRoomSettings = (props: EscapeRoomSettingsProps): JSX.Element 
                 ))}
               </Grid>
                 </>}
+            {/* In case we want to add a puzzle at the beginning of the room block*/}
+            <AddPuzzleButton onClick={() =>{handleAddCharacter()}}>
+              <AddCharacterIcon/>
+            </AddPuzzleButton>  
 
-                 {/* In case we want to add a puzzle at the beginning of the room block*/}
-                 <AddPuzzleButton onClick={() =>{handleAddCharacter()}}>
-                   <AddCharacterIcon/>
-                 </AddPuzzleButton>  
-
-              </SettingsDiv>
-
-            </GeneralSettingsContainer>
+          </SettingsDiv>
+        </GeneralSettingsContainer>
       </Wrapper>
     </>
   );

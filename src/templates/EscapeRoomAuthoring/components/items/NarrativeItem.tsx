@@ -421,9 +421,9 @@ export const EditableNarrativeItemContent = (props: EditableNarrativeItemContent
     onPayloadChanged({
       ...payload,
       characters: [
-        ...payload.characters.slice(0, characterIndex),
+        ...payload.characters.slice(0, dialogSelected),
         escapeRoomData.characters[characterIndex],
-        ...payload.characters.slice(characterIndex + 1)
+        ...payload.characters.slice(dialogSelected + 1)
       ]
     })
   }; // handleEditOption
