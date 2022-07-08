@@ -17,6 +17,22 @@ const UnityIcon = styled(Unity)`
 `
 
 
+const Root = styled.div`
+  margin-top: 5px;
+  display: flex;
+  background-color: rgba(255,255,0,0.5);
+  flex-direction: column;
+  align-items: left;
+
+  border-bottom: 2px solid #dadce0;
+  padding: 0.75em;
+
+  background-color:  #dbdbdb;
+
+  border-radius: 1.25rem;
+  box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
+`;
+
 
 
 interface InputAreaProps {
@@ -50,7 +66,7 @@ export const InputArea = styled.textarea<InputAreaProps>`
   }
 `;
 
-const CheckboxTitle = styled.div`
+const ItemTitle = styled.div`
   position: relative;
   font-size: 1em;
   font-weight: 500;
@@ -75,22 +91,38 @@ const CheckboxTitle = styled.div`
   box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
 `;
 
-const CheckboxList = styled.div`
-  margin-top: 5px;
-  display: flex;
-  background-color: rgba(255,255,0,0.5);
-  flex-direction: column;
-  align-items: left;
+export const EditableLoadSceneItemContent = (props: EditableItemProps<LoadSceneDefinition>): JSX.Element => {
 
-  border-bottom: 2px solid #dadce0;
-  padding: 0.75em;
+  const {
+    payload,
+    onPayloadChanged
+  } = props;
 
-  background-color:  #dbdbdb;
+  const handleEditSceneName = (value: string) => {
+    if (!onPayloadChanged) return;
+    onPayloadChanged({
+      ...payload,
+      sceneName: value
+    })
+  }; // handleEditSceneName
 
-  border-radius: 1.25rem;
-  box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
-`;
-
+  return (
+    <>
+    <Root>
+      <ItemTitle> 
+        Scene to load
+        <UnityIcon/>
+      </ItemTitle>
+      {/* Field to edit the name of the scene that the user wants to load with this item */}
+      <PromptField
+        promptText={payload.sceneName}
+        promptPlaceholder='Scene name'
+        onPromptChange={handleEditSceneName}
+        />
+      </Root>
+    </>
+  );
+}; // EditableLoadSceneItemContent
 
 
 const PreviewTitle = styled.div`
@@ -107,70 +139,6 @@ const PreviewTitle = styled.div`
   text-overflow: ellipsis;
 `;
 
-const PreviewAnswers = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  margin-top: 3px;
-  color: rgb(178, 178, 178);
-`;
-
-
-const SlideContainer = styled.div`
-  width:80%;
-  height:80%;
-  background-color: rgba(255,0,0,0.5);
-  flex-direction: column;
-  align-items: center;
-  border-radius: 1.25rem;
-`;
-
-
-export interface EditableLoadSceneItemContentProps extends EditableItemProps<LoadSceneDefinition> {
-  /** text to display for the add new option label. */
-  addNewOptionLabel?: string;
-} // EditableLoadSceneItemContentProps
-
-export const EditableLoadSceneItemContent = (props: EditableLoadSceneItemContentProps): JSX.Element => {
-
-  const {
-    payload,
-    addNewOptionLabel = 'New Text',
-    onPayloadChanged
-  } = props;
-
-  const {
-    sceneName
-  } = payload;
-
-
-  const handleEditSceneName = (value: string) => {
-    if (!onPayloadChanged) return;
-    onPayloadChanged({
-      ...payload,
-      sceneName: value
-    })
-  }; // handleEditcode
-
-  const availableColors = ['#e21b3c', '#1368ce', '#d89e00', '#26890c', '#0aa3a3', '#864cbf'];
-
-  return (
-    <>
-    <CheckboxList>
-      <CheckboxTitle> 
-        Scene to load
-        <UnityIcon/>
-      </CheckboxTitle>
-      <PromptField
-        promptText={payload.sceneName}
-        promptPlaceholder='Scene name'
-        onPromptChange={handleEditSceneName}
-        />
-      </CheckboxList>
-    </>
-  );
-}; // EditableLoadSceneItemContent
 
 export const LoadSceneItemStageSlide = (props: LoadSceneDefinition): JSX.Element => {
 
@@ -180,11 +148,8 @@ export const LoadSceneItemStageSlide = (props: LoadSceneDefinition): JSX.Element
 
   return (
     <>
-    
       <PreviewTitle>{'Load "'+ sceneName +'"'}</PreviewTitle>
       <UnityIcon/>
-      {/* <PreviewAnswers>
-      </PreviewAnswers> */}
     </>
   );
 }; // LoadSceneItemStageSlide

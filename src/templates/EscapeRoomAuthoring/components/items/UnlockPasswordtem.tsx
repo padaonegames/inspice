@@ -176,17 +176,10 @@ const Digit = styled.p`
 `;
 
 
-
-export interface EditableUnlockPasswordItemContentProps extends EditableItemProps<UnlockPasswordItemDefinition> {
-  /** text to display for the add new option label. */
-  addNewOptionLabel?: string;
-} // EditableNarrativeItemContentProps
-
-export const EditableUnlockPasswordItemContent = (props: EditableUnlockPasswordItemContentProps): JSX.Element => {
+export const EditableUnlockPasswordItemContent = (props: EditableItemProps<UnlockPasswordItemDefinition>): JSX.Element => {
 
   const {
     payload,
-    addNewOptionLabel = 'New option',
     onPayloadChanged
   } = props;
 
@@ -205,7 +198,7 @@ export const EditableUnlockPasswordItemContent = (props: EditableUnlockPasswordI
         ...payload.password.slice(index + 1)
       ]
     })
-  }; // handleEditOption
+  }; // handleEditDigit
 
   const handleEditDescription = ( value: string) => {
     if (!onPayloadChanged) return;
@@ -213,19 +206,22 @@ export const EditableUnlockPasswordItemContent = (props: EditableUnlockPasswordI
       ...payload,
       description: value
     })
-  }; // handleEditOption
+  }; // handleEditDescription
 
   return (
-    <>
     <Root>
+      {/* Desctiption that is going to be shown on this puzzle */}
       <DescriptionEditorContainer>
         <DescriptionEditorTitle> Description to help find out the password </DescriptionEditorTitle>
         <PromptField promptText={description} promptPlaceholder='Start typing your prompt' onPromptChange={(value)=>{handleEditDescription(value)}}/>
       </DescriptionEditorContainer>
 
+      {/* Editor of the password */}
       <PasswordEditorContainer>
         <PasswordEditorTitle>Password to solve this puzzle</PasswordEditorTitle>
+        {/* Container of the password digits */}
         <PasswordEditorDigits>
+          {/* Digits that specify hours */}
           <DigitEditor>
             <UppArrowIcon onMouseDown={()=>{handleEditDigit(0,(password[0]+1)%10)}} />
             <Digit>{password[0]}</Digit>
@@ -236,9 +232,9 @@ export const EditableUnlockPasswordItemContent = (props: EditableUnlockPasswordI
             <Digit>{password[1]}</Digit>
             <DownArrowIcon onMouseDown={()=>{handleEditDigit(1,password[1]-1 < 0 ? 9: password[1]-1)}}/>
           </DigitEditor>
-          
+          {/* Icon of the ":" that separate the digits */}
           <DotsTwoVerticalIcon/>
-
+          {/* Digits that specify minutes */}
           <DigitEditor>
             <UppArrowIcon  onMouseDown={()=>{handleEditDigit(2,(password[2]+1)%10)}}/>
             <Digit>{password[2]}</Digit>
@@ -253,9 +249,8 @@ export const EditableUnlockPasswordItemContent = (props: EditableUnlockPasswordI
         </PasswordEditorDigits>
       </PasswordEditorContainer>
     </Root>
-    </>
   );
-}; // EditableMultipleChoiceItemContent
+}; // EditableUnlockPasswordItemContent
 
 
 
@@ -287,9 +282,6 @@ export const UnlockPasswordItemStageSlide = (props: UnlockPasswordItemDefinition
   return (
     <>
       <PreviewTitle>{password}</PreviewTitle>
-      {/* <PreviewAnswers>
-        {[...Array(dialogs.length)].map((_, i) => <PreviewAnswer key={i} />)}
-      </PreviewAnswers> */}
     </>
   );
 }; // narrativeItemStageSlide

@@ -7,30 +7,20 @@ import styled from "styled-components";
 import { QrCode} from "@styled-icons/material/QrCode";
 import {Download} from "@styled-icons/bootstrap/Download"
 
-const PreviewTitle = styled.div`
-  margin-bottom: 0rem;
-  color: rgb(110, 110, 110);
-  text-align: center;
-  font-size: 0.75rem;
-  line-height: 1.33;
-  letter-spacing: 0.2px;
-  max-height: 1.5rem;
-  max-width: 100%;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+const DownloadIcon = styled(Download)`
+  color: ${props => props.theme.textColor};
+  height: 1.75em;
+  width: auto;
 `;
 
-const PreviewQR = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  margin-top: 3px;
-  color: rgb(178, 178, 178);
+const QrCodeIcon = styled(QrCode)`
+  color: ${props => props.theme.textColor};
+  height: 1.75em;
+  width: auto;
+  margin-right: 0.5em;
 `;
 
-const CheckboxTitle = styled.div`
+const ItemTitle = styled.div`
   font-size: 1em;
   font-weight: 500;
   font-family: ${props => props.theme.contentFont};
@@ -57,14 +47,10 @@ const CheckboxTitle = styled.div`
 
 //Components for the button to download the QR
 const DownloadButton = styled.div`
-
   font-size: 1em;
   font-weight: 500;
   font-family: ${props => props.theme.contentFont};
   line-height: 135%;
-
- 
-
   margin-top: 0.25em;
   margin-bottom: 0.25em;
   padding: 0.75em 1.25em;
@@ -73,12 +59,9 @@ const DownloadButton = styled.div`
   line-height: 135%;
   width: fit-content;
   text-align: center;
-
   display: flex;
   align-items: center;
-
   background-color: rgb(75, 170, 100);
-
   border-radius: 1rem;
   box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
 
@@ -86,51 +69,25 @@ const DownloadButton = styled.div`
     transition: border 0.25s;
     border: 3px solid rgb(200, 200, 200);
   }
-
-`;
-const DownloadIcon = styled(Download)`
-  color: ${props => props.theme.textColor};
-  height: 1.75em;
-  width: auto;
 `;
 
-
-
-const QrCodeIcon = styled(QrCode)`
-  color: ${props => props.theme.textColor};
-  height: 1.75em;
-  width: auto;
-  margin-right: 0.5em;
-`;
-
-const CheckboxList = styled.div`
+const Root = styled.div`
   margin-top: 5px;
   display: flex;
   background-color: transparent;
   flex-direction: column;
   align-items: center;
-
   border-bottom: 2px solid #dadce0;
   padding: 0.75em;
-
   background-color:  #dbdbdb;
-
   border-radius: 1.25rem;
   box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
 `;
 
-
-
-export interface EditableWaitingCodeItemContentProps extends EditableItemProps<QrScanItemDefinition> {
-  /** text to display for the add new option label. */
-  addNewOptionLabel?: string;
-} // EditableWaitingCodeItemContentProps
-
-export const EditableQRScanItemContent = (props: EditableWaitingCodeItemContentProps): JSX.Element => {
+export const EditableQRScanItemContent = (props: EditableItemProps<QrScanItemDefinition>): JSX.Element => {
 
   const {
     payload,
-    addNewOptionLabel = 'Text to QR',
     onPayloadChanged
   } = props;
 
@@ -161,20 +118,20 @@ export const EditableQRScanItemContent = (props: EditableWaitingCodeItemContentP
     document.body.appendChild(downloadLink);
     downloadLink.click();
     document.body.removeChild(downloadLink);
-  };
+  };  //downloadQR
 
-
-  const availableColors = ['#e21b3c', '#1368ce', '#d89e00', '#26890c', '#0aa3a3', '#864cbf'];
 
   return (
     <>
 
-      <CheckboxList>
-        <CheckboxTitle>
+      <Root>
+        {/* Title of the item */}
+        <ItemTitle>
           <QrCodeIcon />
           QR Code
-        </CheckboxTitle>    
+        </ItemTitle>    
 
+        {/* Preview of the QR and promptfield to edit its code */}
         <QRCodeCanvas id="qr-generator" value={payload.encodedText} size={200} fgColor="black" bgColor="white" level="H" includeMargin= {true}  />
         <PromptField
           promptText={payload.encodedText}
@@ -182,6 +139,7 @@ export const EditableQRScanItemContent = (props: EditableWaitingCodeItemContentP
           onPromptChange={handleEditcode}
         />
 
+        {/* Button that lets the user download the QR that has specified */}
         {encodedText=== "" ? <></> : 
           <>
             <DownloadButton onClick={downloadQR}>
@@ -189,11 +147,35 @@ export const EditableQRScanItemContent = (props: EditableWaitingCodeItemContentP
             </DownloadButton>  
           </>
         }
-        </CheckboxList>
-
+        </Root>
     </>
   );
 }; // EditableQRScanItemContent
+
+
+const PreviewTitle = styled.div`
+  margin-bottom: 0rem;
+  color: rgb(110, 110, 110);
+  text-align: center;
+  font-size: 0.75rem;
+  line-height: 1.33;
+  letter-spacing: 0.2px;
+  max-height: 1.5rem;
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+`;
+
+const PreviewQR = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 3px;
+  color: rgb(178, 178, 178);
+`;
+
 
 export const QRScanItemStageSlide = (props: QrScanItemDefinition): JSX.Element => {
 

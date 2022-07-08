@@ -1,8 +1,9 @@
-import styled from "styled-components";
 import { EditableItemProps, MultipleChoiceItemDefinition } from "../../../../services/escapeRoomActivity.model";
 import EditableCheckBoxInput from "../EditableCheckBoxInput";
 import { AbstractActivityItemFactory } from "../ActivityItemFactory";
 import { PromptField } from "./PromptField";
+
+import styled from "styled-components";
 
 interface InputAreaProps {
   width?: string;
@@ -35,7 +36,7 @@ export const InputArea = styled.textarea<InputAreaProps>`
   }
 `;
 
-const CheckboxList = styled.div`
+const AnswersContainer = styled.div`
   margin-top: 5px;
   display: flex;
   background-color: transparent;
@@ -46,10 +47,10 @@ const CheckboxList = styled.div`
   padding: 5px 0;
 `;
 
-interface CheckBoxOptionProps {
+interface AnswerProps {
   backgroundColor?: string;
 }
-const CheckboxOption = styled.div<CheckBoxOptionProps>`
+const Answer = styled.div<AnswerProps>`
   margin-top: 0.25em;
   margin-bottom: 0.25em;
   padding: 0.75em 0 0.75em 0.75em;
@@ -70,48 +71,11 @@ const CheckboxOption = styled.div<CheckBoxOptionProps>`
   box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
 `;
 
-const PreviewTitle = styled.div`
-  margin-bottom: 0.25rem;
-  color: rgb(110, 110, 110);
-  text-align: center;
-  font-size: 0.75rem;
-  line-height: 1.33;
-  letter-spacing: 0.2px;
-  max-height: 1.5rem;
-  max-width: 100%;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-`;
 
-const PreviewAnswers = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  margin-top: 3px;
-  color: rgb(178, 178, 178);
-`;
-
-const PreviewAnswer = styled.div`
-  position: relative;
-  width: calc(100% - 0.125rem);
-  height: 7px;
-  margin-bottom: 3px;
-  border: 1px solid rgb(229, 229, 229);
-  border-radius: 0.125rem;
-`;
-
-export interface EditableMultipleChoiceItemContentProps extends EditableItemProps<MultipleChoiceItemDefinition> {
-  /** text to display for the add new option label. */
-  addNewOptionLabel?: string;
-} // EditableMultipleChoiceItemContentProps
-
-export const EditableMultipleChoiceItemContent = (props: EditableMultipleChoiceItemContentProps): JSX.Element => {
+export const EditableMultipleChoiceItemContent = (props: EditableItemProps<MultipleChoiceItemDefinition>): JSX.Element => {
 
   const {
     payload,
-    addNewOptionLabel = 'New option',
     onPayloadChanged
   } = props;
 
@@ -173,12 +137,9 @@ export const EditableMultipleChoiceItemContent = (props: EditableMultipleChoiceI
         promptPlaceholder='Start typing your prompt'
         onPromptChange={handleEditPrompt}
       />
-      <CheckboxList>
+      <AnswersContainer>
         {answers.map((elem, i) => (
-          <CheckboxOption
-            backgroundColor={availableColors[i % availableColors.length]}
-            key={`checkBoxOption${i}`}
-          >
+          <Answer backgroundColor={availableColors[i % availableColors.length]}  key={`checkBoxOption${i}`}>
             <EditableCheckBoxInput
               key={`editableCheckBoxInput${i}`}
               labelText={elem}
@@ -189,10 +150,12 @@ export const EditableMultipleChoiceItemContent = (props: EditableMultipleChoiceI
               onCheckBoxChecked ={() => handleCheckOption(i)}
               onLabelTextChanged={(value) => handleEditOption(i, value)}
             />
-          </CheckboxOption>
+          </Answer>
         ))}
+
+        {/* If the multiple choice has less than 6 options appears a new "answer" that functions as a button to add a new possible answer to the multiple choice item */}
         {payload.answers.length < 6 && (
-          <CheckboxOption
+          <Answer
             onClick={handleAddOption}
             key='checkBoxOptionAddNew'
             backgroundColor='darkgray'
@@ -200,17 +163,52 @@ export const EditableMultipleChoiceItemContent = (props: EditableMultipleChoiceI
             <EditableCheckBoxInput
               key='editableCheckBoxInputAddNew'
               labelText=''
-              labelTextPlaceholder={addNewOptionLabel}
+              labelTextPlaceholder={'New option'}
               style='radio'
               boxSize='0'
               enabled={false}
             />
-          </CheckboxOption>
+          </Answer>
         )}
-      </CheckboxList>
+      </AnswersContainer>
     </>
   );
 }; // EditableMultipleChoiceItemContent
+
+
+
+const PreviewTitle = styled.div`
+  margin-bottom: 0.25rem;
+  color: rgb(110, 110, 110);
+  text-align: center;
+  font-size: 0.75rem;
+  line-height: 1.33;
+  letter-spacing: 0.2px;
+  max-height: 1.5rem;
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+`;
+
+const PreviewAnswers = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 3px;
+  color: rgb(178, 178, 178);
+`;
+
+const PreviewAnswer = styled.div`
+  position: relative;
+  width: calc(100% - 0.125rem);
+  height: 7px;
+  margin-bottom: 3px;
+  border: 1px solid rgb(229, 229, 229);
+  border-radius: 0.125rem;
+`;
+
 
 export const MultipleChoiceItemStageSlide = (props: MultipleChoiceItemDefinition): JSX.Element => {
 

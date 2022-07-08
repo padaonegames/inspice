@@ -1,8 +1,10 @@
-import styled from "styled-components";
 import { EditableItemProps, WaitingCodeDefinition } from "../../../../services/escapeRoomActivity.model";
 import EditableCheckBoxInput from "../EditableCheckBoxInput";
 import { AbstractActivityItemFactory } from "../ActivityItemFactory";
 import { PromptField } from "./PromptField";
+
+import styled from "styled-components";
+
 
 interface InputAreaProps {
   width?: string;
@@ -35,7 +37,7 @@ export const InputArea = styled.textarea<InputAreaProps>`
   }
 `;
 
-const CheckboxList = styled.div`
+const CodeListContainer = styled.div`
   margin-top: 5px;
   display: flex;
   background-color: transparent;
@@ -46,11 +48,11 @@ const CheckboxList = styled.div`
   padding: 5px 0;
 `;
 
-interface CheckBoxOptionProps {
+interface CodeProps {
   backgroundColor?: string;
   borderRadius?:string;
 }
-const CheckboxOption = styled.div<CheckBoxOptionProps>`
+const Code = styled.div<CodeProps>`
   margin-top: 0.25em;
   margin-bottom: 0.25em;
   padding: 0.75em 0 0.75em 0.75em;
@@ -69,38 +71,6 @@ const CheckboxOption = styled.div<CheckBoxOptionProps>`
 
   border-radius: ${props => props.borderRadius || '0.25rem'};
   box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
-`;
-
-const PreviewTitle = styled.div`
-  margin-bottom: 0.25rem;
-  color: rgb(110, 110, 110);
-  text-align: center;
-  font-size: 0.75rem;
-  line-height: 1.33;
-  letter-spacing: 0.2px;
-  max-height: 1.5rem;
-  max-width: 100%;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-`;
-
-const PreviewAnswers = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  margin-top: 3px;
-  color: rgb(178, 178, 178);
-`;
-
-const PreviewAnswer = styled.div`
-  position: relative;
-  width: calc(100% - 0.125rem);
-  height: 7px;
-  margin-bottom: 3px;
-  border: 1px solid rgb(229, 229, 229);
-  border-radius: 0.125rem;
 `;
 
 export interface EditableWaitingCodeItemContentProps extends EditableItemProps<WaitingCodeDefinition> {
@@ -161,17 +131,16 @@ export const EditableWaitingCodeItemContent = (props: EditableWaitingCodeItemCon
 
   return (
     <>
+      {/* Code that the player is going to use during the puzzle */}
       <PromptField
         promptText={payload.code}
         promptPlaceholder='Code to solve this puzzle'
         onPromptChange={handleEditcode}
       />
-      <CheckboxList>
+      {/* List of codes that the user wants to specify in this item */}
+      <CodeListContainer>
         {texts.map((elem, i) => (
-          <CheckboxOption
-            backgroundColor={availableColors[i % availableColors.length]}
-            key={`checkBoxOption${i}`}
-          >
+          <Code backgroundColor={availableColors[i % availableColors.length]} key={`checkBoxOption${i}`} >
             <EditableCheckBoxInput
               key={`editableCheckBoxInput${i}`}
               labelText={elem}
@@ -181,15 +150,11 @@ export const EditableWaitingCodeItemContent = (props: EditableWaitingCodeItemCon
               onObjectRemoved={() => handleRemoveOption(i)}
               onLabelTextChanged={(value) => handleEditOption(i, value)}
             />
-          </CheckboxOption>
+          </Code>
         ))}
+        {/* If the item has less than 6 codes appears a new "code" that functions as a button to add a new code to use during the puzzle */}
         {payload.texts.length < 6 && (
-          <CheckboxOption
-            onClick={handleAddOption}
-            key='checkBoxOptionAddNew'
-            backgroundColor='darkgray'
-            borderRadius='1.50rem'
-          >
+          <Code   onClick={handleAddOption} key='checkBoxOptionAddNew'  backgroundColor='darkgray'  borderRadius='1.50rem'>
             <EditableCheckBoxInput
               key='editableCheckBoxInputAddNew'
               labelText=''
@@ -198,12 +163,48 @@ export const EditableWaitingCodeItemContent = (props: EditableWaitingCodeItemCon
               boxSize='0' //2.875rem
               enabled={false}
             />
-          </CheckboxOption>
+          </Code>
         )}
-      </CheckboxList>
+      </CodeListContainer>
     </>
   );
 }; // EditableWaitingCodeItemContent
+
+
+
+const PreviewTitle = styled.div`
+  margin-bottom: 0.25rem;
+  color: rgb(110, 110, 110);
+  text-align: center;
+  font-size: 0.75rem;
+  line-height: 1.33;
+  letter-spacing: 0.2px;
+  max-height: 1.5rem;
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+`;
+
+const PreviewAnswers = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 3px;
+  color: rgb(178, 178, 178);
+`;
+
+const PreviewAnswer = styled.div`
+  position: relative;
+  width: calc(100% - 0.125rem);
+  height: 7px;
+  margin-bottom: 3px;
+  border: 1px solid rgb(229, 229, 229);
+  border-radius: 0.125rem;
+`;
+
+
 
 export const WaitingCodeItemStageSlide = (props: WaitingCodeDefinition): JSX.Element => {
 

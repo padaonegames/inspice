@@ -1,107 +1,11 @@
+import { useState } from 'react';
 import { EditableItemProps, ArScanItemDefinition } from "../../../../services/escapeRoomActivity.model";
 import { AbstractActivityItemFactory } from "../ActivityItemFactory";
-import { PromptField } from "./PromptField";
+import {ResourceDefinition, ResourcesPopUpComponent} from "../ResourcesPopUp"
+import Dropzone from 'react-dropzone';
 
 import styled from "styled-components";
-import {Download} from "@styled-icons/bootstrap/Download"
 import { ScanObject } from "styled-icons/fluentui-system-filled";
-import Dropzone from 'react-dropzone';
-import { useState } from 'react';
-
-const PreviewTitle = styled.div`
-  margin-bottom: 0rem;
-  color: rgb(110, 110, 110);
-  text-align: center;
-  font-size: 0.75rem;
-  line-height: 1.33;
-  letter-spacing: 0.2px;
-  max-height: 1.5rem;
-  max-width: 100%;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-`;
-
-
-interface ImagePreviewProps {
-  src?: string;
-}
-
-
-const PreviewAR = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  margin-top: 3px;
-  color: rgb(178, 178, 178);
-`;
-
-const CheckboxTitle = styled.div`
-  font-size: 1em;
-  font-weight: 500;
-  font-family: ${props => props.theme.contentFont};
-  line-height: 135%;
-
-  margin-top: 0.25em;
-  margin-bottom: 0.25em;
-  padding: 0.75em 1.25em;
-  border-top: none;
-  color: black;
-  line-height: 135%;
-  width: fit-content;
-  text-align: center;
-
-  display: flex;
-  align-items: center;
-
-  background-color: white;
-
-  border-radius: 1rem;
-  box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
-`;
-
-
-//Components for the button to download the QR
-const DownloadButton = styled.div`
-
-  font-size: 1em;
-  font-weight: 500;
-  font-family: ${props => props.theme.contentFont};
-  line-height: 135%;
-
- 
-
-  margin-top: 0.25em;
-  margin-bottom: 0.25em;
-  padding: 0.75em 1.25em;
-  border-top: none;
-  color: black;
-  line-height: 135%;
-  width: fit-content;
-  text-align: center;
-
-  display: flex;
-  align-items: center;
-
-  background-color: rgb(75, 170, 100);
-
-  border-radius: 1rem;
-  box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
-
-  &:hover {
-    transition: border 0.25s;
-    border: 3px solid rgb(200, 200, 200);
-  }
-
-`;
-const DownloadIcon = styled(Download)`
-  color: ${props => props.theme.textColor};
-  height: 1.75em;
-  width: auto;
-`;
-
-
 
 const ArCodeIcon = styled(ScanObject)`
   color: ${props => props.theme.textColor};
@@ -110,7 +14,8 @@ const ArCodeIcon = styled(ScanObject)`
   margin-right: 0.5em;
 `;
 
-const CheckboxList = styled.div`
+
+const Root = styled.div`
   margin-top: 5px;
   display: flex;
   background-color: transparent;
@@ -127,43 +32,95 @@ const CheckboxList = styled.div`
 `;
 
 
+const ItemTitle = styled.div`
+  font-size: 1em;
+  font-weight: 500;
+  font-family: ${props => props.theme.contentFont};
+  line-height: 135%;
+  margin-top: 0.25em;
+  margin-bottom: 0.25em;
+  padding: 0.75em 1.25em;
+  border-top: none;
+  color: black;
+  line-height: 135%;
+  width: fit-content;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  background-color: white;
+  border-radius: 1rem;
+  box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
+`;
+
+
 const defaultImage = "https://cdn3.vectorstock.com/i/1000x1000/60/67/example-rubber-stamp-vector-12386067.jpg";
 
-export interface EditableWaitingCodeItemContentProps extends EditableItemProps<ArScanItemDefinition> {
-  /** text to display for the add new option label. */
-  addNewOptionLabel?: string;
-} // EditableWaitingCodeItemContentProps
-
-export const EditableARScanItemContent = (props: EditableWaitingCodeItemContentProps): JSX.Element => {
+export const EditableARScanItemContent = (props: EditableItemProps<ArScanItemDefinition>): JSX.Element => {
 
 
   const {
     payload,
-    addNewOptionLabel = 'Text to QR',
     onPayloadChanged
   } = props;
-
-  const [imageToShow, setImageToShow] = useState<File | null>(null);
   const {
     imageSrc
   } = payload;
+
+  const [imageToShow, setImageToShow] = useState<File | null>(null);
+  const [imageSource, setImageSourece] = useState<string>("https://cdn3.vectorstock.com/i/1000x1000/60/67/example-rubber-stamp-vector-12386067.jpg")
+  //State to control wether the pop up should be displayed or not
+  const [showResourcesPopUp, setShowResourcesPopUp] = useState<boolean>(false);
+
 
   const handleOnDrop = (files:any, rejectedFiles:any)=>{
     if (files[0] instanceof File){
      setImageToShow(files[0] as File); 
     }
-  }
+  } //handleOnDrop
 
+  const handleShowPopUp = (show:boolean)=>{
+    setShowResourcesPopUp(show);
+  } //handleShowPopUp
+
+  const handleResourceSelected = (index:number)=>{
+    setImageSourece(resources[index].src);
+    setShowResourcesPopUp(prev=>!prev)
+  } //handleResourceSelected
+
+  const resources: ResourceDefinition[]=[
+    {name: "Baby",src: "https://cdn.memegenerator.es/descargar/398347"},
+    {name: "YouKnowIt",src: "https://assets.entrepreneur.com/content/3x2/2000/20180703190744-rollsafe-meme.jpeg?crop=1:1"},
+    {name: "Oh!",src: "https://imagenes.elpais.com/resizer/iksHj8K729zx_amR6S2K1sB79YI=/1960x1470/arc-anglerfish-eu-central-1-prod-prisa.s3.amazonaws.com/public/B6H277FBSRW2AUY6T5WYT5WCBQ.jpg"},
+    {name: "Serius Face",src: "https://www.eltiempo.com/files/article_content/files/crop/uploads/2021/02/24/6036fbb0babdd.r_1614232657048.172-0-2049-1408.jpeg"},
+    {name: "Troll Face",src: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSa9F7chZRSC97n3EEsBFQlGSjZeH_7cyBWvIDc_FZJnTEIPkpOt4cNBKDK5UI1gDnoihs&usqp=CAU"},
+    {name: "Cuentame más",src: "https://ep01.epimg.net/verne/imagenes/2016/08/30/articulo/1472539721_878111_1472541204_sumario_normal.jpg"},
+    {name: "Oh You",src: "https://i.kym-cdn.com/photos/images/newsfeed/001/089/228/f2d.jpg"},
+    {name: "Squidward Face",src: "https://cdn.wallpapersafari.com/33/48/Dm90k3.jpg"},
+    {name: "SpongeBob Face",src: "https://community.custom-cursor.com/uploads/default/original/2X/1/1bf4f93af5045fefcec6a28f5cd26858a8478abc.jpeg"},
+    {name: "SpongeBob Face",src: "https://community.custom-cursor.com/uploads/default/original/2X/1/1bf4f93af5045fefcec6a28f5cd26858a8478abc.jpeg"},
+    {name: "Oh You",src: "https://i.kym-cdn.com/photos/images/newsfeed/001/089/228/f2d.jpg"},
+    {name: "Cuentame más",src: "https://ep01.epimg.net/verne/imagenes/2016/08/30/articulo/1472539721_878111_1472541204_sumario_normal.jpg"},
+    {name: "Troll Face",src: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSa9F7chZRSC97n3EEsBFQlGSjZeH_7cyBWvIDc_FZJnTEIPkpOt4cNBKDK5UI1gDnoihs&usqp=CAU"},
+  ]
 
   return (
     <>
-      <CheckboxList>
-        <CheckboxTitle>
-          <ArCodeIcon />
+    {/* Pop up component to enable image selection from the escape room resources */}
+    {showResourcesPopUp && 
+    <ResourcesPopUpComponent resourceList={resources} onClosePopUp={()=>{handleShowPopUp(false)}} onCancelSelectResource={()=>{handleShowPopUp(false)}} 
+     onResourceSelected={(value)=>{handleResourceSelected(value)}} popUpTitle={"Select an image to scan"}/>}
+      
+      <Root>
+        {/* Title of the component */}
+        <ItemTitle>
+          <ArCodeIcon onMouseDown={()=>{handleShowPopUp(!showResourcesPopUp)}} />
           Image to Scan
-        </CheckboxTitle>    
-        <img src= {imageToShow !==null ? window.URL.createObjectURL(imageToShow) : defaultImage} width={200} height ={200}></img>
+        </ItemTitle>    
 
+        {/* Preview of the image that is going to be scanned */}
+        <img src= {imageSource} width={200} height ={200}></img>
+
+        {/* Sample drop zone */}
         <Dropzone onDrop={handleOnDrop} multiple= {false}>
           {({getRootProps, getInputProps}) => (
             <section>
@@ -174,11 +131,36 @@ export const EditableARScanItemContent = (props: EditableWaitingCodeItemContentP
             </section>
           )}
         </Dropzone>
-
-      </CheckboxList>
+      </Root>
     </>
   );
 }; // EditableARScanItemContent
+
+
+
+const PreviewTitle = styled.div`
+  margin-bottom: 0rem;
+  color: rgb(110, 110, 110);
+  text-align: center;
+  font-size: 0.75rem;
+  line-height: 1.33;
+  letter-spacing: 0.2px;
+  max-height: 1.5rem;
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+`;
+
+const PreviewAR = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 3px;
+  color: rgb(178, 178, 178);
+`;
+
 
 export const ARScanItemStageSlide = (props: ArScanItemDefinition): JSX.Element => {
 

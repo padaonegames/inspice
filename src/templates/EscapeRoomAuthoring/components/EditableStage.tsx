@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import { AvailableEscapeRoomStageType, EditableItemProps, SupportedStage } from "../../../services/escapeRoomActivity.model";
-import {EditableMultipleChoiceItemContentProps} from "./items/MutipleChoiceItem"
 import { StageSettingsContainer } from "./StageSettingsContainer";
 
 const ContentWrapper = styled.main`

@@ -98,12 +98,14 @@ export const defaultEscapeRoomActivityDefinition: InProgressEscapeRoomActivityDe
 export interface CharacterDefinition   {
   name: string,
   description: string;
+  image:string;
   id:string;
 }
 
 export const default_character:CharacterDefinition= {
   name: "New Character",
   description: "New Character Description",
+  image:"https://stickerly.pstatic.net/sticker_pack/9uCc66lpT8KQrI1v0zlIQ/B9D9U3/9/357db9fd-cdf3-45bf-968f-ae8a34e5b389.png",
   id:""
 }
 
@@ -210,8 +212,6 @@ export interface UnlockPasswordItemDefinition  {
 }
 
 export interface NarrativeItemDefinition  {
-  /** Name of the scene that is going to be loaded */
   dialogs: string[];
-
   characters: string[];
 }
