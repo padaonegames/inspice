@@ -394,9 +394,10 @@ export const EditableNarrativeItemContent = (props:  EditableItemProps<Narrative
   }; // handleCharacterCharacterSelectedInDialog
 
 const findCharacterImage= (dialogIndex:number)=>{
-  if(payload.characters[dialogIndex]==="New Dialog") return "https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/User_icon_2.svg/800px-User_icon_2.svg.png";
+  //The image of the character involved in this dialog is returned, if no character has been assigned or it has been deleted, a sample image is displayed
+  if(escapeRoomData.characters.findIndex(object => {return object.name === payload.characters[dialogIndex];})===-1 || payload.characters[dialogIndex]==="New Dialog") return "https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/User_icon_2.svg/800px-User_icon_2.svg.png";
   return escapeRoomData.characters[escapeRoomData.characters.findIndex(object => {return object.name === payload.characters[dialogIndex];})].image;
-}
+} //findCharacterImage
 
 
   return (

@@ -5,10 +5,15 @@ import styled from "styled-components";
 import {Settings} from "@styled-icons/fluentui-system-filled/Settings"
 import {UserPlus} from "@styled-icons/boxicons-regular/UserPlus"
 import { Cross } from '@styled-icons/entypo/Cross';
+import {AlertCircle} from "@styled-icons/evaicons-solid/AlertCircle"
+import {Save} from "@styled-icons/boxicons-solid/Save"
+import {Edit} from "@styled-icons/boxicons-solid/Edit"
 
 import { useContext, useState } from "react";
 import { EscapeRoomContext } from "../../EscapeRoomContext";
 import ResourcesPopUpComponent, { ResourceDefinition } from "../ResourcesPopUp";
+import { WeatherPartlyCloudyDay } from "styled-icons/fluentui-system-filled";
+import {EscapeRoomCharacterCard} from "./EscapeRoomCharacterCard"
 
 
 const SettingsIcon = styled(Settings)`
@@ -37,6 +42,39 @@ const DeleteIcon = styled(Cross)`
   }
 `
 
+const AlertIcon = styled(AlertCircle)`
+  position:absolute;
+  left:27%;
+  top:8%;
+  height: 2em;
+  width: 2em;
+  color: rgb(255, 0, 0);
+  transform: translate(-50%, -50%);
+`
+
+const SaveIcon = styled(Save)`
+position:absolute;
+right:5px;
+height: 2em;
+width: 2em;
+
+color: rgb(0, 0, 0);
+&:hover {
+  color: rgb(255, 0, 0);
+}
+`
+const EditIcon = styled(Edit)`
+position:absolute;
+right:30px;
+height: 2em;
+width: 2em;
+
+color: rgb(0, 0, 0);
+&:hover {
+  color: rgb(255, 0, 0);
+}
+`
+
 const Wrapper = styled.main`
   position: relative;
   left: 12%;
@@ -54,6 +92,7 @@ const Wrapper = styled.main`
 
 
 const CharacterContainer = styled.div`
+position:relative;
 margin-top: 5px;
 display: flex;
 flex-direction: row;
@@ -91,17 +130,26 @@ box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
 `;
 
 const CharacterInfoContainer = styled.div`
-position:relative;
-display: flex;
-flex-direction: column;
-align-items: space-between;
-padding:0 10px 10px 10px;
-width:100%;
-background-color: rgba(180,180,180,1);
-border-radius: 0 1.25rem 1.25rem 0;
-z-index:0;
+  position:relative;
+  display: flex;
+  flex-direction: column;
+  align-items: space-between;
+  padding:0 10px 10px 10px;
+  width:100%;
+  background-color: rgba(180,180,180,1);
+  border-radius: 0 1.25rem 1.25rem 0;
+  z-index:0;
 `;
 
+const ParragraphContainer = styled.div`
+  position:relative;
+  display: flex;
+  padding:0 10px 10px 10px;
+  width:100%;
+  background-color: rgba(255,0,0,0.5);
+  border-radius: 0.25rem 0.25rem 0.25rem 0.25rem;
+  z-index:0;
+`;
 
 
 interface InputAreaProps {
@@ -148,27 +196,19 @@ const Root = styled.div`
 `;
 
 const CheckboxTitle = styled.div`
-  font-size: 1em;
-  font-weight: 500;
+  font-size: 2em;
+  font-weight: bold;
   font-family: ${props => props.theme.contentFont};
   line-height: 135%;
 
-  margin-top: 0.25em;
-  margin-bottom: 0.25em;
-  padding: 0.75em 1.25em;
-  border-top: none;
-  color: black;
-  line-height: 135%;
+  position:relative;
+  height: 1.25em;
   width: fit-content;
-  text-align: center;
+  margin-top:10px;
 
-  display: flex;
-  align-items: center;
-
-  background-color: white;
-
-  border-radius: 1rem;
-  box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
+  border-style: solid;
+  border-color: lightgray;
+  border-width: 0px 0px 2px 0px;
 `;
 
 const SelectCharacterButton = styled.div`
@@ -226,27 +266,16 @@ const SettingsDiv = styled.div`
 `;
 
 const GeneralSettingsTitle = styled.div`
-  font-size: 1em;
-  font-weight: 500;
+  font-size: 3em;
+  font-weight: bold;
   font-family: ${props => props.theme.contentFont};
   line-height: 135%;
 
-  margin-top: 1em;
-  margin-bottom: 0.25em;
-  padding: 0.75em 1.25em;
-  border-top: none;
-  color: black;
-  line-height: 135%;
-  width: 95%;
-  text-align: center;
 
-  display: flex;
-  align-items: center;
-
-  background-color: white;
-
-  border-radius: 1rem;
-  box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
+  position:relative;
+  height: 1.25em;
+  width: fit-content;
+  margin-top:10px;
 `;
 
 
@@ -321,10 +350,9 @@ export const EscapeRoomSettings = (props: EscapeRoomSettingsProps): JSX.Element 
     escapeRoomDescription,
     onSettingsChanged
   } = props;
-  const {escapeRoomData, setEscapeRoomData} = useContext(EscapeRoomContext);
-  const [showResourcesPopUp, setShowResourcesPopUp] = useState<boolean>(false);
-  const [characterSelected, setCharacterSelected]= useState<number>(0);
 
+  const {escapeRoomData, setEscapeRoomData} = useContext(EscapeRoomContext);
+  const [editingCharacterIndex, setEditingCharacterIndex] = useState<number>(-1);
 
   const handleEditTitle = (value: string) => {
     if (!onSettingsChanged) return;
@@ -338,26 +366,46 @@ export const EscapeRoomSettings = (props: EscapeRoomSettingsProps): JSX.Element 
     })
   }; // handleEditTitle
 
+  const checkRepeatedName = (characterIndex:number,newName:string)=>{
+    let i=0;
+    while(i<escapeRoomCharacters.length){
+      if( i!==characterIndex && escapeRoomCharacters[i].name === newName) return true;
+      i++;
+    }
+    return false;
+  }
 
-  const handleAddCharacter = ()=>{
-    if (!onSettingsChanged) return;
-    onSettingsChanged({
-      ...escapeRoom,
-      characters: [
-        ...escapeRoom.characters,
-        default_character
-      ]
-    })
-    setEscapeRoomData({
-      ...escapeRoom,
-      characters: [
-        ...escapeRoom.characters,
-        default_character
-      ]
-    });
+  const handleNewCharacterVersion2 = ()=>{
+    setEditingCharacterIndex(escapeRoom.characters.length);
   } //handleAddCharacter
 
-  const handleDeleteCharacter = (index:number)=>{
+
+  const handleCharacterDataChanged = (newData:CharacterDefinition, index:number)=>{
+    if (!onSettingsChanged) return;
+    onSettingsChanged({
+      ...escapeRoom,
+      characters: [
+        ...escapeRoom.characters.slice(0, index),
+        newData,
+        ...escapeRoom.characters.slice(index + 1, escapeRoom.characters.length)
+      ]
+    })
+    setEscapeRoomData({
+      ...escapeRoom,
+      characters: [
+        ...escapeRoom.characters.slice(0, index),
+        newData,
+        ...escapeRoom.characters.slice(index + 1, escapeRoom.characters.length)
+      ]
+    });
+    setEditingCharacterIndex(-1);
+  } //handleCharacterDataChanged
+
+  const handleEnterCharacterEditMode = (index:number)=>{
+    setEditingCharacterIndex(index);
+  } //handleEnterCharacterEditMode
+
+  const handleDeleteCharacterBien = (index:number) =>{
     if (!onSettingsChanged) return;
     onSettingsChanged({
       ...escapeRoom,
@@ -373,152 +421,52 @@ export const EscapeRoomSettings = (props: EscapeRoomSettingsProps): JSX.Element 
         ...escapeRoom.characters.slice(index + 1, escapeRoom.characters.length)
       ]
     })
-  } //handleDeleteCharacter
 
-  const handleCharacterNameChanged = (value:string, index:number) =>{
-    if (!onSettingsChanged) return;
-    onSettingsChanged({
-      ...escapeRoom,
-      characters: [
-        ...escapeRoom.characters.slice(0, index),
-        {...escapeRoom.characters[index],
-          name: value
-        },
-        ...escapeRoom.characters.slice(index + 1, escapeRoom.characters.length)
-      ]
-    })
-    setEscapeRoomData({
-      ...escapeRoom,
-      characters: [
-        ...escapeRoom.characters.slice(0, index),
-        {...escapeRoom.characters[index],
-          name: value
-        },
-        ...escapeRoom.characters.slice(index + 1, escapeRoom.characters.length)
-      ]
-    })
-  } //handleCharacterNameChanged
-
-
-  const handleCharacterDescriptionChanged = (value:string, index:number) =>{
-    if (!onSettingsChanged) return;
-    onSettingsChanged({
-      ...escapeRoom,
-      characters: [
-        ...escapeRoom.characters.slice(0, index),
-        {...escapeRoom.characters[index],
-          description: value
-        },
-        ...escapeRoom.characters.slice(index + 1, escapeRoom.characters.length)
-      ]
-    })
-    setEscapeRoomData({
-      ...escapeRoom,
-      characters: [
-        ...escapeRoom.characters.slice(0, index),
-        {...escapeRoom.characters[index],
-          description: value
-        },
-        ...escapeRoom.characters.slice(index + 1, escapeRoom.characters.length)
-      ]
-    })
-  } //handleCharacterDescriptionChanged
-
-  const handleShowPopUp = (show:boolean)=>{
-    setShowResourcesPopUp(show);
-  } //handleShowPopUp
-
-  const handleResourceSelected = (resourceIndex:number)=>{
-    if (!onSettingsChanged) return;
-    onSettingsChanged({
-      ...escapeRoom,
-      characters: [
-        ...escapeRoom.characters.slice(0, characterSelected),
-        {...escapeRoom.characters[characterSelected],
-          image: resources[resourceIndex].src
-        },
-        ...escapeRoom.characters.slice(characterSelected + 1, escapeRoom.characters.length)
-      ]
-    })
-    setEscapeRoomData({
-      ...escapeRoom,
-      characters: [
-        ...escapeRoom.characters.slice(0, characterSelected),
-        {...escapeRoom.characters[characterSelected],
-          image: resources[resourceIndex].src
-        },
-        ...escapeRoom.characters.slice(characterSelected + 1, escapeRoom.characters.length)
-      ]
-    })
-    setShowResourcesPopUp(prev=>!prev)
-  } //handleResourceSelected
-
-
-  const resources: ResourceDefinition[]=[
-    {name: "Baby",src: "https://cdn.memegenerator.es/descargar/398347"},
-    {name: "YouKnowIt",src: "https://assets.entrepreneur.com/content/3x2/2000/20180703190744-rollsafe-meme.jpeg?crop=1:1"},
-    {name: "Oh!",src: "https://imagenes.elpais.com/resizer/iksHj8K729zx_amR6S2K1sB79YI=/1960x1470/arc-anglerfish-eu-central-1-prod-prisa.s3.amazonaws.com/public/B6H277FBSRW2AUY6T5WYT5WCBQ.jpg"},
-    {name: "Serius Face",src: "https://www.eltiempo.com/files/article_content/files/crop/uploads/2021/02/24/6036fbb0babdd.r_1614232657048.172-0-2049-1408.jpeg"},
-    {name: "Troll Face",src: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSa9F7chZRSC97n3EEsBFQlGSjZeH_7cyBWvIDc_FZJnTEIPkpOt4cNBKDK5UI1gDnoihs&usqp=CAU"},
-    {name: "Cuentame más",src: "https://ep01.epimg.net/verne/imagenes/2016/08/30/articulo/1472539721_878111_1472541204_sumario_normal.jpg"},
-    {name: "Oh You",src: "https://i.kym-cdn.com/photos/images/newsfeed/001/089/228/f2d.jpg"},
-    {name: "Squidward Face",src: "https://cdn.wallpapersafari.com/33/48/Dm90k3.jpg"},
-    {name: "SpongeBob Face",src: "https://community.custom-cursor.com/uploads/default/original/2X/1/1bf4f93af5045fefcec6a28f5cd26858a8478abc.jpeg"},
-    {name: "SpongeBob Face",src: "https://community.custom-cursor.com/uploads/default/original/2X/1/1bf4f93af5045fefcec6a28f5cd26858a8478abc.jpeg"},
-    {name: "Oh You",src: "https://i.kym-cdn.com/photos/images/newsfeed/001/089/228/f2d.jpg"},
-    {name: "Cuentame más",src: "https://ep01.epimg.net/verne/imagenes/2016/08/30/articulo/1472539721_878111_1472541204_sumario_normal.jpg"},
-    {name: "Troll Face",src: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSa9F7chZRSC97n3EEsBFQlGSjZeH_7cyBWvIDc_FZJnTEIPkpOt4cNBKDK5UI1gDnoihs&usqp=CAU"},
-  ]
+    if(index< editingCharacterIndex) setEditingCharacterIndex(editingCharacterIndex-1);
+  } //handleDeleteCharacterBien
 
   return (
     <Wrapper>
-
-    {/* Pop up component to enable image selection from the escape room resources */}
-    {showResourcesPopUp && 
-    <ResourcesPopUpComponent resourceList={resources} onClosePopUp={()=>{handleShowPopUp(false)}} onCancelSelectResource={()=>{handleShowPopUp(false)}} 
-     onResourceSelected={(value)=>{handleResourceSelected(value)}} popUpTitle={"Select an image to scan"}/>}
-
-
-      {/* <Container> */}
       <GeneralSettingsContainer>
-        <GeneralSettingsTitle> Settings </GeneralSettingsTitle>
+        <GeneralSettingsTitle> Escape Room Settings </GeneralSettingsTitle>
         <SettingsDiv>
           <CheckboxTitle> Escape Room Title </CheckboxTitle>
           <PromptField promptText={escapeRoomTitle} promptPlaceholder='Code to solve this puzzle' onPromptChange={handleEditTitle} />
 
+
+          {/* Character Section */}
           <CheckboxTitle> Characters </CheckboxTitle>
           <CharactersContainer>
-            {escapeRoomCharacters.map((character, index) => (
-              <CharacterContainer>
-                {/* Character image */}
-                  <CharacterPreviewContainer>
-                    <CharacterPreview  src={character.image} />
-                    <SelectCharacterButton onMouseDown={()=>{setCharacterSelected(index); setShowResourcesPopUp(true)}}> Select Image </SelectCharacterButton>
-                  </CharacterPreviewContainer>
-
-                  {/* Character data */}
-                  <CharacterInfoContainer>
-                    <DeleteIcon onMouseDown={()=>{handleDeleteCharacter(index)}}/>
-                    <DataLine>Character Name</DataLine>
-                    <PromptField promptText={character.name} promptPlaceholder='Character Name' onPromptChange={(value)=>handleCharacterNameChanged(value,index)} textAlignment="left"/>
-                    <DataLine>Character Description</DataLine>
-                    <PromptField promptText={character.description} promptPlaceholder='Something extra' onPromptChange={(value)=>handleCharacterDescriptionChanged(value,index)} textAlignment="left" initialHeight="100px"/>
-                  </CharacterInfoContainer>
-              </CharacterContainer>
+            {escapeRoom.characters.map((character, index) => (
+                //Character card that can be displayer in two modes (edit and display only) 
+                <EscapeRoomCharacterCard characterInfo={character} onSaveCharacterData={(value)=>{handleCharacterDataChanged(value,index)}} 
+                  onEnterCharacterEditMode={()=>{handleEnterCharacterEditMode(index)}} 
+                  onDeleteCharacter={()=>{handleDeleteCharacterBien(index)}}
+                  showAlert={(value) =>checkRepeatedName(index,value)} 
+                  editMode={editingCharacterIndex === index}
+                />       
               ))}
+              {/* If there are no characters being modified a button to a add a new one is displayer */}
+              {editingCharacterIndex === -1 && 
+              <AddPuzzleButton onClick={() =>{handleNewCharacterVersion2()}}>
+                <AddCharacterIcon/>
+              </AddPuzzleButton>
+              }
+              {/* Character editor at the end of the character list to add at the end of the list */}
+              {editingCharacterIndex === escapeRoom.characters.length && 
+                <EscapeRoomCharacterCard characterInfo={default_character} onSaveCharacterData={(value) => { handleCharacterDataChanged(value, escapeRoomCharacters.length); } }
+                  onEnterCharacterEditMode={() => { } }
+                  onDeleteCharacter={() => { } }
+                  showAlert={(value) => checkRepeatedName(escapeRoomCharacters.length, value)}
+                  editMode={true} 
+                />   
+              }
             </CharactersContainer>
-
-          {/* In case we want to add a puzzle at the beginning of the room block*/}
-          <AddPuzzleButton onClick={() =>{handleAddCharacter()}}>
-            <AddCharacterIcon/>
-          </AddPuzzleButton>  
-
         </SettingsDiv>
       </GeneralSettingsContainer>
     </Wrapper>
   );
 }; // EditableWaitingCodeItemContent
-
 
 const PreviewTitle = styled.div`
   margin-bottom: 0.25rem;
