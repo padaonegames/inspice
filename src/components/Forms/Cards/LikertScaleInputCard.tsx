@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { EditableFieldProps, LikertScaleFieldDefinition } from "../../../services/multistageFormActivity.model";
 import LikertResponse from "../LikertResponse";
 import {
   Root,
@@ -129,5 +130,64 @@ export const LikertScaleInputCard = (props: LikertScaleInputCardProps): JSX.Elem
     </Root>
   );
 };
+
+export interface EditableLikertScaleCardContentProps extends EditableFieldProps<LikertScaleFieldDefinition> {
+
+} // EditableLikertScaleCardContentProps
+
+export const EditableLikertScaleCardContent = (props: EditableLikertScaleCardContentProps): JSX.Element => {
+
+  const {
+    fieldPayload,
+    onPayloadChanged
+  } = props;
+
+  const {
+    questions,
+    scale,
+    showQuestionsIndex = false
+  } = fieldPayload;
+
+  const handleAddQuestion = () => {
+    if (!onPayloadChanged) return;
+    onPayloadChanged({
+      ...fieldPayload,
+      questions: [...fieldPayload.questions, '']
+    })
+  }; // handleAddQuestion
+
+  const handleRemoveQuestion = (index: number) => {
+    if (!onPayloadChanged) return;
+    onPayloadChanged({
+      ...fieldPayload,
+      questions: fieldPayload.questions.filter((_, i) => i !== index)
+    })
+  }; // handleRemoveQuestion
+
+  return (
+    <>
+      {questions.map((question, qInd) => (
+          <>
+            <QuestionText>
+              {`${showQuestionsIndex ? ((qInd + 1) + '. ') : ''}${question}`}
+            </QuestionText>
+            <LikertScaleContainer>
+              <LikertBand>
+                {scale.map((response, rInd) => (
+                  <LikertResponse
+                    responseText={response}
+                    position={rInd === 0 ? 'first' : (rInd === scale.length - 1 ? 'last' : 'middle')}
+                    key={question}
+                    onResponseSelected={() => {}}
+                    selected={false}
+                  />
+                ))}
+              </LikertBand>
+            </LikertScaleContainer>
+          </>
+        ))}
+    </>
+  );
+}; // EditableLikertScaleCardContent
 
 export default LikertScaleInputCard;

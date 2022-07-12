@@ -4,6 +4,7 @@ import { SupportedActivity } from "../../../services/activity.model";
 import { Close } from '@styled-icons/evaicons-solid/Close';
 import { TreasureMap } from '@styled-icons/remix-line/TreasureMap';
 import { PhoneTablet } from '@styled-icons/fluentui-system-regular/PhoneTablet';
+import { FormNew } from '@styled-icons/fluentui-system-regular/FormNew';
 
 const Background = styled.div`
   background-color: rgba(0, 0, 0, 0.5);
@@ -90,6 +91,10 @@ const GamGameIcon = styled(PhoneTablet)`
   ${templateIconStyle}
 `;
 
+const MultistageFormIcon = styled(FormNew)`
+  ${templateIconStyle}
+`;
+
 const TemplateBox = styled.div`
   display: flex;
   flex-direction: column;
@@ -154,6 +159,12 @@ export const NewActivityPopup = (props: NewActivityPopupProps): JSX.Element => {
             <GamGameIcon />
             <TemplateText>
               GAM Game
+            </TemplateText>
+          </TemplateBox>
+          <TemplateBox onClick={() => handleTemplateSelected('Multistage Form')}>
+            <MultistageFormIcon />
+            <TemplateText>
+              Multistage Form
             </TemplateText>
           </TemplateBox>
         </TemplateContainer>

@@ -12,6 +12,7 @@ import { State, Step, Steps, StepsConfig } from '../../../components/Navigation/
 import ActivityInstanceBasicInfoStep from '../../GeneralSteps/ActivityInstanceBasicInfoStep';
 import { CompletedMultistageFormActivityDefinition, InProgressMultistageFormActivityDefinition, MultistageFormStage } from '../../../services/multistageFormActivity.model';
 import DefineMultistageFormStep from './Steps/DefineMultistageFormStep';
+import { multistageFormApi } from '../../../services';
 
 const Root = styled.div`
   display: flex;
@@ -22,6 +23,16 @@ const Root = styled.div`
 //                 State Definition
 //-------------------------------------------------------
 
+const sample_base: InProgressMultistageFormActivityDefinition = {
+  activityType: 'Multistage Form',
+  activityTitle: undefined,
+  activityAuthor: undefined,
+  beginsOn: undefined,
+  endsOn: undefined,
+  stages: [],
+  formResponsesDatasetUuid: ''
+}; // sample_base
+
 /**
  * Screen to encapsulate the creation flow of a Multistage Form activity.
  * Component responsible for handling the information fetching and posting logic; actual
@@ -30,14 +41,15 @@ const Root = styled.div`
 export const CreateMultistageFormActivityScreen = () => {
 
   const [completedActivity, setCompletedActivity] = useState<CompletedMultistageFormActivityDefinition | undefined>(undefined);
+  const [submitActivity, setSubmitActivity] = useState<boolean>(false);
 
   const submitDefinition = async () => {
-    if (!completedActivity) return Promise.reject();
-    setCompletedActivity(undefined);
-    return Promise.reject();
+    if (!submitActivity || !completedActivity) return Promise.reject();
+    setSubmitActivity(false);
+    return multistageFormApi.submitMultistageFormActivityDefinition(completedActivity);
   };
 
-  const [submitDefinitionStatus] = useAsyncRequest(submitDefinition, [completedActivity]);
+  const [submitDefinitionStatus] = useAsyncRequest(submitDefinition, [submitActivity]);
 
   useEffect(() => {
     if (submitDefinitionStatus.kind === 'success' /*&& submitDefinitionStatus.result.kind === 'ok'*/) {
@@ -45,13 +57,18 @@ export const CreateMultistageFormActivityScreen = () => {
     }
   }, [submitDefinitionStatus]);
 
+  const handleSubmitActivityDefinition = (value: CompletedMultistageFormActivityDefinition) => {
+    setCompletedActivity(value);
+    setSubmitActivity(true);
+  } // handleSubmitActivityDefinition
 
   return (
     <CreateMultistageFormActivityScreenComponent
       initialActivityDefinition={undefined}
+      onSubmitActivityDefinition={handleSubmitActivityDefinition}
     />
   );
-}
+}; // CreateMultistageFormActivityScreen
 
 interface CreateMultistageFormActivityScreenComponentProps {
   /** Initial state that this component will take as base */
@@ -63,24 +80,15 @@ interface CreateMultistageFormActivityScreenComponentProps {
    * the parent so that rendering and communication with the services remain isolated.
    */
   onSubmitActivityDefinition?: (value: CompletedMultistageFormActivityDefinition) => void;
-}
+} // CreateMultistageFormActivityScreenComponentProps
 
-const sample_base: InProgressMultistageFormActivityDefinition = {
-  activityType: 'Multistage Form',
-  activityTitle: undefined,
-  activityAuthor: undefined,
-  beginsOn: undefined,
-  endsOn: undefined,
-  stages: [],
-  formResponsesDatasetUuid: ''
-};
 
 const isStageOneCompleted = (definition: State): boolean => {
   return definition['activityAuthor'] as string !== undefined && (definition['activityAuthor'] as string).length > 0 &&
     definition['activityTitle'] as string !== undefined && (definition['activityTitle'] as string).length > 0 &&
     definition['beginsOn'] as Date !== undefined &&
     definition['endsOn'] as Date !== undefined;
-};
+}; // isStageOneCompleted
 
 export const CreateMultistageFormActivityScreenComponent = (props: CreateMultistageFormActivityScreenComponentProps): JSX.Element => {
 
@@ -114,12 +122,12 @@ export const CreateMultistageFormActivityScreenComponent = (props: CreateMultist
       endsOn: activityDefinition['endsOn'] as Date,
       tags: activityDefinition['tags'] as string[],
       imageSrc: activityDefinition['imageSrc'] as string,
-      stages: activityDefinition['stages'] as MultistageFormStage<any>[],
+      stages: activityDefinition['stages'] as MultistageFormStage[],
       formResponsesDatasetUuid: activityDefinition['responsesDatasetUuid'] as string
     };
 
     onSubmitActivityDefinition(def);
-  };
+  }; // handleSubmitActivityDefinition
 
   const config: StepsConfig = {
     navigation: {
@@ -129,13 +137,13 @@ export const CreateMultistageFormActivityScreenComponent = (props: CreateMultist
           {...props}
           stages={[
             { name: 'Basic Information'.toUpperCase(), completed: isStageOneCompleted(activityDefinition) },
-            { name: 'Edit Stages'.toUpperCase(), completed: false },
+            { name: 'Edit Stages'.toUpperCase(), completed: true },
           ]}
           onSubmitActivity={handleSubmitActivityDefinition}
           finaItemCaption={'Submit Activity'.toUpperCase()}
         />
     }
-  };
+  }; // config
 
   return (
     <Root>
@@ -149,6 +157,6 @@ export const CreateMultistageFormActivityScreenComponent = (props: CreateMultist
       </Steps>
     </Root>
   );
-}
+}; // CreateMultistageFormActivityScreenComponent
 
 export default CreateMultistageFormActivityScreen;

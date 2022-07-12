@@ -1,3 +1,4 @@
+import { EditableFieldProps, LongTextFieldDefinition } from "../../../services/multistageFormActivity.model";
 import {
   Root,
   CardPanel,
@@ -8,7 +9,7 @@ import {
   InputArea
 } from "./cardStyles";
 
-export interface LongTextInputCardProps {
+export interface LongTextInputCardProps extends LongTextFieldDefinition {
   /** Main text rendered on top of the component as a prompt for the user, indicating what they must type into the field. */
   promptText: string;
   /** Text to display whenever value is set to an empty string, or undefined. */
@@ -68,6 +69,23 @@ export const LongTextInputCard = (props: LongTextInputCardProps): JSX.Element =>
       </CardPanel>
     </Root>
   );
-};
+}; // LongTextInputCard
+
+export interface EditableLongTextContentProps extends EditableFieldProps<LongTextFieldDefinition> {
+} // EditableLongTextContentProps
+
+export const EditableLongTextContent = (_: EditableLongTextContentProps): JSX.Element => {
+
+  return (
+    <Root>
+      <InputArea
+        disabled
+        width='95%'
+        placeholder='Long Text Answer'
+        value={''}
+      />
+    </Root>
+  );
+}; // EditableLongTextContent
 
 export default LongTextInputCard;

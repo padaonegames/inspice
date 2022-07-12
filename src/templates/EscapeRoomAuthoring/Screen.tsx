@@ -26,14 +26,14 @@ import EditableUnlockPasswordItemContent, { unlockPasswordItemFactory, UnlockPas
 import styled from 'styled-components';
 import { QrCode } from "@styled-icons/material/QrCode";
 import { Quiz } from "@styled-icons/material/Quiz";
-import {ClockHistory} from "@styled-icons/bootstrap/ClockHistory"
+import { ClockHistory } from "@styled-icons/bootstrap/ClockHistory"
 import { Exit } from "@styled-icons/icomoon/Exit";
-import {ScanObject} from "@styled-icons/fluentui-system-filled/ScanObject"
-import {Unity} from "@styled-icons/fa-brands/Unity"
-import {HistoryEdu} from "@styled-icons/material-rounded/HistoryEdu"
-import {Password} from "@styled-icons/fluentui-system-filled/Password"
+import { ScanObject } from "@styled-icons/fluentui-system-filled/ScanObject"
+import { Unity } from "@styled-icons/fa-brands/Unity"
+import { HistoryEdu } from "@styled-icons/material-rounded/HistoryEdu"
+import { Password } from "@styled-icons/fluentui-system-filled/Password"
 import React from 'react';
-import {EscapeRoomContext, EscapeRoomContextProvider} from "./EscapeRoomContext"
+import { EscapeRoomContext, EscapeRoomContextProvider } from "./EscapeRoomContext"
 
 
 const Root = styled.div`
@@ -132,10 +132,10 @@ export const stageSlidesMappings: StageToSlideProducerMapping<SupportedStage> = 
   'room': undefined,
   'multiple-choice': MultipleChoiceItemStageSlide,
   'waiting-code': WaitingCodeItemStageSlide,
-  "qr-scan":QRScanItemStageSlide,
-  "ar-scan":ARScanItemStageSlide,
+  "qr-scan": QRScanItemStageSlide,
+  "ar-scan": ARScanItemStageSlide,
   "load-scene": LoadSceneItemStageSlide,
-  "narrative":NarrativeItemStageSlide,
+  "narrative": NarrativeItemStageSlide,
   "unlock-password": UnlockPasswordItemStageSlide
 };
 
@@ -159,7 +159,7 @@ const sample_base: InProgressEscapeRoomActivityDefinition = {
   beginsOn: undefined,
   endsOn: undefined,
   stages: [sample_stage],
-  characters:[]
+  characters: []
 };
 
 //-------------------------------------------------------
@@ -259,10 +259,10 @@ export const CreateEscapeRoomScreenComponent = (props: CreateEscapeRoomScreenCom
   }; // handleSubmitActivityDefinition
 
 
-  const handleEscapeRoomTitleChanged = (title:string) => {
+  const handleEscapeRoomTitleChanged = (title: string) => {
     setActivityDefinition(prev => {
       let next = cloneDeep(prev);
-      next.activityTitle= title;
+      next.activityTitle = title;
       return next;
     });
   }
@@ -309,7 +309,7 @@ export const CreateEscapeRoomScreenComponent = (props: CreateEscapeRoomScreenCom
 
   const currentStage = activityDefinition.stages[selectedStage];
 
-  const duplicateStage= (index:number) => {
+  const duplicateStage = (index: number) => {
     setActivityDefinition(prev => {
       let next = cloneDeep(prev);
       next.stages = [
@@ -321,7 +321,7 @@ export const CreateEscapeRoomScreenComponent = (props: CreateEscapeRoomScreenCom
     });
 
     //Changes index if necesary to continue displaying the same stage
-    setSelectedStage(prev => index<prev ? prev+1 : prev);
+    setSelectedStage(prev => index < prev ? prev + 1 : prev);
   }; //duplicateStage
 
   const deleteStage = (index: number) => {
@@ -334,8 +334,8 @@ export const CreateEscapeRoomScreenComponent = (props: CreateEscapeRoomScreenCom
       return next;
     });
 
-     //Changes index if necesary to continue displaying the same stage
-    setSelectedStage(prev => index<prev ? prev-1 : prev);
+    //Changes index if necesary to continue displaying the same stage
+    setSelectedStage(prev => index < prev ? prev - 1 : prev);
   }; //deleteStage
 
 
@@ -351,24 +351,24 @@ export const CreateEscapeRoomScreenComponent = (props: CreateEscapeRoomScreenCom
         stageMappings={stageSlidesMappings}
         selectedStageIndex={selectedStage}
         onAddStage={handleAddStage}
-        onSelectStage={(index) => {setSelectedStage(index); setShowSettings(false)}}
-        handleDuplicateStage = {duplicateStage}
-        handleDeleteStage = {deleteStage}
-        handleGoToSettings = {()=>{setShowSettings(true)}}
+        onSelectStage={(index) => { setSelectedStage(index); setShowSettings(false) }}
+        handleDuplicateStage={duplicateStage}
+        handleDeleteStage={deleteStage}
+        handleGoToSettings={() => { setShowSettings(true) }}
       />
-      
+
       <EscapeRoomContextProvider>
         {/* Editors for the multiple stages avaliable in an escape room game */}
-        {showSettings === false && 
+        {showSettings === false &&
           <EditableStage stageDefinition={currentStage} stageMappings={stageMappings} onStageDefinitionChanged={handleStageDefinitionChanged}
-           onStageDeleted={handleDeleteStage} onStageDuplicated={handleDuplicateStage} />
+            onStageDeleted={handleDeleteStage} onStageDuplicated={handleDuplicateStage} />
         }
         {/* Editor for basic configuration of the escape room like name, description or characters */}
         {
           showSettings &&
-          <EscapeRoomSettings onSettingsChanged={newConfig => { handleSettingsChanged(newConfig); } } escapeRoom={activityDefinition}
-          escapeRoomCharacters={activityDefinition.characters} escapeRoomTitle={activityDefinition.activityTitle ? activityDefinition.activityTitle : ""}
-          escapeRoomDescription={""} onTitleChanged={ title => {handleEscapeRoomTitleChanged(title)}} onDescriptionChanged= {() => {}}/>
+          <EscapeRoomSettings onSettingsChanged={newConfig => { handleSettingsChanged(newConfig); }} escapeRoom={activityDefinition}
+            escapeRoomCharacters={activityDefinition.characters} escapeRoomTitle={activityDefinition.activityTitle ? activityDefinition.activityTitle : ""}
+            escapeRoomDescription={""} onTitleChanged={title => { handleEscapeRoomTitleChanged(title) }} onDescriptionChanged={() => { }} />
         }
       </EscapeRoomContextProvider>
     </Root>

@@ -68,14 +68,14 @@ export const CheckBoxGroupInputCard = (props: CheckBoxGroupInputCardProps): JSX.
 
 export interface EditableCheckBoxGroupCardContentProps extends EditableFieldProps<CheckboxGroupFieldDefinition> {
   /** text to display for the add new option label. */
-  addNewOptionLabel: string;
+  addNewOptionLabel?: string;
 } // EditableCheckBoxGroupCardContentProps
 
 export const EditableCheckBoxGroupCardContent = (props: EditableCheckBoxGroupCardContentProps): JSX.Element => {
 
   const {
     fieldPayload,
-    addNewOptionLabel,
+    addNewOptionLabel = 'New Option',
     onPayloadChanged
   } = props;
 
@@ -127,7 +127,6 @@ export const EditableCheckBoxGroupCardContent = (props: EditableCheckBoxGroupCar
       </CheckboxList>
     </>
   );
-};
-
+}; // EditableCheckBoxGroupCardContent
 
 export default CheckBoxGroupInputCard;
