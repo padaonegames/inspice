@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import styled, { css } from "styled-components";
-import {  EditableFieldProps, MultistageFormFieldDefinition } from "../../../services/multistageFormActivity.model";
+import { AvailableMultistageFormFieldType, EditableFieldProps, MultistageFormFieldDefinition, availableMultistageFormItemTypes, SupportedFormField } from "../../../services/multistageFormActivity.model";
 import {
   Root,
   RequiredAlertIcon,
@@ -120,29 +120,30 @@ export interface EditableFieldCardProps {
   /** What type of question/ field this card is representing (type must be consistent with fieldMappings' name values) */
   initialFieldDefinition?: MultistageFormFieldDefinition;
   /** What  mappings we are working with in this editiable field card (available field types and how to render them) */
-  fieldMappings: FieldMapping[];
+  fieldMappings: FieldMappings<SupportedFormField>;
   /** Callback notifying of field type changing to a new format */
-  onFieldTypeChanged?: (value: string) => void;
+  onFieldTypeChanged?: (value: AvailableMultistageFormFieldType) => void;
   /** Callback notifying parent of field changing (including data payload) */
-  onFieldDefinitionChanged?: (value: MultistageFormFieldDefinition['payload']) => void;
+  onFieldDefinitionChanged?: (value: MultistageFormFieldDefinition) => void;
   /** Callback notifying parent component of user wanting to delete this card */
   onCardDeleted?: () => void;
   /** Callback notifying parent component of card getting the focus */
   onCardFocused?: () => void;
 }
 
-export interface FieldMapping {
+export type FieldMappings<T extends SupportedFormField> = {
   /** What type of field we are working with here*/
-  fieldType: MultistageFormFieldDefinition['type'];
-  /** How to render this option within a list. Defaults to fieldType */
-  displayName?: string;
-  /** What component to place next to the display name */
-  iconComponent?: JSX.Element;
-  /** Generation logic to use to create a form editing component */
-  editingComponentProducer: (editingFormProps: EditableFieldProps<MultistageFormFieldDefinition['payload']>) => JSX.Element;
-  /** Default value for FieldPayload */
-  defaultFieldPayload: MultistageFormFieldDefinition['payload'];
-}
+  [P in T['type']]: {
+    /** How to render this option within a list. Defaults to fieldType */
+    displayName?: string;
+    /** What component to place next to the display name */
+    iconComponent?: JSX.Element;
+    /** Generation logic to use to create a form editing component */
+    editingComponentProducer: (editingFormProps: EditableFieldProps<Extract<T, { type: P }>['payload']>) => JSX.Element;
+    /** Default value for FieldPayload */
+    defaultFieldPayload: Extract<T, { type: P }>['payload'];
+  }
+}; // FieldMappings
 
 /**
  * Editable version of StepTitleCard for form editing
@@ -165,8 +166,10 @@ export const EditableFieldCard = (props: EditableFieldCardProps): JSX.Element =>
   const [fieldDefinition, setFieldDefinition] = useState<MultistageFormFieldDefinition>(initialFieldDefinition ?? {
     promptText: '',
     required: false,
-    type: fieldMappings[0].fieldType,
-    payload: fieldMappings[0].defaultFieldPayload
+    fieldData: {
+      type: 'multiple-choice',
+      payload: fieldMappings['multiple-choice'].defaultFieldPayload
+    }
   });
 
   // whether the field type dropdown is currently open
@@ -195,12 +198,14 @@ export const EditableFieldCard = (props: EditableFieldCardProps): JSX.Element =>
    * a fitting onFieldTypeChanged callback has been provided.
    * @param value New field type selected by the user.
    */
-  const handleFieldTypeSelected = (value: MultistageFormFieldDefinition['type']) => {
+  const handleFieldTypeSelected = (value: AvailableMultistageFormFieldType) => {
     // create a new field definition that's consistent with both new type and previous information
     const newFieldDefinition: MultistageFormFieldDefinition = {
       ...fieldDefinition,
-      type: value,
-      payload: fieldMappings.find(elem => elem.fieldType === value)?.defaultFieldPayload
+      fieldData: {
+        type: value,
+        payload: fieldMappings[value].defaultFieldPayload
+      } as SupportedFormField
     };
     // update inner state
     setFieldDefinition(newFieldDefinition);
@@ -220,11 +225,14 @@ export const EditableFieldCard = (props: EditableFieldCardProps): JSX.Element =>
    * a fitting onFieldDefinitionChanged callback has been provided.
    * @param payload New field definition payload after a change within the currently active child form.
    */
-  const handleFieldPayloadChanged = (payload: MultistageFormFieldDefinition['payload']) => {
+  const handleFieldPayloadChanged = (payload: SupportedFormField['payload']) => {
     // create a new field definition that's consistent with both new type and previous information
-    const newFieldDefinition :MultistageFormFieldDefinition = {
+    const newFieldDefinition: MultistageFormFieldDefinition = {
       ...fieldDefinition,
-      payload: payload
+      fieldData: {
+        type: fieldDefinition.fieldData.type,
+        payload: payload
+      } as SupportedFormField
     };
     // update inner state
     setFieldDefinition(newFieldDefinition);
@@ -270,7 +278,7 @@ export const EditableFieldCard = (props: EditableFieldCardProps): JSX.Element =>
     }
   }; // handlePromptTextChanged
 
-  const selectedField = fieldMappings.find(elem => elem.fieldType === fieldDefinition.type);
+  const selectedField = fieldMappings[fieldDefinition.fieldData.type];
 
   return (
     <Root>
@@ -290,21 +298,21 @@ export const EditableFieldCard = (props: EditableFieldCardProps): JSX.Element =>
             onChange={event => handlePromptTextChanged(event.target.value)}
           />
           <SelectFieldTypeDropdownButton onClick={() => setFieldTypeDropdownOpen(prev => !prev)}>
-            {selectedField?.iconComponent}{selectedField?.displayName ?? selectedField?.fieldType ?? 'Select a field type'} <ExpandDropdownIcon />
+            {selectedField?.iconComponent}{selectedField?.displayName ?? fieldDefinition.fieldData.type ?? 'Select a field type'} <ExpandDropdownIcon />
             {fieldTypeDropdownOpen &&
               <DropdownMenu>
-                {fieldMappings.map(elem => (
-                  <DropdownMenuItem onClick={() => handleFieldTypeSelected(elem.fieldType)}>
-                    {elem.iconComponent}
-                    {elem.displayName ?? elem.fieldType}
+                {availableMultistageFormItemTypes.map(elem => (
+                  <DropdownMenuItem onClick={() => handleFieldTypeSelected(elem)}>
+                    {fieldMappings[elem].iconComponent}
+                    {fieldMappings[elem].displayName ?? elem}
                   </DropdownMenuItem>
                 ))}
               </DropdownMenu>}
           </SelectFieldTypeDropdownButton>
         </HeaderRow>
-        {selectedField && fieldDefinition.payload && (
+        {selectedField && (
           selectedField.editingComponentProducer({
-            fieldPayload: fieldDefinition.payload,
+            fieldPayload: fieldDefinition.fieldData.payload as any,
             onPayloadChanged: handleFieldPayloadChanged
           })
         )}
