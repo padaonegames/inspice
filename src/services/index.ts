@@ -9,6 +9,7 @@ import { UserService } from "./user.service";
 import { AuthService } from "./auth.service";
 import { GamArtworksService } from "./gamArtworks.service";
 import { MncnArtifactService } from "./mncnArtifact.service";
+import { MultistageFormActivityService } from "./multistageFormActivity.service";
 
 export let api: FindArtworkActivityService;
 export let artworksService: ArtworksService;
@@ -20,6 +21,7 @@ export let gamGameApi: GamGameActivityService;
 export let userService: UserService;
 export let authService: AuthService;
 export let mncnArtifactService: MncnArtifactService;
+export let multistageFormApi: MultistageFormActivityService;
 
 /**
  * For the time being we fetch the relevant fields from the initialize services function provided here.
@@ -53,8 +55,9 @@ export const initializeServices = () => {
 
   const inspiceServerApi = process.env.REACT_APP_SERVER_API_URL || 'http://testinspice.padaonegames.com/api';
   gamGameApi = new GamGameActivityService(inspiceServerApi);
+  multistageFormApi = new MultistageFormActivityService(inspiceServerApi);
   userService = new UserService(inspiceServerApi);
   authService = new AuthService(inspiceServerApi);
   gamArtworksService = new GamArtworksService(inspiceServerApi);
   mncnArtifactService = new MncnArtifactService(inspiceServerApi);
-};
+}; // initializeServices

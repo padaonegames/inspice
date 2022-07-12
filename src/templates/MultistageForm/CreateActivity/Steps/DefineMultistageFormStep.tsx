@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import styled from 'styled-components';
-import EditableFieldCard, { FieldMapping, fieldTypeIcon } from '../../../../components/Forms/Cards/EditableFieldCard';
+import EditableFieldCard, { FieldMappings, fieldTypeIcon } from '../../../../components/Forms/Cards/EditableFieldCard';
 import FormActionsFloatingCard from '../../../../components/Forms/Cards/FormActionsFloatingCarc';
-import { multipleChoiceCardFactory } from '../../../../components/Forms/Cards/MultipleChoiceCard';
-import { shortTextCardFactory } from '../../../../components/Forms/Cards/ShortTextInputCard';
+import { EditableMultipleChoiceCardContent, multipleChoiceCardFactory } from '../../../../components/Forms/Cards/MultipleChoiceCard';
+import { EditableShortTextContent, shortTextCardFactory } from '../../../../components/Forms/Cards/ShortTextInputCard';
 import { EditableStepTitleCard } from '../../../../components/Forms/Cards/StepTitleCard';
 import { StepComponentProps } from '../../../../components/Navigation/Steps';
-import { FieldDefinition, MultistageFormFieldDefinition, MultistageFormStage } from '../../../../services/multistageFormActivity.model';
+import { AvailableMultistageFormFieldType, EditableFieldProps, FieldDefinition, MultistageFormFieldDefinition, MultistageFormStage, SupportedFormField } from '../../../../services/multistageFormActivity.model';
 import { RadioCircleMarked } from "styled-icons/boxicons-regular";
 import { ShortText } from "@styled-icons/material/ShortText";
 import { TextLeft } from "@styled-icons/bootstrap/TextLeft";
@@ -16,7 +16,10 @@ import { ImageAdd } from "@styled-icons/boxicons-regular/ImageAdd";
 import { CheckboxChecked } from "@styled-icons/fluentui-system-filled/CheckboxChecked";
 import { LinearScale } from "@styled-icons/material-outlined/LinearScale";
 import { Tags } from "@styled-icons/fa-solid/Tags";
-import { calendarInputCardFactory } from '../../../../components/Forms/Cards/CalendarInputCard';
+import { calendarInputCardFactory, EditableCalendarContent } from '../../../../components/Forms/Cards/CalendarInputCard';
+import { EditableCheckBoxGroupCardContent } from '../../../../components/Forms/Cards/CheckBoxGroupInputCard';
+import { EditableLongTextContent } from '../../../../components/Forms/Cards/LongTextInputCard';
+import { EditableLikertScaleCardContent } from '../../../../components/Forms/Cards/LikertScaleInputCard';
 
 const Root = styled.div`
   display: flex;
@@ -65,78 +68,94 @@ const TagsIcon = styled(Tags)`
   ${fieldTypeIcon}
 `;
 
-export const fieldMappings: FieldMapping[] = [
-  {
-    fieldType: 'short-text',
+export const fieldMappings: FieldMappings<SupportedFormField> = {
+  checkbox: {
+    displayName: 'Checkbox',
+    iconComponent: <CheckboxIcon />,
+    editingComponentProducer: EditableCheckBoxGroupCardContent,
+    defaultFieldPayload: {
+      fields: ['']
+    }
+  },
+  'short-text': {
     displayName: 'Short Text',
     iconComponent: <ShortTextIcon />,
-    defaultFieldPayload: shortTextCardFactory.defaultFormDefinition,
-    editingComponentProducer: shortTextCardFactory.formEditingComponent
+    editingComponentProducer: EditableShortTextContent,
+    defaultFieldPayload: {}
   },
-  {
-    fieldType: 'calendar',
-    displayName: 'Calendar',
-    iconComponent: <DateIcon />,
-    defaultFieldPayload: calendarInputCardFactory.defaultFormDefinition,
-    editingComponentProducer: calendarInputCardFactory.formEditingComponent
+  'long-text': {
+    displayName: 'Long Text',
+    iconComponent: <LongTextIcon />,
+    editingComponentProducer: EditableLongTextContent,
+    defaultFieldPayload: {}
   },
-  {
-    fieldType: 'multiple-choice',
+  'multiple-choice': {
     displayName: 'Multiple Choice',
     iconComponent: <MultipleChoiceIcon />,
-    defaultFieldPayload: multipleChoiceCardFactory.defaultFormDefinition,
-    editingComponentProducer: multipleChoiceCardFactory.formEditingComponent
+    editingComponentProducer: EditableMultipleChoiceCardContent,
+    defaultFieldPayload: {
+      answers: ['', '']
+    }
+  },
+  calendar: {
+    displayName: 'Date',
+    iconComponent: <DateIcon />,
+    editingComponentProducer: EditableCalendarContent,
+    defaultFieldPayload: {}
   }
-];
+}; // fieldMappings
 
 export const DefineMultistageFormStep = (props: StepComponentProps): JSX.Element => {
 
-  const defaultStage: MultistageFormStage<MultistageFormFieldDefinition> = { forms: [], title: '', description: '' };
-  const stage: MultistageFormStage<MultistageFormFieldDefinition> = props.getState<MultistageFormStage<MultistageFormFieldDefinition>>('stage', defaultStage);
+  const defaultStage: MultistageFormStage = { forms: [], title: '', description: '' };
+  const stage: MultistageFormStage = props.getState<MultistageFormStage>('stage', defaultStage);
 
   // which card is currently selected (useful for knowing where to place new cards)
   const [selectedItemIndex, setSelectedItemIndex] = useState<number>(stage.forms.length - 1);
 
   const handleTitleChanged = (value: string) => {
-    props.setState<MultistageFormStage<MultistageFormFieldDefinition>>('stage', (prev => ({
+    props.setState<MultistageFormStage>('stage', (prev => ({
       ...prev,
       title: value
     })), defaultStage);
-  };
+  }; // handleTitleChanged
 
   const handleDescriptionChanged = (value: string) => {
-    props.setState<MultistageFormStage<MultistageFormFieldDefinition>>('stage', (prev => ({
+    props.setState<MultistageFormStage>('stage', (prev => ({
       ...prev,
       description: value
     })), defaultStage);
-  };
+  }; // handleDescriptionChanged
 
   const handleItemAdded = () => {
-    props.setState<MultistageFormStage<MultistageFormFieldDefinition>>('stage', (prev => ({
+    props.setState<MultistageFormStage>('stage', (prev => ({
       ...prev,
       forms: [
         ...prev.forms.slice(0, selectedItemIndex + 1),
         {
           promptText: '',
-          type: 'multiple-choice', payload: {
-            answers: ['Option 1']
+          fieldData: {
+            type: 'multiple-choice',
+            payload: {
+              answers: ['Option 1']
+            }
           }
         },
         ...prev.forms.slice(selectedItemIndex + 1)
       ]
     })), defaultStage);
     setSelectedItemIndex(prev => prev + 1);
-  };
+  }; // handleItemAdded
 
   const handleItemRemoved = (index: number) => {
-    props.setState<MultistageFormStage<MultistageFormFieldDefinition>>('stage', (prev => ({
+    props.setState<MultistageFormStage>('stage', (prev => ({
       ...prev,
       forms: prev.forms.filter((_, i) => i !== index)
     })), defaultStage);
-  };
+  }; // handleItemRemoved
 
-  const handleItemChanged = (index: number, value: MultistageFormFieldDefinition['payload']) => {
-    props.setState<MultistageFormStage<MultistageFormFieldDefinition>>('stage', (prev => ({
+  const handleItemChanged = (index: number, value: MultistageFormFieldDefinition) => {
+    props.setState<MultistageFormStage>('stage', (prev => ({
       ...prev,
       forms: [
         ...prev.forms.slice(0, index),
@@ -144,19 +163,25 @@ export const DefineMultistageFormStep = (props: StepComponentProps): JSX.Element
         ...prev.forms.slice(index + 1)
       ]
     })), defaultStage);
-  };
+  }; // handleItemChanged
 
-  const handleFieldTypeChanged = (index: number, value: string) => {
-    const factory = fieldMappings.find(mapping => mapping.fieldType === value);
-    props.setState<MultistageFormStage<MultistageFormFieldDefinition>>('stage', (prev => ({
+  const handleFieldTypeChanged = (index: number, value: AvailableMultistageFormFieldType) => {
+    const mapping = fieldMappings[value];
+    props.setState<MultistageFormStage>('stage', (prev => ({
       ...prev,
       forms: [
         ...prev.forms.slice(0, index),
-        { promptText: prev.forms[index].promptText, type: value, ...factory?.defaultFieldPayload },
+        {
+          promptText: prev.forms[index].promptText,
+          fieldData: {
+            type: value,
+            payload: mapping.defaultFieldPayload
+          } as SupportedFormField
+        },
         ...prev.forms.slice(index + 1)
       ]
     })), defaultStage);
-  };
+  }; // handleFieldTypeChanged
 
   return (
     <Root>

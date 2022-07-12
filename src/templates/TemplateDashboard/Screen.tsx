@@ -144,7 +144,7 @@ export const TemplateDashboard = (): JSX.Element => {
 interface TemplateDashboardViewProps {
   activities: ActivityInstance[];
   onDeleteActivity?: (activityId: string) => void;
-}
+} // TemplateDashboardViewProps
 
 const TemplateDashBoardView = (props: TemplateDashboardViewProps): JSX.Element => {
 
@@ -155,8 +155,10 @@ const TemplateDashBoardView = (props: TemplateDashboardViewProps): JSX.Element =
 
   const [displayTypes, setDisplayTypes] = useState<Map<SupportedActivity, boolean>>(new Map([
     ['Treasure Hunt', true],
-    ['GAM Game', true]
+    ['GAM Game', true],
+    ['Multistage Form', true]
   ]));
+
   const [displayTags, setDisplayTags] = useState<Map<string, boolean>>(() => {
     const tagsMap = new Map<string, boolean>();
     for (let act of acts) {
@@ -167,7 +169,7 @@ const TemplateDashBoardView = (props: TemplateDashboardViewProps): JSX.Element =
       }
     }
     return tagsMap;
-  })
+  });
 
   const activities: ActivityInstance[] = acts.map(elem => ({
     ...elem,
@@ -186,7 +188,7 @@ const TemplateDashBoardView = (props: TemplateDashboardViewProps): JSX.Element =
         break;
       default: return;
     }
-  };
+  }; // handleOpenActivity
 
   const handleEditActivity = (activity: ActivityInstance) => {
     switch (activity.activityType) {
@@ -198,7 +200,7 @@ const TemplateDashBoardView = (props: TemplateDashboardViewProps): JSX.Element =
         break;
       default: return;
     }
-  };
+  }; // handleEditActivity
 
   const handleOpenTemplate = (template: SupportedActivity) => {
     window.removeEventListener("scroll", noScroll);
@@ -210,33 +212,36 @@ const TemplateDashBoardView = (props: TemplateDashboardViewProps): JSX.Element =
       case 'GAM Game':
         navigate(`/gam-game/curator/create`);
         break;
+      case 'Multistage Form':
+        navigate(`/multistage-form/curator/create`);
+        break;
       default: return;
     }
-  };
+  }; // handleOpenTemplate
 
   const handleDeleteActivity = (activity: ActivityInstance) => {
     if (onDeleteActivity) {
       onDeleteActivity(activity._id);
     }
-  };
+  }; // handleDeleteActivity
 
   const handleDisplayTypeCheck = (type: SupportedActivity, checked: boolean) => {
     setDisplayTypes(prev => {
       prev.set(type, checked);
       return new Map(JSON.parse(JSON.stringify(Array.from(prev))));
     });
-  };
+  }; // handleDisplayTypeCheck
 
   const handleDisplayTagsCheck = (tag: string, checked: boolean) => {
     setDisplayTags(prev => {
       prev.set(tag, checked);
       return new Map(JSON.parse(JSON.stringify(Array.from(prev))));
     });
-  };
+  }; // handleDisplayTagsCheck
 
   const noScroll = () => {
     window.scrollTo(0, 0);
-  };
+  }; // noScroll
 
   useEffect(() => {
     if (newActivityPopupOpen) {
@@ -250,7 +255,7 @@ const TemplateDashBoardView = (props: TemplateDashboardViewProps): JSX.Element =
 
     return () => window.removeEventListener("scroll", noScroll);
 
-  }, [newActivityPopupOpen]);
+  }, [newActivityPopupOpen]); // useEffect
 
   const renderActivityTagsFilters = () => {
     const elems: JSX.Element[] = [];
@@ -271,7 +276,7 @@ const TemplateDashBoardView = (props: TemplateDashboardViewProps): JSX.Element =
       current = it.next();
     }
     return elems;
-  };
+  }; // renderActivityTagsFilters
 
   const shouldDisplay = (activity: ActivityInstance) => {
     if (!displayTypes.get(activity.activityType)) return false;
@@ -287,7 +292,7 @@ const TemplateDashBoardView = (props: TemplateDashboardViewProps): JSX.Element =
       current = it.next();
     }
     return hasAllTags;
-  };
+  }; // shouldDisplay
 
   return (
     <>
@@ -340,4 +345,4 @@ const TemplateDashBoardView = (props: TemplateDashboardViewProps): JSX.Element =
       }
     </>
   );
-};
+}; // TemplateDashBoardView

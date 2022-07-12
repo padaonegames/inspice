@@ -439,10 +439,10 @@ export const EscapeRoomSettings = (props: EscapeRoomSettingsProps): JSX.Element 
           <CharactersContainer>
             {escapeRoom.characters.map((character, index) => (
                 //Character card that can be displayer in two modes (edit and display only) 
-                <EscapeRoomCharacterCard characterInfo={character} onSaveCharacterData={(value)=>{handleCharacterDataChanged(value,index)}} 
+                <EscapeRoomCharacterCard characterInfo={character} onSaveCharacterData={(value:CharacterDefinition)=>{handleCharacterDataChanged(value,index)}} 
                   onEnterCharacterEditMode={()=>{handleEnterCharacterEditMode(index)}} 
                   onDeleteCharacter={()=>{handleDeleteCharacterBien(index)}}
-                  showAlert={(value) =>checkRepeatedName(index,value)} 
+                  showAlert={(value:string) =>checkRepeatedName(index,value)} 
                   editMode={editingCharacterIndex === index}
                 />       
               ))}
@@ -454,10 +454,10 @@ export const EscapeRoomSettings = (props: EscapeRoomSettingsProps): JSX.Element 
               }
               {/* Character editor at the end of the character list to add at the end of the list */}
               {editingCharacterIndex === escapeRoom.characters.length && 
-                <EscapeRoomCharacterCard characterInfo={default_character} onSaveCharacterData={(value) => { handleCharacterDataChanged(value, escapeRoomCharacters.length); } }
+                <EscapeRoomCharacterCard characterInfo={default_character} onSaveCharacterData={(value:CharacterDefinition) => { handleCharacterDataChanged(value, escapeRoomCharacters.length); } }
                   onEnterCharacterEditMode={() => { } }
                   onDeleteCharacter={() => { } }
-                  showAlert={(value) => checkRepeatedName(escapeRoomCharacters.length, value)}
+                  showAlert={(value:string) => checkRepeatedName(escapeRoomCharacters.length, value)}
                   editMode={true} 
                 />   
               }

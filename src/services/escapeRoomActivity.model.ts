@@ -13,8 +13,7 @@ export type ItemDefinition = (
   | { type: 'load-scene', payload: LoadSceneDefinition }
   | { type: 'narrative', payload: NarrativeItemDefinition }
   | { type: 'unlock-password', payload: UnlockPasswordItemDefinition }
-
-  ); // ItemDefinition
+); // ItemDefinition
 
 export const escapeRoomStageTypes = [
   'room',
@@ -56,7 +55,7 @@ export const default_puzzle: SupportedPuzzle = {
   type: 'multiple-choice',
   payload: {
     prompt: '',
-    correctAnswerIndex:0,
+    correctAnswerIndex: 0,
     answers: []
   }
 }; // default_puzzle
@@ -91,7 +90,7 @@ export const defaultEscapeRoomActivityDefinition: InProgressEscapeRoomActivityDe
   activityAuthor: '',
   beginsOn: undefined,
   endsOn: undefined,
-  characters:[],
+  characters: [],
   stages: []
 };
 
@@ -189,7 +188,7 @@ export interface ArScanItemDefinition {
   imageSrc: string;
 } // ArScanItemDefinition
 
-export interface WaitingCodeDefinition  {
+export interface WaitingCodeDefinition {
   /** Password to enter in order to continue in the game */
   code: string;
   /** hints shown before requesting the password */
@@ -198,17 +197,17 @@ export interface WaitingCodeDefinition  {
   maxTexts?: number;
 }
 
-export interface LoadSceneDefinition  {
+export interface LoadSceneDefinition {
   /** Name of the scene that is going to be loaded */
   sceneName: string;
 }
 
-export interface UnlockPasswordItemDefinition  {
+export interface UnlockPasswordItemDefinition {
   /** Password that needs to be solved to exit a room */
   password: number[];
 
   /** Description to help give context to solve the password */
-  description:string;
+  description: string;
 }
 
 export interface NarrativeItemDefinition  {
