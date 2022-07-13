@@ -256,9 +256,13 @@ export const ResourcesPopUpComponent = (props: ResourcesPopUpComponentProps): JS
   const [selectedResource, setSelectedResource] = useState<number>(-1);
   //Mode of the pop up ("SelectResources" for specifying what resource the user wants to use or "ManageResources" to manage the escape rooms resources)
   const [selectedMode, setSelectedMode] = useState<string>(popUpMode);
-
+  //Index of the resource that is being hovered and needs to show the delete button
+  const [hoveredResourceIndex, setHoveredResourceIndex] = useState<number>(-1);
+  
   const handleResourceDeleted = (resourceIndex:number) => {
     if(onResourceDeleted) onResourceDeleted(resourceList[resourceIndex].name);
+    setSelectedResource(-1);
+    setHoveredResourceIndex(-1);
   }; // handleResourceDeleted
 
   const handleResourceAdded = () => {
@@ -302,7 +306,7 @@ export const ResourcesPopUpComponent = (props: ResourcesPopUpComponentProps): JS
           {/* Grid with all the resources avaliable */}
           <SelectResourceGrid elements={resourceList.length} elementsPerRow={3}>
             {resourceList.map((resource, index) => (
-              <ResourceContainer>
+              <ResourceContainer  onMouseEnter={()=>setHoveredResourceIndex(index)} onMouseLeave={()=>setHoveredResourceIndex(-1)}>
                 <ResourceContent selected={selectedResource === index} onMouseDown={()=>{ selectedMode === "SelectResources" && setSelectedResource(index)}} >
                   <ResourcePreview  src={resource.src} />
                     <h4><b>{resource.name}</b></h4> 
@@ -310,9 +314,11 @@ export const ResourcesPopUpComponent = (props: ResourcesPopUpComponentProps): JS
                     {selectedResource === index && <SelectedIcon/>}       
                 </ResourceContent>
                 {/* Button to delete the specific resource */}
-                <DeleteResourceButton onClick={ e=>{ handleResourceDeleted(index)}} >
-                  <DeleteIcon></DeleteIcon>
-                </DeleteResourceButton>         
+                {hoveredResourceIndex === index &&
+                  <DeleteResourceButton onClick={ e=>{ handleResourceDeleted(index)}} >
+                    <DeleteIcon></DeleteIcon>
+                  </DeleteResourceButton>         
+                }
               </ResourceContainer>
             ))}
           </SelectResourceGrid>
