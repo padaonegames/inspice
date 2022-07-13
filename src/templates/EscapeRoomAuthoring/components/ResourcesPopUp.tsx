@@ -2,7 +2,9 @@ import { useState } from "react";
 
 import styled from "styled-components";
 import { Cross } from '@styled-icons/entypo/Cross';
+import {Bin} from "@styled-icons/icomoon/Bin";
 import {Done} from "@styled-icons/material/Done"
+import Dropzone from "react-dropzone";
 
 const CloseIcon = styled(Cross)`
   position:absolute;
@@ -25,7 +27,6 @@ const SelectedIcon = styled(Done)`
   color: rgb(0, 255, 0);
 `
 
-
 const PopUpWrapper = styled.main`
   position: fixed;
   top: 50%;
@@ -37,12 +38,20 @@ const PopUpWrapper = styled.main`
   flex-direction: column;
   overflow: hidden;
   border-radius: 2rem;
-  background-color: rgba(255,255,0,1);
   z-index:10;
+
+  border: 5px solid #000;
+  border-color: rgba(50,50,50,1);
 `;
 
+const DeleteIcon = styled(Bin)`
+  color: rgb(0, 0, 0);
+  height: 1.25em;
+  width: 1.25em;
+`
+
 ////////////////////Title of the container
-const TitleContainer  = styled.div`
+const PopUpTitle  = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
@@ -52,7 +61,7 @@ const TitleContainer  = styled.div`
   height: 100px;
 `;
 
-const PopUpTitle  = styled.div`
+const Title  = styled.div`
   position: relative;
   display: flex;
   height: 50%;
@@ -68,62 +77,27 @@ const PopUpTitle  = styled.div`
 `;
 
 ////////////////////Pop up body
-const BodyContainer = styled.div`
-  position: relative;
+const PopUpBody = styled.div`
   display: flex;
-  flex-direction: column;
+  flex-direction:column;
+  width:100%;
+  height:500px;
   justify-content:center;
   align-items:center;
-  background-color: rgba(200,200,200,1);
-  flex: 1 1 calc(100% + clamp(-96px, -4vmin, -32px));
-  height: 500px;
-`;
-
-const OptionsContainer = styled.div`
-  position:relative;
-  width:90%;
-  height:10%;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  text-align:center;
-`;
-
-interface OptionProps{
-  selected:boolean;
-}
-const Option = styled.div<OptionProps>`
-  position:relative;
-  width:47%;
-  height:90%;
-  bottom:-5px;
-
-  align-self:end;
-  padding: 0 1rem 0rem 1rem;
-  background-color: ${props => props.selected ? "rgba(121,121,121,1)":"rgba(50,50,50,1)"};
-  border-radius: 1rem 1rem 0 0;
-  border-bottom: 5px solid rgba(121,121,121,1);
-  border-top: 5px solid rgba(50,0,0,1);
-  border-left: 5px solid rgba(50,0,0,1);
-  border-right: 5px solid rgba(50,0,0,1);
-  z-index:${props => props.selected ? "100" : "98"};
-
-  &:hover {
-    ${props => props.selected ? "" : "transition: background-color 0.1s; background-color: rgba(0, 0, 255,0.5);"}
-  }
-`;
-
-const OptionContent = styled.div`
-  display: flex;
-  width:90%;
-  height:80%;
-  justify-content:center;
-  align-items:center;
-  background-color: rgba(121,121,121,1);
-  border: 5px solid #000;
-  border-radius: 0.25rem;
+  background-color: rgba(180,180,180,1);
+  border-top: 5px solid #000;
+  border-bottom: 5px solid #000;
   border-color: rgba(50,50,50,1);
   z-index:99;
+
+  padding:50px 0 50px 0;
+  
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-gutter:stable;
+  ::-webkit-scrollbar { width: 8px; z-index:1000; }
+  ::-webkit-scrollbar-track {-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);  border-radius: 10px;}
+  ::-webkit-scrollbar-thumb { border-radius: 10px; -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); }
 `;
 
 ////////////////////GRID
@@ -135,32 +109,28 @@ const SelectResourceGrid = styled.div<GridProps>`
   display: inline-grid;
   grid-template-columns: repeat(min(${props=>props.elementsPerRow},${props=>props.elements}),${props=> {return props.elements<props.elementsPerRow?100/props.elements : 100/props.elementsPerRow}}%) ;
   grid-row-gap: 50px;
-  overflow-x: hidden;
-  overflow-y: auto;
   width:100%;
   height:100%;
-  padding: 1rem 0 1rem 0;
-
-  scrollbar-gutter:stable;
-  ::-webkit-scrollbar { width: 8px; z-index:1000; }
-  ::-webkit-scrollbar-track {-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);  border-radius: 10px;}
-  ::-webkit-scrollbar-thumb { border-radius: 10px; -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); }
 `;
 
 ////////////////////Resources
+const ResourceContainer = styled.div`
+  place-self:center;
+  position:relative;
+  width:125px;
+`;
   interface ResourceProps {
     selected:boolean;
   }
-const ResourceContainer = styled.div<ResourceProps>`
+const ResourceContent = styled.div<ResourceProps>`
   place-self:center;
   position:relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align:center;
-  width:125px;
   border-radius:1rem;
-  background-color: ${props => props.selected ? "rgba(255,255,255,1)" : "rgba(200,200,200,1)"};
+  background-color: ${props => props.selected ? "rgba(255,255,255,1)" : "rgba(100,100,100,1)"};
   box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
 
   &:hover {
@@ -168,7 +138,7 @@ const ResourceContainer = styled.div<ResourceProps>`
     border: 3px solid rgb(0, 0, 0);
   }
 `;
-  
+
 const ResourcePreview = styled.img`
   padding: 0 0 20px 0;
   width:80%;
@@ -177,7 +147,7 @@ const ResourcePreview = styled.img`
 
 
 ////////////////////Bottom of the popup
-const ButtonsContainer  = styled.div`
+const PopUpButtons  = styled.div`
   position: relative;
   display: flex;
   justify-content: flex-end;
@@ -187,20 +157,20 @@ const ButtonsContainer  = styled.div`
   height: 100px;
 `;
 
-interface AcceptButtonProps{
+interface SelectFileButtonProps{
   avaliable:boolean;
 }
-const AcceptButton = styled.div<AcceptButtonProps> `
+const SelectFileButton = styled.div<SelectFileButtonProps> `
   position:absolute;
-  background-color:${props=>props.avaliable ? "rgba(0,230,255,1)":"rgba(0,230,255,0.5)"};
+  background-color:${props=>props.avaliable ? "rgba(0,230,255,1)":"rgba(110,165,175,0.5)"};
   height: fit-content;
   width: fit-content;
 
   border-radius: 0.5rem;
   padding: 0.5rem 1rem 0.5rem 1rem;
-  right:0%;
+  right:50%;
   top:50%;
-  transform: translate(-50%, -50%);
+  transform: translate(50%, -50%);
 
   &:hover {
   ${props =>props.avaliable ? 
@@ -208,23 +178,45 @@ const AcceptButton = styled.div<AcceptButtonProps> `
       :""}
     }
 `
-const CancelButton = styled.div `
-  position:absolute;
-  background-color: rgba(255,77,77,1);
-  height: fit-content;
-  width: fit-content;
-  border-radius: 0.5rem;
-  padding: 0.5rem 1rem 0.5rem 1rem;
 
-  right:15%;
-  top:50%;
-  transform: translate(-50%, -50%);
+const DropZoneContainer = styled.div`
+  margin-bottom:20px;
+  flex: 1;
+  width:90%;
+  height:200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  border-width: 2px;
+  border-radius: 2px;
+  border-color: rgba(255,0,0,0.5);
+  border-style: dashed;
+  background-color: #fafafa;
+  color: #bdbdbd;
+  outline: none;
+  transition: border .24s ease-in-out;
+`;
 
+const DeleteResourceButton = styled.div`
+  position: absolute;
+  top: 0%;
+  right:0%;
+  padding: 3px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 0%;
+  box-sizing: border-box;
+  color: rgb(247, 0, 255);
+  background-color:rgb(222, 222, 222);
+  border-radius: 0.75rem;
   &:hover {
-    transition: border 0.25s;
+    transition: border background-color visibility  1s;
     border: 3px solid rgb(0, 0, 0);
+    background-color:  rgb(180, 180, 180);
   }
-`
+`;
 
 export interface ResourceDefinition {
   name:string;
@@ -236,6 +228,8 @@ export interface ResourcesPopUpComponentProps {
   resourceList: ResourceDefinition[];
   /** Text that is going to be displayed at the top of the pop up as the title */
   popUpTitle?: string;
+  /**Mode of the pop up ("SelectResources" for specifying what resource the user wants to use or "ManageResources" to manage the escape rooms resources)*/
+  popUpMode?:string;
   /** Callback notifying that the user wants to delete a specific resource */
   onResourceDeleted?: (id:string) => void;
   /** Callback notifying parent component that the user wants to add a new resource to his escape room */
@@ -244,33 +238,31 @@ export interface ResourcesPopUpComponentProps {
   onResourceSelected?: (index:number) => void;
   /** Callback notifying parent component that the user closed the pop up message */
   onClosePopUp?: () => void;
-  /** Callback notifying parent component that the user canceled the operation started with this pop up */
-  onCancelSelectResource?: () => void;
 }
 
 export const ResourcesPopUpComponent = (props: ResourcesPopUpComponentProps): JSX.Element => {
 
   const {
     resourceList,
-    popUpTitle= "Escape Room Resources",
+    popUpTitle= "Title",
+    popUpMode="SelectResources",
     onAddResource,
     onResourceDeleted,
     onResourceSelected,
     onClosePopUp,
-    onCancelSelectResource
   } = props;
 
   //Index of the resource that is being selected at any point
   const [selectedResource, setSelectedResource] = useState<number>(-1);
-  //Mode of the pop up ("select" for specifying what resource the user wants to use or "manage" to manage the escape rooms resources)
-  const [selectedMode, setSelectedMode] = useState<string>("select");
+  //Mode of the pop up ("SelectResources" for specifying what resource the user wants to use or "ManageResources" to manage the escape rooms resources)
+  const [selectedMode, setSelectedMode] = useState<string>(popUpMode);
 
-
-  const handleResourceDeleted = () => {
-
+  const handleResourceDeleted = (resourceIndex:number) => {
+    if(onResourceDeleted) onResourceDeleted(resourceList[resourceIndex].name);
   }; // handleResourceDeleted
 
   const handleResourceAdded = () => {
+    if(onAddResource) onAddResource();
 
   }; // handleResourceAdded
 
@@ -279,60 +271,58 @@ export const ResourcesPopUpComponent = (props: ResourcesPopUpComponentProps): JS
     onClosePopUp();
   } //handlePopUpClosed
 
-  const handleSelectionCanceled = () =>{
-    if(!onCancelSelectResource) return;
-    onCancelSelectResource();
-  }
-
   const handleResourceSelected = () =>{
     if(!onResourceSelected || selectedResource === -1) return;
     onResourceSelected(selectedResource);
   } //handleResourceSelected
 
 
-  const handleOptionSelected = (option:string)=>{
-    if(option===selectedMode)return;
-    setSelectedMode(option);
-  } //handleOptionSelected
-
-
-
   return (
     <PopUpWrapper>
       {/* Title of the pop up */}
-      <TitleContainer>
-        <PopUpTitle>{popUpTitle}</PopUpTitle>
+      <PopUpTitle>
+        <Title>{popUpTitle}</Title>
         <CloseIcon onMouseDown={()=>{handlePopUpClosed()}} />
-      </TitleContainer>
+      </PopUpTitle>
 
-      {/* Body wich can have an interfece to select a specific resource or manage the user's escape room resources */}
-      <BodyContainer>
-        {/* Buttons to switch between the different modes of the popup */}
-        <OptionsContainer>
-          <Option selected={selectedMode === "select"} onMouseDown={()=>{handleOptionSelected("select")}} >Select</Option>
-          <Option selected={selectedMode === "manage"} onMouseDown= {()=>{handleOptionSelected("manage")}}>Manage resources</Option>
-        </OptionsContainer>
-        {/* Content of the pop up, which depends on the mode that it is currently in */}
-        <OptionContent>
-            {selectedMode === "select" && 
-              <SelectResourceGrid elements={resourceList.length} elementsPerRow={3}>
-                {resourceList.map((resource, index) => (
-                  <ResourceContainer selected={selectedResource === index} onMouseDown={()=>{setSelectedResource(index)}} >
-                    <ResourcePreview  src={resource.src} />
-                      <h4><b>{resource.name}</b></h4>      
-
-                      {selectedResource === index && <SelectedIcon/>}                
-                  </ResourceContainer>
-                ))}
-              </SelectResourceGrid>
-            }
-          </OptionContent>
-      </BodyContainer>
-      {/* Container of the buttons at the bottom of the pop up that let the user confirm or cancel his actions */}
-      <ButtonsContainer>
-        <CancelButton  onMouseDown={()=>{handleSelectionCanceled()}}> Cancel </CancelButton>
-        <AcceptButton avaliable={selectedResource !== -1} onMouseDown={()=>{handleResourceSelected()}}> Select </AcceptButton>
-      </ButtonsContainer>
+      {/* Body with the resources avaliable and a dropzone if the selected mode is "ManageResources" */}
+      <PopUpBody>
+        {/* Drop Zone for adding new resources  */}
+        {selectedMode === "ManageResources" && <>
+              <Dropzone onDrop={()=>{handleResourceAdded}} multiple= {false}>
+                {({getRootProps, getInputProps}) => (
+                  <DropZoneContainer {...getRootProps()}>
+                    <input {...getInputProps()} />
+                    <p>Drag 'n' drop some files here, or click to select files</p>
+                  </DropZoneContainer>
+                )}
+              </Dropzone>
+            </>
+          }
+          {/* Grid with all the resources avaliable */}
+          <SelectResourceGrid elements={resourceList.length} elementsPerRow={3}>
+            {resourceList.map((resource, index) => (
+              <ResourceContainer>
+                <ResourceContent selected={selectedResource === index} onMouseDown={()=>{ selectedMode === "SelectResources" && setSelectedResource(index)}} >
+                  <ResourcePreview  src={resource.src} />
+                    <h4><b>{resource.name}</b></h4> 
+                    {/* Green tick icon that shows if the resource is selected or not */}
+                    {selectedResource === index && <SelectedIcon/>}       
+                </ResourceContent>
+                {/* Button to delete the specific resource */}
+                <DeleteResourceButton onClick={ e=>{ handleResourceDeleted(index)}} >
+                  <DeleteIcon></DeleteIcon>
+                </DeleteResourceButton>         
+              </ResourceContainer>
+            ))}
+          </SelectResourceGrid>
+        </PopUpBody>
+      {/* Container of the buttons at the bottom of the pop up that let the user confirm his selection */}
+      <PopUpButtons>
+        {selectedMode === "SelectResources" && 
+          <SelectFileButton avaliable={selectedResource !== -1} onMouseDown={()=>{handleResourceSelected()}}> Select File</SelectFileButton>
+        }
+      </PopUpButtons>
     </PopUpWrapper>
   );
 }; // ResourcesPopUpComponent

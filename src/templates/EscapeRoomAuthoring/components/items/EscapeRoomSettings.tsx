@@ -1,19 +1,13 @@
 import { InProgressEscapeRoomActivityDefinition, default_character, CharacterDefinition } from "../../../../services/escapeRoomActivity.model";
 import { PromptField } from "./PromptField";
 
+import { useContext, useState } from "react";
+import { EscapeRoomContext } from "../../EscapeRoomContext";
+import {EscapeRoomCharacterCard} from "./EscapeRoomCharacterCard"
+
 import styled from "styled-components";
 import {Settings} from "@styled-icons/fluentui-system-filled/Settings"
 import {UserPlus} from "@styled-icons/boxicons-regular/UserPlus"
-import { Cross } from '@styled-icons/entypo/Cross';
-import {AlertCircle} from "@styled-icons/evaicons-solid/AlertCircle"
-import {Save} from "@styled-icons/boxicons-solid/Save"
-import {Edit} from "@styled-icons/boxicons-solid/Edit"
-
-import { useContext, useState } from "react";
-import { EscapeRoomContext } from "../../EscapeRoomContext";
-import ResourcesPopUpComponent, { ResourceDefinition } from "../ResourcesPopUp";
-import { WeatherPartlyCloudyDay } from "styled-icons/fluentui-system-filled";
-import {EscapeRoomCharacterCard} from "./EscapeRoomCharacterCard"
 
 
 const SettingsIcon = styled(Settings)`
@@ -30,51 +24,6 @@ const AddCharacterIcon = styled(UserPlus)`
   width: auto;
 `;
 
-const DeleteIcon = styled(Cross)`
-  position:absolute;
-  right:5px;
-  height: 2em;
-  width: 2em;
-
-  color: rgb(0, 0, 0);
-  &:hover {
-    color: rgb(255, 0, 0);
-  }
-`
-
-const AlertIcon = styled(AlertCircle)`
-  position:absolute;
-  left:27%;
-  top:8%;
-  height: 2em;
-  width: 2em;
-  color: rgb(255, 0, 0);
-  transform: translate(-50%, -50%);
-`
-
-const SaveIcon = styled(Save)`
-position:absolute;
-right:5px;
-height: 2em;
-width: 2em;
-
-color: rgb(0, 0, 0);
-&:hover {
-  color: rgb(255, 0, 0);
-}
-`
-const EditIcon = styled(Edit)`
-position:absolute;
-right:30px;
-height: 2em;
-width: 2em;
-
-color: rgb(0, 0, 0);
-&:hover {
-  color: rgb(255, 0, 0);
-}
-`
-
 const Wrapper = styled.main`
   position: relative;
   left: 12%;
@@ -90,33 +39,6 @@ const Wrapper = styled.main`
   font: inherit;
 `;
 
-
-const CharacterContainer = styled.div`
-position:relative;
-margin-top: 5px;
-display: flex;
-flex-direction: row;
-align-items: left;
-width:50%;
-max-height: 500px;
-border-bottom: 2px solid #dadce0;
-padding: 0.75em;
-background-color: rgba(100,100,100,1);
-border-radius: 1.25rem;
-box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
-`;
-const CharacterPreviewContainer = styled.div`
-display: flex;
-flex-direction: column;
-justify-content: space-between;
-align-items: center;
-width:30%;
-padding: 0 10px 0 10px;
-background-color: rgba(150,150,150,1);
-border-radius: 1.25rem 0 0 1.25rem;
-`;
-
-
 const CharactersContainer = styled.div`
 margin-top: 5px;
 display: flex;
@@ -127,28 +49,6 @@ padding: 0.75em;
 background-color: rgba(0,0,0,0.5);
 border-radius: 1.25rem;
 box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
-`;
-
-const CharacterInfoContainer = styled.div`
-  position:relative;
-  display: flex;
-  flex-direction: column;
-  align-items: space-between;
-  padding:0 10px 10px 10px;
-  width:100%;
-  background-color: rgba(180,180,180,1);
-  border-radius: 0 1.25rem 1.25rem 0;
-  z-index:0;
-`;
-
-const ParragraphContainer = styled.div`
-  position:relative;
-  display: flex;
-  padding:0 10px 10px 10px;
-  width:100%;
-  background-color: rgba(255,0,0,0.5);
-  border-radius: 0.25rem 0.25rem 0.25rem 0.25rem;
-  z-index:0;
 `;
 
 
@@ -211,27 +111,6 @@ const CheckboxTitle = styled.div`
   border-width: 0px 0px 2px 0px;
 `;
 
-const SelectCharacterButton = styled.div`
-  font-size: 1em;
-  font-weight: 500;
-  font-family: ${props => props.theme.contentFont};
-  line-height: 135%;
-
-  color: black;
-  line-height: 135%;
-  width: 100%;
-  text-align: center;
-  padding: 10px 0px 10px 0px;
-  margin: 0px 0px 10px 0px;
-  background-color: rgba(240,240,240,1);
-  border-radius: 0.5rem;
-
-  &:hover {
-    transition: border 0.25s;
-    border: 3px solid rgb(0, 0, 0);
-  }
-`;
-
 const GeneralSettingsContainer = styled.div`
   width: 100%;
   margin-top: 5px;
@@ -278,13 +157,6 @@ const GeneralSettingsTitle = styled.div`
   margin-top:10px;
 `;
 
-
-const CharacterPreview = styled.img`
-  width:100%;
-  display: block;
-`;
-
-
 const AddPuzzleButton = styled.div`
 
   position: relative;
@@ -316,19 +188,6 @@ const AddPuzzleButton = styled.div`
   }
 
 `;
-
-const DataLine = styled.div`
-  position:relative;
-  height: 1.25em;
-  width: fit-content;
-  margin-top:10px;
-
-  border-style: solid;
-  border-color: lightgray;
-  border-width: 0px 0px 2px 0px;
-`;
-
-
 export interface EscapeRoomSettingsProps {
 
   escapeRoom: InProgressEscapeRoomActivityDefinition;

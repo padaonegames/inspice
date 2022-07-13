@@ -107,7 +107,7 @@ export const EditableARScanItemContent = (props: EditableItemProps<ArScanItemDef
     <>
     {/* Pop up component to enable image selection from the escape room resources */}
     {showResourcesPopUp && 
-    <ResourcesPopUpComponent resourceList={resources} onClosePopUp={()=>{handleShowPopUp(false)}} onCancelSelectResource={()=>{handleShowPopUp(false)}} 
+    <ResourcesPopUpComponent resourceList={resources} onClosePopUp={()=>{handleShowPopUp(false)}} 
      onResourceSelected={(value)=>{handleResourceSelected(value)}} popUpTitle={"Select an image to scan"}/>}
       
       <Root>

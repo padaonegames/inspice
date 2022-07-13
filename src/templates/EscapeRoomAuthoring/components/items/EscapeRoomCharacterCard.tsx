@@ -2,17 +2,13 @@ import { InProgressEscapeRoomActivityDefinition, default_character, CharacterDef
 import { PromptField } from "./PromptField";
 
 import styled from "styled-components";
-import {Settings} from "@styled-icons/fluentui-system-filled/Settings"
-import {UserPlus} from "@styled-icons/boxicons-regular/UserPlus"
 import { Cross } from '@styled-icons/entypo/Cross';
 import {AlertCircle} from "@styled-icons/evaicons-solid/AlertCircle"
 import {Save} from "@styled-icons/boxicons-solid/Save"
 import {Edit} from "@styled-icons/boxicons-solid/Edit"
 
 import { useContext, useEffect, useState } from "react";
-import { EscapeRoomContext } from "../../EscapeRoomContext";
 import ResourcesPopUpComponent, { ResourceDefinition } from "../ResourcesPopUp";
-import { WeatherPartlyCloudyDay } from "styled-icons/fluentui-system-filled";
 
 
 const DeleteIcon = styled(Cross)`
@@ -59,9 +55,6 @@ color: rgb(0, 0, 0);
   color: rgb(255, 0, 0);
 }
 `
-
-
-
 const CharacterContainer = styled.div`
 position:relative;
 margin-top: 5px;
@@ -86,9 +79,6 @@ padding: 0 10px 0 10px;
 background-color: rgba(150,150,150,1);
 border-radius: 1.25rem 0 0 1.25rem;
 `;
-
-
-
 
 const CharacterInfoContainer = styled.div`
   position:relative;
@@ -144,8 +134,6 @@ export const InputArea = styled.textarea<InputAreaProps>`
   }
 `;
 
-
-
 const SelectCharacterButton = styled.div`
   font-size: 1em;
   font-weight: 500;
@@ -167,17 +155,10 @@ const SelectCharacterButton = styled.div`
   }
 `;
 
-
-
-
-
-
 const CharacterPreview = styled.img`
   width:100%;
   display: block;
 `;
-
-
 
 const DataLine = styled.div`
   position:relative;
@@ -224,7 +205,8 @@ export const EscapeRoomCharacterCard = (props: EscapeRoomCharacterCardProps): JS
   } //handleCharacterDescriptionChanged
 
   const onSaveCharacterInfo = ()=>{
-    if(onSaveCharacterData) onSaveCharacterData(characterData);
+    //Trim to prevent names with empty spaces at the end/begining
+    if(onSaveCharacterData) onSaveCharacterData({...characterData, name: characterData.name.trim()});
   } //onSaveCharacterInfo
 
   const handleDeleteCharacter =()=>{
@@ -259,10 +241,9 @@ export const EscapeRoomCharacterCard = (props: EscapeRoomCharacterCardProps): JS
 
   return (
     <>
-
       {/* Pop up component to enable image selection from the escape room resources */}
       {showResourcesPopUp && 
-      <ResourcesPopUpComponent resourceList={resources} onClosePopUp={()=>{setShowResourcesPopUp(false)}} onCancelSelectResource={()=>{setShowResourcesPopUp(false)}} 
+      <ResourcesPopUpComponent resourceList={resources} onClosePopUp={()=>{setShowResourcesPopUp(false)}} 
       onResourceSelected={(value)=>{handleResourceSelected(value)}} popUpTitle={"Select an image to scan"}/>}
 
       {/* Card with Prompt fields to modify the caracters name and description and a button to specify its image */}
@@ -275,8 +256,8 @@ export const EscapeRoomCharacterCard = (props: EscapeRoomCharacterCardProps): JS
           </CharacterPreviewContainer>
             {/* Name and description */}
           <CharacterInfoContainer>
-            {showAlert(characterData.name) && <AlertIcon/>}
-            <SaveIcon onMouseDown={()=>{!showAlert(characterData.name) && onSaveCharacterInfo()}} />
+            {showAlert(characterData.name.trim()) && <AlertIcon/>}
+            <SaveIcon onMouseDown={()=>{!showAlert(characterData.name.trim()) && onSaveCharacterInfo()}} />
             <DataLine>Character Name</DataLine>
             <PromptField promptText={characterData.name} promptPlaceholder='Character Name' onPromptChange={(value)=>handleCharacterNameChanged(value)} textAlignment="left"/>
             <DataLine>Character Description</DataLine>
