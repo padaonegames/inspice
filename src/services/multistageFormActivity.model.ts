@@ -54,6 +54,7 @@ export const availableMultistageFormItemTypes = [
   'calendar',
   'display-image',
   'display-video',
+  'likert-scale'
 ] as const; // multistageFormItemTypes
 
 export type AvailableMultistageFormFieldType = typeof availableMultistageFormItemTypes[number];

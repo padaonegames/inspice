@@ -1,17 +1,25 @@
 import { useState } from 'react';
-import styled from 'styled-components';
 import EditableFieldCard, { FieldMappings, fieldTypeIcon } from '../../../../components/Forms/Cards/EditableFieldCard';
 import FormActionsFloatingCard from '../../../../components/Forms/Cards/FormActionsFloatingCarc';
 import { EditableMultipleChoiceCardContent, multipleChoiceCardFactory } from '../../../../components/Forms/Cards/MultipleChoiceCard';
 import { EditableDisplayImageCardContent, displayImageCardFactory } from '../../../../components/Forms/Cards/DisplayImageCard';
 import { EditableDisplayVideoCardContent, displayVideoCardFactory } from '../../../../components/Forms/Cards/DisplayVideoCard';
+import { LikertScaleInputCard } from '../../../../components/Forms/Cards/LikertScaleInputCard';
 import { EditableShortTextContent, shortTextCardFactory } from '../../../../components/Forms/Cards/ShortTextInputCard';
 import { EditableStepTitleCard } from '../../../../components/Forms/Cards/StepTitleCard';
 import { StepComponentProps } from '../../../../components/Navigation/Steps';
 import { AvailableMultistageFormFieldType, EditableFieldProps, FieldDefinition, MultistageFormFieldDefinition, MultistageFormStage, SupportedFormField } from '../../../../services/multistageFormActivity.model';
+import { calendarInputCardFactory, EditableCalendarContent } from '../../../../components/Forms/Cards/CalendarInputCard';
+import { EditableCheckBoxGroupCardContent } from '../../../../components/Forms/Cards/CheckBoxGroupInputCard';
+import { EditableLongTextContent } from '../../../../components/Forms/Cards/LongTextInputCard';
+import { EditableLikertScaleCardContent } from '../../../../components/Forms/Cards/LikertScaleInputCard';
+import LikertScaleInputCardStories from '../../../../stories/forms/cards/LikertScaleInputCard.stories';
+
+import styled from 'styled-components';
 import { RadioCircleMarked } from "styled-icons/boxicons-regular";
 import { CardImage } from "@styled-icons/bootstrap/CardImage";
-import {Video} from "@styled-icons/entypo/Video"
+import {Video} from "@styled-icons/entypo/Video";
+import {Like} from "@styled-icons/boxicons-regular/Like";
 import { ShortText } from "@styled-icons/material/ShortText";
 import { TextLeft } from "@styled-icons/bootstrap/TextLeft";
 import { CalendarEvent } from "@styled-icons/boxicons-regular/CalendarEvent";
@@ -20,10 +28,6 @@ import { ImageAdd } from "@styled-icons/boxicons-regular/ImageAdd";
 import { CheckboxChecked } from "@styled-icons/fluentui-system-filled/CheckboxChecked";
 import { LinearScale } from "@styled-icons/material-outlined/LinearScale";
 import { Tags } from "@styled-icons/fa-solid/Tags";
-import { calendarInputCardFactory, EditableCalendarContent } from '../../../../components/Forms/Cards/CalendarInputCard';
-import { EditableCheckBoxGroupCardContent } from '../../../../components/Forms/Cards/CheckBoxGroupInputCard';
-import { EditableLongTextContent } from '../../../../components/Forms/Cards/LongTextInputCard';
-import { EditableLikertScaleCardContent } from '../../../../components/Forms/Cards/LikertScaleInputCard';
 
 const Root = styled.div`
   display: flex;
@@ -45,6 +49,10 @@ const DisplayImageIcon = styled(CardImage)`
 `;
 
 const DisplayVideoIcon = styled(Video)`
+  ${fieldTypeIcon}
+`;
+
+const LikerIcon = styled(Like)`
   ${fieldTypeIcon}
 `;
 
@@ -129,6 +137,16 @@ export const fieldMappings: FieldMappings<SupportedFormField> = {
     editingComponentProducer: EditableDisplayVideoCardContent,
     defaultFieldPayload: {
       src: ''
+    }
+  },
+  'likert-scale': {
+    displayName: 'Liker',
+    iconComponent: <LikerIcon />,
+    editingComponentProducer: EditableLikertScaleCardContent,
+    defaultFieldPayload: {
+      scale:["First", "Second", "Third"],
+      questions:[],
+      showQuestionsIndex:false
     }
   },
 }; // fieldMappings

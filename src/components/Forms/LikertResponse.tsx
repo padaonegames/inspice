@@ -7,6 +7,11 @@ const LikertResponseContainer = styled.label`
   min-width: 1.6em;
   text-align: center;
   position: relative;
+
+  //
+  background-color: rgba(255,0,0,1);
+  border-right: 2px solid rgb(0,255,0);
+  border-left: 2px solid rgb(0,0,255);
 `;
 
 const LikertText = styled.span`
@@ -100,7 +105,7 @@ export const LikertResponse = (props: LikertResponseProps): JSX.Element => {
       <LikertInput
         type='radio'
         name={responseText}
-        onChange={handleSelectAnswer}
+        onChange={event =>handleSelectAnswer}
       />
       <LikertIndicator checked={selected} />
       <VerticalSpace />

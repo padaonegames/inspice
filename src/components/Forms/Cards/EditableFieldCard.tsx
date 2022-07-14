@@ -167,8 +167,8 @@ export const EditableFieldCard = (props: EditableFieldCardProps): JSX.Element =>
     promptText: '',
     required: false,
     fieldData: {
-      type: 'multiple-choice',
-      payload: fieldMappings['multiple-choice'].defaultFieldPayload
+      type: 'likert-scale',
+      payload: fieldMappings['likert-scale'].defaultFieldPayload
     }
   });
 

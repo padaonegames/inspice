@@ -1,3 +1,4 @@
+import { useState } from "react";
 import styled from "styled-components";
 import { EditableFieldProps, LikertScaleFieldDefinition } from "../../../services/multistageFormActivity.model";
 import LikertResponse from "../LikertResponse";
@@ -8,7 +9,14 @@ import {
   RequiredAsterisk,
   RequiredQuestionSpan,
   RequiredAlertIcon,
+  SelectFieldTypeDropdownButton,
+  InputText,
 } from "./cardStyles";
+import FormActionsFloatingCard from "./FormActionsFloatingCarc";
+import { AddCircle } from '@styled-icons/fluentui-system-regular/AddCircle';
+import { Cross } from '@styled-icons/entypo/Cross';
+
+
 
 const QuestionText = styled.div`
   // font: 400 16px Roboto,RobotoDraft,Helvetica,Arial,sans-serif;
@@ -35,6 +43,28 @@ const LikertScaleContainer = styled.fieldset`
   border-bottom: 2px solid #dadce0;
   padding-bottom: 1.25em;
   background-color: transparent;
+  //
+  background-color:rgba(255,255,0,0.5);
+`;
+
+const LikertScaleSampleContainer = styled.fieldset`
+  margin-bottom: 0.5em;
+  width:100%;
+  border: none;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-top: 0.1em;
+  background-color: transparent;
+
+  border-bottom: 2px solid #dadce0;
+  padding-bottom: 1.25em;
+  background-color: transparent;
+  //
+  background-color:rgba(255,0,255,0.5);
 `;
 
 const LikertBand = styled.div`
@@ -45,6 +75,9 @@ const LikertBand = styled.div`
   display: flex;
   padding-top: 0.6em;
   margin-top: 0.6em;
+  
+  //
+  background-color: rgba(255,0,255,0.5);
 `;
 
 const VerticalSpace = styled.div`
@@ -131,9 +164,77 @@ export const LikertScaleInputCard = (props: LikertScaleInputCardProps): JSX.Elem
   );
 };
 
+
+
+const ScaleConfigContainer = styled.div`
+display: flex;
+flex-direction: column;
+padding-top: 0.6em;
+align-items:center;
+justify-content:center;
+
+//
+background-color: rgba(0,0,255,0.5);
+`;
+
+const ScaleConfigurator = styled.div`
+display: flex;
+width:50%;
+padding-top: 0.6em;
+height:50px;
+
+//
+background-color: rgba(0,0,0,0.5);
+`;
+
+const QuestionContainer = styled.div`
+display: flex;
+width:100%;
+padding-top: 0.6em;
+justify-content: space-between;
+
+//
+background-color: rgba(0,100,0,0.5);
+`;
+const RemoveQuestionIcon = styled(Cross)`
+  cursor: pointer;
+  height: 50px;
+  width: 50px;
+  align-self: flex-end;
+  color: black;
+`;
+
+const AddQuestionContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+
+  transition: all .3s cubic-bezier(0.4,0,0.2,1);
+  justify-content: center;
+  align-self:center;
+  align-items: center;
+  width: 50px;
+  padding: 0.5em;
+  margin: 0.5em 0;
+
+  border-radius: 8px;
+  border: 1px solid #dadce0;
+  background-color: rgba(255,0,0,0.5);
+  &:hover {
+    background-color: #f8f9fa;
+  }
+`;
+
+const AddQuestionIcon = styled(AddCircle)`
+  height: 1.75em;
+  width: 1.75em;
+`;
+
+
+
 export interface EditableLikertScaleCardContentProps extends EditableFieldProps<LikertScaleFieldDefinition> {
 
 } // EditableLikertScaleCardContentProps
+
 
 export const EditableLikertScaleCardContent = (props: EditableLikertScaleCardContentProps): JSX.Element => {
 
@@ -147,6 +248,8 @@ export const EditableLikertScaleCardContent = (props: EditableLikertScaleCardCon
     scale,
     showQuestionsIndex = false
   } = fieldPayload;
+
+  const [scaleLenght, setScaleLength] = useState<number>(3);
 
   const handleAddQuestion = () => {
     if (!onPayloadChanged) return;
@@ -164,28 +267,95 @@ export const EditableLikertScaleCardContent = (props: EditableLikertScaleCardCon
     })
   }; // handleRemoveQuestion
 
+
+  const handleQuestionChanged = (index: number, newQuestion: string) => {
+    if (!onPayloadChanged) return;
+
+    let finalQuetions = fieldPayload.questions;
+    finalQuetions = [...finalQuetions.slice(0,index), newQuestion,...finalQuetions.slice(index+1,finalQuetions.length)]
+    onPayloadChanged({
+      ...fieldPayload,
+      questions:finalQuetions
+    })
+  }
+
+  const handleScaleChanged = (delta: number) => {
+    let result = scaleLenght + delta;
+    if (result < 3) { result = 3; return; }
+    if (result > 8) { result = 8; return; }
+    setScaleLength(result);
+
+    let resultScale = scale;
+    if (delta === 1) resultScale.push("New thing");
+    if (delta === -1) resultScale.pop();
+
+    if (!onPayloadChanged) return;
+    onPayloadChanged({
+      ...fieldPayload,
+      scale: resultScale
+    })
+  }
+
   return (
     <>
+      <ScaleConfigContainer>
+        <ScaleConfigurator>
+
+          <span>
+            {"Scale of "}
+            <button onClick={() => handleScaleChanged(-1)}>-</button>
+            {scaleLenght}
+            <button onClick={() => handleScaleChanged(1)}>+</button>
+            {" elements"}
+          </span>
+        </ScaleConfigurator>
+
+        <LikertScaleSampleContainer>
+          <LikertBand>
+            {scale.map((response, rInd) => (
+              <LikertResponse
+                responseText={response}
+                position={rInd === 0 ? 'first' : (rInd === scale.length - 1 ? 'last' : 'middle')}
+                key={"Sample question"}
+                onResponseSelected={() => { }}
+                selected={false}
+              />
+            ))}
+          </LikertBand>
+        </LikertScaleSampleContainer>
+      </ScaleConfigContainer>
+
       {questions.map((question, qInd) => (
-          <>
-            <QuestionText>
-              {`${showQuestionsIndex ? ((qInd + 1) + '. ') : ''}${question}`}
-            </QuestionText>
-            <LikertScaleContainer>
-              <LikertBand>
-                {scale.map((response, rInd) => (
-                  <LikertResponse
-                    responseText={response}
-                    position={rInd === 0 ? 'first' : (rInd === scale.length - 1 ? 'last' : 'middle')}
-                    key={question}
-                    onResponseSelected={() => {}}
-                    selected={false}
-                  />
-                ))}
-              </LikertBand>
-            </LikertScaleContainer>
-          </>
-        ))}
+        <>
+          <QuestionContainer>
+            <InputText
+              readOnly={false}
+              placeholder={'New Question'}
+              maxLength={1000}
+              value={question}
+              onChange={event => handleQuestionChanged(qInd, event.target.value)}
+            />
+            <RemoveQuestionIcon onMouseDown={()=>{handleRemoveQuestion(qInd)}}/>
+          </QuestionContainer>
+          <LikertScaleContainer>
+            <LikertBand>
+              {scale.map((response, rInd) => (
+                <LikertResponse
+                  responseText={response}
+                  position={rInd === 0 ? 'first' : (rInd === scale.length - 1 ? 'last' : 'middle')}
+                  key={question}
+                  onResponseSelected={() => { }}
+                  selected={false}
+                />
+              ))}
+            </LikertBand>
+          </LikertScaleContainer>
+        </>
+      ))}
+
+      <AddQuestionContainer onMouseDown={() => { handleAddQuestion() }}>
+        <AddQuestionIcon />
+      </AddQuestionContainer>
     </>
   );
 }; // EditableLikertScaleCardContent
