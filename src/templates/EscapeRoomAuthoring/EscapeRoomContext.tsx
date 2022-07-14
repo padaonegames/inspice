@@ -13,12 +13,12 @@ const EscapeRoomContext = React.createContext<EscapeRoomContextInterface>({
 });
 
 
-//Wrapper that provides the means to access and modify the state of the current escape room that is being modified
-const EscapeRoomContextProvider: React.FC = ({ children }) => {
+// Wrapper that provides the means to access and modify the state of the current escape room that is being modified
+const EscapeRoomContextProvider: React.FC = ({ children }) => {  
   const [escapeRoomDataContext, setEscapeRoomDataContext] = useState<EscapeRoomActivityDefinition>(defaultEscapeRoomActivityDefinition);
 
   const setData = (data: EscapeRoomActivityDefinition) => {
-    setEscapeRoomDataContext(data)
+    setEscapeRoomDataContext(data);
   };
 
   return (

@@ -5,6 +5,11 @@ import { Cross } from '@styled-icons/entypo/Cross';
 import { Bin } from "@styled-icons/icomoon/Bin";
 import { Done } from "@styled-icons/material/Done"
 import Dropzone from "react-dropzone";
+import { useParams } from "react-router-dom";
+import { escapeRoomService } from "../../../services";
+import { ResourceDefinition } from "../../../services/escapeRoomActivity.model";
+import LoadingOverlay from "../../../components/Layout/LoadingOverlay";
+import { useActivityResources } from "../useActivityResources";
 
 const CloseIcon = styled(Cross)`
   position:absolute;
@@ -218,26 +223,77 @@ const DeleteResourceButton = styled.div`
   }
 `;
 
-export interface ResourceDefinition {
-  name: string;
-  src: string;
-}
-
-export interface ResourcesPopUpComponentProps {
-  /** List of resources thar are going to be displayed */
-  resourceList: ResourceDefinition[];
+export interface ResourcesPopUpProps {
   /** Text that is going to be displayed at the top of the pop up as the title */
   popUpTitle?: string;
   /** Mode of the pop up ("select-resources" for specifying what resource the user wants to use or "manage-resources" to manage the escape rooms resources). Default: select-resources*/
   popUpMode?: 'select-resources' | 'manage-resources';
-  /** Callback notifying that the user wants to delete a specific resource */
-  onResourceDeleted?: (id: string) => void;
-  /** Callback notifying parent component that the user wants to add a new resource to his escape room */
-  onAddResource?: () => void;
   /** Callback notifying parent component of user wanting to select a specific resource */
   onResourceSelected?: (index: number) => void;
   /** Callback notifying parent component that the user closed the pop up message */
   onClosePopUp?: () => void;
+} // ResourcesPopUpProps
+
+export const ResourcesPopUp = (props: ResourcesPopUpProps): JSX.Element => {
+
+  // TODO: This is not the cleanest solution.
+  const { id } = useParams();
+
+  if (!id) {
+    return <>No id found</>;
+  }
+
+  return (
+    <ResourcesPopUpLogicWrapper
+      {...props}
+      id={id}
+    />
+  );
+
+}; // ResourcesPopUp
+
+interface ResourcesPopUpLogicWrapperProps extends ResourcesPopUpProps {
+  id: string;
+} // ResourcesPopUpLogicWrapperProps
+
+const ResourcesPopUpLogicWrapper = (props: ResourcesPopUpLogicWrapperProps): JSX.Element => {
+
+  const { id } = props;
+  const {
+    availableResources,
+    setResourceToUpload,
+    resourceUploadStatus,
+    refreshAvailableResources,
+    resourceRemovalStatus,
+    setResourceToRemove
+  } = useActivityResources(id);
+
+  const handleAddResource = (file: File) => {
+    setResourceToUpload(file);
+  }; // handleAddResource
+
+  const handleRemoveResource = (resourceName: string) => {
+    setResourceToRemove(resourceName);
+  }; // handleRemoveResource
+
+  return (
+    <ResourcesPopUpComponent
+      {...props}
+      resourceList={availableResources}
+      onAddResource={handleAddResource}
+      onResourceDeleted={handleRemoveResource}
+    />
+  );
+}; // ResourcesPopUpLogicWrapper
+
+
+export interface ResourcesPopUpComponentProps extends ResourcesPopUpProps {
+  /** List of resources thar are going to be displayed */
+  resourceList: ResourceDefinition[];
+  /** Callback notifying that the user wants to delete a specific resource */
+  onResourceDeleted?: (id: string) => void;
+  /** Callback notifying parent component that the user wants to add a new resource to his escape room */
+  onAddResource?: (resource: File) => void;
 }
 
 export const ResourcesPopUpComponent = (props: ResourcesPopUpComponentProps): JSX.Element => {
@@ -263,10 +319,10 @@ export const ResourcesPopUpComponent = (props: ResourcesPopUpComponentProps): JS
     setHoveredResourceIndex(-1);
   }; // handleResourceDeleted
 
-  const handleResourceAdded = () => {
-    if (onAddResource) onAddResource();
-
-  }; // handleResourceAdded
+  const handleResourceDropped = (acceptedFiles: File[]) => {
+    const [file] = acceptedFiles;
+    if (onAddResource) onAddResource(file);
+  }; // handleResourceDropped
 
   const handlePopUpClosed = () => {
     if (!onClosePopUp) return;
@@ -284,15 +340,15 @@ export const ResourcesPopUpComponent = (props: ResourcesPopUpComponentProps): JS
       {/* Title of the pop up */}
       <PopUpTitle>
         <Title>{popUpTitle}</Title>
-        <CloseIcon onMouseDown={() => { handlePopUpClosed() }} />
+        <CloseIcon onClick={handlePopUpClosed} />
       </PopUpTitle>
 
       {/* Body with the resources avaliable and a dropzone if the selected mode is "ManageResources" */}
       <PopUpBody>
         {/* Drop Zone for adding new resources  */}
-        {popUpMode === 'manage-resources' && <>
+        {<>
           <Dropzone
-            onDrop={handleResourceAdded}
+            onDrop={handleResourceDropped}
             multiple={false}
           >
             {({ getRootProps, getInputProps }) => (

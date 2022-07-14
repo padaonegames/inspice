@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { EditableItemProps, ArScanItemDefinition } from "../../../../services/escapeRoomActivity.model";
+import { EditableItemProps, ArScanItemDefinition, ResourceDefinition } from "../../../../services/escapeRoomActivity.model";
 import { AbstractActivityItemFactory } from "../ActivityItemFactory";
-import { ResourceDefinition, ResourcesPopUpComponent } from "../ResourcesPopUp"
+import { ResourcesPopUpComponent } from "../ResourcesPopUp"
 import Dropzone from 'react-dropzone';
 
 import styled from "styled-components";

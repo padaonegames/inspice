@@ -1,5 +1,5 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
-import { EscapeRoomActivityDefinition } from './escapeRoomActivity.model';
+import { EscapeRoomActivityDefinition, ResourceDefinition } from './escapeRoomActivity.model';
 
 export type ApiResult<T> =
   | { kind: 'ok', data: T }
@@ -71,19 +71,61 @@ export class EscapeRoomActivityService {
     return postApiResult<{}, EscapeRoomActivityDefinition>(url, {});
   } // requestNewEscapeRoomActivityDefinition
 
-    /**
-   * @description Update an Activity Definition on the persistence layer
-   * @param activityDefinition Activity definition to update
+  /**
+ * @description Update an Activity Definition on the persistence layer
+ * @param activityDefinition Activity definition to update
+ */
+  public async updateEscapeRoomActivityDefinition(activityDefinition: EscapeRoomActivityDefinition): Promise<ApiResult<EscapeRoomActivityDefinition>> {
+    const url = `${this.apiUrl}/escape-room/activity`;
+
+    const apiDefinition: EscapeRoomActivityDefinition = {
+      ...activityDefinition,
+    };
+
+    return putApiResult<EscapeRoomActivityDefinition, EscapeRoomActivityDefinition>(url, apiDefinition);
+  } // updateEscapeRoomActivityDefinition
+
+  //----------------------------------------------------
+  //                    RESOURCES
+  //----------------------------------------------------
+
+  /**
+   * @description Retrieve all resources associated to a given escape room activity by id
    */
-     public async updateEscapeRoomActivityDefinition(activityDefinition: EscapeRoomActivityDefinition): Promise<ApiResult<EscapeRoomActivityDefinition>> {
-      const url = `${this.apiUrl}/escape-room/activity`;
-  
-      const apiDefinition: EscapeRoomActivityDefinition = {
-        ...activityDefinition,
-      };
-  
-      return putApiResult<EscapeRoomActivityDefinition, EscapeRoomActivityDefinition>(url, apiDefinition);
-    } // updateEscapeRoomActivityDefinition
+  public async getResourcesByEscapeRoomActivityId(activityId: string): Promise<ApiResult<string[]>> {
+    const url = `${this.apiUrl}/escape-room/list-resources/${activityId}`;
+    return getApiResult<string[]>(url);
+  } // getResourcesByEscapeRoomActivityId
+
+  /**
+   * @description Remove resource with given resource name from activity with id activityId
+   */
+  public async removeResourceFromEscapeRoomActivityWithId(resourceName: string, activityId: string): Promise<ApiResult<void>> {
+    const url = `${this.apiUrl}/escape-room/remove-resource/${activityId}/${resourceName}`;
+    return deleteApiResult<void>(url);
+  } // removeResourceFromEscapeRoomActivityWithId
+
+  /**
+   * @description Build a src string from a resource name and an activity id
+   */
+  public activityResourceSource(resourceName: string, activityId: string): string {
+    return `${this.apiUrl}/escape-room/resource/${activityId}/${resourceName}`;
+  } // activityResourceSource
+
+  /**
+   * @description Upload a new image resource to the persistence of the activity with given id.
+   */
+  public async uploadResourceToEscapeRoomActivityWithId(imageFile: File, activityId: string): Promise<ApiResult<{ name: string }>> {
+    const url = `${this.apiUrl}/escape-room/add-resource/${activityId}`;
+    const formData = new FormData();
+    formData.append('image', imageFile);
+    const config = {
+      headers: {
+        'content-type': 'multipart/form-data'
+      }
+    };
+    return postApiResult<FormData, ResourceDefinition>(url, formData, config);
+  } // uploadResourceToEscapeRoomActivityWithId
 
 } // EscapeRoomActivityService
 

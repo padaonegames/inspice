@@ -183,7 +183,7 @@ export const GenerateNewEscapeRoomActivityScreen = () => {
 }; // GenerateNewEscapeRoomActivityScreen
 
 // Fetch initial escape Room activity definition by path id from server
-export const EditEscapeRoomScreen = () => {
+export const EditEscapeRoomScreen = (): JSX.Element => {
 
   const { id } = useParams();
 
@@ -212,7 +212,7 @@ export const EditEscapeRoomScreen = () => {
 interface CreateEscapeRoomScreenProps {
   initialActivity: EscapeRoomActivityDefinition;
 } // CreateEscapeRoomScreenProps
-const CreateEscapeRoomScreen = (props: CreateEscapeRoomScreenProps) => {
+const CreateEscapeRoomScreen = (props: CreateEscapeRoomScreenProps): JSX.Element => {
 
   const { initialActivity } = props;
 

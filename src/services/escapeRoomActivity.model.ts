@@ -199,3 +199,12 @@ export interface NarrativeItemDefinition {
   dialogs: string[];
   characters: string[];
 } // NarrativeItemDefinition
+
+// ---------------------------------------------------------------
+//                      RESOURCES
+// ---------------------------------------------------------------
+
+export interface ResourceDefinition {
+  name: string;
+  src: string;
+} // ResourceDefinition
