@@ -3,11 +3,15 @@ import styled from 'styled-components';
 import EditableFieldCard, { FieldMappings, fieldTypeIcon } from '../../../../components/Forms/Cards/EditableFieldCard';
 import FormActionsFloatingCard from '../../../../components/Forms/Cards/FormActionsFloatingCarc';
 import { EditableMultipleChoiceCardContent, multipleChoiceCardFactory } from '../../../../components/Forms/Cards/MultipleChoiceCard';
+import { EditableDisplayImageCardContent, displayImageCardFactory } from '../../../../components/Forms/Cards/DisplayImageCard';
+import { EditableDisplayVideoCardContent, displayVideoCardFactory } from '../../../../components/Forms/Cards/DisplayVideoCard';
 import { EditableShortTextContent, shortTextCardFactory } from '../../../../components/Forms/Cards/ShortTextInputCard';
 import { EditableStepTitleCard } from '../../../../components/Forms/Cards/StepTitleCard';
 import { StepComponentProps } from '../../../../components/Navigation/Steps';
 import { AvailableMultistageFormFieldType, EditableFieldProps, FieldDefinition, MultistageFormFieldDefinition, MultistageFormStage, SupportedFormField } from '../../../../services/multistageFormActivity.model';
 import { RadioCircleMarked } from "styled-icons/boxicons-regular";
+import { CardImage } from "@styled-icons/bootstrap/CardImage";
+import {Video} from "@styled-icons/entypo/Video"
 import { ShortText } from "@styled-icons/material/ShortText";
 import { TextLeft } from "@styled-icons/bootstrap/TextLeft";
 import { CalendarEvent } from "@styled-icons/boxicons-regular/CalendarEvent";
@@ -33,6 +37,14 @@ const Root = styled.div`
 `;
 
 const MultipleChoiceIcon = styled(RadioCircleMarked)`
+  ${fieldTypeIcon}
+`;
+
+const DisplayImageIcon = styled(CardImage)`
+  ${fieldTypeIcon}
+`;
+
+const DisplayVideoIcon = styled(Video)`
   ${fieldTypeIcon}
 `;
 
@@ -102,7 +114,23 @@ export const fieldMappings: FieldMappings<SupportedFormField> = {
     iconComponent: <DateIcon />,
     editingComponentProducer: EditableCalendarContent,
     defaultFieldPayload: {}
-  }
+  },
+  'display-image': {
+    displayName: 'Display Image',
+    iconComponent: <DisplayImageIcon />,
+    editingComponentProducer: EditableDisplayImageCardContent,
+    defaultFieldPayload: {
+      src: 'Image source'
+    }
+  },
+  'display-video': {
+    displayName: 'Display Video',
+    iconComponent: <DisplayVideoIcon />,
+    editingComponentProducer: EditableDisplayVideoCardContent,
+    defaultFieldPayload: {
+      src: ''
+    }
+  },
 }; // fieldMappings
 
 export const DefineMultistageFormStep = (props: StepComponentProps): JSX.Element => {
