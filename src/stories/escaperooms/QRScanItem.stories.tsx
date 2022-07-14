@@ -8,7 +8,7 @@ export default {
   decorators: [
     (Story) => {
       return (
-          Story()
+        Story()
       );
     },
   ],
@@ -23,5 +23,5 @@ Default.args = {
 
 export const Alternative = Template.bind({});
 Alternative.args = {
-  payload: {encodedText: "Hello"}
+  payload: { encodedText: "Hello" }
 };

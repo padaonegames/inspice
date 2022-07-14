@@ -23,6 +23,7 @@ import LoginScreen from './templates/Auth/Login/LoginScreen';
 import { MncnCatalogueBrowsingScreen } from './templates/NaturalScienceCatalogue/BrowseCatalogue/Screen';
 import { MncnViewArtifactScreen } from './templates/NaturalScienceCatalogue/Artifact/ViewArtifactScreen';
 import CreateMultistageFormActivityScreen from './templates/MultistageForm/CreateActivity/Screen';
+import { EditEscapeRoomScreen, GenerateNewEscapeRoomActivityScreen } from './templates/EscapeRoomAuthoring/Screen';
 
 /**
  * Main entrypoint for our React application within which all other components
@@ -73,9 +74,15 @@ export const App = (): JSX.Element => {
                     <Route path='create' element={<CreateGamGameActivityScreen />} />
                   </Route>
                 </Route>
+                <Route path='escape-room'>
+                  <Route path='curator' element={<ActivityScreen guarded activityTitle='Escape Room Creation' />}>
+                    <Route path='create/:id/*' element={<EditEscapeRoomScreen />} />
+                    <Route path='create/new' element={<GenerateNewEscapeRoomActivityScreen />} />
+                  </Route>
+                </Route>
                 <Route path='multistage-form'>
                   <Route path='consumer'>
-                    <Route path='view/:id/*' element={<div/>} />
+                    <Route path='view/:id/*' element={<div />} />
                   </Route>
                   <Route path='curator' element={<ActivityScreen /*guarded*/ activityTitle='Multistage Form Activity' />}>
                     <Route path='create' element={<CreateMultistageFormActivityScreen />} />

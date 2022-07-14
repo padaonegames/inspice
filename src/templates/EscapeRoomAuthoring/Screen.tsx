@@ -1,10 +1,10 @@
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 // services
 import { useAsyncRequest } from '../../services/useAsyncRequest';
 
 // steps
-import { CompletedEscapeRoomActivityDefinition, default_room, InProgressEscapeRoomActivityDefinition, SupportedStage } from '../../services/escapeRoomActivity.model';
+import { default_room, EscapeRoomActivityDefinition, SupportedStage } from '../../services/escapeRoomActivity.model';
 import { EscapeRoomStageSlidesContainer, StageToSlideProducerMapping } from './components/EscapeRoomStageSlidesContainer';
 import EditableStage, { StageMappings } from './components/EditableStage';
 import { multipleChoiceItemFactory, MultipleChoiceItemStageSlide } from './components/items/MutipleChoiceItem';
@@ -15,13 +15,11 @@ import { loadSceneItemFactory, LoadSceneItemStageSlide } from './components/item
 import { narrativeItemFactory, NarrativeItemStageSlide } from './components/items/NarrativeItem';
 import EscapeRoomSettings from './components/items/EscapeRoomSettings';
 
-
-
 import { stageTypeIcon } from './components/StageSettingsContainer';
 
 import { cloneDeep } from 'lodash';
 import { roomItemFactory } from './components/items/RoomItem';
-import EditableUnlockPasswordItemContent, { unlockPasswordItemFactory, UnlockPasswordItemStageSlide } from './components/items/UnlockPasswordtem';
+import { unlockPasswordItemFactory, UnlockPasswordItemStageSlide } from './components/items/UnlockPasswordtem';
 
 import styled from 'styled-components';
 import { QrCode } from "@styled-icons/material/QrCode";
@@ -32,8 +30,10 @@ import { ScanObject } from "@styled-icons/fluentui-system-filled/ScanObject"
 import { Unity } from "@styled-icons/fa-brands/Unity"
 import { HistoryEdu } from "@styled-icons/material-rounded/HistoryEdu"
 import { Password } from "@styled-icons/fluentui-system-filled/Password"
-import React from 'react';
-import { EscapeRoomContext, EscapeRoomContextProvider } from "./EscapeRoomContext"
+import { EscapeRoomContextProvider } from "./EscapeRoomContext"
+import { Navigate, useParams } from 'react-router-dom';
+import { escapeRoomService } from '../../services';
+import { LoadingOverlay } from '../../components/Layout/LoadingOverlay';
 
 
 const Root = styled.div`
@@ -143,56 +143,94 @@ export const stageSlidesMappings: StageToSlideProducerMapping<SupportedStage> = 
 //                    Defaults
 //-------------------------------------------------------
 
-
-
-
-
 const sample_stage: SupportedStage = {
   type: 'room',
   payload: default_room
-};
+}; // sample_stage
 
-const sample_base: InProgressEscapeRoomActivityDefinition = {
-  activityType: 'Escape Room',
-  activityTitle: undefined,
-  activityAuthor: undefined,
-  beginsOn: undefined,
-  endsOn: undefined,
+const sample_base: EscapeRoomActivityDefinition = {
+  activityTitle: '',
+  authorId: '',
+  authorUsername: '',
   stages: [sample_stage],
-  characters: []
-};
+  characters: [],
+  _id: ''
+}; // sample_base
 
 //-------------------------------------------------------
 //                 State Definition
 //-------------------------------------------------------
 
-/**
- * Screen to encapsulate the creation flow of a Escape Room activity.
- * Component responsible for handling the information fetching and posting logic; actual
- * rendering of this screen is delegated to the *CreateEscapeRoomActivityScreenComponent* component.
- */
-export const CreateEscapeRoomScreen = () => {
+export const GenerateNewEscapeRoomActivityScreen = () => {
 
-  const [completedActivity, setCompletedActivity] = useState<CompletedEscapeRoomActivityDefinition | undefined>(undefined);
+  const generateNewEscapeRoomActivity = async () => {
+    return await escapeRoomService.requestNewEscapeRoomActivityDefinition();
+  }; // generateNewEscapeRoomActivity
 
-  const submitDefinition = async () => {
-    if (!completedActivity) return Promise.reject();
-    setCompletedActivity(undefined);
-    return Promise.reject();
-  };
+  const [generateNewEscapeRoomActivityStatus] = useAsyncRequest(generateNewEscapeRoomActivity, []);
 
-  const [submitDefinitionStatus] = useAsyncRequest(submitDefinition, [completedActivity]);
+  if (generateNewEscapeRoomActivityStatus.kind !== 'success') {
+    return <LoadingOverlay message='Generating new escape room activity definition' />;
+  }
 
-  useEffect(() => {
-    if (submitDefinitionStatus.kind === 'success' /*&& submitDefinitionStatus.result.kind === 'ok'*/) {
-      window.alert('Your activity was successfully uploaded to the linked data hub.');
-    }
-  }, [submitDefinitionStatus]);
+  if (generateNewEscapeRoomActivityStatus.result.kind !== 'ok') {
+    return <LoadingOverlay message='There was a problem while generating a new escape room activity definition' />;
+  }
 
+  const activityDefinition = generateNewEscapeRoomActivityStatus.result.data;
+  return <Navigate to={`/escape-room/curator/create/${activityDefinition._id}`} />;
+
+}; // GenerateNewEscapeRoomActivityScreen
+
+// Fetch initial escape Room activity definition by path id from server
+export const EditEscapeRoomScreen = () => {
+
+  const { id } = useParams();
+
+  const fetchActivityDefinitionById = async () => {
+    if (!id) return Promise.reject();
+    return await escapeRoomService.getEscapeRoomActivityDefinitionById(id);
+  }; // fetchActivityDefinitionById
+
+  // request an activity with given id when loading this component
+  const [fetchActivityDefinitionByIdStatus] = useAsyncRequest(fetchActivityDefinitionById, []);
+
+  if (fetchActivityDefinitionByIdStatus.kind !== 'success') {
+    return <LoadingOverlay message='Fetching escape room activity definition from database' />;
+  }
+
+  if (fetchActivityDefinitionByIdStatus.result.kind !== 'ok') {
+    return <LoadingOverlay message='There was a problem while fetching the escape room activity definition with given id' />;
+  }
+
+  const activityDefinition = fetchActivityDefinitionByIdStatus.result.data;
+  return <CreateEscapeRoomScreen initialActivity={activityDefinition} />;
+
+}; // EditEscapeRoomScreen
+
+
+interface CreateEscapeRoomScreenProps {
+  initialActivity: EscapeRoomActivityDefinition;
+} // CreateEscapeRoomScreenProps
+const CreateEscapeRoomScreen = (props: CreateEscapeRoomScreenProps) => {
+
+  const { initialActivity } = props;
+
+  const [newActivityDefinition, setNewActivityDefinition] =
+    useState<EscapeRoomActivityDefinition | undefined>(undefined);
+
+  const updateDefinition = async () => {
+    if (!newActivityDefinition) return Promise.reject();
+    return await escapeRoomService.updateEscapeRoomActivityDefinition(newActivityDefinition);
+  }; // updateDefinition
+
+  const [updateDefinitionStatus] = useAsyncRequest(updateDefinition, [newActivityDefinition]);
+  const inSyncWithServer = updateDefinitionStatus.kind === 'success';
 
   return (
     <CreateEscapeRoomScreenComponent
-      initialActivityDefinition={undefined}
+      initialActivityDefinition={initialActivity}
+      onActivityDefinitionChanged={setNewActivityDefinition}
     />
   );
 }
@@ -203,30 +241,23 @@ export const CreateEscapeRoomScreen = () => {
 
 interface CreateEscapeRoomScreenComponentProps {
   /** Initial state that this component will take as base */
-  initialActivityDefinition?: InProgressEscapeRoomActivityDefinition | undefined;
+  initialActivityDefinition?: EscapeRoomActivityDefinition | undefined;
   /** callback to parent notifying of a change within the internal state of this component */
-  onActivityDefinitionChanged?: (value: InProgressEscapeRoomActivityDefinition) => void;
-  /** callback to parent notifying of activity definition being submitted by the user.
-   * Submission does NOT take place within this component. Rather, the action is lifted to
-   * the parent so that rendering and communication with the services remain isolated.
-   */
-  onSubmitActivityDefinition?: (value: CompletedEscapeRoomActivityDefinition) => void;
-}
-
+  onActivityDefinitionChanged?: (value: EscapeRoomActivityDefinition) => void;
+} // CreateEscapeRoomScreenComponentProps
 
 export const CreateEscapeRoomScreenComponent = (props: CreateEscapeRoomScreenComponentProps): JSX.Element => {
 
   const {
     initialActivityDefinition,
-    onActivityDefinitionChanged,
-    onSubmitActivityDefinition
+    onActivityDefinitionChanged
   } = props;
 
   // Initialize internal component state using fields from the provided initialActivityDefinition, if any.
   // Note here that we are adding the minimum necessary fields to have a valid transformation from State into InProgressEscapeRoomActivityDefinition
   // by incorporating the base content from sample_base.
   const [activityDefinition, setActivityDefinition] =
-    useState<InProgressEscapeRoomActivityDefinition>(initialActivityDefinition ? { ...sample_base, ...initialActivityDefinition } : { ...sample_base });
+    useState<EscapeRoomActivityDefinition>(initialActivityDefinition ? { ...sample_base, ...initialActivityDefinition } : { ...sample_base });
 
   // currently selected stage from activityDefinition.stages
   const [selectedStage, setSelectedStage] = useState<number>(0);
@@ -237,26 +268,8 @@ export const CreateEscapeRoomScreenComponent = (props: CreateEscapeRoomScreenCom
 
   useEffect(() => {
     if (!onActivityDefinitionChanged) return;
-    onActivityDefinitionChanged(activityDefinition as unknown as InProgressEscapeRoomActivityDefinition);
+    onActivityDefinitionChanged(activityDefinition);
   }, [activityDefinition]);
-
-  const handleSubmitActivityDefinition = () => {
-    if (!onSubmitActivityDefinition) return;
-
-    const def: CompletedEscapeRoomActivityDefinition = {
-      activityType: 'Escape Room',
-      activityAuthor: activityDefinition.activityAuthor as string,
-      activityTitle: activityDefinition.activityTitle as string,
-      description: activityDefinition.description as string,
-      beginsOn: activityDefinition.beginsOn as Date,
-      endsOn: activityDefinition.endsOn as Date,
-      tags: activityDefinition.tags as string[],
-      imageSrc: activityDefinition.imageSrc as string,
-      stages: activityDefinition.stages
-    };
-
-    onSubmitActivityDefinition(def);
-  }; // handleSubmitActivityDefinition
 
 
   const handleEscapeRoomTitleChanged = (title: string) => {
@@ -265,8 +278,7 @@ export const CreateEscapeRoomScreenComponent = (props: CreateEscapeRoomScreenCom
       next.activityTitle = title;
       return next;
     });
-  }
-
+  } // handleEscapeRoomTitleChanged
 
   const handleAddStage = () => {
     setActivityDefinition(prev => {
@@ -339,7 +351,7 @@ export const CreateEscapeRoomScreenComponent = (props: CreateEscapeRoomScreenCom
   }; //deleteStage
 
 
-  const handleSettingsChanged = (value: InProgressEscapeRoomActivityDefinition) => {
+  const handleSettingsChanged = (value: EscapeRoomActivityDefinition) => {
     setActivityDefinition(value);
   }; // handleSettingsChanged
 
@@ -359,16 +371,27 @@ export const CreateEscapeRoomScreenComponent = (props: CreateEscapeRoomScreenCom
 
       <EscapeRoomContextProvider>
         {/* Editors for the multiple stages avaliable in an escape room game */}
-        {showSettings === false &&
-          <EditableStage stageDefinition={currentStage} stageMappings={stageMappings} onStageDefinitionChanged={handleStageDefinitionChanged}
-            onStageDeleted={handleDeleteStage} onStageDuplicated={handleDuplicateStage} />
+        {!showSettings &&
+          <EditableStage
+            stageDefinition={currentStage}
+            stageMappings={stageMappings}
+            onStageDefinitionChanged={handleStageDefinitionChanged}
+            onStageDeleted={handleDeleteStage}
+            onStageDuplicated={handleDuplicateStage}
+          />
         }
         {/* Editor for basic configuration of the escape room like name, description or characters */}
         {
           showSettings &&
-          <EscapeRoomSettings onSettingsChanged={newConfig => { handleSettingsChanged(newConfig); }} escapeRoom={activityDefinition}
-            escapeRoomCharacters={activityDefinition.characters} escapeRoomTitle={activityDefinition.activityTitle ? activityDefinition.activityTitle : ""}
-            escapeRoomDescription={""} onTitleChanged={title => { handleEscapeRoomTitleChanged(title) }} onDescriptionChanged={() => { }} />
+          <EscapeRoomSettings
+            onSettingsChanged={handleSettingsChanged}
+            escapeRoom={activityDefinition}
+            escapeRoomCharacters={activityDefinition.characters}
+            escapeRoomTitle={activityDefinition.activityTitle ?? ''}
+            escapeRoomDescription=''
+            onTitleChanged={handleEscapeRoomTitleChanged}
+            onDescriptionChanged={() => { }}
+          />
         }
       </EscapeRoomContextProvider>
     </Root>

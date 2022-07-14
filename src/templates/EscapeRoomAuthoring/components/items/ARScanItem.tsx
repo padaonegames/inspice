@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { EditableItemProps, ArScanItemDefinition } from "../../../../services/escapeRoomActivity.model";
 import { AbstractActivityItemFactory } from "../ActivityItemFactory";
-import {ResourceDefinition, ResourcesPopUpComponent} from "../ResourcesPopUp"
+import { ResourceDefinition, ResourcesPopUpComponent } from "../ResourcesPopUp"
 import Dropzone from 'react-dropzone';
 
 import styled from "styled-components";
@@ -13,7 +13,6 @@ const ArCodeIcon = styled(ScanObject)`
   width: auto;
   margin-right: 0.5em;
 `;
-
 
 const Root = styled.div`
   margin-top: 5px;
@@ -30,7 +29,6 @@ const Root = styled.div`
   border-radius: 1.25rem;
   box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
 `;
-
 
 const ItemTitle = styled.div`
   font-size: 1em;
@@ -52,7 +50,6 @@ const ItemTitle = styled.div`
   box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
 `;
 
-
 const defaultImage = "https://cdn3.vectorstock.com/i/1000x1000/60/67/example-rubber-stamp-vector-12386067.jpg";
 
 export const EditableARScanItemContent = (props: EditableItemProps<ArScanItemDefinition>): JSX.Element => {
@@ -62,6 +59,7 @@ export const EditableARScanItemContent = (props: EditableItemProps<ArScanItemDef
     payload,
     onPayloadChanged
   } = props;
+
   const {
     imageSrc
   } = payload;
@@ -72,57 +70,57 @@ export const EditableARScanItemContent = (props: EditableItemProps<ArScanItemDef
   const [showResourcesPopUp, setShowResourcesPopUp] = useState<boolean>(false);
 
 
-  const handleOnDrop = (files:any, rejectedFiles:any)=>{
-    if (files[0] instanceof File){
-     setImageToShow(files[0] as File); 
+  const handleOnDrop = (files: any, rejectedFiles: any) => {
+    if (files[0] instanceof File) {
+      setImageToShow(files[0] as File);
     }
   } //handleOnDrop
 
-  const handleShowPopUp = (show:boolean)=>{
+  const handleShowPopUp = (show: boolean) => {
     setShowResourcesPopUp(show);
   } //handleShowPopUp
 
-  const handleResourceSelected = (index:number)=>{
+  const handleResourceSelected = (index: number) => {
     setImageSourece(resources[index].src);
-    setShowResourcesPopUp(prev=>!prev)
+    setShowResourcesPopUp(prev => !prev)
   } //handleResourceSelected
 
-  const resources: ResourceDefinition[]=[
-    {name: "Baby",src: "https://cdn.memegenerator.es/descargar/398347"},
-    {name: "YouKnowIt",src: "https://assets.entrepreneur.com/content/3x2/2000/20180703190744-rollsafe-meme.jpeg?crop=1:1"},
-    {name: "Oh!",src: "https://imagenes.elpais.com/resizer/iksHj8K729zx_amR6S2K1sB79YI=/1960x1470/arc-anglerfish-eu-central-1-prod-prisa.s3.amazonaws.com/public/B6H277FBSRW2AUY6T5WYT5WCBQ.jpg"},
-    {name: "Serius Face",src: "https://www.eltiempo.com/files/article_content/files/crop/uploads/2021/02/24/6036fbb0babdd.r_1614232657048.172-0-2049-1408.jpeg"},
-    {name: "Troll Face",src: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSa9F7chZRSC97n3EEsBFQlGSjZeH_7cyBWvIDc_FZJnTEIPkpOt4cNBKDK5UI1gDnoihs&usqp=CAU"},
-    {name: "Cuentame más",src: "https://ep01.epimg.net/verne/imagenes/2016/08/30/articulo/1472539721_878111_1472541204_sumario_normal.jpg"},
-    {name: "Oh You",src: "https://i.kym-cdn.com/photos/images/newsfeed/001/089/228/f2d.jpg"},
-    {name: "Squidward Face",src: "https://cdn.wallpapersafari.com/33/48/Dm90k3.jpg"},
-    {name: "SpongeBob Face",src: "https://community.custom-cursor.com/uploads/default/original/2X/1/1bf4f93af5045fefcec6a28f5cd26858a8478abc.jpeg"},
-    {name: "SpongeBob Face",src: "https://community.custom-cursor.com/uploads/default/original/2X/1/1bf4f93af5045fefcec6a28f5cd26858a8478abc.jpeg"},
-    {name: "Oh You",src: "https://i.kym-cdn.com/photos/images/newsfeed/001/089/228/f2d.jpg"},
-    {name: "Cuentame más",src: "https://ep01.epimg.net/verne/imagenes/2016/08/30/articulo/1472539721_878111_1472541204_sumario_normal.jpg"},
-    {name: "Troll Face",src: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSa9F7chZRSC97n3EEsBFQlGSjZeH_7cyBWvIDc_FZJnTEIPkpOt4cNBKDK5UI1gDnoihs&usqp=CAU"},
+  const resources: ResourceDefinition[] = [
+    { name: "Baby", src: "https://cdn.memegenerator.es/descargar/398347" },
+    { name: "YouKnowIt", src: "https://assets.entrepreneur.com/content/3x2/2000/20180703190744-rollsafe-meme.jpeg?crop=1:1" },
+    { name: "Oh!", src: "https://imagenes.elpais.com/resizer/iksHj8K729zx_amR6S2K1sB79YI=/1960x1470/arc-anglerfish-eu-central-1-prod-prisa.s3.amazonaws.com/public/B6H277FBSRW2AUY6T5WYT5WCBQ.jpg" },
+    { name: "Serius Face", src: "https://www.eltiempo.com/files/article_content/files/crop/uploads/2021/02/24/6036fbb0babdd.r_1614232657048.172-0-2049-1408.jpeg" },
+    { name: "Troll Face", src: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSa9F7chZRSC97n3EEsBFQlGSjZeH_7cyBWvIDc_FZJnTEIPkpOt4cNBKDK5UI1gDnoihs&usqp=CAU" },
+    { name: "Cuentame más", src: "https://ep01.epimg.net/verne/imagenes/2016/08/30/articulo/1472539721_878111_1472541204_sumario_normal.jpg" },
+    { name: "Oh You", src: "https://i.kym-cdn.com/photos/images/newsfeed/001/089/228/f2d.jpg" },
+    { name: "Squidward Face", src: "https://cdn.wallpapersafari.com/33/48/Dm90k3.jpg" },
+    { name: "SpongeBob Face", src: "https://community.custom-cursor.com/uploads/default/original/2X/1/1bf4f93af5045fefcec6a28f5cd26858a8478abc.jpeg" },
+    { name: "SpongeBob Face", src: "https://community.custom-cursor.com/uploads/default/original/2X/1/1bf4f93af5045fefcec6a28f5cd26858a8478abc.jpeg" },
+    { name: "Oh You", src: "https://i.kym-cdn.com/photos/images/newsfeed/001/089/228/f2d.jpg" },
+    { name: "Cuentame más", src: "https://ep01.epimg.net/verne/imagenes/2016/08/30/articulo/1472539721_878111_1472541204_sumario_normal.jpg" },
+    { name: "Troll Face", src: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSa9F7chZRSC97n3EEsBFQlGSjZeH_7cyBWvIDc_FZJnTEIPkpOt4cNBKDK5UI1gDnoihs&usqp=CAU" },
   ]
 
   return (
     <>
-    {/* Pop up component to enable image selection from the escape room resources */}
-    {showResourcesPopUp && 
-    <ResourcesPopUpComponent resourceList={resources} onClosePopUp={()=>{handleShowPopUp(false)}} 
-     onResourceSelected={(value)=>{handleResourceSelected(value)}} popUpTitle={"Select an image to scan"}/>}
-      
+      {/* Pop up component to enable image selection from the escape room resources */}
+      {showResourcesPopUp &&
+        <ResourcesPopUpComponent resourceList={resources} onClosePopUp={() => { handleShowPopUp(false) }}
+          onResourceSelected={(value) => { handleResourceSelected(value) }} popUpTitle={"Select an image to scan"} />}
+
       <Root>
         {/* Title of the component */}
         <ItemTitle>
-          <ArCodeIcon onMouseDown={()=>{handleShowPopUp(!showResourcesPopUp)}} />
+          <ArCodeIcon onMouseDown={() => { handleShowPopUp(!showResourcesPopUp) }} />
           Image to Scan
-        </ItemTitle>    
+        </ItemTitle>
 
         {/* Preview of the image that is going to be scanned */}
-        <img src= {imageSource} width={200} height ={200}></img>
+        <img src={imageSource} width={200} height={200}></img>
 
         {/* Sample drop zone */}
-        <Dropzone onDrop={handleOnDrop} multiple= {false}>
-          {({getRootProps, getInputProps}) => (
+        <Dropzone onDrop={handleOnDrop} multiple={false}>
+          {({ getRootProps, getInputProps }) => (
             <section>
               <div {...getRootProps()} >
                 <input {...getInputProps()} />
@@ -170,9 +168,9 @@ export const ARScanItemStageSlide = (props: ArScanItemDefinition): JSX.Element =
 
   return (
     <>
-      <PreviewTitle>{imageSrc=== ""? "Empty Image" : imageSrc}</PreviewTitle>
-      <PreviewAR>  
-        <img src= {defaultImage} width={50} height ={50}></img>
+      <PreviewTitle>{imageSrc === "" ? "Empty Image" : imageSrc}</PreviewTitle>
+      <PreviewAR>
+        <img src={defaultImage} width={50} height={50}></img>
       </PreviewAR>
     </>
   );

@@ -1,5 +1,3 @@
-import { ActivityInstance, InProgressActivityInstance } from "./activity.model";
-
 // ---------------------------------------------------------------
 //           ITEM DEFINITIONS (STAGES + PUZZLES)
 // ---------------------------------------------------------------
@@ -60,53 +58,42 @@ export const default_puzzle: SupportedPuzzle = {
   }
 }; // default_puzzle
 
-/** Default puzzle definition */
-
-
 // ---------------------------------------------------------------
 //                    ACTIVITY DEFINITIONS
 // ---------------------------------------------------------------
 
-export interface EscapeRoomActivityDefinition extends ActivityInstance {
-  activityType: 'Escape Room',
+export interface EscapeRoomActivityDefinition {
   stages: SupportedStage[];
-}
+  activityTitle: string;
+  authorUsername: string;
+  authorId: string;
+  characters: CharacterDefinition[];
+  _id: string;
+} // EscapeRoomActivityDefinition
 
-export interface InProgressEscapeRoomActivityDefinition extends InProgressActivityInstance {
-  activityType: 'Escape Room';
-  stages: SupportedStage[];
-  characters:CharacterDefinition[];
-} // InProgressEscapeRoomActivityDefinition
-
-export type CompletedEscapeRoomActivityDefinition = Omit<
-  EscapeRoomActivityDefinition,
-  "_id"
->;
-
-export const defaultEscapeRoomActivityDefinition: InProgressEscapeRoomActivityDefinition =
+export const defaultEscapeRoomActivityDefinition: EscapeRoomActivityDefinition =
 {
-  activityType: 'Escape Room',
+  _id: '',
   activityTitle: '',
-  activityAuthor: '',
-  beginsOn: undefined,
-  endsOn: undefined,
+  authorUsername: '',
+  authorId: '',
   characters: [],
   stages: []
-};
+}; // defaultEscapeRoomActivityDefinition
 
-export interface CharacterDefinition   {
+export interface CharacterDefinition {
   name: string,
   description: string;
-  image:string;
-  id:string;
-}
+  imageSrc: string;
+  _id: string;
+} // CharacterDefinition
 
-export const default_character:CharacterDefinition= {
+export const default_character: CharacterDefinition = {
   name: "New Character",
   description: "New Character Description",
-  image:"https://stickerly.pstatic.net/sticker_pack/9uCc66lpT8KQrI1v0zlIQ/B9D9U3/9/357db9fd-cdf3-45bf-968f-ae8a34e5b389.png",
-  id:""
-}
+  imageSrc: "https://stickerly.pstatic.net/sticker_pack/9uCc66lpT8KQrI1v0zlIQ/B9D9U3/9/357db9fd-cdf3-45bf-968f-ae8a34e5b389.png",
+  _id: ''
+}; // default_character
 
 
 // ---------------------------------------------------------------
@@ -161,9 +148,7 @@ export interface EditableItemProps<T> {
   payload: T;
   /** Callback to notify parent component of a change whithin the current definition */
   onPayloadChanged?: (definition: T) => void;
-
-  // characters?: string[];
-}
+} // EditableItemProps
 
 // ---------------------------------------------------------------
 //                    ITEM DEFINITIONS
@@ -195,12 +180,12 @@ export interface WaitingCodeDefinition {
   texts: string[];
   /** maximum number of texts to show */
   maxTexts?: number;
-}
+} // WaitingCodeDefinition
 
 export interface LoadSceneDefinition {
   /** Name of the scene that is going to be loaded */
   sceneName: string;
-}
+} // LoadSceneDefinition
 
 export interface UnlockPasswordItemDefinition {
   /** Password that needs to be solved to exit a room */
@@ -208,9 +193,9 @@ export interface UnlockPasswordItemDefinition {
 
   /** Description to help give context to solve the password */
   description: string;
-}
+} // UnlockPasswordItemDefinition
 
-export interface NarrativeItemDefinition  {
+export interface NarrativeItemDefinition {
   dialogs: string[];
   characters: string[];
-}
+} // NarrativeItemDefinition

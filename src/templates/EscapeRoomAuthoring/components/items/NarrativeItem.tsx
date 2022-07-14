@@ -2,12 +2,12 @@ import { useState, useContext } from "react";
 import { EditableItemProps, NarrativeItemDefinition } from "../../../../services/escapeRoomActivity.model";
 import { AbstractActivityItemFactory } from "../ActivityItemFactory";
 import { PromptField } from "./PromptField";
-import {EscapeRoomContext} from "../../EscapeRoomContext"
+import { EscapeRoomContext } from "../../EscapeRoomContext"
 
 
 import styled from "styled-components";
-import {UserCircle} from "@styled-icons/boxicons-regular/UserCircle"
-import {AddCircle} from "@styled-icons/fluentui-system-regular/AddCircle"
+import { UserCircle } from "@styled-icons/boxicons-regular/UserCircle"
+import { AddCircle } from "@styled-icons/fluentui-system-regular/AddCircle"
 
 
 const UserIcon = styled(UserCircle)`
@@ -110,7 +110,7 @@ const CharactersInteractionsList = styled.div`
 `;
 
 
-  const CharactersInteractionsListTitle = styled.div`
+const CharactersInteractionsListTitle = styled.div`
   position:relative;
   align-items: center;
   text-align:center;
@@ -125,8 +125,8 @@ const CharactersInteractionsList = styled.div`
   border-left: 2px solid rgba(0,0,0,1);
   border-right: 2px solid rgba(0,0,0,1);
   `;
-  
-  const InteractionSlidesContainer = styled.div`
+
+const InteractionSlidesContainer = styled.div`
   display: flex;
   flex-direction: column;
   position: relative;
@@ -201,7 +201,7 @@ const InteractionSlidePreview = styled.img`
   display: block;
 `;
 
-  const InteractionContent = styled.div`
+const InteractionContent = styled.div`
   margin-top: 5px;
   display: flex;
   flex-direction: row;
@@ -220,8 +220,8 @@ const InteractionSlidePreview = styled.img`
   border-left: 2px solid rgba(0,0,0,1);
   border-right: 2px solid rgba(0,0,0,1);
   `;
-  
-  const CharacterInteractionContent = styled.div`
+
+const CharacterInteractionContent = styled.div`
   margin-top: 5px;
   display: flex;
   flex-direction: column;
@@ -239,8 +239,8 @@ const InteractionSlidePreview = styled.img`
   border-left: 2px solid rgba(0,0,0,1);
   border-right: 2px solid rgba(0,0,0,1);
   `;
-  
-  const CharacterSelectorContent = styled.div`
+
+const CharacterSelectorContent = styled.div`
   margin-top: 5px;
   display: flex;
   flex-direction: column;
@@ -343,14 +343,14 @@ const AddNewInteractionButton = styled.div`
   border-right: 2px solid rgba(0,0,0,1);
 `;
 
-export const EditableNarrativeItemContent = (props:  EditableItemProps<NarrativeItemDefinition>): JSX.Element => {
+export const EditableNarrativeItemContent = (props: EditableItemProps<NarrativeItemDefinition>): JSX.Element => {
 
   //State to control wheter to open the drop down menu or not
   const [stageTypeDropdownOpen, setStageTypeDropdownOpen] = useState<boolean>(false);
   const [characterSelectedIndex, setCharacterSelectedIndex] = useState<number>(0);
   const [dialogSelected, setDialogSelected] = useState<number>(-1);
 
-  const {escapeRoomData} = useContext(EscapeRoomContext);
+  const { escapeRoomData } = useContext(EscapeRoomContext);
 
   const {
     payload,
@@ -380,7 +380,7 @@ export const EditableNarrativeItemContent = (props:  EditableItemProps<Narrative
     })
   }; // handleCharacterDialogChanged
 
-  const handleCharacterCharacterSelectedInDialog= (characterIndex: number) => {
+  const handleCharacterCharacterSelectedInDialog = (characterIndex: number) => {
     if (!onPayloadChanged) return;
     setCharacterSelectedIndex(characterIndex);
     onPayloadChanged({
@@ -393,40 +393,40 @@ export const EditableNarrativeItemContent = (props:  EditableItemProps<Narrative
     })
   }; // handleCharacterCharacterSelectedInDialog
 
-const findCharacterImage= (dialogIndex:number)=>{
-  //The image of the character involved in this dialog is returned, if no character has been assigned or it has been deleted, a sample image is displayed
-  if(escapeRoomData.characters.findIndex(object => {return object.name === payload.characters[dialogIndex];})===-1 || payload.characters[dialogIndex]==="New Dialog") return "https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/User_icon_2.svg/800px-User_icon_2.svg.png";
-  return escapeRoomData.characters[escapeRoomData.characters.findIndex(object => {return object.name === payload.characters[dialogIndex];})].image;
-} //findCharacterImage
+  const findCharacterImage = (dialogIndex: number) => {
+    //The image of the character involved in this dialog is returned, if no character has been assigned or it has been deleted, a sample image is displayed
+    if (escapeRoomData.characters.findIndex(object => { return object.name === payload.characters[dialogIndex]; }) === -1 || payload.characters[dialogIndex] === "New Dialog") return "https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/User_icon_2.svg/800px-User_icon_2.svg.png";
+    return escapeRoomData.characters[escapeRoomData.characters.findIndex(object => { return object.name === payload.characters[dialogIndex]; })].imageSrc;
+  } //findCharacterImage
 
 
   return (
     <Root>
-                                                                            {/* List of dialogs this item has */}
+      {/* List of dialogs this item has */}
       <CharactersInteractionsList>
         <CharactersInteractionsListTitle> Title </CharactersInteractionsListTitle>
 
         {/* Slides of the multiple parts that are going to take place in the narrative */}
         <InteractionSlidesContainer>
           {payload.dialogs.map((elem, i) => (
-            <InteractionSlide onMouseDown={()=>{setDialogSelected(i)}}>
+            <InteractionSlide onMouseDown={() => { setDialogSelected(i) }}>
               <InteractionSlideTitle>
-                <p> {i+1+"º " + payload.characters[i]}</p>
+                <p> {i + 1 + "º " + payload.characters[i]}</p>
               </InteractionSlideTitle>
               {/* {escapeRoomData.characters[escapeRoomData.characters.findIndex(object => {return object.name === payload.characters[dialogSelected];})].image} */}
-              <InteractionSlidePreview  src={findCharacterImage(i)} />
-           </InteractionSlide>
+              <InteractionSlidePreview src={findCharacterImage(i)} />
+            </InteractionSlide>
           ))}
         </InteractionSlidesContainer>
 
         {/* Button that lets the user add new dialogs to the item */}
         <AddNewInteractionButton>
-          <AddIcon onClick={()=>{handleAddDialog()}} />
+          <AddIcon onClick={() => { handleAddDialog() }} />
         </AddNewInteractionButton>
       </CharactersInteractionsList>
 
-                                                                            {/* Character option select */}
-      
+      {/* Character option select */}
+
       {(dialogSelected !== -1 || false) && <>
         <InteractionContent>
           {/* Selector of the character that is going to say something in this dialog */}
@@ -434,11 +434,11 @@ const findCharacterImage= (dialogIndex:number)=>{
             <CharacterPreview src={findCharacterImage(dialogSelected)}></CharacterPreview>
             {/* Drop down menu with the multiple characters that can participate in the narrative */}
             <SelectFieldTypeDropdownButton onClick={() => setStageTypeDropdownOpen(prev => !prev)}>
-              { payload.characters[dialogSelected]==="New Dialog" ? "Select a character" : payload.characters[dialogSelected] } 
-              <UserIcon/>
+              {payload.characters[dialogSelected] === "New Dialog" ? "Select a character" : payload.characters[dialogSelected]}
+              <UserIcon />
               {stageTypeDropdownOpen &&
                 <DropdownMenu>
-                  {escapeRoomData.characters.map((elem, i) => (<DropdownMenuItem onClick={() => {handleCharacterCharacterSelectedInDialog(i); }}> {elem.name} </DropdownMenuItem>))}
+                  {escapeRoomData.characters.map((elem, i) => (<DropdownMenuItem onClick={() => { handleCharacterCharacterSelectedInDialog(i); }}> {elem.name} </DropdownMenuItem>))}
                 </DropdownMenu>
               }
             </SelectFieldTypeDropdownButton>
@@ -446,8 +446,8 @@ const findCharacterImage= (dialogIndex:number)=>{
 
           {/* Editor to specify what the character is going to say in a specific dialog part*/}
           <CharacterInteractionContent>
-            <Title>{ payload.characters[dialogSelected]==="New Dialog" ? "Who is going to say something?" : "What is "+ payload.characters[dialogSelected]+" going to say?"}</Title>
-            <PromptField promptText={payload.dialogs[dialogSelected]} promptPlaceholder='What is going to be said' onPromptChange={(value) => {handleCharacterDialogChanged(dialogSelected,value)}} textAlignment={"left"} initialHeight={"15em"}/>
+            <Title>{payload.characters[dialogSelected] === "New Dialog" ? "Who is going to say something?" : "What is " + payload.characters[dialogSelected] + " going to say?"}</Title>
+            <PromptField promptText={payload.dialogs[dialogSelected]} promptPlaceholder='What is going to be said' onPromptChange={(value) => { handleCharacterDialogChanged(dialogSelected, value) }} textAlignment={"left"} initialHeight={"15em"} />
           </CharacterInteractionContent>
         </InteractionContent>
       </>}

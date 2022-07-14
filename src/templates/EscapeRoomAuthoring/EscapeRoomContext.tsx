@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { InProgressEscapeRoomActivityDefinition,defaultEscapeRoomActivityDefinition } from '../../../src/services/escapeRoomActivity.model';
+import { defaultEscapeRoomActivityDefinition, EscapeRoomActivityDefinition } from '../../../src/services/escapeRoomActivity.model';
 
 
-//Structure of the context that is going to be provided to the children of the app that represent the multiple editors avaliable
+// Structure of the context that is going to be provided to the children of the app that represent the multiple editors avaliable
 interface EscapeRoomContextInterface {
-  escapeRoomData: InProgressEscapeRoomActivityDefinition ;
-  setEscapeRoomData: (newData: InProgressEscapeRoomActivityDefinition ) => void;
+  escapeRoomData: EscapeRoomActivityDefinition;
+  setEscapeRoomData: (newData: EscapeRoomActivityDefinition) => void;
 }
 const EscapeRoomContext = React.createContext<EscapeRoomContextInterface>({
   escapeRoomData: defaultEscapeRoomActivityDefinition,
@@ -15,17 +15,17 @@ const EscapeRoomContext = React.createContext<EscapeRoomContextInterface>({
 
 //Wrapper that provides the means to access and modify the state of the current escape room that is being modified
 const EscapeRoomContextProvider: React.FC = ({ children }) => {
-  const [escapeRoomDataContext, setEscapeRoomDataContext] = useState<InProgressEscapeRoomActivityDefinition>(defaultEscapeRoomActivityDefinition);
+  const [escapeRoomDataContext, setEscapeRoomDataContext] = useState<EscapeRoomActivityDefinition>(defaultEscapeRoomActivityDefinition);
 
-  const setData = (data: InProgressEscapeRoomActivityDefinition ) => {
+  const setData = (data: EscapeRoomActivityDefinition) => {
     setEscapeRoomDataContext(data)
   };
 
   return (
-    <EscapeRoomContext.Provider value={{escapeRoomData: escapeRoomDataContext,setEscapeRoomData: setData,}}>
+    <EscapeRoomContext.Provider value={{ escapeRoomData: escapeRoomDataContext, setEscapeRoomData: setData, }}>
       {children}
     </EscapeRoomContext.Provider>
   );
 };
 
-export { EscapeRoomContextProvider , EscapeRoomContext };
+export { EscapeRoomContextProvider, EscapeRoomContext };

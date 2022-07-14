@@ -1,21 +1,16 @@
 import { EditableItemProps, LoadSceneDefinition } from "../../../../services/escapeRoomActivity.model";
-import EditableCheckBoxInput from "../EditableCheckBoxInput";
 import { AbstractActivityItemFactory } from "../ActivityItemFactory";
 import { PromptField } from "./PromptField";
 
-
 import styled from "styled-components";
-import { stageTypeIcon } from '../../components/StageSettingsContainer';
-import {Unity} from "@styled-icons/fa-brands/Unity"
-
+import { Unity } from "@styled-icons/fa-brands/Unity"
 
 const UnityIcon = styled(Unity)`
   position: relative;
   color: rgb(0, 0, 0);
   height: 1.25em;
   width: 1.25em;
-`
-
+`;
 
 const Root = styled.div`
   margin-top: 5px;
@@ -32,8 +27,6 @@ const Root = styled.div`
   border-radius: 1.25rem;
   box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
 `;
-
-
 
 interface InputAreaProps {
   width?: string;
@@ -108,16 +101,16 @@ export const EditableLoadSceneItemContent = (props: EditableItemProps<LoadSceneD
 
   return (
     <>
-    <Root>
-      <ItemTitle> 
-        Scene to load
-        <UnityIcon/>
-      </ItemTitle>
-      {/* Field to edit the name of the scene that the user wants to load with this item */}
-      <PromptField
-        promptText={payload.sceneName}
-        promptPlaceholder='Scene name'
-        onPromptChange={handleEditSceneName}
+      <Root>
+        <ItemTitle>
+          Scene to load
+          <UnityIcon />
+        </ItemTitle>
+        {/* Field to edit the name of the scene that the user wants to load with this item */}
+        <PromptField
+          promptText={payload.sceneName}
+          promptPlaceholder='Scene name'
+          onPromptChange={handleEditSceneName}
         />
       </Root>
     </>
@@ -148,8 +141,8 @@ export const LoadSceneItemStageSlide = (props: LoadSceneDefinition): JSX.Element
 
   return (
     <>
-      <PreviewTitle>{'Load "'+ sceneName +'"'}</PreviewTitle>
-      <UnityIcon/>
+      <PreviewTitle>{'Load "' + sceneName + '"'}</PreviewTitle>
+      <UnityIcon />
     </>
   );
 }; // LoadSceneItemStageSlide
@@ -161,7 +154,7 @@ export const loadSceneItemFactory: AbstractActivityItemFactory<LoadSceneDefiniti
     />
   ),
   defaultDefinition: {
-    sceneName: ''  
+    sceneName: ''
   }
 }; // loadSceneItemFactory
 

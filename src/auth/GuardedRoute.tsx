@@ -7,6 +7,7 @@ import { AuthContext } from './AuthStore';
  * page whenever current authentication context becomes undefined.
  */
 export const GuardedRoute = (): JSX.Element => {
+  
   const { userData, accessToken, setAccessToken } = useContext(AuthContext);
 
   // To know where to redirect the user to after successful logins.

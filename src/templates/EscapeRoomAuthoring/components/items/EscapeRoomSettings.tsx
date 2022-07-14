@@ -1,13 +1,13 @@
-import { InProgressEscapeRoomActivityDefinition, default_character, CharacterDefinition } from "../../../../services/escapeRoomActivity.model";
+import { default_character, CharacterDefinition, EscapeRoomActivityDefinition } from "../../../../services/escapeRoomActivity.model";
 import { PromptField } from "./PromptField";
 
 import { useContext, useState } from "react";
 import { EscapeRoomContext } from "../../EscapeRoomContext";
-import {EscapeRoomCharacterCard} from "./EscapeRoomCharacterCard"
+import { EscapeRoomCharacterCard } from "./EscapeRoomCharacterCard"
 
 import styled from "styled-components";
-import {Settings} from "@styled-icons/fluentui-system-filled/Settings"
-import {UserPlus} from "@styled-icons/boxicons-regular/UserPlus"
+import { Settings } from "@styled-icons/fluentui-system-filled/Settings"
+import { UserPlus } from "@styled-icons/boxicons-regular/UserPlus"
 
 
 const SettingsIcon = styled(Settings)`
@@ -190,14 +190,14 @@ const AddPuzzleButton = styled.div`
 `;
 export interface EscapeRoomSettingsProps {
 
-  escapeRoom: InProgressEscapeRoomActivityDefinition;
+  escapeRoom: EscapeRoomActivityDefinition;
   /** text to display for the add new option label. */
-  escapeRoomTitle:string;
-  escapeRoomCharacters:CharacterDefinition[];
+  escapeRoomTitle: string;
+  escapeRoomCharacters: CharacterDefinition[];
   escapeRoomDescription: string;
-  onTitleChanged: (title:string)=>void;
-  onDescriptionChanged: (title:string)=>void;
-  onSettingsChanged?: (escapeRoom: InProgressEscapeRoomActivityDefinition)=>void;
+  onTitleChanged: (title: string) => void;
+  onDescriptionChanged: (title: string) => void;
+  onSettingsChanged?: (escapeRoom: EscapeRoomActivityDefinition) => void;
 } // EditableWaitingCodeItemContentProps
 
 export const EscapeRoomSettings = (props: EscapeRoomSettingsProps): JSX.Element => {
@@ -210,7 +210,7 @@ export const EscapeRoomSettings = (props: EscapeRoomSettingsProps): JSX.Element 
     onSettingsChanged
   } = props;
 
-  const {escapeRoomData, setEscapeRoomData} = useContext(EscapeRoomContext);
+  const { escapeRoomData, setEscapeRoomData } = useContext(EscapeRoomContext);
   const [editingCharacterIndex, setEditingCharacterIndex] = useState<number>(-1);
 
   const handleEditTitle = (value: string) => {
@@ -225,21 +225,21 @@ export const EscapeRoomSettings = (props: EscapeRoomSettingsProps): JSX.Element 
     })
   }; // handleEditTitle
 
-  const checkRepeatedName = (characterIndex:number,newName:string)=>{
-    let i=0;
-    while(i<escapeRoomCharacters.length){
-      if( i!==characterIndex && escapeRoomCharacters[i].name === newName) return true;
+  const checkRepeatedName = (characterIndex: number, newName: string) => {
+    let i = 0;
+    while (i < escapeRoomCharacters.length) {
+      if (i !== characterIndex && escapeRoomCharacters[i].name === newName) return true;
       i++;
     }
     return false;
   }
 
-  const handleNewCharacterVersion2 = ()=>{
+  const handleNewCharacterVersion2 = () => {
     setEditingCharacterIndex(escapeRoom.characters.length);
   } //handleAddCharacter
 
 
-  const handleCharacterDataChanged = (newData:CharacterDefinition, index:number)=>{
+  const handleCharacterDataChanged = (newData: CharacterDefinition, index: number) => {
     if (!onSettingsChanged) return;
     onSettingsChanged({
       ...escapeRoom,
@@ -260,11 +260,11 @@ export const EscapeRoomSettings = (props: EscapeRoomSettingsProps): JSX.Element 
     setEditingCharacterIndex(-1);
   } //handleCharacterDataChanged
 
-  const handleEnterCharacterEditMode = (index:number)=>{
+  const handleEnterCharacterEditMode = (index: number) => {
     setEditingCharacterIndex(index);
   } //handleEnterCharacterEditMode
 
-  const handleDeleteCharacterBien = (index:number) =>{
+  const handleDeleteCharacterBien = (index: number) => {
     if (!onSettingsChanged) return;
     onSettingsChanged({
       ...escapeRoom,
@@ -281,7 +281,7 @@ export const EscapeRoomSettings = (props: EscapeRoomSettingsProps): JSX.Element 
       ]
     })
 
-    if(index< editingCharacterIndex) setEditingCharacterIndex(editingCharacterIndex-1);
+    if (index < editingCharacterIndex) setEditingCharacterIndex(editingCharacterIndex - 1);
   } //handleDeleteCharacterBien
 
   return (
@@ -297,30 +297,30 @@ export const EscapeRoomSettings = (props: EscapeRoomSettingsProps): JSX.Element 
           <CheckboxTitle> Characters </CheckboxTitle>
           <CharactersContainer>
             {escapeRoom.characters.map((character, index) => (
-                //Character card that can be displayer in two modes (edit and display only) 
-                <EscapeRoomCharacterCard characterInfo={character} onSaveCharacterData={(value:CharacterDefinition)=>{handleCharacterDataChanged(value,index)}} 
-                  onEnterCharacterEditMode={()=>{handleEnterCharacterEditMode(index)}} 
-                  onDeleteCharacter={()=>{handleDeleteCharacterBien(index)}}
-                  showAlert={(value:string) =>checkRepeatedName(index,value)} 
-                  editMode={editingCharacterIndex === index}
-                />       
-              ))}
-              {/* If there are no characters being modified a button to a add a new one is displayer */}
-              {editingCharacterIndex === -1 && 
-              <AddPuzzleButton onClick={() =>{handleNewCharacterVersion2()}}>
-                <AddCharacterIcon/>
+              //Character card that can be displayer in two modes (edit and display only) 
+              <EscapeRoomCharacterCard characterInfo={character} onSaveCharacterData={(value: CharacterDefinition) => { handleCharacterDataChanged(value, index) }}
+                onEnterCharacterEditMode={() => { handleEnterCharacterEditMode(index) }}
+                onDeleteCharacter={() => { handleDeleteCharacterBien(index) }}
+                showAlert={(value: string) => checkRepeatedName(index, value)}
+                editMode={editingCharacterIndex === index}
+              />
+            ))}
+            {/* If there are no characters being modified a button to a add a new one is displayer */}
+            {editingCharacterIndex === -1 &&
+              <AddPuzzleButton onClick={() => { handleNewCharacterVersion2() }}>
+                <AddCharacterIcon />
               </AddPuzzleButton>
-              }
-              {/* Character editor at the end of the character list to add at the end of the list */}
-              {editingCharacterIndex === escapeRoom.characters.length && 
-                <EscapeRoomCharacterCard characterInfo={default_character} onSaveCharacterData={(value:CharacterDefinition) => { handleCharacterDataChanged(value, escapeRoomCharacters.length); } }
-                  onEnterCharacterEditMode={() => { } }
-                  onDeleteCharacter={() => { } }
-                  showAlert={(value:string) => checkRepeatedName(escapeRoomCharacters.length, value)}
-                  editMode={true} 
-                />   
-              }
-            </CharactersContainer>
+            }
+            {/* Character editor at the end of the character list to add at the end of the list */}
+            {editingCharacterIndex === escapeRoom.characters.length &&
+              <EscapeRoomCharacterCard characterInfo={default_character} onSaveCharacterData={(value: CharacterDefinition) => { handleCharacterDataChanged(value, escapeRoomCharacters.length); }}
+                onEnterCharacterEditMode={() => { }}
+                onDeleteCharacter={() => { }}
+                showAlert={(value: string) => checkRepeatedName(escapeRoomCharacters.length, value)}
+                editMode={true}
+              />
+            }
+          </CharactersContainer>
         </SettingsDiv>
       </GeneralSettingsContainer>
     </Wrapper>
@@ -351,13 +351,13 @@ const PreviewAnswers = styled.div`
   color: rgb(0, 0, 0);
 `;
 
-export interface EscapeRoomSettingsStageSlideProps{
+export interface EscapeRoomSettingsStageSlideProps {
   /** text to display for the add new option label. */
   title?: string;
-  goToSettings: ()=>void;
+  goToSettings: () => void;
 } // EditableMultipleChoiceItemContentProps
 
-export const EscapeRoomSettingsStageSlide = (props:EscapeRoomSettingsStageSlideProps ): JSX.Element => {
+export const EscapeRoomSettingsStageSlide = (props: EscapeRoomSettingsStageSlideProps): JSX.Element => {
 
   const {
     title,
@@ -365,11 +365,11 @@ export const EscapeRoomSettingsStageSlide = (props:EscapeRoomSettingsStageSlideP
   } = props;
 
   return (
-    <Root  onClick={()=>{goToSettings && goToSettings()}}>
-      <SettingsIcon/>
+    <Root onClick={() => { goToSettings && goToSettings() }}>
+      <SettingsIcon />
       <PreviewTitle>{"Escape Room"}</PreviewTitle>
       <PreviewAnswers>
-        {title === ""? "No title": title}
+        {title === "" ? "No title" : title}
       </PreviewAnswers>
     </Root>
   );

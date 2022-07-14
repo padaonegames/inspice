@@ -12,7 +12,7 @@ export default {
   decorators: [
     (Story) => {
       return (
-          Story()
+        Story()
       );
     },
   ],
@@ -23,54 +23,54 @@ const Template: ComponentStory<typeof RoomPuzzleSettingsEditor> = (args) => <Roo
 export const Default = Template.bind({});
 Default.args = {
   puzzle: default_puzzle,
-  index:0,
-  handleSelectedPuzzleChanged() {},
-  handlePuzzleDelete() {},
-  handlePuzzleDuplicate() {},
-  handlePuzzlePayloadChanged(puzzlePayload) {},
-  handlePuzzleTypeChanged(puzzleNewType) {},
+  index: 0,
+  handleSelectedPuzzleChanged() { },
+  handlePuzzleDelete() { },
+  handlePuzzleDuplicate() { },
+  handlePuzzlePayloadChanged(puzzlePayload) { },
+  handlePuzzleTypeChanged(puzzleNewType) { },
 };
 
 export const MultipleChoice = Template.bind({});
 MultipleChoice.args = {
-  puzzle: {type: "multiple-choice" , payload: multipleChoiceItemFactory.defaultDefinition},
-  index:1,
-  handleSelectedPuzzleChanged() {},
-  handlePuzzleDelete() {},
-  handlePuzzleDuplicate() {},
-  handlePuzzlePayloadChanged(puzzlePayload) {},
-  handlePuzzleTypeChanged(puzzleNewType) {},
+  puzzle: { type: "multiple-choice", payload: multipleChoiceItemFactory.defaultDefinition },
+  index: 1,
+  handleSelectedPuzzleChanged() { },
+  handlePuzzleDelete() { },
+  handlePuzzleDuplicate() { },
+  handlePuzzlePayloadChanged(puzzlePayload) { },
+  handlePuzzleTypeChanged(puzzleNewType) { },
 };
 
 export const QRScan = Template.bind({});
 QRScan.args = {
-  puzzle: {type: "qr-scan" , payload: qrScanItemFactory.defaultDefinition},
-  index:2,
-  handleSelectedPuzzleChanged() {},
-  handlePuzzleDelete() {},
-  handlePuzzleDuplicate() {},
-  handlePuzzlePayloadChanged(puzzlePayload) {},
-  handlePuzzleTypeChanged(puzzleNewType) {},
+  puzzle: { type: "qr-scan", payload: qrScanItemFactory.defaultDefinition },
+  index: 2,
+  handleSelectedPuzzleChanged() { },
+  handlePuzzleDelete() { },
+  handlePuzzleDuplicate() { },
+  handlePuzzlePayloadChanged(puzzlePayload) { },
+  handlePuzzleTypeChanged(puzzleNewType) { },
 };
 
 export const ARScan = Template.bind({});
 ARScan.args = {
-  puzzle: {type: "ar-scan" , payload: arScanItemFactory.defaultDefinition},
-  index:3,
-  handleSelectedPuzzleChanged() {},
-  handlePuzzleDelete() {},
-  handlePuzzleDuplicate() {},
-  handlePuzzlePayloadChanged(puzzlePayload) {},
-  handlePuzzleTypeChanged(puzzleNewType) {},
+  puzzle: { type: "ar-scan", payload: arScanItemFactory.defaultDefinition },
+  index: 3,
+  handleSelectedPuzzleChanged() { },
+  handlePuzzleDelete() { },
+  handlePuzzleDuplicate() { },
+  handlePuzzlePayloadChanged(puzzlePayload) { },
+  handlePuzzleTypeChanged(puzzleNewType) { },
 };
 
 export const WaitingCodeItem = Template.bind({});
 WaitingCodeItem.args = {
-  puzzle: {type: "waiting-code" , payload: waitingCodeItemFactory.defaultDefinition},
-  index:4,
-  handleSelectedPuzzleChanged() {},
-  handlePuzzleDelete() {},
-  handlePuzzleDuplicate() {},
-  handlePuzzlePayloadChanged(puzzlePayload) {},
-  handlePuzzleTypeChanged(puzzleNewType) {},
+  puzzle: { type: "waiting-code", payload: waitingCodeItemFactory.defaultDefinition },
+  index: 4,
+  handleSelectedPuzzleChanged() { },
+  handlePuzzleDelete() { },
+  handlePuzzleDuplicate() { },
+  handlePuzzlePayloadChanged(puzzlePayload) { },
+  handlePuzzleTypeChanged(puzzleNewType) { },
 };

@@ -71,7 +71,6 @@ const Answer = styled.div<AnswerProps>`
   box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
 `;
 
-
 export const EditableMultipleChoiceItemContent = (props: EditableItemProps<MultipleChoiceItemDefinition>): JSX.Element => {
 
   const {
@@ -139,15 +138,15 @@ export const EditableMultipleChoiceItemContent = (props: EditableItemProps<Multi
       />
       <AnswersContainer>
         {answers.map((elem, i) => (
-          <Answer backgroundColor={availableColors[i % availableColors.length]}  key={`checkBoxOption${i}`}>
+          <Answer backgroundColor={availableColors[i % availableColors.length]} key={`checkBoxOption${i}`}>
             <EditableCheckBoxInput
               key={`editableCheckBoxInput${i}`}
               labelText={elem}
               style='radio'
-              checked= {i===payload.correctAnswerIndex}
+              checked={i === payload.correctAnswerIndex}
               boxSize='2.875rem'
               onObjectRemoved={() => handleRemoveOption(i)}
-              onCheckBoxChecked ={() => handleCheckOption(i)}
+              onCheckBoxChecked={() => handleCheckOption(i)}
               onLabelTextChanged={(value) => handleEditOption(i, value)}
             />
           </Answer>
@@ -174,8 +173,6 @@ export const EditableMultipleChoiceItemContent = (props: EditableItemProps<Multi
     </>
   );
 }; // EditableMultipleChoiceItemContent
-
-
 
 const PreviewTitle = styled.div`
   margin-bottom: 0.25rem;
@@ -209,7 +206,6 @@ const PreviewAnswer = styled.div`
   border-radius: 0.125rem;
 `;
 
-
 export const MultipleChoiceItemStageSlide = (props: MultipleChoiceItemDefinition): JSX.Element => {
 
   const {
@@ -235,7 +231,7 @@ export const multipleChoiceItemFactory: AbstractActivityItemFactory<MultipleChoi
   ),
   defaultDefinition: {
     prompt: '',
-    correctAnswerIndex:-1,
+    correctAnswerIndex: -1,
     answers: ['', '']
   }
 }; // multipleChoiceItemFactory

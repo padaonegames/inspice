@@ -2,8 +2,8 @@ import { useState } from "react";
 
 import styled from "styled-components";
 import { Cross } from '@styled-icons/entypo/Cross';
-import {Bin} from "@styled-icons/icomoon/Bin";
-import {Done} from "@styled-icons/material/Done"
+import { Bin } from "@styled-icons/icomoon/Bin";
+import { Done } from "@styled-icons/material/Done"
 import Dropzone from "react-dropzone";
 
 const CloseIcon = styled(Cross)`
@@ -51,7 +51,7 @@ const DeleteIcon = styled(Bin)`
 `
 
 ////////////////////Title of the container
-const PopUpTitle  = styled.div`
+const PopUpTitle = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
@@ -61,7 +61,7 @@ const PopUpTitle  = styled.div`
   height: 100px;
 `;
 
-const Title  = styled.div`
+const Title = styled.div`
   position: relative;
   display: flex;
   height: 50%;
@@ -103,11 +103,11 @@ const PopUpBody = styled.div`
 ////////////////////GRID
 interface GridProps {
   elements: number;
-  elementsPerRow:number;
+  elementsPerRow: number;
 }
 const SelectResourceGrid = styled.div<GridProps>`
   display: inline-grid;
-  grid-template-columns: repeat(min(${props=>props.elementsPerRow},${props=>props.elements}),${props=> {return props.elements<props.elementsPerRow?100/props.elements : 100/props.elementsPerRow}}%) ;
+  grid-template-columns: repeat(min(${props => props.elementsPerRow},${props => props.elements}),${props => { return props.elements < props.elementsPerRow ? 100 / props.elements : 100 / props.elementsPerRow }}%) ;
   grid-row-gap: 50px;
   width:100%;
   height:100%;
@@ -119,9 +119,9 @@ const ResourceContainer = styled.div`
   position:relative;
   width:125px;
 `;
-  interface ResourceProps {
-    selected:boolean;
-  }
+interface ResourceProps {
+  selected: boolean;
+}
 const ResourceContent = styled.div<ResourceProps>`
   place-self:center;
   position:relative;
@@ -147,7 +147,7 @@ const ResourcePreview = styled.img`
 
 
 ////////////////////Bottom of the popup
-const PopUpButtons  = styled.div`
+const PopUpButtons = styled.div`
   position: relative;
   display: flex;
   justify-content: flex-end;
@@ -157,12 +157,12 @@ const PopUpButtons  = styled.div`
   height: 100px;
 `;
 
-interface SelectFileButtonProps{
-  avaliable:boolean;
+interface SelectFileButtonProps {
+  avaliable: boolean;
 }
 const SelectFileButton = styled.div<SelectFileButtonProps> `
   position:absolute;
-  background-color:${props=>props.avaliable ? "rgba(0,230,255,1)":"rgba(110,165,175,0.5)"};
+  background-color:${props => props.avaliable ? "rgba(0,230,255,1)" : "rgba(110,165,175,0.5)"};
   height: fit-content;
   width: fit-content;
 
@@ -173,9 +173,9 @@ const SelectFileButton = styled.div<SelectFileButtonProps> `
   transform: translate(50%, -50%);
 
   &:hover {
-  ${props =>props.avaliable ? 
-      "transition: border 0.25s; border: 3px solid rgb(0, 0, 0);"
-      :""}
+  ${props => props.avaliable ?
+    "transition: border 0.25s; border: 3px solid rgb(0, 0, 0);"
+    : ""}
     }
 `
 
@@ -219,8 +219,8 @@ const DeleteResourceButton = styled.div`
 `;
 
 export interface ResourceDefinition {
-  name:string;
-  src:string;
+  name: string;
+  src: string;
 }
 
 export interface ResourcesPopUpComponentProps {
@@ -228,14 +228,14 @@ export interface ResourcesPopUpComponentProps {
   resourceList: ResourceDefinition[];
   /** Text that is going to be displayed at the top of the pop up as the title */
   popUpTitle?: string;
-  /**Mode of the pop up ("SelectResources" for specifying what resource the user wants to use or "ManageResources" to manage the escape rooms resources)*/
-  popUpMode?:string;
+  /** Mode of the pop up ("select-resources" for specifying what resource the user wants to use or "manage-resources" to manage the escape rooms resources). Default: select-resources*/
+  popUpMode?: 'select-resources' | 'manage-resources';
   /** Callback notifying that the user wants to delete a specific resource */
-  onResourceDeleted?: (id:string) => void;
+  onResourceDeleted?: (id: string) => void;
   /** Callback notifying parent component that the user wants to add a new resource to his escape room */
   onAddResource?: () => void;
   /** Callback notifying parent component of user wanting to select a specific resource */
-  onResourceSelected?: (index:number) => void;
+  onResourceSelected?: (index: number) => void;
   /** Callback notifying parent component that the user closed the pop up message */
   onClosePopUp?: () => void;
 }
@@ -244,39 +244,37 @@ export const ResourcesPopUpComponent = (props: ResourcesPopUpComponentProps): JS
 
   const {
     resourceList,
-    popUpTitle= "Title",
-    popUpMode="SelectResources",
+    popUpTitle = "Title",
+    popUpMode = "select-resources",
     onAddResource,
     onResourceDeleted,
     onResourceSelected,
     onClosePopUp,
   } = props;
 
-  //Index of the resource that is being selected at any point
+  // Index of the resource that is being selected at any point
   const [selectedResource, setSelectedResource] = useState<number>(-1);
-  //Mode of the pop up ("SelectResources" for specifying what resource the user wants to use or "ManageResources" to manage the escape rooms resources)
-  const [selectedMode, setSelectedMode] = useState<string>(popUpMode);
-  //Index of the resource that is being hovered and needs to show the delete button
+  // Index of the resource that is being hovered and needs to show the delete button
   const [hoveredResourceIndex, setHoveredResourceIndex] = useState<number>(-1);
-  
-  const handleResourceDeleted = (resourceIndex:number) => {
-    if(onResourceDeleted) onResourceDeleted(resourceList[resourceIndex].name);
+
+  const handleResourceDeleted = (resourceIndex: number) => {
+    if (onResourceDeleted) onResourceDeleted(resourceList[resourceIndex].name);
     setSelectedResource(-1);
     setHoveredResourceIndex(-1);
   }; // handleResourceDeleted
 
   const handleResourceAdded = () => {
-    if(onAddResource) onAddResource();
+    if (onAddResource) onAddResource();
 
   }; // handleResourceAdded
 
-  const handlePopUpClosed = () =>{
-    if(!onClosePopUp) return;
+  const handlePopUpClosed = () => {
+    if (!onClosePopUp) return;
     onClosePopUp();
   } //handlePopUpClosed
 
-  const handleResourceSelected = () =>{
-    if(!onResourceSelected || selectedResource === -1) return;
+  const handleResourceSelected = () => {
+    if (!onResourceSelected || selectedResource === -1) return;
     onResourceSelected(selectedResource);
   } //handleResourceSelected
 
@@ -286,47 +284,66 @@ export const ResourcesPopUpComponent = (props: ResourcesPopUpComponentProps): JS
       {/* Title of the pop up */}
       <PopUpTitle>
         <Title>{popUpTitle}</Title>
-        <CloseIcon onMouseDown={()=>{handlePopUpClosed()}} />
+        <CloseIcon onMouseDown={() => { handlePopUpClosed() }} />
       </PopUpTitle>
 
       {/* Body with the resources avaliable and a dropzone if the selected mode is "ManageResources" */}
       <PopUpBody>
         {/* Drop Zone for adding new resources  */}
-        {selectedMode === "ManageResources" && <>
-              <Dropzone onDrop={()=>{handleResourceAdded}} multiple= {false}>
-                {({getRootProps, getInputProps}) => (
-                  <DropZoneContainer {...getRootProps()}>
-                    <input {...getInputProps()} />
-                    <p>Drag 'n' drop some files here, or click to select files</p>
-                  </DropZoneContainer>
-                )}
-              </Dropzone>
-            </>
-          }
-          {/* Grid with all the resources avaliable */}
-          <SelectResourceGrid elements={resourceList.length} elementsPerRow={3}>
-            {resourceList.map((resource, index) => (
-              <ResourceContainer  onMouseEnter={()=>setHoveredResourceIndex(index)} onMouseLeave={()=>setHoveredResourceIndex(-1)}>
-                <ResourceContent selected={selectedResource === index} onMouseDown={()=>{ selectedMode === "SelectResources" && setSelectedResource(index)}} >
-                  <ResourcePreview  src={resource.src} />
-                    <h4><b>{resource.name}</b></h4> 
-                    {/* Green tick icon that shows if the resource is selected or not */}
-                    {selectedResource === index && <SelectedIcon/>}       
-                </ResourceContent>
-                {/* Button to delete the specific resource */}
-                {hoveredResourceIndex === index &&
-                  <DeleteResourceButton onClick={ e=>{ handleResourceDeleted(index)}} >
-                    <DeleteIcon></DeleteIcon>
-                  </DeleteResourceButton>         
-                }
-              </ResourceContainer>
-            ))}
-          </SelectResourceGrid>
-        </PopUpBody>
+        {popUpMode === 'manage-resources' && <>
+          <Dropzone
+            onDrop={handleResourceAdded}
+            multiple={false}
+          >
+            {({ getRootProps, getInputProps }) => (
+              <DropZoneContainer {...getRootProps()}>
+                <input {...getInputProps()} />
+                <p>Drag 'n' drop some files here, or click to select files</p>
+              </DropZoneContainer>
+            )}
+          </Dropzone>
+        </>
+        }
+        {/* Grid with all the resources avaliable */}
+        <SelectResourceGrid
+          elements={resourceList.length}
+          elementsPerRow={3}
+        >
+          {resourceList.map((resource, index) => (
+            <ResourceContainer
+              onMouseEnter={() => setHoveredResourceIndex(index)}
+              onMouseLeave={() => setHoveredResourceIndex(-1)}
+            >
+              <ResourceContent
+                selected={selectedResource === index}
+                onMouseDown={() => {
+                  if (popUpMode === 'select-resources')
+                    setSelectedResource(index);
+                }}>
+                <ResourcePreview src={resource.src} />
+                <h4><b>{resource.name}</b></h4>
+                {/* Green tick icon that shows if the resource is selected or not */}
+                {selectedResource === index && <SelectedIcon />}
+              </ResourceContent>
+              {/* Button to delete the specific resource */}
+              {hoveredResourceIndex === index &&
+                <DeleteResourceButton onClick={() => handleResourceDeleted(index)} >
+                  <DeleteIcon />
+                </DeleteResourceButton>
+              }
+            </ResourceContainer>
+          ))}
+        </SelectResourceGrid>
+      </PopUpBody>
       {/* Container of the buttons at the bottom of the pop up that let the user confirm his selection */}
       <PopUpButtons>
-        {selectedMode === "SelectResources" && 
-          <SelectFileButton avaliable={selectedResource !== -1} onMouseDown={()=>{handleResourceSelected()}}> Select File</SelectFileButton>
+        {popUpMode === 'select-resources' &&
+          <SelectFileButton
+            avaliable={selectedResource !== -1}
+            onMouseDown={handleResourceSelected}
+          >
+            Select File
+          </SelectFileButton>
         }
       </PopUpButtons>
     </PopUpWrapper>
