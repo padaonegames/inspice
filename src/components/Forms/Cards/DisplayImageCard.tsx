@@ -71,6 +71,7 @@ export const EditableDisplayImageCardContent = (props: EditableDisplayImageCardC
         readOnly={false}
         placeholder={'Image source'}
         maxLength={1000}
+        textWidth={0.95}
         value={src}
         onChange={event => handleEditImageSource(event.target.value)}
       />

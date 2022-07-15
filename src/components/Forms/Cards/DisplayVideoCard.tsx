@@ -102,9 +102,10 @@ export const EditableDisplayVideoCardContent = (props: EditableDisplayVideoCardC
       <InputText
         placeholder={'Youtube video link'}
         value={src}
+        textWidth={0.95}
         onChange={event => handleEditVideoSource(event.target.value)}
       />
-        <YouTube videoId={getVideoID(src)} opts={playerOptions} onReady={onPlayerReady} style={{ marginLeft: "auto", marginRight: "auto", display: "block"}}/>
+        <YouTube videoId={getVideoID(src)} opts={playerOptions} onReady={onPlayerReady} style={{ marginLeft: "auto", marginRight: "auto", paddingTop:"10px", display: "block"}}/>
     </>
   );
 }; // EditableDisplayImageCardContent

@@ -8,17 +8,29 @@ const LikertResponseContainer = styled.label`
   text-align: center;
   position: relative;
 
-  //
-  background-color: rgba(255,0,0,1);
-  border-right: 2px solid rgb(0,255,0);
-  border-left: 2px solid rgb(0,0,255);
+  // //
+  // background-color: rgba(255,0,0,1);
+  // border-right: 2px solid rgb(0,255,0);
+  // border-left: 2px solid rgb(0,0,255);
 `;
 
 const LikertText = styled.span`
   font-size: 0.9em;
+  width:50%;
   font-weight: 200;
   letter-spacing: +0.5px;
   font-family: Raleway;
+  color: ${props => props.theme.textColor};
+`;
+
+const LikertInputText = styled.input`
+  font-size: 0.9em;
+  font-weight: 200;
+  letter-spacing: +0.5px;
+  font-family: Raleway;
+  width: 50%;
+  max-width:50%;
+
   color: ${props => props.theme.textColor};
 `;
 
@@ -115,3 +127,55 @@ export const LikertResponse = (props: LikertResponseProps): JSX.Element => {
 }
 
 export default LikertResponse;
+
+
+export interface EditableLikertResponseProps {
+  /** Whether this response is selected or not */
+  selected?: boolean;
+  /** Text to be displayed underneath the likert indicator */
+  responseText: string;
+  /** callback to parent component specifying that the answer has been selected */
+  onResponseSelected?: () => void;
+  onScaleEdited?: (newName:string)=>void;
+  /** Relative position of this answer within the list */
+  position?: 'first' | 'middle' | 'last';
+};
+
+export const EditableLikertResponse = (props: EditableLikertResponseProps): JSX.Element => {
+
+  const {
+    position = 'middle',
+    selected = false,
+    responseText,
+    onScaleEdited,
+    onResponseSelected,
+  } = props;
+
+
+  const handleSelectAnswer = () => {
+    if (onResponseSelected)
+      onResponseSelected();
+  };
+
+  const handleAnswerEdited = (value:string) =>{
+    if (onScaleEdited)
+    onScaleEdited(value);
+  }
+
+  return (
+    <LikertResponseContainer>
+      <LikertLine visible={position !== 'first'} />
+      <LikertLine visible={position !== 'last'} />
+      <LikertInput
+        type='radio'
+        name={responseText}
+        onChange={event =>handleSelectAnswer}
+      />
+      <LikertIndicator checked={selected} />
+      <VerticalSpace />
+      {/* <LikertText>{responseText}</LikertText> */}
+      <LikertInputText type='text' defaultValue={responseText} onChange={ event =>handleAnswerEdited(event.target.value)}></LikertInputText>
+    </LikertResponseContainer>
+  );
+}
+

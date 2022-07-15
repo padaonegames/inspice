@@ -139,16 +139,16 @@ export const fieldMappings: FieldMappings<SupportedFormField> = {
       src: ''
     }
   },
-  'likert-scale': {
-    displayName: 'Liker',
-    iconComponent: <LikerIcon />,
-    editingComponentProducer: EditableLikertScaleCardContent,
-    defaultFieldPayload: {
-      scale:["First", "Second", "Third"],
-      questions:[],
-      showQuestionsIndex:false
-    }
-  },
+  // 'likert-scale': {
+  //   displayName: 'Liker',
+  //   iconComponent: <LikerIcon />,
+  //   editingComponentProducer: EditableLikertScaleCardContent,
+  //   defaultFieldPayload: {
+  //     scale:["First", "Second", "Third"],
+  //     questions:["First question"],
+  //     showQuestionsIndex:false
+  //   }
+  // },
 }; // fieldMappings
 
 export const DefineMultistageFormStep = (props: StepComponentProps): JSX.Element => {

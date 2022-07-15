@@ -49,14 +49,14 @@ export const fieldTypeIcon = css`
   margin-right: 0.75em;
 `;
 
+const DeleteIcon = styled(Delete)`
+${fieldTypeIcon}
+cursor: pointer;
+`;
+
 const ExpandDropdownIcon = styled(ChevronDown)`
   ${fieldTypeIcon}
   margin-left: auto;
-`;
-
-const DeleteIcon = styled(Delete)`
-  ${fieldTypeIcon}
-  cursor: pointer;
 `;
 
 const DropdownMenu = styled.div`
@@ -167,8 +167,8 @@ export const EditableFieldCard = (props: EditableFieldCardProps): JSX.Element =>
     promptText: '',
     required: false,
     fieldData: {
-      type: 'likert-scale',
-      payload: fieldMappings['likert-scale'].defaultFieldPayload
+      type: 'multiple-choice',
+      payload: fieldMappings['multiple-choice'].defaultFieldPayload
     }
   });
 
