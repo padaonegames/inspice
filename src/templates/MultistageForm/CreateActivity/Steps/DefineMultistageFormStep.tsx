@@ -25,9 +25,11 @@ import { TextLeft } from "@styled-icons/bootstrap/TextLeft";
 import { CalendarEvent } from "@styled-icons/boxicons-regular/CalendarEvent";
 import { Likert } from "@styled-icons/fluentui-system-regular/Likert";
 import { ImageAdd } from "@styled-icons/boxicons-regular/ImageAdd";
+import {CardText} from "@styled-icons/bootstrap/CardText"
 import { CheckboxChecked } from "@styled-icons/fluentui-system-filled/CheckboxChecked";
 import { LinearScale } from "@styled-icons/material-outlined/LinearScale";
 import { Tags } from "@styled-icons/fa-solid/Tags";
+import { EditableDisplayTextCardContent } from '../../../../components/Forms/Cards/DisplayTextCard';
 
 const Root = styled.div`
   display: flex;
@@ -45,6 +47,10 @@ const MultipleChoiceIcon = styled(RadioCircleMarked)`
 `;
 
 const DisplayImageIcon = styled(CardImage)`
+  ${fieldTypeIcon}
+`;
+
+const DisplayTextIcon = styled(CardText)`
   ${fieldTypeIcon}
 `;
 
@@ -137,6 +143,14 @@ export const fieldMappings: FieldMappings<SupportedFormField> = {
     editingComponentProducer: EditableDisplayVideoCardContent,
     defaultFieldPayload: {
       src: ''
+    }
+  },
+  'display-text': {
+    displayName: 'Display Text',
+    iconComponent: <DisplayTextIcon />,
+    editingComponentProducer: EditableDisplayTextCardContent,
+    defaultFieldPayload: {
+      text:''
     }
   },
   'likert-scale': {

@@ -336,6 +336,42 @@ export const EditableStepDescription = styled.textarea`
   }
 `;
 
+
+export const EditableText = styled.textarea`
+  font-size: 0.95em;
+  font-weight: 200;
+  font-family: ${props => props.theme.contentFont};
+  line-height: 135%;
+  width: 100%;
+  margin-top: 5px;
+  color: ${props => props.theme.textColor};
+
+  height: 8em;
+  border: none;
+  border-bottom: 2px solid #dadce0;
+  outline: none;
+  padding: 2px 0;
+  background-color: transparent;
+  resize: vertical;
+
+  &:focus {
+    border-bottom: 3px solid #c44c49;
+  }
+`;
+
+export const TextPreview = styled.div`
+  font-size: 0.95em;
+  font-weight: 200;
+  font-family: ${props => props.theme.contentFont};
+  line-height: 135%;
+  width: 100%;
+  margin-top: 10px;
+  color: ${props => props.theme.textColor};
+
+  border-bottom: 2px solid #dadce0;
+  padding: 2px 0;
+`;
+
 export const ImagePreview = styled.img`
   max-height: 250px;
   object-fit: cover;
