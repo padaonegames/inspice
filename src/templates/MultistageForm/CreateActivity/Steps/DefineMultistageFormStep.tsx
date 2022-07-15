@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import EditableFieldCard, { FieldMappings, fieldTypeIcon } from '../../../../components/Forms/Cards/EditableFieldCard';
 import FormActionsFloatingCard from '../../../../components/Forms/Cards/FormActionsFloatingCarc';
 import { EditableMultipleChoiceCardContent, multipleChoiceCardFactory } from '../../../../components/Forms/Cards/MultipleChoiceCard';
@@ -18,8 +18,8 @@ import LikertScaleInputCardStories from '../../../../stories/forms/cards/LikertS
 import styled from 'styled-components';
 import { RadioCircleMarked } from "styled-icons/boxicons-regular";
 import { CardImage } from "@styled-icons/bootstrap/CardImage";
-import {Video} from "@styled-icons/entypo/Video";
-import {Like} from "@styled-icons/boxicons-regular/Like";
+import { Video } from "@styled-icons/entypo/Video";
+import { Like } from "@styled-icons/boxicons-regular/Like";
 import { ShortText } from "@styled-icons/material/ShortText";
 import { TextLeft } from "@styled-icons/bootstrap/TextLeft";
 import { CalendarEvent } from "@styled-icons/boxicons-regular/CalendarEvent";
@@ -139,16 +139,16 @@ export const fieldMappings: FieldMappings<SupportedFormField> = {
       src: ''
     }
   },
-  // 'likert-scale': {
-  //   displayName: 'Liker',
-  //   iconComponent: <LikerIcon />,
-  //   editingComponentProducer: EditableLikertScaleCardContent,
-  //   defaultFieldPayload: {
-  //     scale:["First", "Second", "Third"],
-  //     questions:["First question"],
-  //     showQuestionsIndex:false
-  //   }
-  // },
+  'likert-scale': {
+    displayName: 'Liker',
+    iconComponent: <LikerIcon />,
+    editingComponentProducer: EditableLikertScaleCardContent,
+    defaultFieldPayload: {
+      scale:["First", "Second", "Third"],
+      questions:[],
+      showQuestionsIndex:false
+    }
+  },
 }; // fieldMappings
 
 export const DefineMultistageFormStep = (props: StepComponentProps): JSX.Element => {
@@ -158,6 +158,16 @@ export const DefineMultistageFormStep = (props: StepComponentProps): JSX.Element
 
   // which card is currently selected (useful for knowing where to place new cards)
   const [selectedItemIndex, setSelectedItemIndex] = useState<number>(stage.forms.length - 1);
+  // state to see if the focused item can change just by hovering the mouse over any object or it must be clicked 
+  const [focusOnHover, setFocusOnHover] = useState<boolean>(true);
+  
+  
+  // Stages of the activity
+  const [activityStages, setActivityStages] = useState<MultistageFormStage[]>([defaultStage]);
+  // each time the stages are modified our state will notice it
+  useEffect(() => {
+    // setActivityStages(props.getState<MultistageFormStage[]>('stages', [defaultStage]));
+  }, [props.getState<MultistageFormStage[]>('stages', [defaultStage])])
 
   const handleTitleChanged = (value: string) => {
     props.setState<MultistageFormStage>('stage', (prev => ({
@@ -229,41 +239,56 @@ export const DefineMultistageFormStep = (props: StepComponentProps): JSX.Element
     })), defaultStage);
   }; // handleFieldTypeChanged
 
+
+  const handleMouseEntered = (index:number)=>{
+    if(!focusOnHover)return;
+    setSelectedItemIndex(index);
+  } // handleMouseEntered
+
+  const handleFocusLost = (index:number) =>{
+    setFocusOnHover(index === selectedItemIndex ? true: false);
+  } // handleFocusLost
+
   return (
     <Root>
-      <EditableStepTitleCard
-        key='editableStepTitleCard'
-        stepTitle={stage.title ?? ''}
-        stepDescription={stage.description ?? ''}
-        onTitleChanged={handleTitleChanged}
-        onDescriptionChanged={handleDescriptionChanged}
-        onCardFocused={() => setSelectedItemIndex(-1)}
-      />
-      {selectedItemIndex === -1 && (
-        <FormActionsFloatingCard
-          key='actionsFloatingCard'
-          onAddNewQuestion={handleItemAdded}
-        />
-      )}
-      {stage.forms.map((form, i) => (
-        <>
-          <EditableFieldCard
-            key={i}
-            initialFieldDefinition={form}
-            fieldMappings={fieldMappings}
-            onFieldDefinitionChanged={(value) => handleItemChanged(i, value)}
-            onFieldTypeChanged={(fieldType) => handleFieldTypeChanged(i, fieldType)}
-            onCardDeleted={() => handleItemRemoved(i)}
-            onCardFocused={() => setSelectedItemIndex(i)}
+          <EditableStepTitleCard
+            key='editableStepTitleCard'
+            stepTitle={stage.title ?? ''}
+            stepDescription={stage.description ?? ''}
+            onTitleChanged={handleTitleChanged}
+            onDescriptionChanged={handleDescriptionChanged}
+            onCardFocused={() => {setSelectedItemIndex(-1); setFocusOnHover(false)}}
+            onCardLostFocus={()=>handleFocusLost(-1)}
+            onMouseEntered={()=>handleMouseEntered(-1)}
           />
-          {selectedItemIndex === i && (
+          {selectedItemIndex === -1 && (
             <FormActionsFloatingCard
               key='actionsFloatingCard'
               onAddNewQuestion={handleItemAdded}
             />
           )}
-        </>
-      ))}
+          {stage.forms.map((form, i) => (
+            <>
+              <EditableFieldCard
+                key={i}
+                initialFieldDefinition={form}
+                fieldMappings={fieldMappings}
+                onFieldDefinitionChanged={(value) => handleItemChanged(i, value)}
+                onFieldTypeChanged={(fieldType) => handleFieldTypeChanged(i, fieldType)}
+                onCardDeleted={() => handleItemRemoved(i)}
+                onCardFocused={() => {setSelectedItemIndex(i); setFocusOnHover(false)}}
+                onCardLostFocus={()=>handleFocusLost(i)}
+                onMouseEntered={()=>handleMouseEntered(i)}
+                isFocused = {selectedItemIndex===i}
+              />
+              {selectedItemIndex === i && (
+                <FormActionsFloatingCard
+                  key='actionsFloatingCard'
+                  onAddNewQuestion={handleItemAdded}
+                />
+              )}
+            </>
+          ))}
     </Root>
   );
 }

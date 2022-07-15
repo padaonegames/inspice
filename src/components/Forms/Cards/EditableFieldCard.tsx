@@ -129,6 +129,11 @@ export interface EditableFieldCardProps {
   onCardDeleted?: () => void;
   /** Callback notifying parent component of card getting the focus */
   onCardFocused?: () => void;
+  /** Callback notifying parent component of card losing the focus */
+  onCardLostFocus?: () => void;
+  /** Callback notifying parent component of mouse entered this component */
+  onMouseEntered?: () => void;
+  isFocused?:boolean;
 }
 
 export type FieldMappings<T extends SupportedFormField> = {
@@ -159,7 +164,10 @@ export const EditableFieldCard = (props: EditableFieldCardProps): JSX.Element =>
     onFieldTypeChanged,
     onFieldDefinitionChanged,
     onCardDeleted,
-    onCardFocused
+    onCardFocused,
+    onCardLostFocus,
+    onMouseEntered,
+    isFocused=false,
   } = props;
 
   // managed state for field definition
@@ -282,11 +290,14 @@ export const EditableFieldCard = (props: EditableFieldCardProps): JSX.Element =>
 
   return (
     <Root>
-      <CardPanel
-        onClick={onCardFocused}
+      <CardPanel 
         requiredAlert={requiredAlert}
+        onMouseEnter={onMouseEntered}
+        onFocus={onCardFocused}
+        onBlur={onCardLostFocus}
+        isFocused={isFocused}
       >
-        <HeaderRow>
+        <HeaderRow >
           <InputArea
             dimBackground
             width='50%'

@@ -275,7 +275,10 @@ export const SelectFieldTypeDropdownButton = styled.span`
 
 
 export const EditableLikertScaleCardContent = (props: EditableLikertScaleCardContentProps): JSX.Element => {
-
+  
+  const [scaleLenght, setScaleLength] = useState<number>(3);
+  const [fieldTypeDropdownOpen, setFieldTypeDropdownOpen] = useState<boolean>(false);
+  
   const {
     fieldPayload,
     onPayloadChanged
@@ -287,8 +290,6 @@ export const EditableLikertScaleCardContent = (props: EditableLikertScaleCardCon
     showQuestionsIndex = false
   } = fieldPayload;
 
-  const [scaleLenght, setScaleLength] = useState<number>(3);
-  const [fieldTypeDropdownOpen, setFieldTypeDropdownOpen] = useState<boolean>(false);
 
 
   const handleAddQuestion = () => {
@@ -340,6 +341,7 @@ export const EditableLikertScaleCardContent = (props: EditableLikertScaleCardCon
     })
   };
 
+
   const availableMultistageFormItemTypes = [3, 4, 5, 6, 7, 8]
 
   return (
@@ -349,12 +351,12 @@ export const EditableLikertScaleCardContent = (props: EditableLikertScaleCardCon
 
         <ScaleLengthConfigurator>
           <span> Number of steps in the scale:</span>
-          <SelectFieldTypeDropdownButton onClick={() => setFieldTypeDropdownOpen(prev => !prev)}>
+          <SelectFieldTypeDropdownButton onClick={() => {return; setFieldTypeDropdownOpen(prev => !prev)}}>
             {scaleLenght} <ExpandDropdownIcon />
             {fieldTypeDropdownOpen &&
               <DropdownMenu>
                 {availableMultistageFormItemTypes.map(elem => (
-                  <DropdownMenuItem onClick={() => handleFieldTypeSelected(elem)}> {elem} </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => {return; handleFieldTypeSelected(elem)}}> {elem} </DropdownMenuItem>
                 ))}
               </DropdownMenu>}
           </SelectFieldTypeDropdownButton>
@@ -369,7 +371,7 @@ export const EditableLikertScaleCardContent = (props: EditableLikertScaleCardCon
                 position={rInd === 0 ? 'first' : (rInd === scale.length - 1 ? 'last' : 'middle')}
                 key={"Sample question"}
                 onResponseSelected={() => { }}
-                onScaleEdited={(value) => { handleScaleEdited(rInd, value) }}
+                onScaleEdited={(value) => {return; handleScaleEdited(rInd, value) }}
                 selected={false}
               />
             ))}
@@ -386,8 +388,8 @@ export const EditableLikertScaleCardContent = (props: EditableLikertScaleCardCon
               labelText={question}
               style='radio'
               boxSize='0px'
-              onObjectRemoved={() => handleRemoveQuestion(qInd)}
-              onLabelTextChanged={(value) => handleQuestionChanged(qInd, value)}
+              onObjectRemoved={() => {return;handleRemoveQuestion(qInd)}}
+              onLabelTextChanged={(value) => {return;handleQuestionChanged(qInd, value)}}
             />
           </QuestionContainer>
           <LikertScaleContainer>
@@ -406,7 +408,7 @@ export const EditableLikertScaleCardContent = (props: EditableLikertScaleCardCon
         </>
       ))}
 
-      <AddQuestionContainer onMouseDown={() => { handleAddQuestion() }}>
+      <AddQuestionContainer onMouseDown={() => {return; handleAddQuestion() }}>
         <AddQuestionIcon />
       </AddQuestionContainer>
     </>

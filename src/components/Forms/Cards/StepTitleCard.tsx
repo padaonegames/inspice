@@ -28,6 +28,10 @@ export const CardPanel = styled.div<CardPanelProps>`
   flex-direction: column;
   position: relative;
 
+  &:focus{
+    outline: none !important;
+    border-left: 6px solid #c44c49;
+  }
   &:focus-within {
     border-left: 6px solid #c44c49;
   }
@@ -116,6 +120,10 @@ export interface EditableStepTitleCardProps {
   alertMessage?: string;
   /** Callback notifying parent component of card getting the focus */
   onCardFocused?: () => void;
+  /** Callback notifying parent component of card losing the focus */
+  onCardLostFocus?: () => void;
+  /** Callback notifying parent component of mouse entered this component */
+  onMouseEntered?: () => void;
 }
 
 /**
@@ -130,9 +138,11 @@ export const EditableStepTitleCard = (props: EditableStepTitleCardProps): JSX.El
     descriptionPlaceholder = 'Enter a description for this card...',
     onTitleChanged,
     onDescriptionChanged,
-    onCardFocused,
     requiredAlert,
-    alertMessage
+    alertMessage,
+    onCardFocused,
+    onCardLostFocus,
+    onMouseEntered
   } = props;
 
   return (
@@ -140,7 +150,9 @@ export const EditableStepTitleCard = (props: EditableStepTitleCardProps): JSX.El
       <TitleColor />
       <CardPanel
         requiredAlert={requiredAlert}
-        onClick={onCardFocused}
+        onMouseEnter={onMouseEntered}
+        onFocus={onCardFocused}
+        onBlur={onCardLostFocus}
       >
         <HeaderRow>
           <EditableTitleText

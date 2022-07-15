@@ -201,6 +201,8 @@ export const DateContainer = styled.div`
 interface CardPanelProps {
   /** True if user tried to submit the form without filling a required field */
   requiredAlert?: boolean;
+  /** True if user tried to submit the form without filling a required field */
+  isFocused?: boolean;
 }
 export const CardPanel = styled.div<CardPanelProps>`
   padding: 16px 16px 24px 16px;
@@ -210,6 +212,12 @@ export const CardPanel = styled.div<CardPanelProps>`
   &:focus-within {
     border-left: 6px solid #c44c49;
   }
+  &:focus{
+    outline: none !important;
+    border-left: 6px solid #c44c49;
+  }
+  ${props =>props.isFocused ? "border-left: 6px solid #c44c49;":""}
+  
   border-radius: 8px;
   width: 100%;
   word-wrap: break-word;
