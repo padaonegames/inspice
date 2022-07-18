@@ -205,6 +205,7 @@ interface CardPanelProps {
   isFocused?: boolean;
 }
 export const CardPanel = styled.div<CardPanelProps>`
+  position:relative;  
   padding: 16px 16px 24px 16px;
   background-color: ${props => props.theme.cardBackground};
   ${props => !props.requiredAlert && 'border: 1px solid #dadce0;'}
@@ -216,7 +217,7 @@ export const CardPanel = styled.div<CardPanelProps>`
     outline: none !important;
     border-left: 6px solid #c44c49;
   }
-  ${props =>props.isFocused ? "border-left: 6px solid #c44c49;":""}
+  ${props => props.isFocused ? "border-left: 6px solid #c44c49;" : ""}
   
   border-radius: 8px;
   width: 100%;

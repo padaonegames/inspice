@@ -11,7 +11,56 @@ import {
 } from "./cardStyles";
 import { ChevronDown } from "@styled-icons/boxicons-regular/ChevronDown";
 import { Delete } from '@styled-icons/fluentui-system-regular/Delete';
+import {ArrowDownSquareFill} from "@styled-icons/bootstrap/ArrowDownSquareFill"
+import {ArrowUpSquareFill} from "@styled-icons/bootstrap/ArrowUpSquareFill"
 import CheckBoxInput from "../CheckBoxInput";
+
+
+/**
+ * Recommended styles for an icon being passed to EditableFieldCard
+ * component within a list of field Mapping specifications for optimal 
+ * rendering.
+ */
+ export const fieldTypeIcon = css`
+ color: ${props => props.theme.textColor};
+ height: 1.75em;
+ width: 1.75em;
+ margin-right: 0.75em;
+`;
+
+const DeleteIcon = styled(Delete)`
+${fieldTypeIcon}
+cursor: pointer;
+`;
+
+const ExpandDropdownIcon = styled(ChevronDown)`
+ ${fieldTypeIcon}
+ margin-left: auto;
+`;
+
+const UpArrowIcon = styled(ArrowUpSquareFill)`
+ ${fieldTypeIcon}
+ position: absolute;
+ right: -2%;
+ top: 30%;
+ margin-left: auto;
+ &:hover {
+  color: rgb(255,0,0);
+  cursor: pointer;
+}
+`;
+
+const DownArrowIcon = styled(ArrowDownSquareFill)`
+ ${fieldTypeIcon}
+ position: absolute;
+ right: -2%;
+ bottom: 30%;
+ margin-left: auto;
+ &:hover {
+  color: rgb(255,0,0);
+  cursor: pointer;
+}
+`;
 
 const HeaderRow = styled.div`
   display: flex;
@@ -35,28 +84,6 @@ const BottomRow = styled.div`
   justify-content: right;
   align-items: center;
   margin-top: 0.25em;
-`;
-
-/**
- * Recommended styles for an icon being passed to EditableFieldCard
- * component within a list of field Mapping specifications for optimal 
- * rendering.
- */
-export const fieldTypeIcon = css`
-  color: ${props => props.theme.textColor};
-  height: 1.75em;
-  width: 1.75em;
-  margin-right: 0.75em;
-`;
-
-const DeleteIcon = styled(Delete)`
-${fieldTypeIcon}
-cursor: pointer;
-`;
-
-const ExpandDropdownIcon = styled(ChevronDown)`
-  ${fieldTypeIcon}
-  margin-left: auto;
 `;
 
 const DropdownMenu = styled.div`
@@ -133,6 +160,10 @@ export interface EditableFieldCardProps {
   onCardLostFocus?: () => void;
   /** Callback notifying parent component of mouse entered this component */
   onMouseEntered?: () => void;
+
+  onMoveUpCard?: ()=>void;
+  onMoveDownCard?: ()=>void;
+
   isFocused?:boolean;
 }
 
@@ -167,6 +198,8 @@ export const EditableFieldCard = (props: EditableFieldCardProps): JSX.Element =>
     onCardFocused,
     onCardLostFocus,
     onMouseEntered,
+    onMoveDownCard,
+    onMoveUpCard,
     isFocused=false,
   } = props;
 
@@ -179,6 +212,18 @@ export const EditableFieldCard = (props: EditableFieldCardProps): JSX.Element =>
       payload: fieldMappings['multiple-choice'].defaultFieldPayload
     }
   });
+
+  // each time the stages are modified our state will notice it
+  useEffect(() => {
+    setFieldDefinition(initialFieldDefinition ?? {
+      promptText: '',
+      required: false,
+      fieldData: {
+        type: 'multiple-choice',
+        payload: fieldMappings['multiple-choice'].defaultFieldPayload
+      }
+    });
+  }, [initialFieldDefinition])
 
   // whether the field type dropdown is currently open
   const [fieldTypeDropdownOpen, setFieldTypeDropdownOpen] = useState<boolean>(false);
@@ -343,6 +388,9 @@ export const EditableFieldCard = (props: EditableFieldCardProps): JSX.Element =>
             <RequiredAlertIcon /> {alertMessage ?? 'This item is required.'}
           </RequiredQuestionSpan>
         )}
+
+        <UpArrowIcon onMouseDown={onMoveUpCard}/>
+        <DownArrowIcon onMouseDown={onMoveDownCard}/>
       </CardPanel>
     </Root>
   );

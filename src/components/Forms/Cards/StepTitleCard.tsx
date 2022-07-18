@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { StoryDisplayActionButton } from "../../../templates/GamGame/components/generalStyles";
 import {
   Root,
@@ -10,6 +10,46 @@ import {
   RequiredAlertIcon,
   RequiredQuestionSpan
 } from "./cardStyles";
+
+import {ArrowDownSquareFill} from "@styled-icons/bootstrap/ArrowDownSquareFill"
+import {ArrowUpSquareFill} from "@styled-icons/bootstrap/ArrowUpSquareFill"
+import { Delete } from '@styled-icons/fluentui-system-regular/Delete';
+
+
+/**
+ * Recommended styles for an icon being passed to EditableFieldCard
+ * component within a list of field Mapping specifications for optimal 
+ * rendering.
+ */
+ export const fieldTypeIcon = css`
+ color: ${props => props.theme.textColor};
+ height: 1.75em;
+ width: 1.75em;
+ margin-right: 0.75em;
+`;
+
+const UpArrowIcon = styled(ArrowUpSquareFill)`
+ ${fieldTypeIcon}
+ margin-left: auto;
+ &:hover {
+  color: rgb(255,0,0);
+  cursor: pointer;
+}
+`;
+
+const DownArrowIcon = styled(ArrowDownSquareFill)`
+ ${fieldTypeIcon}
+ margin-left: auto;
+ &:hover {
+  color: rgb(255,0,0);
+  cursor: pointer;
+}
+`;
+
+
+const DeleteIcon = styled(Delete)`
+  ${fieldTypeIcon}
+`;
 
 
 interface CardPanelProps {
@@ -45,6 +85,20 @@ const HeaderRow = styled.div`
   justify-content: space-between;
   margin-bottom: 0.25em;
 `;
+
+export const StepTopInfo = styled.div`
+  position:relative;
+  left:10px;
+  width: 30%;
+  height: 70px;
+  border-radius: 8px 8px 0 0;
+  background-color: #c44c49;
+  
+  display:flex;
+  flex-direction: row;
+  align-items:left;
+`;
+
 
 export interface StepTitleCardProps {
   /** Step's title. */
@@ -124,6 +178,12 @@ export interface EditableStepTitleCardProps {
   onCardLostFocus?: () => void;
   /** Callback notifying parent component of mouse entered this component */
   onMouseEntered?: () => void;
+
+  position?: number;
+
+  onSectionMovedUp?: () =>void;
+  onSectionMovedDown?: () =>void;
+  onSectionDeleted?: ()=>void;
 }
 
 /**
@@ -142,12 +202,24 @@ export const EditableStepTitleCard = (props: EditableStepTitleCardProps): JSX.El
     alertMessage,
     onCardFocused,
     onCardLostFocus,
-    onMouseEntered
+    onMouseEntered,
+    position,
+    onSectionMovedDown,
+    onSectionMovedUp,
+    onSectionDeleted
   } = props;
 
   return (
     <Root>
-      <TitleColor />
+
+      <StepTopInfo>
+        Section {position??+1}
+        <UpArrowIcon onMouseDown={onSectionMovedUp}/>
+        <DeleteIcon onMouseDown={onSectionDeleted}/>
+        <DownArrowIcon onMouseDown = { onSectionMovedDown}/>
+      </StepTopInfo>
+
+      <TitleColor/>
       <CardPanel
         requiredAlert={requiredAlert}
         onMouseEnter={onMouseEntered}
