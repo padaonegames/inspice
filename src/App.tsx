@@ -77,7 +77,7 @@ export const App = (): JSX.Element => {
                 <Route path='escape-room'>
                   <Route path='curator' element={<ActivityScreen guarded activityTitle='Escape Room Creation' />}>
                     <Route path='create/:id/*' element={<EditEscapeRoomScreen />} />
-                    <Route path='create/new' element={<GenerateNewEscapeRoomActivityScreen />} />
+                    <Route path='new-activity' element={<GenerateNewEscapeRoomActivityScreen />} />
                   </Route>
                 </Route>
                 <Route path='multistage-form'>

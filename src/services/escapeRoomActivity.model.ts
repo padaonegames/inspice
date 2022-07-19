@@ -2,60 +2,64 @@
 //           ITEM DEFINITIONS (STAGES + PUZZLES)
 // ---------------------------------------------------------------
 
-export type ItemDefinition = (
-  | { type: 'room', payload: RoomDefinition }
-  | { type: 'multiple-choice', payload: MultipleChoiceItemDefinition }
-  | { type: 'qr-scan', payload: QrScanItemDefinition }
-  | { type: 'ar-scan', payload: ArScanItemDefinition }
-  | { type: 'waiting-code', payload: WaitingCodeDefinition }
-  | { type: 'load-scene', payload: LoadSceneDefinition }
-  | { type: 'narrative', payload: NarrativeItemDefinition }
-  | { type: 'unlock-password', payload: UnlockPasswordItemDefinition }
-); // ItemDefinition
+export type ItemDefinition =
+  | { type: "room"; payload: RoomDefinition }
+  | { type: "multiple-choice"; payload: MultipleChoiceItemDefinition }
+  | { type: "qr-scan"; payload: QrScanItemDefinition }
+  | { type: "ar-scan"; payload: ArScanItemDefinition }
+  | { type: "waiting-code"; payload: WaitingCodeDefinition }
+  | { type: "load-scene"; payload: LoadSceneDefinition }
+  | { type: "narrative"; payload: NarrativeItemDefinition }
+  | { type: "unlock-password"; payload: UnlockPasswordItemDefinition }; // ItemDefinition
 
 export const escapeRoomStageTypes = [
-  'room',
-  'multiple-choice',
-  'waiting-code',
-  'qr-scan',
-  'ar-scan',
-  'load-scene',
-  'narrative',
-  'unlock-password'
+  "room",
+  "multiple-choice",
+  "waiting-code",
+  "qr-scan",
+  "ar-scan",
+  "load-scene",
+  "narrative",
+  "unlock-password",
 ] as const; // escapeRoomStageTypes
 
 export type AvailableEscapeRoomStageType = typeof escapeRoomStageTypes[number];
 
-export type SupportedStage =
-  Extract<ItemDefinition, {
-    type: AvailableEscapeRoomStageType
-  }>; // SupportedStage
+export type SupportedStage = Extract<
+  ItemDefinition,
+  {
+    type: AvailableEscapeRoomStageType;
+  }
+>; // SupportedStage
 
 export const escapeRoomPuzzleTypes = [
-  'multiple-choice',
-  'waiting-code',
-  'qr-scan',
-  'ar-scan',
-  'load-scene',
-  'narrative',
-  'unlock-password'
+  "multiple-choice",
+  "waiting-code",
+  "qr-scan",
+  "ar-scan",
+  "load-scene",
+  "narrative",
+  "unlock-password",
 ] as const; // escapeRoomPuzzleTypes
 
-export type AvailableEscapeRoomPuzzleType = typeof escapeRoomPuzzleTypes[number];
+export type AvailableEscapeRoomPuzzleType =
+  typeof escapeRoomPuzzleTypes[number];
 
-export type SupportedPuzzle =
-  Extract<ItemDefinition, {
-    type: AvailableEscapeRoomPuzzleType
-  }>; // SupportedPuzzle
+export type SupportedPuzzle = Extract<
+  ItemDefinition,
+  {
+    type: AvailableEscapeRoomPuzzleType;
+  }
+>; // SupportedPuzzle
 
 /** Default puzzle definition */
 export const default_puzzle: SupportedPuzzle = {
-  type: 'multiple-choice',
+  type: "multiple-choice",
   payload: {
-    prompt: '',
+    prompt: "",
     correctAnswerIndex: 0,
-    answers: []
-  }
+    answers: [],
+  },
 }; // default_puzzle
 
 // ---------------------------------------------------------------
@@ -72,29 +76,26 @@ export interface EscapeRoomActivityDefinition {
 } // EscapeRoomActivityDefinition
 
 export const defaultEscapeRoomActivityDefinition: EscapeRoomActivityDefinition =
-{
-  _id: '',
-  activityTitle: '',
-  authorUsername: '',
-  authorId: '',
-  characters: [],
-  stages: []
-}; // defaultEscapeRoomActivityDefinition
+  {
+    _id: "",
+    activityTitle: "",
+    authorUsername: "",
+    authorId: "",
+    characters: [],
+    stages: [],
+  }; // defaultEscapeRoomActivityDefinition
 
 export interface CharacterDefinition {
-  name: string,
+  name: string;
   description: string;
   imageSrc: string;
-  _id: string;
 } // CharacterDefinition
 
 export const default_character: CharacterDefinition = {
-  name: "New Character",
-  description: "New Character Description",
-  imageSrc: "https://stickerly.pstatic.net/sticker_pack/9uCc66lpT8KQrI1v0zlIQ/B9D9U3/9/357db9fd-cdf3-45bf-968f-ae8a34e5b389.png",
-  _id: ''
+  name: "",
+  description: "",
+  imageSrc: ""
 }; // default_character
-
 
 // ---------------------------------------------------------------
 //                    ROOM  DEFINITIONS
@@ -116,12 +117,11 @@ export const default_room: RoomDefinition = {
   blocks: [],
   availableTime: 20,
   exitBlock: {
-    blockName: 'Solve Room',
-    blockDescription: '',
-    puzzles: []
-  }
+    blockName: "Solve Room",
+    blockDescription: "",
+    puzzles: [],
+  },
 }; // default_room
-
 
 export interface RoomBlock {
   /**display name for a room block (name that will be rendered when choosing what block to play next by the user) */
@@ -134,9 +134,9 @@ export interface RoomBlock {
 
 /** Default definition for a Room Block */
 export const default_room_block: RoomBlock = {
-  blockName: '',
-  blockDescription: '',
-  puzzles: [default_puzzle, default_puzzle]
+  blockName: "",
+  blockDescription: "",
+  puzzles: [default_puzzle, default_puzzle],
 }; // default_room_block
 
 // ---------------------------------------------------------------
@@ -190,14 +190,17 @@ export interface LoadSceneDefinition {
 export interface UnlockPasswordItemDefinition {
   /** Password that needs to be solved to exit a room */
   password: number[];
-
   /** Description to help give context to solve the password */
   description: string;
 } // UnlockPasswordItemDefinition
 
+export interface Dialogue {
+  text: string;
+  characterName?: string;
+} // Dialogue
+
 export interface NarrativeItemDefinition {
-  dialogs: string[];
-  characters: string[];
+  dialogues: Dialogue[];
 } // NarrativeItemDefinition
 
 // ---------------------------------------------------------------

@@ -17,13 +17,14 @@ interface IAuthContext {
   setUserData: (newData: UserData | undefined) => void;
   /** Helper method to modify current access token from useContext hook */
   setAccessToken: (newToken: string | undefined) => void;
-}
+} // IAuthContext
+
 const AuthContext = React.createContext<IAuthContext>({
   userData: undefined,
   accessToken: undefined,
   setUserData: (_) => { },
   setAccessToken: (_) => { }
-});
+}); // AuthContext
 
 /** 
  * Wrapper over an AuthContext provider to provide helper methods and state management for user handling operations to children.

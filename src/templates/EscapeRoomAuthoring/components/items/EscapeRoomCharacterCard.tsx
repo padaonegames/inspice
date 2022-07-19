@@ -173,8 +173,7 @@ const DataLine = styled.div`
 
 
 export interface EscapeRoomCharacterCardProps {
-
-  characterInfo: CharacterDefinition;
+  initialCharacterDefinition: CharacterDefinition;
   onSaveCharacterData: (newInfo: CharacterDefinition) => void;
   onEnterCharacterEditMode: () => void;
   onDeleteCharacter: () => void;
@@ -185,29 +184,29 @@ export interface EscapeRoomCharacterCardProps {
 export const EscapeRoomCharacterCard = (props: EscapeRoomCharacterCardProps): JSX.Element => {
 
   const {
-    characterInfo,
+    initialCharacterDefinition,
     onSaveCharacterData,
     onDeleteCharacter,
     onEnterCharacterEditMode,
     showAlert,
     editMode
   } = props;
+
   const [showResourcesPopUp, setShowResourcesPopUp] = useState<boolean>(false);
-  const [characterData, setCharacterData] = useState<CharacterDefinition>(characterInfo);
-  useEffect(() => { setCharacterData(characterInfo) }, [characterInfo]);
+  const [characterData, setCharacterData] = useState<CharacterDefinition>(initialCharacterDefinition);
 
   const handleCharacterNameChanged = (newName: string) => {
     setCharacterData({ ...characterData, name: newName });
-  } //handleCharacterNameChanged
+  } // handleCharacterNameChanged
 
   const handleCharacterDescriptionChanged = (newDescription: string) => {
     setCharacterData({ ...characterData, description: newDescription });
-  } //handleCharacterDescriptionChanged
+  } // handleCharacterDescriptionChanged
 
   const onSaveCharacterInfo = () => {
     //Trim to prevent names with empty spaces at the end/begining
     if (onSaveCharacterData) onSaveCharacterData({ ...characterData, name: characterData.name.trim() });
-  } //onSaveCharacterInfo
+  } // onSaveCharacterInfo
 
   const handleDeleteCharacter = () => {
     if (onDeleteCharacter) onDeleteCharacter();
@@ -215,21 +214,21 @@ export const EscapeRoomCharacterCard = (props: EscapeRoomCharacterCardProps): JS
 
   const handleEnterEditCharacterMode = () => {
     if (onEnterCharacterEditMode) onEnterCharacterEditMode();
-  } //handleEnterEditCharacterMode
+  } // handleEnterEditCharacterMode
 
-  const handleResourceSelected = (resourceIndex: number) => {
-    setCharacterData({ ...characterData, imageSrc: /*resources[resourceIndex].src*/'' });
+  const handleResourceSelected = (resourceSrc: string) => {
+    setCharacterData({ ...characterData, imageSrc: resourceSrc });
     setShowResourcesPopUp(prev => !prev)
-  } //handleResourceSelected
+  } // handleResourceSelected
 
   return (
     <>
       {/* Pop up component to enable image selection from the escape room resources */}
       {showResourcesPopUp &&
         <ResourcesPopUp
-          onClosePopUp={() => { setShowResourcesPopUp(false) }}
+          onClosePopUp={() => setShowResourcesPopUp(false)}
           onResourceSelected={handleResourceSelected}
-          popUpTitle="Select an image to scan"
+          popUpTitle='Select an image to scan'
         />
       }
 
@@ -240,7 +239,7 @@ export const EscapeRoomCharacterCard = (props: EscapeRoomCharacterCardProps): JS
             {/* Image */}
             <CharacterPreview src={characterData.imageSrc} />
             <SelectCharacterButton
-              onMouseDown={() => { setShowResourcesPopUp(true) }}
+              onClick={() => { setShowResourcesPopUp(true) }}
             >
               Select Image
             </SelectCharacterButton>
@@ -248,7 +247,7 @@ export const EscapeRoomCharacterCard = (props: EscapeRoomCharacterCardProps): JS
           {/* Name and description */}
           <CharacterInfoContainer>
             {showAlert(characterData.name.trim()) && <AlertIcon />}
-            <SaveIcon onMouseDown={() => { !showAlert(characterData.name.trim()) && onSaveCharacterInfo() }} />
+            <SaveIcon onClick={() => { !showAlert(characterData.name.trim()) && onSaveCharacterInfo() }} />
             <DataLine>Character Name</DataLine>
             <PromptField
               promptText={characterData.name}
@@ -259,7 +258,7 @@ export const EscapeRoomCharacterCard = (props: EscapeRoomCharacterCardProps): JS
             <DataLine>Character Description</DataLine>
             <PromptField
               promptText={characterData.description}
-              promptPlaceholder='Something extra'
+              promptPlaceholder='Character description'
               onPromptChange={handleCharacterDescriptionChanged}
               textAlignment="left"
               initialHeight="100px"
@@ -275,8 +274,8 @@ export const EscapeRoomCharacterCard = (props: EscapeRoomCharacterCardProps): JS
           </CharacterPreviewContainer>
           {/* Name and description */}
           <CharacterInfoContainer>
-            <EditIcon onMouseDown={handleEnterEditCharacterMode} />
-            <DeleteIcon onMouseDown={handleDeleteCharacter} />
+            <EditIcon onClick={handleEnterEditCharacterMode} />
+            <DeleteIcon onClick={handleDeleteCharacter} />
             <DataLine>Character Name</DataLine>
             <ParragraphContainer>{characterData.name}</ParragraphContainer>
             <DataLine>Character Description</DataLine>
@@ -286,6 +285,6 @@ export const EscapeRoomCharacterCard = (props: EscapeRoomCharacterCardProps): JS
       }
     </>
   );
-};
+}; // EscapeRoomCharacterCard
 
 export default EscapeRoomCharacterCard;

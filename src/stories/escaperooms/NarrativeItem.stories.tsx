@@ -1,14 +1,13 @@
 import { ComponentMeta, ComponentStory } from '@storybook/react/dist/ts3.9/client/preview/types-6-3';
 import { EditableNarrativeItemContent, narrativeItemFactory } from '../../templates/EscapeRoomAuthoring/components/items/NarrativeItem';
 
-
 export default {
   title: 'Escape Rooms/Narrative Item',
   component: EditableNarrativeItemContent,
   decorators: [
     (Story) => {
       return (
-          Story()
+        Story()
       );
     },
   ],
@@ -23,5 +22,10 @@ Default.args = {
 
 export const Alternative = Template.bind({});
 Alternative.args = {
-  payload: {dialogs: ['Hola', 'Adios'], characters:['Pepe', 'Manolo']}
+  payload: {
+    dialogues: [
+      { text: 'Hola', characterName: 'Pepe' },
+      { text: 'Adios', characterName: 'Manolo' }
+    ]
+  }
 };
