@@ -1,65 +1,73 @@
 import { useEffect, useRef, useState } from "react";
 import styled, { css } from "styled-components";
-import { AvailableMultistageFormFieldType, EditableFieldProps, MultistageFormFieldDefinition, availableMultistageFormItemTypes, SupportedFormField } from "../../../services/multistageFormActivity.model";
+import {
+  AvailableMultistageFormFieldType,
+  EditableFieldProps,
+  MultistageFormFieldDefinition,
+  availableMultistageFormItemTypes,
+  SupportedFormField,
+} from "../../../services/multistageFormActivity.model";
 import {
   Root,
   RequiredAlertIcon,
   RequiredQuestionSpan,
   CardPanel,
   InputArea,
-  SelectFieldTypeDropdownButton
+  SelectFieldTypeDropdownButton,
 } from "./cardStyles";
 import { ChevronDown } from "@styled-icons/boxicons-regular/ChevronDown";
-import { Delete } from '@styled-icons/fluentui-system-regular/Delete';
-import {ArrowDownSquareFill} from "@styled-icons/bootstrap/ArrowDownSquareFill"
-import {ArrowUpSquareFill} from "@styled-icons/bootstrap/ArrowUpSquareFill"
+import { Delete } from "@styled-icons/fluentui-system-regular/Delete";
+import { ArrowDownSquareFill } from "@styled-icons/bootstrap/ArrowDownSquareFill";
+import { ArrowUpSquareFill } from "@styled-icons/bootstrap/ArrowUpSquareFill";
 import CheckBoxInput from "../CheckBoxInput";
-
 
 /**
  * Recommended styles for an icon being passed to EditableFieldCard
- * component within a list of field Mapping specifications for optimal 
+ * component within a list of field Mapping specifications for optimal
  * rendering.
  */
- export const fieldTypeIcon = css`
- color: ${props => props.theme.textColor};
- height: 1.75em;
- width: 1.75em;
- margin-right: 0.75em;
+export const fieldTypeIcon = css`
+  color: ${(props) => props.theme.textColor};
+  height: 1.75em;
+  width: 1.75em;
+  margin-right: 0.75em;
 `;
 
 const DeleteIcon = styled(Delete)`
-${fieldTypeIcon}
-cursor: pointer;
+  ${fieldTypeIcon}
+  cursor: pointer;
 `;
 
 const ExpandDropdownIcon = styled(ChevronDown)`
- ${fieldTypeIcon}
- margin-left: auto;
+  ${fieldTypeIcon}
+  margin-left: auto;
 `;
 
 const UpArrowIcon = styled(ArrowUpSquareFill)`
- ${fieldTypeIcon}
- position: absolute;
- right: -2%;
- top: 30%;
- margin-left: auto;
- &:hover {
-  color: rgb(255,0,0);
-  cursor: pointer;
-}
+  ${fieldTypeIcon}
+  position: absolute;
+  left: 2%;
+  top: 50%;
+  transform: translate(0%, -50%);
+  // border-radius: 100%;
+  color: rgb(80, 80, 80);
+  &:hover {
+    background-color: rgb(200, 200, 200);
+    cursor: pointer;
+  }
 `;
 
 const DownArrowIcon = styled(ArrowDownSquareFill)`
- ${fieldTypeIcon}
- position: absolute;
- right: -2%;
- bottom: 30%;
- margin-left: auto;
- &:hover {
-  color: rgb(255,0,0);
-  cursor: pointer;
-}
+  ${fieldTypeIcon}
+  position: absolute;
+  left: 8%;
+  top: 50%;
+  transform: translate(0%, -50%);
+  color: rgb(80, 80, 80);
+  &:hover {
+    background-color: rgb(200, 200, 200);
+    cursor: pointer;
+  }
 `;
 
 const HeaderRow = styled.div`
@@ -78,6 +86,7 @@ const HeaderRow = styled.div`
 `;
 
 const BottomRow = styled.div`
+  position: relative;
   display: flex;
   flex-direction: row;
   padding: 5px 0;
@@ -90,7 +99,7 @@ const DropdownMenu = styled.div`
   position: absolute;
   left: 0;
   top: 2.5em;
-  background-color: ${props => props.theme.cardBackground};
+  background-color: ${(props) => props.theme.cardBackground};
   min-width: 160px;
   width: 100%;
   box-shadow: rgba(37, 7, 107, 0.35) 0px 2px 4px 0px;
@@ -101,7 +110,7 @@ const DropdownMenu = styled.div`
 `;
 
 const DropdownMenuItem = styled.a`
-  color: ${props => props.theme.textColor};
+  color: ${(props) => props.theme.textColor};
   padding: 0.5em 0.85em;
   margin-top: 0.2em;
   margin-bottom: 0.2em;
@@ -112,7 +121,7 @@ const DropdownMenuItem = styled.a`
   flex-direction: row;
   align-items: center;
   justify-content: start;
-  font-family: ${props => props.theme.contentFont};
+  font-family: ${(props) => props.theme.contentFont};
 
   &:hover {
     background-color: #eeeeee;
@@ -161,33 +170,36 @@ export interface EditableFieldCardProps {
   /** Callback notifying parent component of mouse entered this component */
   onMouseEntered?: () => void;
 
-  onMoveUpCard?: ()=>void;
-  onMoveDownCard?: ()=>void;
+  onMoveUpCard?: () => void;
+  onMoveDownCard?: () => void;
 
-  isFocused?:boolean;
+  isFocused?: boolean;
 }
 
 export type FieldMappings<T extends SupportedFormField> = {
   /** What type of field we are working with here*/
-  [P in T['type']]: {
+  [P in T["type"]]: {
     /** How to render this option within a list. Defaults to fieldType */
     displayName?: string;
     /** What component to place next to the display name */
     iconComponent?: JSX.Element;
     /** Generation logic to use to create a form editing component */
-    editingComponentProducer: (editingFormProps: EditableFieldProps<Extract<T, { type: P }>['payload']>) => JSX.Element;
+    editingComponentProducer: (
+      editingFormProps: EditableFieldProps<Extract<T, { type: P }>["payload"]>
+    ) => JSX.Element;
     /** Default value for FieldPayload */
-    defaultFieldPayload: Extract<T, { type: P }>['payload'];
-  }
+    defaultFieldPayload: Extract<T, { type: P }>["payload"];
+  };
 }; // FieldMappings
 
 /**
  * Editable version of StepTitleCard for form editing
  */
-export const EditableFieldCard = (props: EditableFieldCardProps): JSX.Element => {
-
+export const EditableFieldCard = (
+  props: EditableFieldCardProps
+): JSX.Element => {
   const {
-    promptTextPlaceholder = 'Prompt',
+    promptTextPlaceholder = "Prompt",
     requiredAlert,
     alertMessage,
     initialFieldDefinition,
@@ -200,33 +212,39 @@ export const EditableFieldCard = (props: EditableFieldCardProps): JSX.Element =>
     onMouseEntered,
     onMoveDownCard,
     onMoveUpCard,
-    isFocused=false,
+    isFocused = false,
   } = props;
 
   // managed state for field definition
-  const [fieldDefinition, setFieldDefinition] = useState<MultistageFormFieldDefinition>(initialFieldDefinition ?? {
-    promptText: '',
-    required: false,
-    fieldData: {
-      type: 'multiple-choice',
-      payload: fieldMappings['multiple-choice'].defaultFieldPayload
-    }
-  });
+  const [fieldDefinition, setFieldDefinition] =
+    useState<MultistageFormFieldDefinition>(
+      initialFieldDefinition ?? {
+        promptText: "",
+        required: false,
+        fieldData: {
+          type: "multiple-choice",
+          payload: fieldMappings["multiple-choice"].defaultFieldPayload,
+        },
+      }
+    );
 
   // each time the stages are modified our state will notice it
   useEffect(() => {
-    setFieldDefinition(initialFieldDefinition ?? {
-      promptText: '',
-      required: false,
-      fieldData: {
-        type: 'multiple-choice',
-        payload: fieldMappings['multiple-choice'].defaultFieldPayload
+    setFieldDefinition(
+      initialFieldDefinition ?? {
+        promptText: "",
+        required: false,
+        fieldData: {
+          type: "multiple-choice",
+          payload: fieldMappings["multiple-choice"].defaultFieldPayload,
+        },
       }
-    });
-  }, [initialFieldDefinition])
+    );
+  }, [initialFieldDefinition]);
 
   // whether the field type dropdown is currently open
-  const [fieldTypeDropdownOpen, setFieldTypeDropdownOpen] = useState<boolean>(false);
+  const [fieldTypeDropdownOpen, setFieldTypeDropdownOpen] =
+    useState<boolean>(false);
   // reference to the actual DOM element for the prompt area to allow for dynamic resizing
   const promptAreaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -234,15 +252,15 @@ export const EditableFieldCard = (props: EditableFieldCardProps): JSX.Element =>
    * useEffect hook to maintain a consistent height for the
    * HTMLTextAreaElement used to display the promptText.
    * Essentialy, this listens for changes in promptText and
-   * modifies container's height dynamically to fit the entire text 
+   * modifies container's height dynamically to fit the entire text
    * without having to scroll.
    */
   useEffect(() => {
     if (promptAreaRef.current == null) return;
 
-    promptAreaRef.current.style.height = '0px';
+    promptAreaRef.current.style.height = "0px";
     const scrollHeight = promptAreaRef.current.scrollHeight;
-    promptAreaRef.current.style.height = scrollHeight + 'px';
+    promptAreaRef.current.style.height = scrollHeight + "px";
   }, [fieldDefinition.promptText]); // useEffect
 
   /**
@@ -257,8 +275,8 @@ export const EditableFieldCard = (props: EditableFieldCardProps): JSX.Element =>
       ...fieldDefinition,
       fieldData: {
         type: value,
-        payload: fieldMappings[value].defaultFieldPayload
-      } as SupportedFormField
+        payload: fieldMappings[value].defaultFieldPayload,
+      } as SupportedFormField,
     };
     // update inner state
     setFieldDefinition(newFieldDefinition);
@@ -278,14 +296,16 @@ export const EditableFieldCard = (props: EditableFieldCardProps): JSX.Element =>
    * a fitting onFieldDefinitionChanged callback has been provided.
    * @param payload New field definition payload after a change within the currently active child form.
    */
-  const handleFieldPayloadChanged = (payload: SupportedFormField['payload']) => {
+  const handleFieldPayloadChanged = (
+    payload: SupportedFormField["payload"]
+  ) => {
     // create a new field definition that's consistent with both new type and previous information
     const newFieldDefinition: MultistageFormFieldDefinition = {
       ...fieldDefinition,
       fieldData: {
         type: fieldDefinition.fieldData.type,
-        payload: payload
-      } as SupportedFormField
+        payload: payload,
+      } as SupportedFormField,
     };
     // update inner state
     setFieldDefinition(newFieldDefinition);
@@ -303,7 +323,7 @@ export const EditableFieldCard = (props: EditableFieldCardProps): JSX.Element =>
     // create a new field definition with the new required status
     const newFieldDefinition: MultistageFormFieldDefinition = {
       ...fieldDefinition,
-      required: value
+      required: value,
     };
     // update inner state
     setFieldDefinition(newFieldDefinition);
@@ -321,7 +341,7 @@ export const EditableFieldCard = (props: EditableFieldCardProps): JSX.Element =>
     // create a new field definition with the new required status
     const newFieldDefinition: MultistageFormFieldDefinition = {
       ...fieldDefinition,
-      promptText: value
+      promptText: value,
     };
     // update inner state
     setFieldDefinition(newFieldDefinition);
@@ -335,49 +355,60 @@ export const EditableFieldCard = (props: EditableFieldCardProps): JSX.Element =>
 
   return (
     <Root>
-      <CardPanel 
+      <CardPanel
         requiredAlert={requiredAlert}
         onMouseEnter={onMouseEntered}
         onFocus={onCardFocused}
         onBlur={onCardLostFocus}
         isFocused={isFocused}
       >
-        <HeaderRow >
+        <HeaderRow>
           <InputArea
             dimBackground
-            width='50%'
-            height='2em'
+            width="50%"
+            height="2em"
             ref={promptAreaRef}
             placeholder={promptTextPlaceholder}
             maxLength={500}
             value={fieldDefinition.promptText}
-            onChange={event => handlePromptTextChanged(event.target.value)}
+            onChange={(event) => handlePromptTextChanged(event.target.value)}
           />
-          <SelectFieldTypeDropdownButton onClick={() => setFieldTypeDropdownOpen(prev => !prev)}>
-            {selectedField?.iconComponent}{selectedField?.displayName ?? fieldDefinition.fieldData.type ?? 'Select a field type'} <ExpandDropdownIcon />
-            {fieldTypeDropdownOpen &&
+          <SelectFieldTypeDropdownButton
+            onClick={() => setFieldTypeDropdownOpen((prev) => !prev)}
+          >
+            {selectedField?.iconComponent}
+            {selectedField?.displayName ??
+              fieldDefinition.fieldData.type ??
+              "Select a field type"}{" "}
+            <ExpandDropdownIcon />
+            {fieldTypeDropdownOpen && (
               <DropdownMenu>
-                {availableMultistageFormItemTypes.map(elem => (
-                  <DropdownMenuItem onClick={() => handleFieldTypeSelected(elem)}>
+                {availableMultistageFormItemTypes.map((elem) => (
+                  <DropdownMenuItem
+                    onClick={() => handleFieldTypeSelected(elem)}
+                  >
                     {fieldMappings[elem].iconComponent}
                     {fieldMappings[elem].displayName ?? elem}
                   </DropdownMenuItem>
                 ))}
-              </DropdownMenu>}
+              </DropdownMenu>
+            )}
           </SelectFieldTypeDropdownButton>
         </HeaderRow>
-        {selectedField && (
+        {selectedField &&
           selectedField.editingComponentProducer({
             fieldPayload: fieldDefinition.fieldData.payload as any,
-            onPayloadChanged: handleFieldPayloadChanged
-          })
-        )}
+            onPayloadChanged: handleFieldPayloadChanged,
+          })}
         <DottedLine />
         <BottomRow>
+          <UpArrowIcon onMouseDown={onMoveUpCard} />
+          <DownArrowIcon onMouseDown={onMoveDownCard} />
+
           <CheckBoxInput
-            style='radio'
+            style="radio"
             checked={fieldDefinition.required}
-            labelText='Required'
+            labelText="Required"
             onCheckedChange={handleFieldRequiredChanged}
           />
           <HorizontalLine />
@@ -385,12 +416,9 @@ export const EditableFieldCard = (props: EditableFieldCardProps): JSX.Element =>
         </BottomRow>
         {requiredAlert && (
           <RequiredQuestionSpan>
-            <RequiredAlertIcon /> {alertMessage ?? 'This item is required.'}
+            <RequiredAlertIcon /> {alertMessage ?? "This item is required."}
           </RequiredQuestionSpan>
         )}
-
-        <UpArrowIcon onMouseDown={onMoveUpCard}/>
-        <DownArrowIcon onMouseDown={onMoveDownCard}/>
       </CardPanel>
     </Root>
   );
