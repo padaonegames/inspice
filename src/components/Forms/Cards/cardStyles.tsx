@@ -201,8 +201,11 @@ export const DateContainer = styled.div`
 interface CardPanelProps {
   /** True if user tried to submit the form without filling a required field */
   requiredAlert?: boolean;
+  /** True if user tried to submit the form without filling a required field */
+  isFocused?: boolean;
 }
 export const CardPanel = styled.div<CardPanelProps>`
+  position:relative;  
   padding: 16px 16px 24px 16px;
   background-color: ${props => props.theme.cardBackground};
   ${props => !props.requiredAlert && 'border: 1px solid #dadce0;'}
@@ -210,6 +213,12 @@ export const CardPanel = styled.div<CardPanelProps>`
   &:focus-within {
     border-left: 6px solid #c44c49;
   }
+  &:focus{
+    outline: none !important;
+    border-left: 6px solid #c44c49;
+  }
+  ${props => props.isFocused ? "border-left: 6px solid #c44c49;" : ""}
+  
   border-radius: 8px;
   width: 100%;
   word-wrap: break-word;
@@ -322,6 +331,29 @@ export const EditableStepDescription = styled.textarea`
   padding: 2px 0;
   background-color: transparent;
   resize: none;
+
+  &:focus {
+    border-bottom: 3px solid #c44c49;
+  }
+`;
+
+
+export const EditableText = styled.textarea`
+  font-size: 0.95em;
+  font-weight: 200;
+  font-family: ${props => props.theme.contentFont};
+  line-height: 135%;
+  width: 100%;
+  margin-top: 5px;
+  color: ${props => props.theme.textColor};
+
+  height: 8em;
+  border: none;
+  border-bottom: 2px solid #dadce0;
+  outline: none;
+  padding: 2px 0;
+  background-color: transparent;
+  resize: vertical;
 
   &:focus {
     border-bottom: 3px solid #c44c49;

@@ -8,7 +8,7 @@ import {
   RequiredAlertIcon,
   ImagePreview,
   InputFile,
-  InputFileButton
+  InputFileButton,
 } from "./cardStyles";
 
 export interface ImageUploadCardProps {
@@ -29,7 +29,6 @@ export interface ImageUploadCardProps {
 }
 
 export const ImageUploadCard = (props: ImageUploadCardProps): JSX.Element => {
-
   const {
     promptText,
     requiredAlert,
@@ -37,39 +36,43 @@ export const ImageUploadCard = (props: ImageUploadCardProps): JSX.Element => {
     initialSrc,
     initialFile,
     onChange,
-    onEnterPress
+    onEnterPress,
   } = props;
 
   const [file, setFile] = useState<File | undefined>(initialFile);
-  const [image, setImage] = useState<string | undefined>(initialFile ? URL.createObjectURL(initialFile) : initialSrc);
+  const [image, setImage] = useState<string | undefined>(
+    initialFile ? URL.createObjectURL(initialFile) : initialSrc
+  );
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (!event.target || !event.target.files || event.target.files.length == 0) {
+    if (
+      !event.target ||
+      !event.target.files ||
+      event.target.files.length == 0
+    ) {
       setFile(undefined);
       return;
     }
     setImage(URL.createObjectURL(event.target.files[0]));
     setFile(event.target.files[0]);
-    if (onChange)
-      onChange(event.target.files[0]);
-  }
+    if (onChange) onChange(event.target.files[0]);
+  };
 
   return (
     <Root>
       <CardPanel requiredAlert={requiredAlert}>
         <PromptText>
-          {promptText}{required && <RequiredAsterisk> *</RequiredAsterisk>}
+          {promptText}
+          {required && <RequiredAsterisk> *</RequiredAsterisk>}
         </PromptText>
-        <InputFileButton htmlFor='file-upload'>
-          Choose image...
-        </InputFileButton>
+        <InputFileButton htmlFor="file-upload">Choose image...</InputFileButton>
         <InputFile
-          id='file-upload'
-          type='file'
-          accept='image/*'
+          id="file-upload"
+          type="file"
+          accept="image/*"
           onChange={handleChange}
           onKeyPress={(event) => {
-            if (event.key === 'Enter' && onEnterPress) {
+            if (event.key === "Enter" && onEnterPress) {
               onEnterPress();
             }
           }}

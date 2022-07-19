@@ -42,6 +42,9 @@ export type ItemDefinition = (
   | { type: 'range', payload: RangeFieldDefinition }
   | { type: 'calendar', payload: {} }
   | { type: 'tags', payload: TagsFieldDefinition }
+  | { type: 'display-image', payload: DisplayImageFieldDefinition }
+  | { type: 'display-video', payload: DisplayVideoFieldDefinition }
+  | { type: 'display-text', payload: DisplayTextFieldDefinition }
 ); // ItemDefinition
 
 export const availableMultistageFormItemTypes = [
@@ -50,6 +53,10 @@ export const availableMultistageFormItemTypes = [
   'multiple-choice',
   'checkbox',
   'calendar',
+  'display-image',
+  'display-video',
+  'display-text',
+  'likert-scale'
 ] as const; // multistageFormItemTypes
 
 export type AvailableMultistageFormFieldType = typeof availableMultistageFormItemTypes[number];
@@ -66,6 +73,8 @@ export interface MultistageFormFieldDefinition {
   promptText: string;
   /** Whether this field should always be filled in by the user */
   required?: boolean;
+  /** unique id of the form*/
+  id?:string;
 } // MultistageFormFieldDefinition
 
 export interface MultistageFormActivityDefinition extends ActivityInstance {
@@ -132,4 +141,19 @@ export interface RangeFieldDefinition {
 export interface TagsFieldDefinition {
   minTags: number;
   maxTags: number;
+}
+
+export interface DisplayImageFieldDefinition {
+  /** source of the image to display */
+  src: string;
+}
+
+export interface DisplayVideoFieldDefinition {
+  /** source of the video to display */
+  src:string;
+}
+
+export interface DisplayTextFieldDefinition {
+  /** Content of the item */
+  text:string;
 }
