@@ -4,14 +4,10 @@ const LikertResponseContainer = styled.label`
   flex-grow: 1;
   flex-shrink: 1;
   flex-basis: 0; /* never set to auto */
-  min-width: 1.6em;
+  // min-width: 1.6em;
+  width:min-content;
   text-align: center;
   position: relative;
-
-  // //
-  // background-color: rgba(255,0,0,1);
-  // border-right: 2px solid rgb(0,255,0);
-  // border-left: 2px solid rgb(0,0,255);
 `;
 
 const LikertText = styled.span`
@@ -24,12 +20,13 @@ const LikertText = styled.span`
 `;
 
 const LikertInputText = styled.input`
+  position:relative;
   font-size: 0.9em;
   font-weight: 200;
+  text-align:center;
   letter-spacing: +0.5px;
   font-family: Raleway;
-  width: 50%;
-  max-width:50%;
+  width: 70%;
 
   color: ${props => props.theme.textColor};
 `;
@@ -151,7 +148,6 @@ export const EditableLikertResponse = (props: EditableLikertResponseProps): JSX.
     onResponseSelected,
   } = props;
 
-
   const handleSelectAnswer = () => {
     if (onResponseSelected)
       onResponseSelected();
@@ -173,8 +169,8 @@ export const EditableLikertResponse = (props: EditableLikertResponseProps): JSX.
       />
       <LikertIndicator checked={selected} />
       <VerticalSpace />
-      {/* <LikertText>{responseText}</LikertText> */}
-      <LikertInputText type='text' defaultValue={responseText} onChange={ event =>handleAnswerEdited(event.target.value)}></LikertInputText>
+      {/* Input to adjust the scale's value */}
+      <LikertInputText type='text' defaultValue={responseText} maxLength={10} onChange={ event =>handleAnswerEdited(event.target.value)}></LikertInputText>
     </LikertResponseContainer>
   );
 }

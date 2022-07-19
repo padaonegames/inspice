@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { EditableFieldProps, LikertScaleFieldDefinition } from "../../../services/multistageFormActivity.model";
 import LikertResponse, { EditableLikertResponse } from "../LikertResponse";
@@ -11,7 +11,8 @@ import {
   RequiredAlertIcon,
 } from "./cardStyles";
 import { AddCircle } from '@styled-icons/fluentui-system-regular/AddCircle';
-import { Cross } from '@styled-icons/entypo/Cross';
+import { Add } from "@styled-icons/fluentui-system-filled/Add"
+import {Minus} from "@styled-icons/evaicons-solid/Minus";
 import { ChevronDown } from "styled-icons/bootstrap";
 import EditableCheckBoxInput from "../EditableCheckBoxInput";
 
@@ -163,13 +164,6 @@ width:100%;
 padding-top: 0.6em;
 justify-content: space-between;
 `;
-const RemoveQuestionIcon = styled(Cross)`
-  cursor: pointer;
-  height: 30px;
-  width: 30px;
-  align-self: flex-end;
-  color: black;
-`;
 
 const AddQuestionContainer = styled.div`
   display: flex;
@@ -192,6 +186,16 @@ const AddQuestionContainer = styled.div`
 `;
 
 const AddQuestionIcon = styled(AddCircle)`
+  height: 1.75em;
+  width: 1.75em;
+`;
+
+const AddScaleIcon = styled(Add)`
+  height: 1.75em;
+  width: 1.75em;
+`;
+
+const DecreaseScaleIcon = styled(Minus)`
   height: 1.75em;
   width: 1.75em;
 `;
@@ -276,20 +280,21 @@ export const SelectFieldTypeDropdownButton = styled.span`
 
 export const EditableLikertScaleCardContent = (props: EditableLikertScaleCardContentProps): JSX.Element => {
   
-  const [scaleLenght, setScaleLength] = useState<number>(3);
-  const [fieldTypeDropdownOpen, setFieldTypeDropdownOpen] = useState<boolean>(false);
+  // const [fieldTypeDropdownOpen, setFieldTypeDropdownOpen] = useState<boolean>(false);
+  
   
   const {
     fieldPayload,
     onPayloadChanged
   } = props;
-
+  
   const {
     questions,
     scale,
     showQuestionsIndex = false
   } = fieldPayload;
-
+  
+  // useEffect(() => {  }, [fieldPayload]);
 
 
   const handleAddQuestion = () => {
@@ -313,11 +318,12 @@ export const EditableLikertScaleCardContent = (props: EditableLikertScaleCardCon
     if (!onPayloadChanged) return;
     onPayloadChanged({
       ...fieldPayload,
-      questions: [...fieldPayload.questions.slice(0, index), 
+      questions: [...questions.slice(0, index), 
                   newQuestion, 
-                  ...fieldPayload.questions.slice(index + 1, fieldPayload.questions.length)]
+                  ...questions.slice(index + 1)],
+      
     })
-  };
+  };  // handleQuestionChanged
 
   const handleScaleEdited = (index: number, newScaleName: string) => {
     if (!onPayloadChanged) return;
@@ -329,17 +335,20 @@ export const EditableLikertScaleCardContent = (props: EditableLikertScaleCardCon
         ...fieldPayload.scale.slice(index + 1)
       ]
     })
-  };
+  };  // handleScaleEdited
 
-  const handleFieldTypeSelected = (index: number) => {
-    setScaleLength(index);
-    let newScale = Array(index).fill("New Value");
+  const handleFieldTypeSelected = (delta: number) => {
     if (!onPayloadChanged) return;
+
+    let resultArray = scale;
+    if(delta===1 && resultArray.length < 7) resultArray.push("New Value");
+    if(delta === -1 && resultArray.length > 3) resultArray.pop();
+
     onPayloadChanged({
       ...fieldPayload,
-      scale: newScale
+      scale: resultArray
     })
-  };
+  };  // handleFieldTypeSelected
 
 
   const availableMultistageFormItemTypes = [3, 4, 5, 6, 7, 8]
@@ -348,18 +357,18 @@ export const EditableLikertScaleCardContent = (props: EditableLikertScaleCardCon
     <>
       <ScaleConfigContainer>
         <b>Scale structure</b>
-
         <ScaleLengthConfigurator>
           <span> Number of steps in the scale:</span>
-          <SelectFieldTypeDropdownButton onClick={() => {return; setFieldTypeDropdownOpen(prev => !prev)}}>
-            {scaleLenght} <ExpandDropdownIcon />
-            {fieldTypeDropdownOpen &&
+          <DecreaseScaleIcon onMouseDown={()=>handleFieldTypeSelected(-1)}/> {scale.length} <AddScaleIcon onMouseDown={()=>handleFieldTypeSelected(1)}/> 
+          {/* <SelectFieldTypeDropdownButton onClick={() => {}}>
+            {fieldPayload.scale.length} <ExpandDropdownIcon />
+            {false &&
               <DropdownMenu>
                 {availableMultistageFormItemTypes.map(elem => (
-                  <DropdownMenuItem onClick={() => {return; handleFieldTypeSelected(elem)}}> {elem} </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => {handleFieldTypeSelected(elem)}}> {elem} </DropdownMenuItem>
                 ))}
               </DropdownMenu>}
-          </SelectFieldTypeDropdownButton>
+          </SelectFieldTypeDropdownButton> */}
         </ScaleLengthConfigurator>
         
         {/* Sample scale where the step values can be edited */}
@@ -369,9 +378,9 @@ export const EditableLikertScaleCardContent = (props: EditableLikertScaleCardCon
               <EditableLikertResponse
                 responseText={response}
                 position={rInd === 0 ? 'first' : (rInd === scale.length - 1 ? 'last' : 'middle')}
-                key={"Sample question"}
+                key={`editableScaleAnswerInput${rInd}`}
                 onResponseSelected={() => { }}
-                onScaleEdited={(value) => {return; handleScaleEdited(rInd, value) }}
+                onScaleEdited={(value) => {handleScaleEdited(rInd, value) }}
                 selected={false}
               />
             ))}
@@ -379,8 +388,11 @@ export const EditableLikertScaleCardContent = (props: EditableLikertScaleCardCon
         </LikertScaleContainer>
       </ScaleConfigContainer>
 
+
+      {/* List of questions that the user needs to answer withs the scale given */}
       {questions.map((question, qInd) => (
         <>
+          {/* Question to answer */}
           <QuestionContainer>
             <EditableCheckBoxInput
               key={`editableCheckBoxInput${qInd}`}
@@ -388,17 +400,19 @@ export const EditableLikertScaleCardContent = (props: EditableLikertScaleCardCon
               labelText={question}
               style='radio'
               boxSize='0px'
-              onObjectRemoved={() => {return;handleRemoveQuestion(qInd)}}
-              onLabelTextChanged={(value) => {return;handleQuestionChanged(qInd, value)}}
+              onObjectRemoved={() => {handleRemoveQuestion(qInd)}}
+              onLabelTextChanged={(value) => {handleQuestionChanged(qInd, value)}}
             />
           </QuestionContainer>
+          {/* Scale to answer current question */}
           <LikertScaleContainer>
             <LikertBand>
+              {/* List of options inside the scale */}
               {scale.map((response, rInd) => (
                 <LikertResponse
                   responseText={response}
                   position={rInd === 0 ? 'first' : (rInd === scale.length - 1 ? 'last' : 'middle')}
-                  key={question}
+                  key={`ScaleAnswerPreview${qInd.toString() +rInd.toString()}`}
                   onResponseSelected={() => { }}
                   selected={false}
                 />
@@ -408,7 +422,8 @@ export const EditableLikertScaleCardContent = (props: EditableLikertScaleCardCon
         </>
       ))}
 
-      <AddQuestionContainer onMouseDown={() => {return; handleAddQuestion() }}>
+      {/* Button to add a new question to the form */}
+      <AddQuestionContainer onMouseDown={() => {handleAddQuestion() }}>
         <AddQuestionIcon />
       </AddQuestionContainer>
     </>

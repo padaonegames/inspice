@@ -73,6 +73,8 @@ export interface MultistageFormFieldDefinition {
   promptText: string;
   /** Whether this field should always be filled in by the user */
   required?: boolean;
+  /** unique id of the form*/
+  id?:string;
 } // MultistageFormFieldDefinition
 
 export interface MultistageFormActivityDefinition extends ActivityInstance {

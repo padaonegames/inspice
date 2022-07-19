@@ -1,9 +1,11 @@
+import styled from "styled-components";
 import { EditableFieldProps, DisplayImageFieldDefinition } from "../../../services/multistageFormActivity.model";
 import { ImagePreview, InputText } from "./cardStyles";
 import FormCard from "./FormCard";
 import { AbstractFormFactory } from "./FormFactory";
 
 const preview_image = "https://icons.iconarchive.com/icons/ccard3dev/dynamic-yosemite/512/Preview-icon.png"
+
 
 export interface DisplayImageCardProps extends DisplayImageFieldDefinition {
   /** Prompt for the user to fill in this field */

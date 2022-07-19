@@ -1,7 +1,25 @@
+import styled from "styled-components";
 import { EditableFieldProps, DisplayTextFieldDefinition } from "../../../services/multistageFormActivity.model";
-import { EditableStepDescription, EditableText, Root, TextPreview } from "./cardStyles";
+import { EditableStepDescription, EditableText, Root } from "./cardStyles";
 import FormCard from "./FormCard";
 import { AbstractFormFactory } from "./FormFactory";
+
+
+export const TextPreview = styled.div`
+  font-size: 0.95em;
+  font-weight: 200;
+  font-family: ${props => props.theme.contentFont};
+  line-height: 135%;
+  width: 100%;
+  margin-top: 10px;
+  color: ${props => props.theme.textColor};
+
+
+  border: 2px solid #dadce0;
+  border-radius: 0.5rem;
+  padding: 5px 10px 5px 10px;
+`;
+
 
 
 export interface DisplayTextCardProps extends DisplayTextFieldDefinition {
