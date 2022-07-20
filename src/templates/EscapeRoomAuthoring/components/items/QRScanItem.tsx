@@ -1,20 +1,23 @@
-import { EditableItemProps, QrScanItemDefinition } from "../../../../services/escapeRoomActivity.model";
+import {
+  EditableItemProps,
+  QrScanItemDefinition,
+} from "../../../../services/escapeRoomActivity.model";
 import { AbstractActivityItemFactory } from "../ActivityItemFactory";
 import { PromptField } from "./PromptField";
 import { QRCodeCanvas } from "qrcode.react";
 
 import styled from "styled-components";
 import { QrCode } from "@styled-icons/material/QrCode";
-import { Download } from "@styled-icons/bootstrap/Download"
+import { Download } from "@styled-icons/bootstrap/Download";
 
 const DownloadIcon = styled(Download)`
-  color: ${props => props.theme.textColor};
+  color: ${(props) => props.theme.textColor};
   height: 1.75em;
   width: auto;
 `;
 
 const QrCodeIcon = styled(QrCode)`
-  color: ${props => props.theme.textColor};
+  color: ${(props) => props.theme.textColor};
   height: 1.75em;
   width: auto;
   margin-right: 0.5em;
@@ -23,7 +26,7 @@ const QrCodeIcon = styled(QrCode)`
 const ItemTitle = styled.div`
   font-size: 1em;
   font-weight: 500;
-  font-family: ${props => props.theme.contentFont};
+  font-family: ${(props) => props.theme.contentFont};
   line-height: 135%;
 
   margin-top: 0.25em;
@@ -44,12 +47,11 @@ const ItemTitle = styled.div`
   box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
 `;
 
-
 //Components for the button to download the QR
 const DownloadButton = styled.div`
   font-size: 1em;
   font-weight: 500;
-  font-family: ${props => props.theme.contentFont};
+  font-family: ${(props) => props.theme.contentFont};
   line-height: 135%;
   margin-top: 0.25em;
   margin-bottom: 0.25em;
@@ -64,6 +66,7 @@ const DownloadButton = styled.div`
   background-color: rgb(75, 170, 100);
   border-radius: 1rem;
   box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
+  cursor: pointer;
 
   &:hover {
     transition: border 0.25s;
@@ -79,28 +82,24 @@ const Root = styled.div`
   align-items: center;
   border-bottom: 2px solid #dadce0;
   padding: 0.75em;
-  background-color:  #dbdbdb;
+  background-color: #dbdbdb;
   border-radius: 1.25rem;
   box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
 `;
 
-export const EditableQRScanItemContent = (props: EditableItemProps<QrScanItemDefinition>): JSX.Element => {
+export const EditableQRScanItemContent = (
+  props: EditableItemProps<QrScanItemDefinition>
+): JSX.Element => {
+  const { payload, onPayloadChanged } = props;
 
-  const {
-    payload,
-    onPayloadChanged
-  } = props;
-
-  const {
-    encodedText
-  } = payload;
+  const { encodedText } = payload;
 
   const handleEditcode = (value: string) => {
     if (!onPayloadChanged) return;
     onPayloadChanged({
       ...payload,
-      encodedText: value
-    })
+      encodedText: value,
+    });
   }; // handleEditcode
 
   const downloadQR = () => {
@@ -110,7 +109,9 @@ export const EditableQRScanItemContent = (props: EditableItemProps<QrScanItemDef
     if (!canvas) return;
 
     const canvasElement = canvas as HTMLCanvasElement;
-    const pngUrl = canvasElement.toDataURL("image/png").replace("image/png", "image/octet-stream");
+    const pngUrl = canvasElement
+      .toDataURL("image/png")
+      .replace("image/png", "image/octet-stream");
 
     let downloadLink = document.createElement("a");
     downloadLink.href = pngUrl;
@@ -118,8 +119,7 @@ export const EditableQRScanItemContent = (props: EditableItemProps<QrScanItemDef
     document.body.appendChild(downloadLink);
     downloadLink.click();
     document.body.removeChild(downloadLink);
-  };  //downloadQR
-
+  }; //downloadQR
 
   return (
     <>
@@ -131,26 +131,35 @@ export const EditableQRScanItemContent = (props: EditableItemProps<QrScanItemDef
         </ItemTitle>
 
         {/* Preview of the QR and promptfield to edit its code */}
-        <QRCodeCanvas id="qr-generator" value={payload.encodedText} size={200} fgColor="black" bgColor="white" level="H" includeMargin={true} />
+        <QRCodeCanvas
+          id="qr-generator"
+          value={payload.encodedText}
+          size={200}
+          fgColor="black"
+          bgColor="white"
+          level="H"
+          includeMargin={true}
+        />
         <PromptField
           promptText={payload.encodedText}
-          promptPlaceholder='Value to create a new QR'
+          promptPlaceholder="Value to create a new QR"
           onPromptChange={handleEditcode}
         />
 
         {/* Button that lets the user download the QR that has specified */}
-        {encodedText === "" ? <></> :
+        {encodedText === "" ? (
+          <></>
+        ) : (
           <>
             <DownloadButton onClick={downloadQR}>
               <DownloadIcon />
             </DownloadButton>
           </>
-        }
+        )}
       </Root>
     </>
   );
 }; // EditableQRScanItemContent
-
 
 const PreviewTitle = styled.div`
   margin-bottom: 0rem;
@@ -175,34 +184,38 @@ const PreviewQR = styled.div`
   color: rgb(178, 178, 178);
 `;
 
-
-export const QRScanItemStageSlide = (props: QrScanItemDefinition): JSX.Element => {
-
-  const {
-    encodedText
-  } = props;
+export const QRScanItemStageSlide = (
+  props: QrScanItemDefinition
+): JSX.Element => {
+  const { encodedText } = props;
 
   return (
     <>
-      <PreviewTitle>{encodedText === "" ? "Empty QR" : encodedText}</PreviewTitle>
+      <PreviewTitle>
+        {encodedText === "" ? "Empty QR" : encodedText}
+      </PreviewTitle>
 
       <PreviewQR>
-        <QRCodeCanvas value={encodedText} size={50} fgColor="black" bgColor="white" level="H" />
+        <QRCodeCanvas
+          value={encodedText}
+          size={50}
+          fgColor="black"
+          bgColor="white"
+          level="H"
+        />
       </PreviewQR>
     </>
   );
 }; // QRScanItemStageSlide
 
-export const qrScanItemFactory: AbstractActivityItemFactory<QrScanItemDefinition> = {
-  editingComponent: (editingProps) => (
-    <EditableQRScanItemContent
-      {...editingProps}
-    />
-  ),
-  defaultDefinition: {
-    encodedText: '',
-  }
-}; // QRScanItemFactory
-
+export const qrScanItemFactory: AbstractActivityItemFactory<QrScanItemDefinition> =
+  {
+    editingComponent: (editingProps) => (
+      <EditableQRScanItemContent {...editingProps} />
+    ),
+    defaultDefinition: {
+      encodedText: "",
+    },
+  }; // QRScanItemFactory
 
 export default EditableQRScanItemContent;
