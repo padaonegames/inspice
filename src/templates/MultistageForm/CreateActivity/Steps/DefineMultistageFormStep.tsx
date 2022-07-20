@@ -4,41 +4,22 @@ import EditableFieldCard, {
   fieldTypeIcon,
 } from "../../../../components/Forms/Cards/EditableFieldCard";
 import FormActionsFloatingCard from "../../../../components/Forms/Cards/FormActionsFloatingCarc";
-import {
-  EditableMultipleChoiceCardContent,
-  multipleChoiceCardFactory,
-} from "../../../../components/Forms/Cards/MultipleChoiceCard";
-import {
-  EditableDisplayImageCardContent,
-  displayImageCardFactory,
-} from "../../../../components/Forms/Cards/DisplayImageCard";
-import {
-  EditableDisplayVideoCardContent,
-  displayVideoCardFactory,
-} from "../../../../components/Forms/Cards/DisplayVideoCard";
-import { LikertScaleInputCard } from "../../../../components/Forms/Cards/LikertScaleInputCard";
-import {
-  EditableShortTextContent,
-  shortTextCardFactory,
-} from "../../../../components/Forms/Cards/ShortTextInputCard";
+import { EditableMultipleChoiceCardContent } from "../../../../components/Forms/Cards/MultipleChoiceCard";
+import { EditableDisplayImageCardContent } from "../../../../components/Forms/Cards/DisplayImageCard";
+import { EditableDisplayVideoCardContent } from "../../../../components/Forms/Cards/DisplayVideoCard";
+import { EditableShortTextContent } from "../../../../components/Forms/Cards/ShortTextInputCard";
 import { EditableStepTitleCard } from "../../../../components/Forms/Cards/StepTitleCard";
 import { StepComponentProps } from "../../../../components/Navigation/Steps";
 import {
   AvailableMultistageFormFieldType,
-  EditableFieldProps,
-  FieldDefinition,
   MultistageFormFieldDefinition,
   MultistageFormStage,
   SupportedFormField,
 } from "../../../../services/multistageFormActivity.model";
-import {
-  calendarInputCardFactory,
-  EditableCalendarContent,
-} from "../../../../components/Forms/Cards/CalendarInputCard";
+import { EditableCalendarContent } from "../../../../components/Forms/Cards/CalendarInputCard";
 import { EditableCheckBoxGroupCardContent } from "../../../../components/Forms/Cards/CheckBoxGroupInputCard";
 import { EditableLongTextContent } from "../../../../components/Forms/Cards/LongTextInputCard";
 import { EditableLikertScaleCardContent } from "../../../../components/Forms/Cards/LikertScaleInputCard";
-import LikertScaleInputCardStories from "../../../../stories/forms/cards/LikertScaleInputCard.stories";
 
 import styled from "styled-components";
 import { FolderAdd } from "@styled-icons/foundation/FolderAdd";

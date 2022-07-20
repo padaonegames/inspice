@@ -3,8 +3,9 @@
 //------------------------------------------
 import { ActivityInstance, InProgressActivityInstance } from "./activity.model";
 
-export interface InProgressMultistageFormActivityDefinition extends InProgressActivityInstance {
-  activityType: 'Multistage Form';
+export interface InProgressMultistageFormActivityDefinition
+  extends InProgressActivityInstance {
+  activityType: "Multistage Form";
   stages: MultistageFormStage[];
   formResponsesDatasetUuid: string;
 }
@@ -15,56 +16,51 @@ export type CompletedMultistageFormActivityDefinition = Omit<
 >;
 
 export const defaultMultistageFormActivityDefinition: InProgressMultistageFormActivityDefinition =
-{
-  activityType: 'Multistage Form',
-  activityTitle: undefined,
-  activityAuthor: undefined,
-  beginsOn: undefined,
-  endsOn: undefined,
-  stages: [],
-  formResponsesDatasetUuid: ''
-};
+  {
+    activityType: "Multistage Form",
+    activityTitle: undefined,
+    activityAuthor: undefined,
+    beginsOn: undefined,
+    endsOn: undefined,
+    stages: [],
+    formResponsesDatasetUuid: "",
+  };
 
-export interface FieldDefinition {
 
-  /** Type of the field ('short-text', 'calendar-input' and so on) */
-  type: string;
-  /** payload or data needed to render the field */
-  payload: any;
-}
-
-export type ItemDefinition = (
-  | { type: 'short-text', payload: ShortTextFieldDefinition }
-  | { type: 'long-text', payload: LongTextFieldDefinition }
-  | { type: 'multiple-choice', payload: MultipleChoiceFieldDefinition }
-  | { type: 'likert-scale', payload: LikertScaleFieldDefinition }
-  | { type: 'checkbox', payload: CheckboxGroupFieldDefinition }
-  | { type: 'range', payload: RangeFieldDefinition }
-  | { type: 'calendar', payload: {} }
-  | { type: 'tags', payload: TagsFieldDefinition }
-  | { type: 'display-image', payload: DisplayImageFieldDefinition }
-  | { type: 'display-video', payload: DisplayVideoFieldDefinition }
-  | { type: 'display-text', payload: DisplayTextFieldDefinition }
-); // ItemDefinition
+export type ItemDefinition =
+  | { type: "short-text"; payload: ShortTextFieldDefinition }
+  | { type: "long-text"; payload: LongTextFieldDefinition }
+  | { type: "multiple-choice"; payload: MultipleChoiceFieldDefinition }
+  | { type: "likert-scale"; payload: LikertScaleFieldDefinition }
+  | { type: "checkbox"; payload: CheckboxGroupFieldDefinition }
+  | { type: "range"; payload: RangeFieldDefinition }
+  | { type: "calendar"; payload: {} }
+  | { type: "tags"; payload: TagsFieldDefinition }
+  | { type: "display-image"; payload: DisplayImageFieldDefinition }
+  | { type: "display-video"; payload: DisplayVideoFieldDefinition }
+  | { type: "display-text"; payload: DisplayTextFieldDefinition }; // ItemDefinition
 
 export const availableMultistageFormItemTypes = [
-  'short-text',
-  'long-text',
-  'multiple-choice',
-  'checkbox',
-  'calendar',
-  'display-image',
-  'display-video',
-  'display-text',
-  'likert-scale'
+  "short-text",
+  "long-text",
+  "multiple-choice",
+  "checkbox",
+  "calendar",
+  "display-image",
+  "display-video",
+  "display-text",
+  "likert-scale",
 ] as const; // multistageFormItemTypes
 
-export type AvailableMultistageFormFieldType = typeof availableMultistageFormItemTypes[number];
+export type AvailableMultistageFormFieldType =
+  typeof availableMultistageFormItemTypes[number];
 
-export type SupportedFormField =
-  Extract<ItemDefinition, {
-    type: AvailableMultistageFormFieldType
-  }>; // SupportedFormField
+export type SupportedFormField = Extract<
+  ItemDefinition,
+  {
+    type: AvailableMultistageFormFieldType;
+  }
+>; // SupportedFormField
 
 export interface MultistageFormFieldDefinition {
   /** object describing the type and payload of the form field definition */
@@ -74,11 +70,11 @@ export interface MultistageFormFieldDefinition {
   /** Whether this field should always be filled in by the user */
   required?: boolean;
   /** unique id of the form*/
-  id?:string;
+  id?: string;
 } // MultistageFormFieldDefinition
 
 export interface MultistageFormActivityDefinition extends ActivityInstance {
-  activityType: 'Multistage Form',
+  activityType: "Multistage Form";
   stages: MultistageFormStage[];
   formResponsesDatasetUuid: string;
 }
@@ -92,7 +88,7 @@ export interface MultistageFormStage {
   title?: string;
   /** General text that will appear on top of the stage to contetxualize the page */
   description?: string;
-  /** 
+  /**
    * Forms defined within this particular stage
    */
   forms: MultistageFormFieldDefinition[];
@@ -150,10 +146,10 @@ export interface DisplayImageFieldDefinition {
 
 export interface DisplayVideoFieldDefinition {
   /** source of the video to display */
-  src:string;
+  src: string;
 }
 
 export interface DisplayTextFieldDefinition {
   /** Content of the item */
-  text:string;
+  text: string;
 }
