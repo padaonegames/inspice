@@ -11,9 +11,6 @@ import {
   RequiredQuestionSpan,
 } from "./cardStyles";
 
-import { ArrowDownSquareFill } from "@styled-icons/bootstrap/ArrowDownSquareFill";
-import { ArrowUpSquareFill } from "@styled-icons/bootstrap/ArrowUpSquareFill";
-import { Delete } from "@styled-icons/fluentui-system-regular/Delete";
 import { ThreeDotsVertical } from "@styled-icons/bootstrap/ThreeDotsVertical";
 import { useEffect, useState } from "react";
 
@@ -249,12 +246,14 @@ export interface EditableStepTitleCardProps {
   onCardLostFocus?: () => void;
   /** Callback notifying parent component of mouse entered this component */
   onMouseEntered?: () => void;
-
+  /** Position of the stage this card represents inside the activity */
   position?: number;
-
-  onSectionMovedUp?: () => void;
-  onSectionMovedDown?: () => void;
-  onSectionDeleted?: () => void;
+  /** Callback notifying parent component that the user wants to move this stage upwards within the activity stages */
+  onStageMovedUp?: () => void;
+  /** Callback notifying parent component that the user wants to move this stage downwards within the activity stages */
+  onStageMovedDown?: () => void;
+  /** Callback notifying parent component that the user wants to delete this stage */
+  onStageDeleted?: () => void;
 }
 
 /**
@@ -264,36 +263,36 @@ export const EditableStepTitleCard = (
   props: EditableStepTitleCardProps
 ): JSX.Element => {
   const [showOptions, setShowOptions] = useState<boolean>(false);
-  const options = ["Move Section Up", "Move Section Down", "Delete Section"];
+  const options = ["Move Stage Up", "Move Stage Down", "Delete Stage"];
 
   const {
     stepTitle,
     stepDescription,
     titlePlaceholder = "Enter a title for this card...",
     descriptionPlaceholder = "Enter a description for this card...",
-    onTitleChanged,
-    onDescriptionChanged,
     requiredAlert,
     alertMessage,
+    position = 0,
+    onTitleChanged,
+    onDescriptionChanged,
     onCardFocused,
     onCardLostFocus,
     onMouseEntered,
-    position,
-    onSectionMovedDown,
-    onSectionMovedUp,
-    onSectionDeleted,
+    onStageMovedDown,
+    onStageMovedUp,
+    onStageDeleted,
   } = props;
 
   const handleOptionSelected = (optionSelected: string) => {
     switch (optionSelected) {
-      case "Move Section Up":
-        if (onSectionMovedUp) onSectionMovedUp();
+      case "Move Stage Up":
+        if (onStageMovedUp) onStageMovedUp();
         break;
-      case "Move Section Down":
-        if (onSectionMovedDown) onSectionMovedDown();
+      case "Move Stage Down":
+        if (onStageMovedDown) onStageMovedDown();
         break;
-      case "Delete Section":
-        if (onSectionDeleted) onSectionDeleted();
+      case "Delete Stage":
+        if (onStageDeleted) onStageDeleted();
         break;
     }
     setShowOptions(false);
@@ -302,7 +301,7 @@ export const EditableStepTitleCard = (
   return (
     <Root>
       <StepTopInfo>
-        Section {position ? position + 1 : 1}
+        Stage {position ? position + 1 : 1}
         <OptionsIcon
           selected={showOptions}
           onMouseDown={() => {
@@ -323,9 +322,6 @@ export const EditableStepTitleCard = (
             ))}
           </DropdownMenu>
         )}
-        {/* <UpArrowIcon onMouseDown={onSectionMovedUp} /> */}
-        {/* <DeleteIcon onMouseDown={onSectionDeleted} /> */}
-        {/* <DownArrowIcon onMouseDown={onSectionMovedDown} /> */}
       </StepTopInfo>
 
       <TitleColor />
