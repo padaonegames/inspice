@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import styled from "styled-components";
 import {
   EditableFieldProps,
@@ -16,7 +15,6 @@ import {
 import { AddCircle } from "@styled-icons/fluentui-system-regular/AddCircle";
 import { Add } from "@styled-icons/fluentui-system-filled/Add";
 import { Minus } from "@styled-icons/evaicons-solid/Minus";
-import { ChevronDown } from "styled-icons/bootstrap";
 import EditableCheckBoxInput from "../EditableCheckBoxInput";
 
 const QuestionText = styled.div`
@@ -156,24 +154,85 @@ export const LikertScaleInputCard = (
   );
 };
 
+//////////////Scale configuration
 const ScaleConfigContainer = styled.div`
   display: flex;
   flex-direction: column;
-  padding-top: 0.6em;
   align-items: left;
   justify-content: left;
-
-  //
+  overflow: hidden;
   border-radius: 0.5rem;
-  background-color: rgba(200, 200, 200, 1);
+  border: 1px solid #c44c49;
+  background-color: rgba(240, 240, 240, 1);
 `;
 
-const ScaleLengthConfigurator = styled.div`
+const ScaleConfigTitle = styled.div`
+  font-size: 1.75rem;
+  font-weight: 200;
+  color: #ffffff;
+  font-family: ${(props) => props.theme.contentFont};
+  line-height: 115%;
+
+  width: 100%;
   display: flex;
-  width: 50%;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background-color: #c44c49;
+`;
+
+const ScaleConfigLength = styled.div`
+  display: flex;
+  justify-content: center;
+  width: 95%;
+  align-items: center;
+  align-self: center;
+  border-bottom: 2px solid #d4d4d4;
   padding-top: 0.6em;
   height: 50px;
 `;
+
+const SampleScaleStepContainer = styled.div`
+  justify-content: center;
+  align-items: center;
+  width: fit-content;
+  margin: 0rem 1rem 0rem 1rem;
+`;
+
+interface ButtonProps {
+  avaliable: boolean;
+}
+
+const AddScaleIcon = styled(Add)<ButtonProps>`
+  height: 1.75em;
+  width: 1.75em;
+
+  cursor: pointer;
+  border-radius: 5px;
+  border: 1px solid #dadce0;
+  background-color: #f8f9fa;
+  opacity: ${(props) => (props.avaliable ? "1" : "0.3")};
+  &:hover {
+    background-color: rgba(230, 230, 230, 1);
+  }
+`;
+
+const DecreaseScaleIcon = styled(Minus)<ButtonProps>`
+  height: 1.75em;
+  width: 1.75em;
+  cursor: pointer;
+
+  border-radius: 5px;
+  border: 1px solid #dadce0;
+  background-color: #f8f9fa;
+  opacity: ${(props) => (props.avaliable ? "1" : "0.3")};
+  &:hover {
+    background-color: rgba(230, 230, 230, 1);
+  }
+`;
+
+///////////////////Questions
 
 const QuestionContainer = styled.div`
   display: flex;
@@ -193,6 +252,7 @@ const AddQuestionContainer = styled.div`
   width: 50px;
   padding: 0.5em;
   margin: 0.5em 0;
+  cursor: pointer;
 
   border-radius: 8px;
   border: 1px solid #dadce0;
@@ -207,96 +267,28 @@ const AddQuestionIcon = styled(AddCircle)`
   width: 1.75em;
 `;
 
-const AddScaleIcon = styled(Add)`
-  height: 1.75em;
-  width: 1.75em;
-`;
-
-const DecreaseScaleIcon = styled(Minus)`
-  height: 1.75em;
-  width: 1.75em;
+const EditableLikertScaleContainer = styled.fieldset`
+  margin-bottom: 0.5em;
+  border: none;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.1em;
+  background-color: transparent;
+  padding-bottom: 1.25em;
 `;
 
 export interface EditableLikertScaleCardContentProps
   extends EditableFieldProps<LikertScaleFieldDefinition> {} // EditableLikertScaleCardContentProps
 
-const ExpandDropdownIcon = styled(ChevronDown)`
-  width: 0.8rem;
-  height: 0.8rem;
-`;
-
-const DropdownMenu = styled.div`
-  position: absolute;
-  left: 0;
-  top: 2.5em;
-  background-color: ${(props) => props.theme.cardBackground};
-  width: 100%;
-  box-shadow: rgba(37, 7, 107, 0.35) 0px 2px 4px 0px;
-  z-index: 25;
-  display: flex;
-  flex-direction: column;
-  border-radius: 0.25rem;
-`;
-
-const DropdownMenuItem = styled.a`
-  color: ${(props) => props.theme.textColor};
-  padding: 0.5em 0.85em;
-  margin-top: 0.2em;
-  margin-bottom: 0.2em;
-  text-decoration: none;
-  height: 2.5em;
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: start;
-  font-family: ${(props) => props.theme.contentFont};
-
-  &:hover {
-    background-color: #eeeeee;
-  }
-`;
-
-export const SelectFieldTypeDropdownButton = styled.span`
-  font-size: 0.9em;
-  font-weight: 200;
-  font-family: ${(props) => props.theme.contentFont};
-  line-height: 135%;
-  cursor: pointer;
-  color: ${(props) => props.theme.textColor};
-
-  position: relative;
-  height: 2.5em;
-  width: 2rem;
-  bottom: 10px;
-
-  background-color: rgb(255, 255, 255);
-  border-radius: 5px;
-  box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 0.1rem 0px;
-  border: 1px solid #dadce0;
-  cursor: pointer;
-
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 0.25em;
-
-  &:hover {
-    box-shadow: rgba(0, 0, 0, 0.25) 0px 0px 0.25rem 0px;
-  }
-`;
-
 export const EditableLikertScaleCardContent = (
   props: EditableLikertScaleCardContentProps
 ): JSX.Element => {
-  // const [fieldTypeDropdownOpen, setFieldTypeDropdownOpen] = useState<boolean>(false);
-
   const { fieldPayload, onPayloadChanged } = props;
 
   const { questions, scale, showQuestionsIndex = false } = fieldPayload;
-
-  // useEffect(() => {  }, [fieldPayload]);
 
   const handleAddQuestion = () => {
     if (!onPayloadChanged) return;
@@ -338,7 +330,7 @@ export const EditableLikertScaleCardContent = (
     });
   }; // handleScaleEdited
 
-  const handleFieldTypeSelected = (delta: number) => {
+  const handleChangeScaleSteps = (delta: number) => {
     if (!onPayloadChanged) return;
 
     let resultArray = scale;
@@ -351,32 +343,35 @@ export const EditableLikertScaleCardContent = (
     });
   }; // handleFieldTypeSelected
 
-  const availableMultistageFormItemTypes = [3, 4, 5, 6, 7, 8];
-
   return (
     <>
+      {/* Likert Scale configurator */}
       <ScaleConfigContainer>
-        <b>Scale structure</b>
-        <ScaleLengthConfigurator>
-          <span> Number of steps in the scale:</span>
+        {/* Title */}
+        <ScaleConfigTitle>Scale</ScaleConfigTitle>
+        {/* Configurator for the scale steps */}
+        <ScaleConfigLength>
           <DecreaseScaleIcon
-            onMouseDown={() => handleFieldTypeSelected(-1)}
-          />{" "}
-          {scale.length}{" "}
-          <AddScaleIcon onMouseDown={() => handleFieldTypeSelected(1)} />
-          {/* <SelectFieldTypeDropdownButton onClick={() => {}}>
-            {fieldPayload.scale.length} <ExpandDropdownIcon />
-            {false &&
-              <DropdownMenu>
-                {availableMultistageFormItemTypes.map(elem => (
-                  <DropdownMenuItem onClick={() => {handleFieldTypeSelected(elem)}}> {elem} </DropdownMenuItem>
-                ))}
-              </DropdownMenu>}
-          </SelectFieldTypeDropdownButton> */}
-        </ScaleLengthConfigurator>
+            onMouseDown={() => handleChangeScaleSteps(-1)}
+            avaliable={scale.length > 3}
+          />
+          <SampleScaleStepContainer>
+            <LikertResponse
+              responseText={"Scale Step"}
+              position={"middle"}
+              key={"SampleScaleStepPreview"}
+              onResponseSelected={() => {}}
+              selected={false}
+            />
+          </SampleScaleStepContainer>
+          <AddScaleIcon
+            onMouseDown={() => handleChangeScaleSteps(1)}
+            avaliable={scale.length < 7}
+          />
+        </ScaleConfigLength>
 
         {/* Sample scale where the step values can be edited */}
-        <LikertScaleContainer>
+        <EditableLikertScaleContainer>
           <LikertBand>
             {scale.map((response, rInd) => (
               <EditableLikertResponse
@@ -397,7 +392,7 @@ export const EditableLikertScaleCardContent = (
               />
             ))}
           </LikertBand>
-        </LikertScaleContainer>
+        </EditableLikertScaleContainer>
       </ScaleConfigContainer>
 
       {/* List of questions that the user needs to answer withs the scale given */}

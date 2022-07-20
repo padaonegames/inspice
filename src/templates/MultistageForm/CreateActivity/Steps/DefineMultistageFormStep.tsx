@@ -4,56 +4,35 @@ import EditableFieldCard, {
   fieldTypeIcon,
 } from "../../../../components/Forms/Cards/EditableFieldCard";
 import FormActionsFloatingCard from "../../../../components/Forms/Cards/FormActionsFloatingCarc";
-import {
-  EditableMultipleChoiceCardContent,
-  multipleChoiceCardFactory,
-} from "../../../../components/Forms/Cards/MultipleChoiceCard";
-import {
-  EditableDisplayImageCardContent,
-  displayImageCardFactory,
-} from "../../../../components/Forms/Cards/DisplayImageCard";
-import {
-  EditableDisplayVideoCardContent,
-  displayVideoCardFactory,
-} from "../../../../components/Forms/Cards/DisplayVideoCard";
-import { LikertScaleInputCard } from "../../../../components/Forms/Cards/LikertScaleInputCard";
-import {
-  EditableShortTextContent,
-  shortTextCardFactory,
-} from "../../../../components/Forms/Cards/ShortTextInputCard";
+import { EditableMultipleChoiceCardContent } from "../../../../components/Forms/Cards/MultipleChoiceCard";
+import { EditableDisplayImageCardContent } from "../../../../components/Forms/Cards/DisplayImageCard";
+import { EditableDisplayVideoCardContent } from "../../../../components/Forms/Cards/DisplayVideoCard";
+import { EditableShortTextContent } from "../../../../components/Forms/Cards/ShortTextInputCard";
 import { EditableStepTitleCard } from "../../../../components/Forms/Cards/StepTitleCard";
 import { StepComponentProps } from "../../../../components/Navigation/Steps";
 import {
   AvailableMultistageFormFieldType,
-  EditableFieldProps,
-  FieldDefinition,
   MultistageFormFieldDefinition,
   MultistageFormStage,
   SupportedFormField,
 } from "../../../../services/multistageFormActivity.model";
-import {
-  calendarInputCardFactory,
-  EditableCalendarContent,
-} from "../../../../components/Forms/Cards/CalendarInputCard";
+import { EditableCalendarContent } from "../../../../components/Forms/Cards/CalendarInputCard";
 import { EditableCheckBoxGroupCardContent } from "../../../../components/Forms/Cards/CheckBoxGroupInputCard";
 import { EditableLongTextContent } from "../../../../components/Forms/Cards/LongTextInputCard";
 import { EditableLikertScaleCardContent } from "../../../../components/Forms/Cards/LikertScaleInputCard";
-import LikertScaleInputCardStories from "../../../../stories/forms/cards/LikertScaleInputCard.stories";
 
 import styled from "styled-components";
 import { FolderAdd } from "@styled-icons/foundation/FolderAdd";
 import { RadioCircleMarked } from "styled-icons/boxicons-regular";
 import { CardImage } from "@styled-icons/bootstrap/CardImage";
 import { Video } from "@styled-icons/entypo/Video";
-import { Like } from "@styled-icons/boxicons-regular/Like";
+import { Likert } from "@styled-icons/fluentui-system-regular/Likert";
 import { ShortText } from "@styled-icons/material/ShortText";
 import { TextLeft } from "@styled-icons/bootstrap/TextLeft";
 import { CalendarEvent } from "@styled-icons/boxicons-regular/CalendarEvent";
 import { CardText } from "@styled-icons/bootstrap/CardText";
 import { CheckboxChecked } from "@styled-icons/fluentui-system-filled/CheckboxChecked";
 import { EditableDisplayTextCardContent } from "../../../../components/Forms/Cards/DisplayTextCard";
-
-// import { v4 as uuid } from 'uuid';
 
 const Root = styled.div`
   display: flex;
@@ -95,7 +74,7 @@ const DisplayVideoIcon = styled(Video)`
   ${fieldTypeIcon}
 `;
 
-const LikerIcon = styled(Like)`
+const LikerIcon = styled(Likert)`
   ${fieldTypeIcon}
 `;
 
@@ -111,12 +90,12 @@ const DateIcon = styled(CalendarEvent)`
   ${fieldTypeIcon}
 `;
 
-const NewSectionIcon = styled(FolderAdd)`
+const NewStageIcon = styled(FolderAdd)`
   height: 1.75em;
   width: 1.75em;
 `;
 
-const AddSectionButton = styled.div`
+const AddStageButton = styled.div`
   font-family: ${(props) => props.theme.contentFont};
   cursor: pointer;
   background-color: #c44c49;
@@ -195,7 +174,7 @@ export const fieldMappings: FieldMappings<SupportedFormField> = {
     },
   },
   "likert-scale": {
-    displayName: "Liker",
+    displayName: "Likert Scale",
     iconComponent: <LikerIcon />,
     editingComponentProducer: EditableLikertScaleCardContent,
     defaultFieldPayload: {
@@ -221,7 +200,7 @@ export const DefineMultistageFormStep = (
   );
   // which card is currently selected (useful for knowing where to place new cards)
   const [selectedItemIndex, setSelectedItemIndex] = useState<number>(0);
-  // index to determine the section we are currently working on
+  // index to determine the stage we are currently working on
   const [selectedStageIndex, setSelectedStageIndex] = useState<number>(0);
   // state to see if the focused item can change just by hovering the mouse over any object or it must be clicked
   const [focusOnHover, setFocusOnHover] = useState<boolean>(true);
@@ -338,7 +317,9 @@ export const DefineMultistageFormStep = (
   ) => {
     const mapping = fieldMappings[value];
 
+    //Stage being modified
     let currentStage = activityStages[stageIndex];
+    //The current form is changed to the new type
     currentStage.forms = [
       ...currentStage.forms.slice(0, index),
       {
@@ -351,6 +332,7 @@ export const DefineMultistageFormStep = (
       ...currentStage.forms.slice(index + 1),
     ];
 
+    //The changes are stored in the global state
     props.setState<MultistageFormStage[]>(
       "stages",
       [
@@ -362,41 +344,41 @@ export const DefineMultistageFormStep = (
     );
   }; // handleFieldTypeChanged
 
-  const handleMouseEntered = (index: number, sectionIndex: number) => {
+  const handleMouseEntered = (index: number, stageIndex: number) => {
     if (!focusOnHover) return;
     setSelectedItemIndex(index);
-    setSelectedStageIndex(sectionIndex);
+    setSelectedStageIndex(stageIndex);
   }; // handleMouseEntered
 
-  const handleFocusLost = (index: number, sectionIndex: number) => {
+  const handleFocusLost = (index: number, stageIndex: number) => {
     setFocusOnHover(index === selectedItemIndex ? true : false);
   }; // handleFocusLost
 
-  const handleCardMovedUpwards = (cardIndex: number, sectionIndex: number) => {
-    //Card needs to be transfered to the previus section
-    if (cardIndex === 0 && sectionIndex > 0) {
-      let movedCard = activityStages[sectionIndex].forms[0];
+  const handleCardMovedUpwards = (cardIndex: number, stageIndex: number) => {
+    //Card needs to be transfered to the previus stage
+    if (cardIndex === 0 && stageIndex > 0) {
+      let movedCard = activityStages[stageIndex].forms[0];
       props.setState<MultistageFormStage[]>(
         "stages",
         [
-          ...activityStages.slice(0, sectionIndex - 1),
+          ...activityStages.slice(0, stageIndex - 1),
           {
-            ...activityStages[sectionIndex - 1],
-            forms: [...activityStages[sectionIndex - 1].forms, movedCard],
-          }, //Previus section gets the new card
+            ...activityStages[stageIndex - 1],
+            forms: [...activityStages[stageIndex - 1].forms, movedCard],
+          }, //Previus stage gets the new card
           {
-            ...activityStages[sectionIndex],
-            forms: activityStages[sectionIndex].forms.slice(1),
-          }, //Current section loses its first card
-          ...activityStages.slice(sectionIndex + 1),
+            ...activityStages[stageIndex],
+            forms: activityStages[stageIndex].forms.slice(1),
+          }, //Current stage loses its first card
+          ...activityStages.slice(stageIndex + 1),
         ],
         [defaultStage]
       );
       return;
     }
 
-    //Card can go upwards in the current section
-    let currentStage = activityStages[sectionIndex];
+    //Card can go upwards in the current stage
+    let currentStage = activityStages[stageIndex];
     var element = currentStage.forms[cardIndex];
     currentStage.forms.splice(cardIndex, 1);
     currentStage.forms.splice(cardIndex - 1, 0, element);
@@ -404,47 +386,45 @@ export const DefineMultistageFormStep = (
     props.setState<MultistageFormStage[]>(
       "stages",
       [
-        ...activityStages.slice(0, sectionIndex),
+        ...activityStages.slice(0, stageIndex),
         currentStage,
-        ...activityStages.slice(sectionIndex + 1),
+        ...activityStages.slice(stageIndex + 1),
       ],
       [defaultStage]
     );
   }; //handleCardMovedUpwards
 
-  const handleCardMovedDownwards = (
-    cardIndex: number,
-    sectionIndex: number
-  ) => {
-    //Card needs to be transfered to the next section
+  const handleCardMovedDownwards = (cardIndex: number, stageIndex: number) => {
+    //Card needs to be transfered to the next stage
     if (
-      sectionIndex < activityStages.length - 1 &&
-      cardIndex === activityStages[sectionIndex].forms.length - 1
+      stageIndex < activityStages.length - 1 &&
+      cardIndex === activityStages[stageIndex].forms.length - 1
     ) {
-      let movedCard = activityStages[sectionIndex].forms[0];
+      let movedCard = activityStages[stageIndex].forms[0];
       props.setState<MultistageFormStage[]>(
         "stages",
         [
-          ...activityStages.slice(0, sectionIndex),
+          ...activityStages.slice(0, stageIndex),
           {
-            ...activityStages[sectionIndex],
-            forms: activityStages[sectionIndex].forms.slice(
+            ...activityStages[stageIndex],
+            forms: activityStages[stageIndex].forms.slice(
               0,
-              activityStages[sectionIndex].forms.length - 1
+              activityStages[stageIndex].forms.length - 1
             ),
           }, //Current stage loses its last card
           {
-            ...activityStages[sectionIndex + 1],
-            forms: [movedCard, ...activityStages[sectionIndex + 1].forms],
+            ...activityStages[stageIndex + 1],
+            forms: [movedCard, ...activityStages[stageIndex + 1].forms],
           }, //Next stage gets a new card
-          ...activityStages.slice(sectionIndex + 2),
+          ...activityStages.slice(stageIndex + 2),
         ],
         [defaultStage]
       );
       return;
     }
 
-    let currentStage = activityStages[sectionIndex];
+    //Card can just go down within the current stage
+    let currentStage = activityStages[stageIndex];
     var element = currentStage.forms[cardIndex];
     currentStage.forms.splice(cardIndex, 1);
     currentStage.forms.splice(cardIndex + 1, 0, element);
@@ -452,51 +432,51 @@ export const DefineMultistageFormStep = (
     props.setState<MultistageFormStage[]>(
       "stages",
       [
-        ...activityStages.slice(0, sectionIndex),
+        ...activityStages.slice(0, stageIndex),
         currentStage,
-        ...activityStages.slice(sectionIndex + 1),
+        ...activityStages.slice(stageIndex + 1),
       ],
       [defaultStage]
     );
   }; //handleCardMovedDownwards
 
-  /////////////////////////////////////////////Section methods
+  /////////////////////////////////////////////Stage methods
 
-  const handleAddNewSection = () => {
+  const handleAddNewStage = () => {
     props.setState<MultistageFormStage[]>(
       "stages",
       [...activityStages, defaultStage],
       [defaultStage]
     );
-  }; //handleAddNewSection
+  }; //handleAddNewStage
 
-  const handleSectionMovedDownwards = (sectionIndex: number) => {
+  const handleStageMovedDownwards = (stageIndex: number) => {
     let newActivityStages = activityStages;
-    let movedSection = activityStages[sectionIndex];
-    newActivityStages.splice(sectionIndex, 1);
-    newActivityStages.splice(sectionIndex + 1, 0, movedSection);
+    let movedStage = activityStages[stageIndex];
+    newActivityStages.splice(stageIndex, 1);
+    newActivityStages.splice(stageIndex + 1, 0, movedStage);
     props.setState<MultistageFormStage[]>("stages", newActivityStages, [
       defaultStage,
     ]);
-  }; //handleSectionMovedDownwards
+  }; //handleStageMovedDownwards
 
-  const handleSectionMovedUpwards = (sectionIndex: number) => {
+  const handleStageMovedUpwards = (stageIndex: number) => {
     let newActivityStages = activityStages;
-    let movedSection = activityStages[sectionIndex];
-    newActivityStages.splice(sectionIndex, 1);
-    newActivityStages.splice(sectionIndex - 1, 0, movedSection);
+    let movedStage = activityStages[stageIndex];
+    newActivityStages.splice(stageIndex, 1);
+    newActivityStages.splice(stageIndex - 1, 0, movedStage);
     props.setState<MultistageFormStage[]>("stages", newActivityStages, [
       defaultStage,
     ]);
-  }; //handleSectionMovedUpwards
+  }; //handleStageMovedUpwards
 
-  const handleDeleteSection = (index: number) => {
+  const handleDeleteStage = (index: number) => {
     props.setState<MultistageFormStage[]>(
       "stages",
       [...activityStages.slice(0, index), ...activityStages.slice(index + 1)],
       [defaultStage]
     );
-  }; //handleAddNewSection
+  }; //handleDeleteStage
 
   return (
     <Root>
@@ -521,9 +501,9 @@ export const DefineMultistageFormStep = (
             onCardLostFocus={() => handleFocusLost(-1, stageIndex)}
             onMouseEntered={() => handleMouseEntered(-1, stageIndex)}
             position={stageIndex}
-            onSectionMovedUp={() => handleSectionMovedUpwards(stageIndex)}
-            onSectionMovedDown={() => handleSectionMovedDownwards(stageIndex)}
-            onSectionDeleted={() => handleDeleteSection(stageIndex)}
+            onStageMovedUp={() => handleStageMovedUpwards(stageIndex)}
+            onStageMovedDown={() => handleStageMovedDownwards(stageIndex)}
+            onStageDeleted={() => handleDeleteStage(stageIndex)}
           />
           {/* In case the user wants to add a new form right after the stage title and description */}
           {selectedItemIndex === -1 && selectedStageIndex === stageIndex && (
@@ -562,6 +542,11 @@ export const DefineMultistageFormStep = (
                   selectedItemIndex === formIndex &&
                   selectedStageIndex === stageIndex
                 }
+                firstCard={stageIndex === 0 && formIndex === 0}
+                lastCard={
+                  stageIndex === activityStages.length - 1 &&
+                  formIndex === currentStage.forms.length - 1
+                }
               />
               {/* If the user is selecting this current form the button to add new forms is displayed right after this current form */}
               {selectedItemIndex === formIndex &&
@@ -577,10 +562,10 @@ export const DefineMultistageFormStep = (
       ))}
 
       {/* Button to add a new stage to the activity */}
-      <AddSectionButton onMouseDown={handleAddNewSection}>
-        <NewSectionIcon />
+      <AddStageButton onMouseDown={handleAddNewStage}>
+        <NewStageIcon />
         New Section
-      </AddSectionButton>
+      </AddStageButton>
     </Root>
   );
 };

@@ -43,7 +43,11 @@ const ExpandDropdownIcon = styled(ChevronDown)`
   margin-left: auto;
 `;
 
-const UpArrowIcon = styled(ArrowUpSquareFill)`
+interface ButtonProps {
+  avaliable: boolean;
+}
+
+const UpArrowIcon = styled(ArrowUpSquareFill)<ButtonProps>`
   ${fieldTypeIcon}
   position: absolute;
   left: 2%;
@@ -51,19 +55,22 @@ const UpArrowIcon = styled(ArrowUpSquareFill)`
   transform: translate(0%, -50%);
   // border-radius: 100%;
   color: rgb(80, 80, 80);
+  opacity: ${(props) => (props.avaliable ? "1" : "0.3")};
   &:hover {
     background-color: rgb(200, 200, 200);
     cursor: pointer;
   }
 `;
 
-const DownArrowIcon = styled(ArrowDownSquareFill)`
+const DownArrowIcon = styled(ArrowDownSquareFill)<ButtonProps>`
   ${fieldTypeIcon}
   position: absolute;
   left: 8%;
   top: 50%;
   transform: translate(0%, -50%);
   color: rgb(80, 80, 80);
+  opacity: ${(props) => (props.avaliable ? "1" : "0.3")};
+
   &:hover {
     background-color: rgb(200, 200, 200);
     cursor: pointer;
@@ -157,6 +164,12 @@ export interface EditableFieldCardProps {
   initialFieldDefinition?: MultistageFormFieldDefinition;
   /** What  mappings we are working with in this editiable field card (available field types and how to render them) */
   fieldMappings: FieldMappings<SupportedFormField>;
+  /** Boolean that tells wether this card is currently being focused by the user */
+  isFocused?: boolean;
+  /** Boolean that tells wether this card is the first one in the activity and if it can be moved upwards or not */
+  firstCard?: boolean;
+  /** Boolean that tells wether this card is the last one in the activity and if it can be moved downwards or not */
+  lastCard?: boolean;
   /** Callback notifying of field type changing to a new format */
   onFieldTypeChanged?: (value: AvailableMultistageFormFieldType) => void;
   /** Callback notifying parent of field changing (including data payload) */
@@ -169,11 +182,10 @@ export interface EditableFieldCardProps {
   onCardLostFocus?: () => void;
   /** Callback notifying parent component of mouse entered this component */
   onMouseEntered?: () => void;
-
+  /** Callback notifying parent component that the user wants to move this component upwards within the activity */
   onMoveUpCard?: () => void;
+  /** Callback notifying parent component that the user wants to move this component downwards within the activity */
   onMoveDownCard?: () => void;
-
-  isFocused?: boolean;
 }
 
 export type FieldMappings<T extends SupportedFormField> = {
@@ -204,6 +216,9 @@ export const EditableFieldCard = (
     alertMessage,
     initialFieldDefinition,
     fieldMappings,
+    isFocused = false,
+    firstCard = false,
+    lastCard = false,
     onFieldTypeChanged,
     onFieldDefinitionChanged,
     onCardDeleted,
@@ -212,7 +227,6 @@ export const EditableFieldCard = (
     onMouseEntered,
     onMoveDownCard,
     onMoveUpCard,
-    isFocused = false,
   } = props;
 
   // managed state for field definition
@@ -363,6 +377,7 @@ export const EditableFieldCard = (
         isFocused={isFocused}
       >
         <HeaderRow>
+          {/* Input field for the prompt of this card */}
           <InputArea
             dimBackground
             width="50%"
@@ -373,6 +388,7 @@ export const EditableFieldCard = (
             value={fieldDefinition.promptText}
             onChange={(event) => handlePromptTextChanged(event.target.value)}
           />
+          {/* Drop down menu that allows the user to select a specific form for this card */}
           <SelectFieldTypeDropdownButton
             onClick={() => setFieldTypeDropdownOpen((prev) => !prev)}
           >
@@ -395,15 +411,17 @@ export const EditableFieldCard = (
             )}
           </SelectFieldTypeDropdownButton>
         </HeaderRow>
+        {/* Form that has been selected for this card */}
         {selectedField &&
           selectedField.editingComponentProducer({
             fieldPayload: fieldDefinition.fieldData.payload as any,
             onPayloadChanged: handleFieldPayloadChanged,
           })}
         <DottedLine />
+        {/* Container of the buttons that appear at the bottom of the card */}
         <BottomRow>
-          <UpArrowIcon onMouseDown={onMoveUpCard} />
-          <DownArrowIcon onMouseDown={onMoveDownCard} />
+          <UpArrowIcon onMouseDown={onMoveUpCard} avaliable={!firstCard} />
+          <DownArrowIcon onMouseDown={onMoveDownCard} avaliable={!lastCard} />
 
           <CheckBoxInput
             style="radio"
@@ -414,6 +432,7 @@ export const EditableFieldCard = (
           <HorizontalLine />
           <DeleteIcon onClick={onCardDeleted} />
         </BottomRow>
+        {/* Alert in case the card hasnt been filled correctly */}
         {requiredAlert && (
           <RequiredQuestionSpan>
             <RequiredAlertIcon /> {alertMessage ?? "This item is required."}
