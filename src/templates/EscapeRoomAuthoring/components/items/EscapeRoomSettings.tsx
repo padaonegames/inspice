@@ -8,15 +8,24 @@ import { useState } from "react";
 import { EscapeRoomCharacterCard } from "./EscapeRoomCharacterCard";
 
 import styled from "styled-components";
-import { Settings } from "@styled-icons/fluentui-system-filled/Settings";
 import { UserPlus } from "@styled-icons/boxicons-regular/UserPlus";
 
+import { Settings } from "@styled-icons/fluentui-system-filled/Settings";
 const SettingsIcon = styled(Settings)`
   position: absolute;
-  right: 20%;
-  color: rgb(0, 0, 0);
-  height: 1.25em;
-  width: 1.25em;
+  right: 8%;
+  bottom: 0%;
+  color: rgb(255, 255, 255);
+
+  box-sizing: content-box;
+  padding: 4px;
+  border-radius: 100%;
+  height: 1.5em;
+  width: 1.5em;
+
+  // &:hover {
+  //   background-color: rgba(255, 255, 255, 0.3);
+  // }
 `;
 
 const AddCharacterIcon = styled(UserPlus)`
@@ -87,13 +96,23 @@ const Root = styled.div`
   position: relative;
   height: 10%;
   width: 100%;
-  background-color: rgba(150, 150, 150, 0.5);
-  box-shadow: rgba(255, 0, 0, 1) 0px px 0px 0px;
-  border-radius: 0% 0% 0% 0%;
-  border-color: red;
-  font-size: 0.875rem;
-  font-weight: 500;
-  font-family: ${(props) => props.theme.contentFont};
+  cursor: pointer;
+  z-index: 2;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  background-color: rgb(19, 104, 206);
+  border: 3px;
+  border-radius: 0.5rem;
+  border-style: solid;
+  border-color: rgb(15, 90, 188);
+  box-shadow: 0px 0px 10px 0px #000000;
+
+  &:hover {
+    background-color: rgb(23, 128, 234);
+  }
 `;
 
 const CheckboxTitle = styled.div`
@@ -339,27 +358,43 @@ export const EscapeRoomSettings = (
 }; // EditableWaitingCodeItemContent
 
 const PreviewTitle = styled.div`
-  margin-bottom: 0.25rem;
-  color: rgb(110, 110, 110);
+  width: 90%;
+  height: 50%;
+
+  font-weight: 600;
+  font-family: ${(props) => props.theme.contentFont};
+  font-size: 1.5rem;
   text-align: center;
-  font-size: 0.75rem;
+  text-overflow: ellipsis;
+  color: rgb(255, 255, 255);
+
+  border-bottom: 2px solid #ffffff;
+
+  margin-bottom: 0.25rem;
   line-height: 1.33;
   letter-spacing: 0.2px;
-  max-height: 1.5rem;
-  max-width: 100%;
   overflow: hidden;
   white-space: nowrap;
-  text-overflow: ellipsis;
 `;
 
 const PreviewAnswers = styled.div`
   display: flex;
   align-items: center;
   text-align: center;
+  font-family: ${(props) => props.theme.contentFont};
+  overflow: hidden;
+  text-overflow: ellipsis;
+  height: 30%;
+  width: 90%;
+  max-width: 90%;
+  max-height: 30%;
+  display: block;
+  white-space: nowrap;
+
   justify-content: center;
   flex-wrap: wrap;
   margin-top: 3px;
-  color: rgb(0, 0, 0);
+  color: rgb(255, 255, 255);
 `;
 
 export interface EscapeRoomSettingsStageSlideProps {
@@ -379,7 +414,7 @@ export const EscapeRoomSettingsStageSlide = (
         goToSettings && goToSettings();
       }}
     >
-      <SettingsIcon />
+      {/* <SettingsIcon /> */}
       <PreviewTitle>{"Escape Room"}</PreviewTitle>
       <PreviewAnswers>{title === "" ? "No title" : title}</PreviewAnswers>
     </Root>

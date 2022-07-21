@@ -30,15 +30,13 @@ const HintsIcon = styled(Question)`
 `;
 
 const CheckboxTitle = styled.div`
-  font-size: 1em;
+  font-size: 1.5em;
   font-weight: 500;
   font-family: ${(props) => props.theme.contentFont};
   line-height: 135%;
 
-  margin-top: 0.25em;
-  margin-bottom: 0.25em;
-  padding: 0.75em 1.25em;
   border-top: none;
+  margin-left: 1rem;
   color: black;
   line-height: 135%;
   width: fit-content;
@@ -47,30 +45,10 @@ const CheckboxTitle = styled.div`
   display: flex;
   align-items: center;
 
-  background-color: white;
+  // background-color: white;
 
-  border-radius: 1rem;
-  box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
-`;
-
-const EditorContainer = styled.div`
-  margin-top: 5px;
-  display: flex;
-  background-color: transparent;
-  flex-direction: column;
-  align-items: center;
-  padding: 0.75em;
-  background-color: transparent;
-  border-radius: 1.25rem;
-
+  // border-radius: 1rem;
   // box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
-  // border-bottom: 2px solid #dadce0;
-
-  &:hover {
-    background-color: rgba(191, 232, 255, 0.5);
-    box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
-    border-bottom: 2px solid #dadce0;
-  }
 `;
 
 const PuzzleCard = styled.div`
@@ -80,15 +58,17 @@ const PuzzleCard = styled.div`
   background-color: transparent;
   flex-direction: column;
   align-items: left;
-  width: 100%;
+  width: 90%;
 
   border-bottom: 2px solid #dadce0;
   padding: 0.75em;
-
   background-color: #dbdbdb;
-
   border-radius: 1.25rem;
-  box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
+
+  margin: 2rem 0 0rem 0;
+  &:hover {
+    border-left: 6px solid rgb(19, 104, 206);
+  }
 `;
 
 const HeaderContainer = styled.div`
@@ -312,68 +292,66 @@ export const RoomPuzzleSettingsEditor = (
   }, [puzzle]);
 
   return (
-    <EditorContainer onMouseEnter={() => handleSelectedPuzzleChanged()}>
-      <PuzzleCard>
-        {/* Upper side of the card (Title and selector) */}
-        <HeaderContainer>
-          <CheckboxTitle>
-            <HintsIcon />
-            Puzzle number {index + 1}
-          </CheckboxTitle>
-          <SelectFieldTypeDropdownButton
-            onClick={() => setStageTypeDropdownOpen((prev) => !prev)}
-          >
-            {<HintsIcon />}
-            {currentTypeSelected} <ExpandDropdownIcon />
-            {stageTypeDropdownOpen && (
-              <DropdownMenu>
-                {escapeRoomPuzzleTypes.map((elem, i) => (
-                  <DropdownMenuItem
-                    onClick={() => {
-                      handlePuzzleTypeChanged(elem);
-                      setCurrentTypeSelected(
-                        stageMappings[elem].displayName
-                          ? stageMappings[elem].displayName
-                          : "Select a stage type"
-                      );
-                    }}
-                  >
-                    {stageMappings[elem].iconComponent}
-                    {stageMappings[elem].displayName ?? elem}
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenu>
-            )}
-          </SelectFieldTypeDropdownButton>
-        </HeaderContainer>
+    <PuzzleCard onMouseEnter={() => handleSelectedPuzzleChanged()}>
+      {/* Upper side of the card (Title and selector) */}
+      <HeaderContainer>
+        <CheckboxTitle>
+          <HintsIcon />
+          Puzzle number {index + 1}
+        </CheckboxTitle>
+        <SelectFieldTypeDropdownButton
+          onClick={() => setStageTypeDropdownOpen((prev) => !prev)}
+        >
+          {<HintsIcon />}
+          {currentTypeSelected} <ExpandDropdownIcon />
+          {stageTypeDropdownOpen && (
+            <DropdownMenu>
+              {escapeRoomPuzzleTypes.map((elem, i) => (
+                <DropdownMenuItem
+                  onClick={() => {
+                    handlePuzzleTypeChanged(elem);
+                    setCurrentTypeSelected(
+                      stageMappings[elem].displayName
+                        ? stageMappings[elem].displayName
+                        : "Select a stage type"
+                    );
+                  }}
+                >
+                  {stageMappings[elem].iconComponent}
+                  {stageMappings[elem].displayName ?? elem}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenu>
+          )}
+        </SelectFieldTypeDropdownButton>
+      </HeaderContainer>
 
-        <HorizontalLine />
+      <HorizontalLine />
 
-        {/* Puzzle Editor */}
-        {stageMappings[puzzle.type].editingComponentProducer({
-          payload: puzzle.payload as any,
-          onPayloadChanged: (value) => handlePuzzlePayloadChanged(value),
-        })}
+      {/* Puzzle Editor */}
+      {stageMappings[puzzle.type].editingComponentProducer({
+        payload: puzzle.payload as any,
+        onPayloadChanged: (value) => handlePuzzlePayloadChanged(value),
+      })}
 
-        <HorizontalLine />
-        {/* Buttons to duplicate and delete a puzzle from a room block */}
-        <BottomContainer>
-          <ButtonContainer
-            onClick={() => {
-              handlePuzzleDelete();
-            }}
-          >
-            <DeleteIcon />
-          </ButtonContainer>
-          <ButtonContainer
-            onClick={() => {
-              handlePuzzleDuplicate();
-            }}
-          >
-            <CopyIcon />
-          </ButtonContainer>
-        </BottomContainer>
-      </PuzzleCard>
-    </EditorContainer>
+      <HorizontalLine />
+      {/* Buttons to duplicate and delete a puzzle from a room block */}
+      <BottomContainer>
+        <ButtonContainer
+          onClick={() => {
+            handlePuzzleDelete();
+          }}
+        >
+          <DeleteIcon />
+        </ButtonContainer>
+        <ButtonContainer
+          onClick={() => {
+            handlePuzzleDuplicate();
+          }}
+        >
+          <CopyIcon />
+        </ButtonContainer>
+      </BottomContainer>
+    </PuzzleCard>
   );
 }; // RoomSettingsEditor
