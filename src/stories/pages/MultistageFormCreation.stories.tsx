@@ -4,17 +4,17 @@ import {
 } from "@storybook/react/dist/ts3.9/client/preview/types-6-3";
 import { MemoryRouter } from "react-router-dom";
 import { MultistageFormActivityDefinition } from "../../services/multistageFormActivity.model";
-import { CreateMultistageFormActivityScreenComponent } from "../../templates/MultistageForm/CreateActivity/Screen";
+import { CreateMultistageFormScreenComponent } from "../../templates/MultistageForm/CreateActivity/Screen";
 
 export default {
   title: "Pages/Multistage Form Creation",
-  component: CreateMultistageFormActivityScreenComponent,
+  component: CreateMultistageFormScreenComponent,
   decorators: [
     (Story) => {
       return <MemoryRouter initialEntries={["/"]}>{Story()}</MemoryRouter>;
     },
   ],
-} as ComponentMeta<typeof CreateMultistageFormActivityScreenComponent>;
+} as ComponentMeta<typeof CreateMultistageFormScreenComponent>;
 
 const sample_base: MultistageFormActivityDefinition = {
   activityType: "Multistage Form",
@@ -27,10 +27,10 @@ const sample_base: MultistageFormActivityDefinition = {
   _id: "",
 }; // sample_base
 
-const Template: ComponentStory<
-  typeof CreateMultistageFormActivityScreenComponent
-> = (_) => (
-  <CreateMultistageFormActivityScreenComponent
+const Template: ComponentStory<typeof CreateMultistageFormScreenComponent> = (
+  _
+) => (
+  <CreateMultistageFormScreenComponent
     initialActivityDefinition={sample_base}
   />
 );
