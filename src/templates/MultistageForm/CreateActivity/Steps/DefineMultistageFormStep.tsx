@@ -9,9 +9,10 @@ import { EditableDisplayImageCardContent } from "../../../../components/Forms/Ca
 import { EditableDisplayVideoCardContent } from "../../../../components/Forms/Cards/DisplayVideoCard";
 import { EditableShortTextContent } from "../../../../components/Forms/Cards/ShortTextInputCard";
 import { EditableStepTitleCard } from "../../../../components/Forms/Cards/StepTitleCard";
-import { StepComponentProps } from "../../../../components/Navigation/Steps";
+import { StepComponentProps } from "../../../../components/Navigation/TypedSteps";
 import {
   AvailableMultistageFormFieldType,
+  MultistageFormActivityDefinition,
   MultistageFormFieldDefinition,
   MultistageFormStage,
   SupportedFormField,
@@ -186,17 +187,21 @@ export const fieldMappings: FieldMappings<SupportedFormField> = {
 }; // fieldMappings
 
 export const DefineMultistageFormStep = (
-  props: StepComponentProps
+  props: StepComponentProps<MultistageFormActivityDefinition>
 ): JSX.Element => {
-  //Default definition of a stage
+  
+  const { state, setState } = props;
+
+  // Default definition of a stage
   const defaultStage: MultistageFormStage = {
     forms: [],
     title: "",
     description: "",
   };
-  //Stages of the activity
+
+  // Stages of the activity
   const [activityStages, setActivityStages] = useState<MultistageFormStage[]>(
-    props.getState<MultistageFormStage[]>("stages", [defaultStage])
+    state.stages
   );
   // which card is currently selected (useful for knowing where to place new cards)
   const [selectedItemIndex, setSelectedItemIndex] = useState<number>(0);
@@ -207,39 +212,35 @@ export const DefineMultistageFormStep = (
 
   // each time the stages are modified our state will notice it
   useEffect(() => {
-    setActivityStages(
-      props.getState<MultistageFormStage[]>("stages", [defaultStage])
-    );
-  }, [props.getState<MultistageFormStage[]>("stages", [defaultStage])]);
+    setActivityStages(state.stages);
+  }, [state.stages]);
 
   const handleTitleChanged = (stageIndex: number, value: string) => {
     let currentStage = activityStages[stageIndex];
     currentStage.title = value;
 
-    props.setState<MultistageFormStage[]>(
-      "stages",
-      [
+    setState((prev) => ({
+      ...prev,
+      stages: [
         ...activityStages.slice(0, stageIndex),
         currentStage,
         ...activityStages.slice(stageIndex + 1),
       ],
-      [defaultStage]
-    );
+    }));
   }; // handleTitleChanged
 
   const handleDescriptionChanged = (stageIndex: number, value: string) => {
     let currentStage = activityStages[stageIndex];
     currentStage.description = value;
 
-    props.setState<MultistageFormStage[]>(
-      "stages",
-      [
+    setState((prev) => ({
+      ...prev,
+      stages: [
         ...activityStages.slice(0, stageIndex),
         currentStage,
         ...activityStages.slice(stageIndex + 1),
       ],
-      [defaultStage]
-    );
+    }));
   }; // handleDescriptionChanged
 
   const handleItemAdded = (stageIndex: number) => {
@@ -257,15 +258,15 @@ export const DefineMultistageFormStep = (
       ...currentStage.forms.slice(selectedItemIndex + 1),
     ];
 
-    props.setState<MultistageFormStage[]>(
-      "stages",
-      [
+    setState((prev) => ({
+      ...prev,
+      stages: [
         ...activityStages.slice(0, stageIndex),
         currentStage,
         ...activityStages.slice(stageIndex + 1),
       ],
-      [defaultStage]
-    );
+    }));
+
     setSelectedItemIndex((prev) => prev + 1);
   }; // handleItemAdded
 
@@ -276,15 +277,14 @@ export const DefineMultistageFormStep = (
       ...currentStage.forms.slice(index + 1),
     ];
 
-    props.setState<MultistageFormStage[]>(
-      "stages",
-      [
+    setState((prev) => ({
+      ...prev,
+      stages: [
         ...activityStages.slice(0, stageIndex),
         currentStage,
         ...activityStages.slice(stageIndex + 1),
       ],
-      [defaultStage]
-    );
+    }));
   }; // handleItemRemoved
 
   const handleItemChanged = (
@@ -299,15 +299,14 @@ export const DefineMultistageFormStep = (
       ...currentStage.forms.slice(index + 1),
     ];
 
-    props.setState<MultistageFormStage[]>(
-      "stages",
-      [
+    setState((prev) => ({
+      ...prev,
+      stages: [
         ...activityStages.slice(0, stageIndex),
         currentStage,
         ...activityStages.slice(stageIndex + 1),
       ],
-      [defaultStage]
-    );
+    }));
   }; // handleItemChanged
 
   const handleFieldTypeChanged = (
@@ -317,9 +316,9 @@ export const DefineMultistageFormStep = (
   ) => {
     const mapping = fieldMappings[value];
 
-    //Stage being modified
+    // Stage being modified
     let currentStage = activityStages[stageIndex];
-    //The current form is changed to the new type
+    // The current form is changed to the new type
     currentStage.forms = [
       ...currentStage.forms.slice(0, index),
       {
@@ -332,16 +331,15 @@ export const DefineMultistageFormStep = (
       ...currentStage.forms.slice(index + 1),
     ];
 
-    //The changes are stored in the global state
-    props.setState<MultistageFormStage[]>(
-      "stages",
-      [
+    // The changes are stored in the global state
+    setState((prev) => ({
+      ...prev,
+      stages: [
         ...activityStages.slice(0, stageIndex),
         currentStage,
         ...activityStages.slice(stageIndex + 1),
       ],
-      [defaultStage]
-    );
+    }));
   }; // handleFieldTypeChanged
 
   const handleMouseEntered = (index: number, stageIndex: number) => {
@@ -355,55 +353,53 @@ export const DefineMultistageFormStep = (
   }; // handleFocusLost
 
   const handleCardMovedUpwards = (cardIndex: number, stageIndex: number) => {
-    //Card needs to be transfered to the previus stage
+    // Card needs to be transfered to the previus stage
     if (cardIndex === 0 && stageIndex > 0) {
       let movedCard = activityStages[stageIndex].forms[0];
-      props.setState<MultistageFormStage[]>(
-        "stages",
-        [
+      setState((prev) => ({
+        ...prev,
+        stages: [
           ...activityStages.slice(0, stageIndex - 1),
           {
             ...activityStages[stageIndex - 1],
             forms: [...activityStages[stageIndex - 1].forms, movedCard],
-          }, //Previus stage gets the new card
+          }, // Previus stage gets the new card
           {
             ...activityStages[stageIndex],
             forms: activityStages[stageIndex].forms.slice(1),
-          }, //Current stage loses its first card
+          }, // Current stage loses its first card
           ...activityStages.slice(stageIndex + 1),
         ],
-        [defaultStage]
-      );
+      }));
       return;
     }
 
-    //Card can go upwards in the current stage
+    // Card can go upwards in the current stage
     let currentStage = activityStages[stageIndex];
     var element = currentStage.forms[cardIndex];
     currentStage.forms.splice(cardIndex, 1);
     currentStage.forms.splice(cardIndex - 1, 0, element);
 
-    props.setState<MultistageFormStage[]>(
-      "stages",
-      [
+    setState((prev) => ({
+      ...prev,
+      stages: [
         ...activityStages.slice(0, stageIndex),
         currentStage,
         ...activityStages.slice(stageIndex + 1),
       ],
-      [defaultStage]
-    );
-  }; //handleCardMovedUpwards
+    }));
+  }; // handleCardMovedUpwards
 
   const handleCardMovedDownwards = (cardIndex: number, stageIndex: number) => {
-    //Card needs to be transfered to the next stage
+    // Card needs to be transfered to the next stage
     if (
       stageIndex < activityStages.length - 1 &&
       cardIndex === activityStages[stageIndex].forms.length - 1
     ) {
       let movedCard = activityStages[stageIndex].forms[0];
-      props.setState<MultistageFormStage[]>(
-        "stages",
-        [
+      setState((prev) => ({
+        ...prev,
+        stages: [
           ...activityStages.slice(0, stageIndex),
           {
             ...activityStages[stageIndex],
@@ -411,72 +407,73 @@ export const DefineMultistageFormStep = (
               0,
               activityStages[stageIndex].forms.length - 1
             ),
-          }, //Current stage loses its last card
+          }, // Current stage loses its last card
           {
             ...activityStages[stageIndex + 1],
             forms: [movedCard, ...activityStages[stageIndex + 1].forms],
-          }, //Next stage gets a new card
+          }, // Next stage gets a new card
           ...activityStages.slice(stageIndex + 2),
         ],
-        [defaultStage]
-      );
+      }));
       return;
     }
 
-    //Card can just go down within the current stage
+    // Card can just go down within the current stage
     let currentStage = activityStages[stageIndex];
     var element = currentStage.forms[cardIndex];
     currentStage.forms.splice(cardIndex, 1);
     currentStage.forms.splice(cardIndex + 1, 0, element);
 
-    props.setState<MultistageFormStage[]>(
-      "stages",
-      [
+    setState((prev) => ({
+      ...prev,
+      stages: [
         ...activityStages.slice(0, stageIndex),
         currentStage,
         ...activityStages.slice(stageIndex + 1),
       ],
-      [defaultStage]
-    );
-  }; //handleCardMovedDownwards
+    }));
+  }; // handleCardMovedDownwards
 
-  /////////////////////////////////////////////Stage methods
+  ///////////////////////////////////////////// Stage methods
 
   const handleAddNewStage = () => {
-    props.setState<MultistageFormStage[]>(
-      "stages",
-      [...activityStages, defaultStage],
-      [defaultStage]
-    );
-  }; //handleAddNewStage
+    setState((prev) => ({
+      ...prev,
+      stages: [...activityStages, defaultStage],
+    }));
+  }; // handleAddNewStage
 
   const handleStageMovedDownwards = (stageIndex: number) => {
     let newActivityStages = activityStages;
     let movedStage = activityStages[stageIndex];
     newActivityStages.splice(stageIndex, 1);
     newActivityStages.splice(stageIndex + 1, 0, movedStage);
-    props.setState<MultistageFormStage[]>("stages", newActivityStages, [
-      defaultStage,
-    ]);
-  }; //handleStageMovedDownwards
+    setState((prev) => ({
+      ...prev,
+      stages: newActivityStages,
+    }));
+  }; // handleStageMovedDownwards
 
   const handleStageMovedUpwards = (stageIndex: number) => {
     let newActivityStages = activityStages;
     let movedStage = activityStages[stageIndex];
     newActivityStages.splice(stageIndex, 1);
     newActivityStages.splice(stageIndex - 1, 0, movedStage);
-    props.setState<MultistageFormStage[]>("stages", newActivityStages, [
-      defaultStage,
-    ]);
-  }; //handleStageMovedUpwards
+    setState((prev) => ({
+      ...prev,
+      stages: newActivityStages,
+    }));
+  }; // handleStageMovedUpwards
 
   const handleDeleteStage = (index: number) => {
-    props.setState<MultistageFormStage[]>(
-      "stages",
-      [...activityStages.slice(0, index), ...activityStages.slice(index + 1)],
-      [defaultStage]
-    );
-  }; //handleDeleteStage
+    setState((prev) => ({
+      ...prev,
+      stages: [
+        ...activityStages.slice(0, index),
+        ...activityStages.slice(index + 1),
+      ],
+    }));
+  }; // handleDeleteStage
 
   return (
     <Root>
