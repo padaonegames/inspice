@@ -5,10 +5,18 @@ import {
 } from "../../../../services/escapeRoomActivity.model";
 
 import styled from "styled-components";
-import { Bin } from "@styled-icons/icomoon/Bin";
+import { DeleteForever } from "@styled-icons/material-twotone/DeleteForever";
 import { Copy } from "@styled-icons/boxicons-regular/Copy";
 import { Settings } from "@styled-icons/fluentui-system-filled/Settings";
 import { SlideRoot, SlidesContainer } from "./RoomExitBlockSlide";
+
+import { CaretRightFill } from "@styled-icons/bootstrap/CaretRightFill";
+const RightArrowIcon = styled(CaretRightFill)`
+  color: rgb(15, 90, 188);
+  height: 1.75em;
+  width: 1.75em;
+  margin: auto;
+`;
 
 const SettingsIcon = styled(Settings)`
   position: absolute;
@@ -66,7 +74,7 @@ const SettingsSlideRoot = styled.div<RootProps>`
   flex-direction: column;
   flex: 0 0 auto;
   border: 2px solid rgb(19, 104, 206);
-  border-radius: 1.25rem;
+  border-radius: 0.5rem;
   overflow: hidden;
 
   font-size: 0.875rem;
@@ -104,38 +112,30 @@ const SettingsSlideTitle = styled.div`
   color: rgb(255, 255, 255);
 `;
 
-//Entire slide of a puzzle
-const PuzzleSlide = styled.div`
+const Slide = styled.div`
   position: relative;
-  box-sizing: border-box;
-  height: 100%;
-  width: max-content;
-  background-color: transparent;
-  user-select: none;
-  padding: 12px 16px 12px 0px;
-  margin: 0px 10px 0px 10px;
+
+  height: 80%;
+  cursor: pointer;
   display: flex;
   flex-direction: column;
-  border: 0px none;
-  border-radius: 0.5rem;
-
-  font-size: 0.875rem;
-  font-weight: 500;
-  font-family: ${(props) => props.theme.contentFont};
-  color: rgb(51, 51, 51);
-  background-color: rgba(248, 188, 188);
+  top: 50%;
+  transform: translate(0, -50%);
 `;
 
-const SlidePreviewTitle = styled.div`
+const PuzzleSlideTitle = styled.div`
   display: flex;
-  z-index: 999999;
-  flex: 0 1 auto;
+  height: 15%;
+  width: 100%;
   -moz-box-pack: start;
   justify-content: flex-start;
   box-sizing: border-box;
-  margin: 0.25em 0px 0.25em 1em;
-  padding: 0px;
+  padding: 3px 0px 0px 10px;
   border: 0px none;
+  border-radius: 0.25rem 0.25rem 0 0;
+  background-color: rgb(15, 90, 188);
+  color: white;
+  text-align: center;
 
   font-size: 0.75rem;
   font-weight: 500;
@@ -147,11 +147,12 @@ const SlideContainer = styled.div`
   cursor: pointer;
   display: flex;
   flex-direction: column;
-  flex: 1 1 0%;
-  height: calc(100% - 1.25rem);
-  width: 100%;
+  height: 100%;
   box-sizing: border-box;
+  overflow: hidden;
+  border-radius: 0 0 0.25rem 0.25rem;
   color: rgb(51, 51, 51);
+  border: 2px solid rgb(15, 90, 188);
 `;
 
 interface ItemPreviewProps {
@@ -171,7 +172,6 @@ const ItemPreview = styled.div<ItemPreviewProps>`
   padding: 0.25rem 0.5rem;
   color: rgb(178, 178, 178);
 
-  margin: 0.25em 0.5em;
   border: 1px solid rgb(229, 229, 229);
   border-radius: 0.25rem;
 
@@ -207,7 +207,7 @@ const DuplicateIcon = styled(Copy)`
     background-color: rgba(255, 255, 255, 0.3);
   }
 `;
-const DeleteIcon = styled(Bin)`
+const DeleteIcon = styled(DeleteForever)`
   color: rgb(255, 255, 255);
   height: 90%;
   box-sizing: content-box;
@@ -300,14 +300,17 @@ export const RoomBlockSlide = (props: RoomBlockSlideProps): JSX.Element => {
         {block.puzzles.map((puzzle, i) => {
           const slideRenderer = puzzleMappings[puzzle.type];
           return (
-            <PuzzleSlide>
-              <SlidePreviewTitle>{puzzle.type}</SlidePreviewTitle>
-              <SlideContainer>
-                <ItemPreview selected={selected}>
-                  {slideRenderer && slideRenderer(puzzle.payload as any)}
-                </ItemPreview>
-              </SlideContainer>
-            </PuzzleSlide>
+            <>
+              <Slide>
+                {/* <SlideTitleV2>{puzzle.type}</SlideTitleV2> */}
+                <SlideContainer>
+                  <ItemPreview selected={selected}>
+                    {slideRenderer && slideRenderer(puzzle.payload as any)}
+                  </ItemPreview>
+                </SlideContainer>
+              </Slide>
+              {i !== block.puzzles.length - 1 && <RightArrowIcon />}
+            </>
           );
         })}
       </SlidesContainer>

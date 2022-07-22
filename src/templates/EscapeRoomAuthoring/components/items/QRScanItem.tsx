@@ -162,20 +162,22 @@ export const EditableQRScanItemContent = (
 }; // EditableQRScanItemContent
 
 const PreviewTitle = styled.div`
-  margin-bottom: 0rem;
-  color: rgb(110, 110, 110);
+  width: 100%;
+  height: 20%;
+  color: black;
   text-align: center;
+  text-overflow: ellipsis;
   font-size: 0.75rem;
+  font-family: ${(props) => props.theme.contentFont};
   line-height: 1.33;
   letter-spacing: 0.2px;
-  max-height: 1.5rem;
-  max-width: 100%;
-  overflow: hidden;
   white-space: nowrap;
-  text-overflow: ellipsis;
+  overflow: hidden;
 `;
 
 const PreviewQR = styled.div`
+  width: 100%;
+  height: 80%;
   display: flex;
   align-items: center;
   justify-content: center;

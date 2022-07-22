@@ -16,13 +16,14 @@ import {
 import { stageMappings } from "../../Screen";
 
 import styled, { css } from "styled-components";
-import { Delete } from "@styled-icons/fluentui-system-regular/Delete";
+import { DeleteForever } from "@styled-icons/material-twotone/DeleteForever";
 import { Copy } from "@styled-icons/boxicons-regular/Copy";
 import { ChevronDown } from "@styled-icons/boxicons-regular/ChevronDown";
 import { Download } from "@styled-icons/bootstrap/Download";
 import { AddCircle } from "@styled-icons/fluentui-system-regular/AddCircle";
+import { Puzzle } from "@styled-icons/heroicons-outline/Puzzle";
 
-const HintsIcon = styled(Question)`
+const PuzzleIcon = styled(Puzzle)`
   color: ${(props) => props.theme.textColor};
   height: 1.75em;
   width: 1.75em;
@@ -30,7 +31,7 @@ const HintsIcon = styled(Question)`
 `;
 
 const CheckboxTitle = styled.div`
-  font-size: 1.5em;
+  font-size: 1em;
   font-weight: 500;
   font-family: ${(props) => props.theme.contentFont};
   line-height: 135%;
@@ -62,8 +63,8 @@ const PuzzleCard = styled.div`
 
   border-bottom: 2px solid #dadce0;
   padding: 0.75em;
-  background-color: #dbdbdb;
-  border-radius: 1.25rem;
+  background-color: white;
+  border-radius: 0.5rem;
 
   margin: 2rem 0 0rem 0;
   &:hover {
@@ -75,11 +76,11 @@ const HeaderContainer = styled.div`
   position: relative;
   display: flex;
   justify-content: space-between;
+  align-items: center;
   background-color: transparent;
   flex-direction: row;
-  // background-color: rgb(0,0,255);
-  border-bottom: 2px solid #dadce0;
-  border-radius: 1.25rem;
+  // background-color: rgb(0, 0, 255);
+  padding: 0 0 10px 0;
 `;
 
 const BottomContainer = styled.div`
@@ -88,10 +89,8 @@ const BottomContainer = styled.div`
   justify-content: flex-end;
   flex-direction: row;
   align-items: right;
+  padding-top: 0.5rem;
   background-color: transparent;
-  //background-color: rgb(0,0,255);
-  border-bottom: 2px solid #dadce0;
-  border-radius: 1.25rem;
 `;
 
 const ButtonContainer = styled.div`
@@ -122,14 +121,34 @@ export const fieldTypeIcon = css`
   width: 1.75em;
 `;
 
-const DeleteIcon = styled(Delete)`
-  ${fieldTypeIcon}
+const DeleteIcon = styled(DeleteForever)`
+  height: 1.75em;
+  width: 1.75em;
+  border-radius: 0.25rem;
+  background-color: rgb(19, 104, 206);
+  border: 2px solid rgb(15, 90, 188);
   cursor: pointer;
+  margin-right: 0.5rem;
+
+  color: white;
+  &:hover {
+    background-color: rgb(49, 134, 236);
+  }
 `;
 
 const CopyIcon = styled(Copy)`
-  ${fieldTypeIcon}
+  height: 1.75em;
+  width: 1.75em;
+  border-radius: 0.25rem;
+  background-color: rgb(19, 104, 206);
+  border: 2px solid rgb(15, 90, 188);
   cursor: pointer;
+  margin-right: 0.5rem;
+
+  color: white;
+  &:hover {
+    background-color: rgb(49, 134, 236);
+  }
 `;
 
 //DropDown
@@ -178,21 +197,17 @@ const SelectFieldTypeDropdownButton = styled.span`
   font-weight: 200;
   font-family: ${(props) => props.theme.contentFont};
   line-height: 135%;
-  margin-top: 10px;
   cursor: pointer;
   color: ${(props) => props.theme.textColor};
 
   position: relative;
-
   height: 2.5em;
   width: 50%;
-
   background-color: rgb(250, 250, 250);
   border-radius: 5px;
   box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 0.1rem 0px;
   border: 1px solid #dadce0;
   cursor: pointer;
-
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -278,43 +293,43 @@ export const RoomPuzzleSettingsEditor = (
 
   const [stageTypeDropdownOpen, setStageTypeDropdownOpen] =
     useState<boolean>(false);
-  const [currentTypeSelected, setCurrentTypeSelected] = useState<
-    string | undefined
-  >("Select a stage type");
 
-  useEffect(() => {
-    setCurrentTypeSelected(
-      stageMappings[puzzle.type].displayName
-        ? stageMappings[puzzle.type].displayName
-        : "Select a stage type"
-    );
-    return () => {};
-  }, [puzzle]);
+  const [selectedPuzzleType, setSelectedPuzzleType] = useState<number>(-1);
 
   return (
     <PuzzleCard onMouseEnter={() => handleSelectedPuzzleChanged()}>
       {/* Upper side of the card (Title and selector) */}
       <HeaderContainer>
         <CheckboxTitle>
-          <HintsIcon />
+          <PuzzleIcon />
           Puzzle number {index + 1}
         </CheckboxTitle>
         <SelectFieldTypeDropdownButton
           onClick={() => setStageTypeDropdownOpen((prev) => !prev)}
         >
-          {<HintsIcon />}
-          {currentTypeSelected} <ExpandDropdownIcon />
+          {/* If a puzzle is selected, its name and icon are displayed, if not, a message to select one */}
+          {selectedPuzzleType === -1 ? (
+            "Select a stage type"
+          ) : (
+            <>
+              {
+                stageMappings[escapeRoomPuzzleTypes[selectedPuzzleType]]
+                  .iconComponent
+              }
+              {
+                stageMappings[escapeRoomPuzzleTypes[selectedPuzzleType]]
+                  .displayName
+              }
+            </>
+          )}
+          <ExpandDropdownIcon />
           {stageTypeDropdownOpen && (
             <DropdownMenu>
               {escapeRoomPuzzleTypes.map((elem, i) => (
                 <DropdownMenuItem
                   onClick={() => {
                     handlePuzzleTypeChanged(elem);
-                    setCurrentTypeSelected(
-                      stageMappings[elem].displayName
-                        ? stageMappings[elem].displayName
-                        : "Select a stage type"
-                    );
+                    setSelectedPuzzleType(i);
                   }}
                 >
                   {stageMappings[elem].iconComponent}
@@ -337,20 +352,17 @@ export const RoomPuzzleSettingsEditor = (
       <HorizontalLine />
       {/* Buttons to duplicate and delete a puzzle from a room block */}
       <BottomContainer>
-        <ButtonContainer
+        <DeleteIcon
           onClick={() => {
             handlePuzzleDelete();
           }}
-        >
-          <DeleteIcon />
-        </ButtonContainer>
-        <ButtonContainer
+        />
+
+        <CopyIcon
           onClick={() => {
             handlePuzzleDuplicate();
           }}
-        >
-          <CopyIcon />
-        </ButtonContainer>
+        />
       </BottomContainer>
     </PuzzleCard>
   );

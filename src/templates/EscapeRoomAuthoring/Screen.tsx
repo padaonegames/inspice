@@ -325,6 +325,14 @@ export const CreateEscapeRoomScreenComponent = (
     });
   }; // handleEscapeRoomTitleChanged
 
+  const handleEscapeRoomDescriptionChanged = (description: string) => {
+    setActivityDefinition((prev) => {
+      let next = cloneDeep(prev);
+      // next. = description;
+      return next;
+    });
+  }; // handleEscapeRoomDescriptionChanged
+
   const handleAddStage = () => {
     setActivityDefinition((prev) => {
       let next = cloneDeep(prev);
@@ -440,7 +448,7 @@ export const CreateEscapeRoomScreenComponent = (
             escapeRoomDescription=""
             escapeRoomCharacters={activityDefinition.characters}
             onTitleChanged={handleEscapeRoomTitleChanged}
-            onDescriptionChanged={() => {}}
+            onDescriptionChanged={handleEscapeRoomDescriptionChanged}
             onCharactersChanged={handleCharactersChanged}
           />
         )}

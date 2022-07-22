@@ -42,21 +42,17 @@ const SettingsContainer = styled.div`
   align-self: center;
   margin-top: 5px;
   display: flex;
-  background-color: transparent;
+  background-color: white;
   flex-direction: column;
   align-items: left;
 
   overflow: hidden;
-  border-bottom: 2px solid #dadce0;
-  background-color: rgb(230, 230, 230);
   border: 3px solid rgb(19, 104, 206);
-  border-radius: 1.25rem;
-  box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
+  border-radius: 0.5rem;
 `;
 
 const SettingsTitle = styled.div`
   width: 100%;
-
   font-size: 2em;
   font-weight: 100;
   font-family: ${(props) => props.theme.contentFont};
@@ -71,6 +67,11 @@ const SettingsTitle = styled.div`
   border-bottom: 2px solid #dadce0;
   background-color: rgb(19, 104, 206);
   box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
+`;
+
+const SettingsContent = styled.div`
+  width: 100%;
+  padding: 10px;
 `;
 
 interface CheckBoxOptionProps {
@@ -138,9 +139,9 @@ export const RoomSettingsEditor = (
   }; // handleRemoveHint
 
   return (
-    <>
-      <SettingsContainer>
-        <SettingsTitle>Room Settings</SettingsTitle>
+    <SettingsContainer>
+      <SettingsTitle>Room Settings</SettingsTitle>
+      <SettingsContent>
         <HintsTitle>
           Hints
           <HintsIcon />
@@ -177,7 +178,7 @@ export const RoomSettingsEditor = (
             />
           </CheckboxOption>
         )}
-      </SettingsContainer>
-    </>
+      </SettingsContent>
+    </SettingsContainer>
   );
 }; // RoomSettingsEditor

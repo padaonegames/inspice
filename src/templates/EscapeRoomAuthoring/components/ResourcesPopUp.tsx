@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 import styled from "styled-components";
 import { Cross } from "@styled-icons/entypo/Cross";
-import { Bin } from "@styled-icons/icomoon/Bin";
+import { DeleteForever } from "@styled-icons/material-twotone/DeleteForever";
 import { Done } from "@styled-icons/material/Done";
 import Dropzone from "react-dropzone";
 import { useParams } from "react-router-dom";
@@ -52,7 +52,7 @@ const PopUpWrapper = styled.main`
   border-color: rgba(50, 50, 50, 1);
 `;
 
-const DeleteIcon = styled(Bin)`
+const DeleteIcon = styled(DeleteForever)`
   color: rgb(0, 0, 0);
   height: 1.25em;
   width: 1.25em;

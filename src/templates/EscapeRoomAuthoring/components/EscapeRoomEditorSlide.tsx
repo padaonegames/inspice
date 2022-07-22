@@ -6,7 +6,7 @@ import {
 } from "../../../services/escapeRoomActivity.model";
 
 import styled from "styled-components";
-import { Bin } from "@styled-icons/icomoon/Bin";
+import { DeleteForever } from "@styled-icons/material-twotone/DeleteForever";
 import { Copy } from "@styled-icons/boxicons-regular/Copy";
 
 interface RootProps {
@@ -19,8 +19,11 @@ const Root = styled.div<RootProps>`
   width: 100%;
   background-color: transparent;
   user-select: none;
-  padding: 12px 16px 12px 0px;
-  display: block;
+  // padding: 12px 16px 12px 0px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-congent: center;
   border: 0px none;
   font-size: 0.875rem;
   font-weight: 500;
@@ -58,25 +61,61 @@ const SliceButton = styled.div<SliceButtonProps>`
 `;
 
 const DuplicateIcon = styled(Copy)`
-  color: rgb(0, 0, 0);
-  height: 1.25em;
-  width: 1.25em;
+  position: absolute;
+  left: 0.25rem;
+  top: 30%;
+  height: 1.75em;
+  width: 1.75em;
+  border-radius: 0.25rem;
+  background-color: rgb(19, 104, 206);
+  border: 2px solid rgb(15, 90, 188);
+  cursor: pointer;
+
+  color: white;
+  &:hover {
+    background-color: rgb(49, 134, 236);
+  }
 `;
-const DeleteIcon = styled(Bin)`
-  color: rgb(0, 0, 0);
-  height: 1.25em;
-  width: 1.25em;
+const DeleteIcon = styled(DeleteForever)`
+  position: absolute;
+  left: 0.25rem;
+  top: 60%;
+  height: 1.75em;
+  width: 1.75em;
+  border-radius: 0.25rem;
+  background-color: rgb(19, 104, 206);
+  border: 2px solid rgb(15, 90, 188);
+  cursor: pointer;
+
+  color: white;
+  &:hover {
+    background-color: rgb(49, 134, 236);
+  }
+`;
+const Slide = styled.div`
+  position: relative;
+  width: 80%;
+  height: 80%;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  top: 50%;
+  transform: translate(0, -50%);
 `;
 
 const SlideTitle = styled.div`
   display: flex;
-  flex: 0 1 auto;
+  height: 15%;
+  width: 100%;
   -moz-box-pack: start;
   justify-content: flex-start;
   box-sizing: border-box;
-  margin: 0.25em 0px 0.25em 1em;
-  padding: 0px;
+  padding: 3px 0px 0px 10px;
   border: 0px none;
+  border-radius: 0.25rem 0.25rem 0 0;
+  background-color: rgb(15, 90, 188);
+  color: white;
+  text-align: center;
 
   font-size: 0.75rem;
   font-weight: 500;
@@ -88,32 +127,29 @@ const SlideContainer = styled.div`
   cursor: pointer;
   display: flex;
   flex-direction: column;
-  flex: 1 1 0%;
-  height: calc(100% - 1.25rem);
+  height: 80%;
   box-sizing: border-box;
+  overflow: hidden;
+  border-radius: 0 0 0.25rem 0.25rem;
   color: rgb(51, 51, 51);
+  border: 2px solid rgb(15, 90, 188);
 `;
 
 interface StagePreviewProps {
   selected?: boolean;
 }
 const StagePreview = styled.div<StagePreviewProps>`
+  position: relative;
   display: flex;
   flex-direction: column;
   -moz-box-pack: justify;
-  justify-content: space-between;
   height: 100%;
   width: 100%;
   max-width: 100%;
   flex: 1 1 0%;
   padding: 0.25rem 0.5rem;
   color: rgb(178, 178, 178);
-
-  margin: 0.25em 0.5em;
-  border: 1px solid rgb(229, 229, 229);
-  border-radius: 0.25rem;
-
-  background-color: ${(props) => (props.selected ? "white" : "#f2f2f1")};
+  background-color: white;
   transition: border 0.25s;
   &:hover {
     transition: border 0.25s;
@@ -169,34 +205,29 @@ const EscapeRoomEditorSlide = <T extends ItemDefinition>(
       onMouseLeave={() => setMouseOverMe((prev) => false)}
       onMouseEnter={() => setMouseOverMe((prev) => true)}
     >
-      <SlideTitle>{index + 1 + " " + stage.type}</SlideTitle>
-      <SlideContainer onClick={onSlideSelected}>
-        <StagePreview selected={selected}>
-          {slidePreviewProducer && slidePreviewProducer(stage.payload as any)}
-        </StagePreview>
-      </SlideContainer>
+      <Slide>
+        <SlideTitle>{index + 1 + "º " + stage.type}</SlideTitle>
+        <SlideContainer onClick={onSlideSelected}>
+          <StagePreview selected={selected}>
+            {slidePreviewProducer && slidePreviewProducer(stage.payload as any)}
+          </StagePreview>
+        </SlideContainer>
+      </Slide>
 
       {mouseOverMe ? (
         <>
           {/* Duplicate slice button */}
-          <SliceButton
-            heigh={35}
+          <DuplicateIcon
             onClick={(e) => {
               duplicateStage && duplicateStage(index);
             }}
-          >
-            <DuplicateIcon></DuplicateIcon>
-          </SliceButton>
-
+          />
           {/* Duplicate slice button */}
-          <SliceButton
-            heigh={65}
+          <DeleteIcon
             onClick={(e) => {
               deleteStage && deleteStage(index);
             }}
-          >
-            <DeleteIcon></DeleteIcon>
-          </SliceButton>
+          />
         </>
       ) : (
         <></>

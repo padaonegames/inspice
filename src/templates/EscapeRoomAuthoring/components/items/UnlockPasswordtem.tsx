@@ -11,6 +11,7 @@ import styled from "styled-components";
 import { UpArrow } from "@styled-icons/boxicons-solid/UpArrow";
 import { DownArrow } from "@styled-icons/boxicons-solid/DownArrow";
 import { DotsTwoVertical } from "@styled-icons/entypo/DotsTwoVertical";
+import { TimePicker } from "@styled-icons/fluentui-system-regular/TimePicker";
 
 const UppArrowIcon = styled(UpArrow)`
   position: absolute;
@@ -69,22 +70,16 @@ export const InputArea = styled.textarea<InputAreaProps>`
 const Root = styled.div`
   margin-top: 5px;
   display: flex;
-  background-color: rgba(255, 255, 0, 0.5);
   flex-direction: column;
   align-items: center;
   text-align: center;
-  border-bottom: 2px solid #dadce0;
   padding: 0.75em;
-
-  background-color: #dbdbdb;
-
   border-radius: 1.25rem;
-  box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
 `;
 
 const DescriptionEditorContainer = styled.div`
   position: relative;
-  width: 50%;
+  width: 60%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -121,7 +116,7 @@ const DescriptionEditorTitle = styled.div`
 
 const PasswordEditorContainer = styled.div`
   position: relative;
-  width: 50%;
+  width: 60%;
   height: 400px;
   display: flex;
   flex-direction: column;
@@ -294,18 +289,51 @@ export const EditableUnlockPasswordItemContent = (
   );
 }; // EditableUnlockPasswordItemContent
 
-const PreviewTitle = styled.div`
-  margin-bottom: 0.25rem;
-  color: rgb(110, 110, 110);
+const PreviewBody = styled.div`
+  width: 100%;
+  height: 100%;
+`;
+const PreviewBodyUpperArrows = styled.div`
+  width: 100%;
+  height: 30%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+`;
+const PreviewBodyNumbers = styled.div`
+  width: 100%;
+  height: 40%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+`;
+
+const PreviewNumber = styled.div`
+  font-size: 2em;
+  font-weight: 200;
+  font-family: ${(props) => props.theme.contentFont};
   text-align: center;
-  font-size: 0.75rem;
-  line-height: 1.33;
-  letter-spacing: 0.2px;
-  max-height: 1.5rem;
-  max-width: 100%;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+  color: rgb(0, 0, 0);
+  height: 100%;
+  width: 20%;
+`;
+
+const UppArrowIconPreview = styled(UpArrow)`
+  color: rgb(0, 0, 0);
+  height: 100%;
+  width: 20%;
+`;
+const DownArrowIconPreview = styled(DownArrow)`
+  color: rgb(0, 0, 0);
+  height: 100%;
+  width: 20%;
+`;
+const DotsTwoVerticalIconPreview = styled(DotsTwoVertical)`
+  color: rgb(0, 0, 0);
+  height: 100%;
+  width: 10%;
 `;
 
 export const UnlockPasswordItemStageSlide = (
@@ -314,9 +342,31 @@ export const UnlockPasswordItemStageSlide = (
   const { description, password } = props;
 
   return (
-    <>
-      <PreviewTitle>{password}</PreviewTitle>
-    </>
+    <PreviewBody>
+      <PreviewBodyUpperArrows>
+        <UppArrowIconPreview />
+        <UppArrowIconPreview />
+        <DotsTwoVerticalIconPreview opacity={0} />
+        <UppArrowIconPreview />
+        <UppArrowIconPreview />
+      </PreviewBodyUpperArrows>
+
+      <PreviewBodyNumbers>
+        <PreviewNumber>{password[0]}</PreviewNumber>
+        <PreviewNumber>{password[1]}</PreviewNumber>
+        <DotsTwoVerticalIconPreview />
+        <PreviewNumber>{password[2]}</PreviewNumber>
+        <PreviewNumber>{password[3]}</PreviewNumber>
+      </PreviewBodyNumbers>
+
+      <PreviewBodyUpperArrows>
+        <DownArrowIconPreview />
+        <DownArrowIconPreview />
+        <DotsTwoVerticalIconPreview opacity={0} />
+        <DownArrowIconPreview />
+        <DownArrowIconPreview />
+      </PreviewBodyUpperArrows>
+    </PreviewBody>
   );
 }; // narrativeItemStageSlide
 

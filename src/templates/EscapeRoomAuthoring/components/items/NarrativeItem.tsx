@@ -10,7 +10,7 @@ import { EscapeRoomActivityContext } from "../../EscapeRoomContext";
 import styled from "styled-components";
 import { UserCircle } from "@styled-icons/boxicons-regular/UserCircle";
 import { MessageRoundedAdd } from "@styled-icons/boxicons-regular/MessageRoundedAdd";
-import { Cross } from "@styled-icons/entypo/Cross";
+import { DeleteForever } from "@styled-icons/material-twotone/DeleteForever";
 import { DialogflowDimensions } from "@styled-icons/simple-icons/Dialogflow";
 import { ArrowDownCircle } from "@styled-icons/bootstrap/ArrowDownCircle";
 import { ArrowUpCircle } from "@styled-icons/bootstrap/ArrowUpCircle";
@@ -52,7 +52,7 @@ const DownArrowIcon = styled(ArrowDownCircle)`
   }
 `;
 
-const DeleteIcon = styled(Cross)`
+const DeleteIcon = styled(DeleteForever)`
   position: absolute;
   color: rgb(0, 0, 0);
   height: 20%;

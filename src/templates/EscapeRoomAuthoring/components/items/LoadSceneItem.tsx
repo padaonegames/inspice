@@ -1,9 +1,19 @@
-import { EditableItemProps, LoadSceneDefinition } from "../../../../services/escapeRoomActivity.model";
+import {
+  EditableItemProps,
+  LoadSceneDefinition,
+} from "../../../../services/escapeRoomActivity.model";
 import { AbstractActivityItemFactory } from "../ActivityItemFactory";
 import { PromptField } from "./PromptField";
 
 import styled from "styled-components";
-import { Unity } from "@styled-icons/fa-brands/Unity"
+import { Unity } from "@styled-icons/fa-brands/Unity";
+import { Loader } from "@styled-icons/boxicons-regular/Loader";
+
+const LoadIcon = styled(Loader)`
+  color: ${(props) => props.theme.textColor};
+  height: 1.75em;
+  width: auto;
+`;
 
 const UnityIcon = styled(Unity)`
   position: relative;
@@ -15,14 +25,14 @@ const UnityIcon = styled(Unity)`
 const Root = styled.div`
   margin-top: 5px;
   display: flex;
-  background-color: rgba(255,255,0,0.5);
+  background-color: rgba(255, 255, 0, 0.5);
   flex-direction: column;
   align-items: left;
 
   border-bottom: 2px solid #dadce0;
   padding: 0.75em;
 
-  background-color:  #dbdbdb;
+  background-color: #dbdbdb;
 
   border-radius: 1.25rem;
   box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
@@ -36,16 +46,17 @@ interface InputAreaProps {
 export const InputArea = styled.textarea<InputAreaProps>`
   font-size: 0.9em;
   font-weight: 200;
-  font-family: ${props => props.theme.contentFont};
+  font-family: ${(props) => props.theme.contentFont};
   line-height: 135%;
-  width: ${props => props.width ?? '100%'};
-  height: ${props => props.height ?? '6em'};
+  width: ${(props) => props.width ?? "100%"};
+  height: ${(props) => props.height ?? "6em"};
   margin-top: 10px;
-  color: ${props => props.theme.textColor};
+  color: ${(props) => props.theme.textColor};
   border: none;
   outline: none;
   padding: 0.65em;
-  background-color: ${props => props.dimBackground ? '#f8f9fa' : 'transparent'};
+  background-color: ${(props) =>
+    props.dimBackground ? "#f8f9fa" : "transparent"};
   resize: none;
   overflow-y: hidden;
 
@@ -63,7 +74,7 @@ const ItemTitle = styled.div`
   position: relative;
   font-size: 1em;
   font-weight: 500;
-  font-family: ${props => props.theme.contentFont};
+  font-family: ${(props) => props.theme.contentFont};
   line-height: 135%;
 
   margin-top: 0.25em;
@@ -84,19 +95,17 @@ const ItemTitle = styled.div`
   box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
 `;
 
-export const EditableLoadSceneItemContent = (props: EditableItemProps<LoadSceneDefinition>): JSX.Element => {
-
-  const {
-    payload,
-    onPayloadChanged
-  } = props;
+export const EditableLoadSceneItemContent = (
+  props: EditableItemProps<LoadSceneDefinition>
+): JSX.Element => {
+  const { payload, onPayloadChanged } = props;
 
   const handleEditSceneName = (value: string) => {
     if (!onPayloadChanged) return;
     onPayloadChanged({
       ...payload,
-      sceneName: value
-    })
+      sceneName: value,
+    });
   }; // handleEditSceneName
 
   return (
@@ -109,7 +118,7 @@ export const EditableLoadSceneItemContent = (props: EditableItemProps<LoadSceneD
         {/* Field to edit the name of the scene that the user wants to load with this item */}
         <PromptField
           promptText={payload.sceneName}
-          promptPlaceholder='Scene name'
+          promptPlaceholder="Scene name"
           onPromptChange={handleEditSceneName}
         />
       </Root>
@@ -117,46 +126,50 @@ export const EditableLoadSceneItemContent = (props: EditableItemProps<LoadSceneD
   );
 }; // EditableLoadSceneItemContent
 
-
 const PreviewTitle = styled.div`
-  margin-bottom: 0.25rem;
-  color: rgb(110, 110, 110);
+  width: 100%;
+  height: 20%;
+  color: black;
   text-align: center;
+  text-overflow: ellipsis;
   font-size: 0.75rem;
+  font-family: ${(props) => props.theme.contentFont};
   line-height: 1.33;
   letter-spacing: 0.2px;
-  max-height: 1.5rem;
-  max-width: 100%;
-  overflow: hidden;
   white-space: nowrap;
-  text-overflow: ellipsis;
+  overflow: hidden;
 `;
 
+const UnityIconPreview = styled(Unity)`
+  position: relative;
+  margin-top: 0.5rem;
+  align-self: center;
+  color: rgb(0, 0, 0);
+  height: 4em;
+  width: 4em;
+`;
 
-export const LoadSceneItemStageSlide = (props: LoadSceneDefinition): JSX.Element => {
-
-  const {
-    sceneName
-  } = props;
+export const LoadSceneItemStageSlide = (
+  props: LoadSceneDefinition
+): JSX.Element => {
+  const { sceneName } = props;
 
   return (
     <>
-      <PreviewTitle>{'Load "' + sceneName + '"'}</PreviewTitle>
-      <UnityIcon />
+      <PreviewTitle>{"sceneName"}</PreviewTitle>
+      <UnityIconPreview />
     </>
   );
 }; // LoadSceneItemStageSlide
 
-export const loadSceneItemFactory: AbstractActivityItemFactory<LoadSceneDefinition> = {
-  editingComponent: (editingProps) => (
-    <EditableLoadSceneItemContent
-      {...editingProps}
-    />
-  ),
-  defaultDefinition: {
-    sceneName: ''
-  }
-}; // loadSceneItemFactory
-
+export const loadSceneItemFactory: AbstractActivityItemFactory<LoadSceneDefinition> =
+  {
+    editingComponent: (editingProps) => (
+      <EditableLoadSceneItemContent {...editingProps} />
+    ),
+    defaultDefinition: {
+      sceneName: "",
+    },
+  }; // loadSceneItemFactory
 
 export default EditableLoadSceneItemContent;

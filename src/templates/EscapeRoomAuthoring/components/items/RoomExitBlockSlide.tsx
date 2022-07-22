@@ -153,20 +153,10 @@ const SliceButton = styled.div<SliceButtonProps>`
   }
 `;
 
-const DuplicateIcon = styled(Copy)`
-  color: rgb(0, 0, 0);
-  height: 1.25em;
-  width: 1.25em;
-`;
 const ExitIcon = styled(Exit)`
   color: rgb(255, 255, 255);
   height: 100%;
   padding-left: 0.5rem;
-`;
-const DeleteIcon = styled(Bin)`
-  color: rgb(0, 0, 0);
-  height: 1.25em;
-  width: 1.25em;
 `;
 
 //Container of the multiple slides that can be added to a block
@@ -175,7 +165,7 @@ export const SlidesContainer = styled.div`
   cursor: pointer;
   display: flex;
   flex-direction: row;
-  padding: 10px 0 10px 0;
+  padding: 0px 10px 0px 10px;
   height: 75%;
   z-index: 19;
 
@@ -194,7 +184,7 @@ export const SlideRoot = styled.div<RootProps>`
   flex-direction: column;
   flex: 0 0 auto;
   border: 2px solid rgb(19, 104, 206);
-  border-radius: 1.25rem;
+  border-radius: 0.5rem;
   overflow: hidden;
 
   font-size: 0.875rem;
