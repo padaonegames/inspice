@@ -9,17 +9,79 @@ import { EscapeRoomActivityContext } from "../../EscapeRoomContext";
 
 import styled from "styled-components";
 import { UserCircle } from "@styled-icons/boxicons-regular/UserCircle";
-import { AddCircle } from "@styled-icons/fluentui-system-regular/AddCircle";
+import { MessageRoundedAdd } from "@styled-icons/boxicons-regular/MessageRoundedAdd";
+import { Cross } from "@styled-icons/entypo/Cross";
+import { DialogflowDimensions } from "@styled-icons/simple-icons/Dialogflow";
+import { ArrowDownCircle } from "@styled-icons/bootstrap/ArrowDownCircle";
+import { ArrowUpCircle } from "@styled-icons/bootstrap/ArrowUpCircle";
+import { DiagonalArrowRightUpDimensions } from "@styled-icons/evaicons-solid/DiagonalArrowRightUp";
+
+const UpArrowIcon = styled(ArrowUpCircle)`
+  color: ${(props) => props.theme.textColor};
+  height: 20%;
+
+  position: absolute;
+  left: 2%;
+  top: 30%;
+  transform: translate(0%, -50%);
+  // border-radius: 100%;
+  color: rgb(80, 80, 80);
+  background-color: rgb(230, 230, 230);
+  border-radius: 100%;
+  &:hover {
+    background-color: rgb(180, 180, 180);
+    cursor: pointer;
+  }
+`;
+
+const DownArrowIcon = styled(ArrowDownCircle)`
+  color: ${(props) => props.theme.textColor};
+  height: 20%;
+  border-radius: 100%;
+
+  position: absolute;
+  left: 2%;
+  top: 70%;
+  transform: translate(0%, -50%);
+  color: rgb(80, 80, 80);
+  background-color: rgb(230, 230, 230);
+
+  &:hover {
+    background-color: rgb(180, 180, 180);
+    cursor: pointer;
+  }
+`;
+
+const DeleteIcon = styled(Cross)`
+  position: absolute;
+  color: rgb(0, 0, 0);
+  height: 20%;
+  right: 5%;
+  top: 10%;
+  border-radius: 100%;
+  background-color: #d06a6a;
+  border: 2px solid #c13c3c;
+  &:hover {
+    transition: border background-color visibility 1s;
+    cursor: pointer;
+    background-color: #ce5151;
+  }
+`;
 
 const UserIcon = styled(UserCircle)`
-  position: relative;
+  position: absolute;
   color: rgb(0, 0, 0);
   height: 100%;
 `;
-const AddIcon = styled(AddCircle)`
+const AddDialogIcon = styled(MessageRoundedAdd)`
   position: relative;
   color: rgb(0, 0, 0);
   height: 100%;
+  cursor: pointer;
+  border-radius: 100%;
+  &:hover {
+    background-color: #dbdbdb;
+  }
 `;
 
 const Root = styled.div`
@@ -159,6 +221,21 @@ const InteractionSlidesContainer = styled.div`
   }
 `;
 
+interface InteractionProps {
+  selected: boolean;
+}
+
+const Interaction = styled.div<InteractionProps>`
+  position: relative;
+  height: max-content;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: ${(props) => (props.selected ? "#AEAEAE" : "transparent")};
+`;
+
 const InteractionSlide = styled.div`
   position: relative;
   box-sizing: border-box;
@@ -166,7 +243,6 @@ const InteractionSlide = styled.div`
   width: 90%;
   background-color: transparent;
   user-select: none;
-  padding: 0px 0px 0px 0px;
   margin: 10px 0px 10px 0px;
   display: flex;
   flex-direction: column;
@@ -175,6 +251,7 @@ const InteractionSlide = styled.div`
 
   border: 2px solid rgba(0, 0, 0, 1);
   border-radius: 0.5rem;
+  cursor: pointer;
 
   font-size: 0.875rem;
   font-weight: 500;
@@ -347,12 +424,13 @@ export const EditableNarrativeItemContent = (
   //State to control wheter to open the drop down menu or not
   const [stageTypeDropdownOpen, setStageTypeDropdownOpen] =
     useState<boolean>(false);
-  const [selectedDialogue, setSelectedDialogue] =
-    useState<number | "none">("none");
+  const [selectedDialogue, setSelectedDialogue] = useState<number>(-1);
 
   const { availableCharacters } = useContext(EscapeRoomActivityContext);
 
   const { payload, onPayloadChanged } = props;
+
+  const [slideOptionsIndex, setSlideOptionsIndex] = useState<number>(-1);
 
   const handleAddDialogue = () => {
     if (!onPayloadChanged) return;
@@ -368,8 +446,60 @@ export const EditableNarrativeItemContent = (
     });
   }; // handleAddDialogue
 
+  const handleDeleteDialogue = (dialogIndex: number) => {
+    if (!onPayloadChanged) return;
+
+    let result = selectedDialogue;
+    if (
+      dialogIndex < selectedDialogue ||
+      selectedDialogue === payload.dialogues.length - 1
+    )
+      result = result - 1;
+    setSelectedDialogue(result);
+    onPayloadChanged({
+      ...payload,
+      dialogues: [
+        ...payload.dialogues.slice(0, dialogIndex),
+        ...payload.dialogues.slice(dialogIndex + 1),
+      ],
+    });
+  }; // handleAddDialogue
+
+  const handleMoveDialogueUp = (dialogIndex: number) => {
+    if (!onPayloadChanged || dialogIndex === 0) return;
+
+    let aux = payload.dialogues;
+    var element = aux[dialogIndex];
+    aux.splice(dialogIndex, 1);
+    aux.splice(dialogIndex - 1, 0, element);
+
+    onPayloadChanged({
+      ...payload,
+      dialogues: aux,
+    });
+    if (selectedDialogue === dialogIndex)
+      setSelectedDialogue(selectedDialogue - 1);
+  }; // handleMoveDialogueUp
+
+  const handleMoveDialogueDown = (dialogIndex: number) => {
+    if (!onPayloadChanged || dialogIndex === payload.dialogues.length - 1)
+      return;
+
+    let aux = payload.dialogues;
+    var element = aux[dialogIndex];
+    aux.splice(dialogIndex, 1);
+    aux.splice(dialogIndex + 1, 0, element);
+
+    onPayloadChanged({
+      ...payload,
+      dialogues: aux,
+    });
+    if (selectedDialogue === dialogIndex)
+      setSelectedDialogue(selectedDialogue + 1);
+  }; // handleMoveDialogueDown
+
   const handleDialogueTextChanged = (newText: string) => {
-    if (!onPayloadChanged || selectedDialogue === "none") return;
+    if (!onPayloadChanged || selectedDialogue === -1) return;
     onPayloadChanged({
       ...payload,
       dialogues: [
@@ -384,7 +514,7 @@ export const EditableNarrativeItemContent = (
   }; // handleDialogueTextChanged
 
   const handleDialogueCharacterChanged = (characterName: string) => {
-    if (!onPayloadChanged || selectedDialogue === "none") return;
+    if (!onPayloadChanged || selectedDialogue === -1) return;
     onPayloadChanged({
       ...payload,
       dialogues: [
@@ -418,27 +548,58 @@ export const EditableNarrativeItemContent = (
 
         {/* Slides of the multiple parts that are going to take place in the narrative */}
         <InteractionSlidesContainer>
-          {payload.dialogues.map((dialogue, i) => (
-            <InteractionSlide onMouseDown={() => setSelectedDialogue(i)}>
-              <InteractionSlideTitle>
-                <p> {`Dialogue ${i + 1}`}</p>
-              </InteractionSlideTitle>
-              {/* {escapeRoomData.characters[escapeRoomData.characters.findIndex(object => {return object.name === payload.characters[dialogSelected];})].image} */}
-              <InteractionSlidePreview
-                src={findCharacterImageSrc(dialogue.characterName)}
-              />
-            </InteractionSlide>
+          {payload.dialogues.map((dialogue, slideIndex) => (
+            <Interaction
+              selected={slideIndex === selectedDialogue}
+              onMouseEnter={() => setSlideOptionsIndex(slideIndex)}
+              onMouseLeave={() => setSlideOptionsIndex(-1)}
+            >
+              <InteractionSlide
+                onMouseDown={() => setSelectedDialogue(slideIndex)}
+              >
+                <InteractionSlideTitle>
+                  <p> {`Dialogue ${slideIndex + 1}`}</p>
+                </InteractionSlideTitle>
+                {/* {escapeRoomData.characters[escapeRoomData.characters.findIndex(object => {return object.name === payload.characters[dialogSelected];})].image} */}
+                <InteractionSlidePreview
+                  src={findCharacterImageSrc(dialogue.characterName)}
+                />
+              </InteractionSlide>
+              {slideOptionsIndex === slideIndex && (
+                <>
+                  <DeleteIcon
+                    onMouseDown={() => {
+                      handleDeleteDialogue(slideIndex);
+                    }}
+                  />
+                  {slideIndex > 0 && (
+                    <UpArrowIcon
+                      onMouseDown={() => {
+                        handleMoveDialogueUp(slideIndex);
+                      }}
+                    />
+                  )}
+                  {slideIndex < payload.dialogues.length - 1 && (
+                    <DownArrowIcon
+                      onMouseDown={() => {
+                        handleMoveDialogueDown(slideIndex);
+                      }}
+                    />
+                  )}
+                </>
+              )}
+            </Interaction>
           ))}
         </InteractionSlidesContainer>
 
         {/* Button that lets the user add new dialogs to the item */}
         <AddNewInteractionButton>
-          <AddIcon onClick={handleAddDialogue} />
+          <AddDialogIcon onClick={handleAddDialogue} />
         </AddNewInteractionButton>
       </CharactersInteractionsList>
 
       {/* Character option select */}
-      {selectedDialogue !== "none" && (
+      {selectedDialogue !== -1 && (
         <InteractionContent>
           {/* Selector of the character that is going to say something in this dialog */}
           <CharacterSelectorContent>

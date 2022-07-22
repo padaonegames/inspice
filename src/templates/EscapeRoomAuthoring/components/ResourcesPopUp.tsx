@@ -16,8 +16,13 @@ const CloseIcon = styled(Cross)`
   height: 2em;
   width: 2em;
   color: rgb(0, 0, 0);
+  cursor: pointer;
+  border-radius: 100%;
+  background-color: #d06a6a;
+  border: 2px solid #c13c3c;
   &:hover {
-    color: rgb(255, 0, 0);
+    transition: border background-color visibility 1s;
+    background-color: #ce5151;
   }
 `;
 const SelectedIcon = styled(Done)`
@@ -152,7 +157,7 @@ const ResourceContent = styled.div<ResourceProps>`
   background-color: ${(props) =>
     props.selected ? "rgba(255,255,255,1)" : "rgba(100,100,100,1)"};
   box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
-
+  cursor: pointer;
   &:hover {
     transition: border 0.25s;
     border: 3px solid rgb(0, 0, 0);
@@ -191,6 +196,7 @@ const SelectFileButton = styled.div<SelectFileButtonProps>`
   right: 50%;
   top: 50%;
   transform: translate(50%, -50%);
+  cursor: pointer;
 
   &:hover {
     ${(props) =>
@@ -216,6 +222,7 @@ const DropZoneContainer = styled.div`
   background-color: #fafafa;
   color: #bdbdbd;
   outline: none;
+  cursor: pointer;
   transition: border 0.24s ease-in-out;
 `;
 
@@ -232,6 +239,7 @@ const DeleteResourceButton = styled.div`
   color: rgb(247, 0, 255);
   background-color: rgb(222, 222, 222);
   border-radius: 0.75rem;
+  cursor: pointer;
   &:hover {
     transition: border background-color visibility 1s;
     border: 3px solid rgb(0, 0, 0);
