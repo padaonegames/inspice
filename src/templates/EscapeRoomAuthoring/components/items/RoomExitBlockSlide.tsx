@@ -1,13 +1,19 @@
-import { useState } from "react";
 import {
   RoomBlock,
   SupportedPuzzle,
 } from "../../../../services/escapeRoomActivity.model";
 
 import styled from "styled-components";
-import { Bin } from "@styled-icons/icomoon/Bin";
-import { Copy } from "@styled-icons/boxicons-regular/Copy";
 import { Exit } from "@styled-icons/icomoon/Exit";
+
+import { CaretRightFill } from "@styled-icons/bootstrap/CaretRightFill";
+const RightArrowIcon = styled(CaretRightFill)`
+  color: rgb(15, 90, 188);
+  height: 1.75em;
+  width: 1.75em;
+  margin: auto;
+`;
+
 interface RootProps {
   selected?: boolean;
 }
@@ -48,23 +54,12 @@ const Root = styled.div<RootProps>`
 //Entire slide of a puzzle
 const PuzzleSlide = styled.div`
   position: relative;
-  box-sizing: border-box;
-  height: 100%;
-  background-color: transparent;
-  user-select: none;
-  padding: 12px 16px 12px 0px;
-  margin: 0px 10px 0px 10px;
+  height: 80%;
+  cursor: pointer;
   display: flex;
   flex-direction: column;
-  border: 0px none;
-  border-radius: 0.5rem;
-
-  font-size: 0.875rem;
-  font-weight: 500;
-  font-family: ${(props) => props.theme.contentFont};
-  color: rgb(51, 51, 51);
-  width: max-content;
-  background-color: rgba(248, 188, 188);
+  top: 50%;
+  transform: translate(0, -50%);
 `;
 
 const SlideTitle = styled.div`
@@ -88,11 +83,13 @@ const SlideContainer = styled.div`
   cursor: pointer;
   display: flex;
   flex-direction: column;
-  flex: 1 1 0%;
-  height: calc(100% - 1.25rem);
-  width: 100%;
+  height: 100%;
+  width: 100px;
   box-sizing: border-box;
+  overflow: hidden;
+  border-radius: 0 0 0.25rem 0.25rem;
   color: rgb(51, 51, 51);
+  border: 2px solid rgb(15, 90, 188);
 `;
 
 interface ItemPreviewProps {
@@ -112,45 +109,10 @@ const ItemPreview = styled.div<ItemPreviewProps>`
   padding: 0.25rem 0.5rem;
   color: rgb(178, 178, 178);
 
-  margin: 0.25em 0.5em;
   border: 1px solid rgb(229, 229, 229);
   border-radius: 0.25rem;
 
   background-color: ${(props) => (props.selected ? "white" : "#f2f2f1")};
-  transition: border 0.25s;
-  &:hover {
-    transition: border 0.25s;
-    ${(props) =>
-      !props.selected &&
-      `
-    border: 3px solid rgb(200, 200, 200);
-    `}
-  }
-`;
-
-interface SliceButtonProps {
-  X?: number;
-  Y?: number;
-}
-
-const SliceButton = styled.div<SliceButtonProps>`
-  position: absolute;
-  left: ${(props) => props.X}%;
-  top: ${(props) => props.Y}%;
-  padding: 3px;
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  flex: 1 1 0%;
-  box-sizing: border-box;
-  color: rgb(247, 0, 255);
-  background-color: rgb(222, 222, 222);
-  border-radius: 0.75rem;
-  &:hover {
-    transition: border background-color visibility 1s;
-    border: 3px solid rgb(200, 200, 200);
-    background-color: rgb(180, 180, 180);
-  }
 `;
 
 const ExitIcon = styled(Exit)`
@@ -270,7 +232,7 @@ export const RoomExitBlockSlide = (
   } = props;
 
   return (
-    <SlideRoot selected={selected} onClick={onSlideSelected}>
+    <SlideRoot selected={selected}>
       {/* Title with exit icon */}
       <SettingsSlideTitle>
         <SlideTitleContent>
@@ -279,18 +241,21 @@ export const RoomExitBlockSlide = (
         </SlideTitleContent>
       </SettingsSlideTitle>
       {/* Puzzles of this block */}
-      <SlidesContainer>
+      <SlidesContainer onClick={onSlideSelected}>
         {exitBlock.puzzles.map((puzzle, i) => {
           const slideRenderer = puzzleMappings[puzzle.type];
           return (
-            <PuzzleSlide>
-              <SlideTitle>{puzzle.type}</SlideTitle>
-              <SlideContainer>
-                <ItemPreview selected={selected}>
-                  {slideRenderer && slideRenderer(puzzle.payload as any)}
-                </ItemPreview>
-              </SlideContainer>
-            </PuzzleSlide>
+            <>
+              <PuzzleSlide>
+                {/* <SlideTitle>{puzzle.type}</SlideTitle> */}
+                <SlideContainer>
+                  <ItemPreview selected={selected}>
+                    {slideRenderer && slideRenderer(puzzle.payload as any)}
+                  </ItemPreview>
+                </SlideContainer>
+              </PuzzleSlide>
+              {i !== exitBlock.puzzles.length - 1 && <RightArrowIcon />}
+            </>
           );
         })}
       </SlidesContainer>

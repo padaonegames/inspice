@@ -25,17 +25,10 @@ const UnityIcon = styled(Unity)`
 const Root = styled.div`
   margin-top: 5px;
   display: flex;
-  background-color: rgba(255, 255, 0, 0.5);
   flex-direction: column;
-  align-items: left;
-
-  border-bottom: 2px solid #dadce0;
+  align-items: center;
   padding: 0.75em;
-
-  background-color: #dbdbdb;
-
   border-radius: 1.25rem;
-  box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
 `;
 
 interface InputAreaProps {
@@ -76,23 +69,17 @@ const ItemTitle = styled.div`
   font-weight: 500;
   font-family: ${(props) => props.theme.contentFont};
   line-height: 135%;
-
   margin-top: 0.25em;
   margin-bottom: 0.25em;
   padding: 0.75em 1.25em;
-  border-top: none;
+  border-bottom: 2px solid rgb(15, 90, 188);
   color: black;
   line-height: 135%;
   width: fit-content;
   text-align: left;
-
   display: flex;
   align-items: center;
-
-  background-color: white;
-
-  border-radius: 1rem;
-  box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
+  background-color: rgb(240, 240, 240);
 `;
 
 export const EditableLoadSceneItemContent = (
@@ -145,8 +132,7 @@ const UnityIconPreview = styled(Unity)`
   margin-top: 0.5rem;
   align-self: center;
   color: rgb(0, 0, 0);
-  height: 4em;
-  width: 4em;
+  height: 50%;
 `;
 
 export const LoadSceneItemStageSlide = (
@@ -156,7 +142,7 @@ export const LoadSceneItemStageSlide = (
 
   return (
     <>
-      <PreviewTitle>{"sceneName"}</PreviewTitle>
+      <PreviewTitle>{sceneName}</PreviewTitle>
       <UnityIconPreview />
     </>
   );

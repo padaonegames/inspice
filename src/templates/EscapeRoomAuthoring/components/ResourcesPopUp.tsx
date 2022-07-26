@@ -15,14 +15,13 @@ const CloseIcon = styled(Cross)`
   top: 5%;
   height: 2em;
   width: 2em;
-  color: rgb(0, 0, 0);
-  cursor: pointer;
-  border-radius: 100%;
-  background-color: #d06a6a;
-  border: 2px solid #c13c3c;
+
+  border-radius: 0.25rem;
+  border: 2px solid rgb(15, 90, 188);
+  background-color: rgb(19, 104, 206);
+  color: white;
   &:hover {
-    transition: border background-color visibility 1s;
-    background-color: #ce5151;
+    background-color: rgb(49, 134, 236);
   }
 `;
 const SelectedIcon = styled(Done)`
@@ -45,17 +44,28 @@ const PopUpWrapper = styled.main`
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  border-radius: 2rem;
+  border-radius: 0.5rem;
   z-index: 10;
 
   border: 5px solid #000;
-  border-color: rgba(50, 50, 50, 1);
+  border-color: rgb(15, 90, 188);
 `;
 
 const DeleteIcon = styled(DeleteForever)`
-  color: rgb(0, 0, 0);
-  height: 1.25em;
-  width: 1.25em;
+  position: absolute;
+  height: 2.25em;
+  width: 2.25em;
+  top: -5%;
+  right: -5%;
+  padding: 3px;
+  cursor: pointer;
+  border-radius: 0.25rem;
+  border: 2px solid rgb(15, 90, 188);
+  background-color: rgb(19, 104, 206);
+  color: white;
+  &:hover {
+    background-color: rgb(49, 134, 236);
+  }
 `;
 
 ////////////////////Title of the container
@@ -65,11 +75,12 @@ const PopUpTitle = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: rgba(150, 150, 150, 1);
+  background: rgb(49, 134, 236);
   height: 100px;
 `;
 
 const Title = styled.div`
+  color: white;
   position: relative;
   display: flex;
   height: 50%;
@@ -78,8 +89,6 @@ const Title = styled.div`
   justify-content: center;
   padding: 1rem 0.25rem 0.25rem 0.25rem;
   border-style: solid;
-  border-color: lightgray;
-  border-width: 0px 0px 2px 0px;
   font-size: 2em;
   font-weight: 200;
 `;
@@ -92,10 +101,9 @@ const PopUpBody = styled.div`
   height: 500px;
   justify-content: center;
   align-items: center;
-  background-color: rgba(180, 180, 180, 1);
-  border-top: 5px solid #000;
-  border-bottom: 5px solid #000;
-  border-color: rgba(50, 50, 50, 1);
+  background-color: rgb(240, 240, 240);
+  border-top: 5px solid rgb(15, 90, 188);
+  border-bottom: 5px solid rgb(15, 90, 188);
   z-index: 99;
 
   padding: 50px 0 50px 0;
@@ -149,18 +157,19 @@ interface ResourceProps {
 const ResourceContent = styled.div<ResourceProps>`
   place-self: center;
   position: relative;
+  color: white;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  border-radius: 1rem;
+  border-radius: 0.5rem;
+  border: 5px solid rgb(15, 90, 188);
+  padding-bottom: 1rem;
   background-color: ${(props) =>
-    props.selected ? "rgba(255,255,255,1)" : "rgba(100,100,100,1)"};
-  box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
+    props.selected ? "rgb(49, 134, 236)" : "rgb(19, 104, 206)"};
   cursor: pointer;
   &:hover {
-    transition: border 0.25s;
-    border: 3px solid rgb(0, 0, 0);
+    background-color: rgb(39, 124, 226);
   }
 `;
 
@@ -177,7 +186,7 @@ const PopUpButtons = styled.div`
   justify-content: flex-end;
   align-items: center;
   flex-direction: row;
-  background: rgba(150, 150, 150, 1);
+  background: rgb(49, 134, 236);
   height: 100px;
 `;
 
@@ -186,12 +195,16 @@ interface SelectFileButtonProps {
 }
 const SelectFileButton = styled.div<SelectFileButtonProps>`
   position: absolute;
+
+  border: 2px solid rgb(15, 90, 188);
   background-color: ${(props) =>
-    props.avaliable ? "rgba(0,230,255,1)" : "rgba(110,165,175,0.5)"};
+    props.avaliable ? "rgb(19, 104, 206)" : "rgba(40,83,139,1)"};
+
   height: fit-content;
   width: fit-content;
+  color: white;
 
-  border-radius: 0.5rem;
+  border-radius: 0.25rem;
   padding: 0.5rem 1rem 0.5rem 1rem;
   right: 50%;
   top: 50%;
@@ -200,9 +213,7 @@ const SelectFileButton = styled.div<SelectFileButtonProps>`
 
   &:hover {
     ${(props) =>
-      props.avaliable
-        ? "transition: border 0.25s; border: 3px solid rgb(0, 0, 0);"
-        : ""}
+      props.avaliable ? "background-color: rgb(49, 134, 236);" : ""}
   }
 `;
 
@@ -224,27 +235,6 @@ const DropZoneContainer = styled.div`
   outline: none;
   cursor: pointer;
   transition: border 0.24s ease-in-out;
-`;
-
-const DeleteResourceButton = styled.div`
-  position: absolute;
-  top: 0%;
-  right: 0%;
-  padding: 3px;
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  flex: 1 1 0%;
-  box-sizing: border-box;
-  color: rgb(247, 0, 255);
-  background-color: rgb(222, 222, 222);
-  border-radius: 0.75rem;
-  cursor: pointer;
-  &:hover {
-    transition: border background-color visibility 1s;
-    border: 3px solid rgb(0, 0, 0);
-    background-color: rgb(180, 180, 180);
-  }
 `;
 
 export interface ResourcesPopUpProps {
@@ -417,19 +407,13 @@ export const ResourcesPopUpComponent = (
                 }}
               >
                 <ResourcePreview src={resource.src} />
-                <h4>
-                  <b>{resource.name}</b>
-                </h4>
+                {resource.name}
                 {/* Green tick icon that shows if the resource is selected or not */}
                 {selectedResource === index && <SelectedIcon />}
               </ResourceContent>
               {/* Button to delete the specific resource */}
               {hoveredResourceIndex === index && (
-                <DeleteResourceButton
-                  onClick={() => handleResourceDeleted(index)}
-                >
-                  <DeleteIcon />
-                </DeleteResourceButton>
+                <DeleteIcon onClick={() => handleResourceDeleted(index)} />
               )}
             </ResourceContainer>
           ))}

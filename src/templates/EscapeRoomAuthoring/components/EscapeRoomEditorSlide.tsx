@@ -150,15 +150,6 @@ const StagePreview = styled.div<StagePreviewProps>`
   padding: 0.25rem 0.5rem;
   color: rgb(178, 178, 178);
   background-color: white;
-  transition: border 0.25s;
-  &:hover {
-    transition: border 0.25s;
-    ${(props) =>
-      !props.selected &&
-      `
-    border: 3px solid rgb(200, 200, 200);
-    `}
-  }
 `;
 
 type EscapeRoomStageSlidePropsBase<T extends ItemDefinition> = {

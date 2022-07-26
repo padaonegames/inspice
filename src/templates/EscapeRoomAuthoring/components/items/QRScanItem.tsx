@@ -11,9 +11,10 @@ import { QrCode } from "@styled-icons/material/QrCode";
 import { Download } from "@styled-icons/bootstrap/Download";
 
 const DownloadIcon = styled(Download)`
-  color: ${(props) => props.theme.textColor};
+  color: white;
   height: 1.75em;
   width: auto;
+  margin-right: 0.5rem;
 `;
 
 const QrCodeIcon = styled(QrCode)`
@@ -30,8 +31,8 @@ const ItemTitle = styled.div`
   line-height: 135%;
 
   margin-top: 0.25em;
-  margin-bottom: 0.25em;
-  padding: 0.75em 1.25em;
+  margin-bottom: 0.5em;
+  padding: 0.5em 1em;
   border-top: none;
   color: black;
   line-height: 135%;
@@ -41,36 +42,35 @@ const ItemTitle = styled.div`
   display: flex;
   align-items: center;
 
-  background-color: white;
-
-  border-radius: 1rem;
-  box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
+  background-color: rgb(240, 240, 240);
+  border-bottom: 2px solid rgb(15, 90, 188);
 `;
 
 //Components for the button to download the QR
 const DownloadButton = styled.div`
   font-size: 1em;
   font-weight: 500;
+  color: white;
   font-family: ${(props) => props.theme.contentFont};
   line-height: 135%;
   margin-top: 0.25em;
   margin-bottom: 0.25em;
   padding: 0.75em 1.25em;
-  border-top: none;
-  color: black;
-  line-height: 135%;
-  width: fit-content;
-  text-align: center;
+
   display: flex;
+  flex-direction: row;
+  text-align: center;
   align-items: center;
-  background-color: rgb(75, 170, 100);
-  border-radius: 1rem;
-  box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
+  justify-content: center;
+
+  border-radius: 0.25rem;
+  background-color: rgb(19, 104, 206);
+  border: 2px solid rgb(15, 90, 188);
   cursor: pointer;
 
+  color: white;
   &:hover {
-    transition: border 0.25s;
-    border: 3px solid rgb(200, 200, 200);
+    background-color: rgb(49, 134, 236);
   }
 `;
 
@@ -80,11 +80,7 @@ const Root = styled.div`
   background-color: transparent;
   flex-direction: column;
   align-items: center;
-  border-bottom: 2px solid #dadce0;
   padding: 0.75em;
-  background-color: #dbdbdb;
-  border-radius: 1.25rem;
-  box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
 `;
 
 export const EditableQRScanItemContent = (
@@ -127,7 +123,7 @@ export const EditableQRScanItemContent = (
         {/* Title of the item */}
         <ItemTitle>
           <QrCodeIcon />
-          QR Code
+          QR to scan
         </ItemTitle>
 
         {/* Preview of the QR and promptfield to edit its code */}
@@ -153,6 +149,7 @@ export const EditableQRScanItemContent = (
           <>
             <DownloadButton onClick={downloadQR}>
               <DownloadIcon />
+              Download QR
             </DownloadButton>
           </>
         )}

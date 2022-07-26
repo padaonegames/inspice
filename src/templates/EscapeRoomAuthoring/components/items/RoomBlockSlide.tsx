@@ -114,7 +114,6 @@ const SettingsSlideTitle = styled.div`
 
 const Slide = styled.div`
   position: relative;
-
   height: 80%;
   cursor: pointer;
   display: flex;
@@ -123,31 +122,13 @@ const Slide = styled.div`
   transform: translate(0, -50%);
 `;
 
-const PuzzleSlideTitle = styled.div`
-  display: flex;
-  height: 15%;
-  width: 100%;
-  -moz-box-pack: start;
-  justify-content: flex-start;
-  box-sizing: border-box;
-  padding: 3px 0px 0px 10px;
-  border: 0px none;
-  border-radius: 0.25rem 0.25rem 0 0;
-  background-color: rgb(15, 90, 188);
-  color: white;
-  text-align: center;
-
-  font-size: 0.75rem;
-  font-weight: 500;
-  font-family: ${(props) => props.theme.contentFont};
-`;
-
 const SlideContainer = styled.div`
   position: relative;
   cursor: pointer;
   display: flex;
   flex-direction: column;
   height: 100%;
+  width: 100px;
   box-sizing: border-box;
   overflow: hidden;
   border-radius: 0 0 0.25rem 0.25rem;
@@ -177,44 +158,39 @@ const ItemPreview = styled.div<ItemPreviewProps>`
 
   background-color: ${(props) => (props.selected ? "white" : "#f2f2f1")};
   transition: border 0.25s;
-  &:hover {
-    transition: border 0.25s;
-    ${(props) =>
-      !props.selected &&
-      `
-    border: 3px solid rgb(200, 200, 200);
-    `}
-  }
-`;
-
-const SlideButtons = styled.div`
-  padding-right: 10px;
-  display: flex;
-  height: 100%;
-  flex-direction: row;
-  align-items: center;
-  border-radius: 0.75rem;
 `;
 
 const DuplicateIcon = styled(Copy)`
-  color: rgb(255, 255, 255);
-  height: 100%;
-  margin-right: 10px;
-  box-sizing: content-box;
-  border-radius: 100%;
-  padding: 3px;
+  position: absolute;
+  right: 0%;
+  top: 30%;
+  cursor: pointer;
+  z-index: 20;
+  height: 1.75em;
+  width: 1.75em;
+  border-radius: 0.25rem;
+  border: 2px solid rgb(15, 90, 188);
+  background-color: rgb(19, 104, 206);
+  color: white;
   &:hover {
-    background-color: rgba(255, 255, 255, 0.3);
+    background-color: rgb(49, 134, 236);
   }
 `;
 const DeleteIcon = styled(DeleteForever)`
-  color: rgb(255, 255, 255);
-  height: 90%;
-  box-sizing: content-box;
-  border-radius: 100%;
-  padding: 3px;
+  position: absolute;
+  right: 0%;
+  top: 60%;
+  cursor: pointer;
+  z-index: 20;
+
+  height: 1.75em;
+  width: 1.75em;
+  border-radius: 0.25rem;
+  border: 2px solid rgb(15, 90, 188);
+  background-color: rgb(19, 104, 206);
+  color: white;
   &:hover {
-    background-color: rgba(255, 255, 255, 0.3);
+    background-color: rgb(49, 134, 236);
   }
 `;
 
@@ -274,29 +250,28 @@ export const RoomBlockSlide = (props: RoomBlockSlideProps): JSX.Element => {
       selected={selected}
       onMouseLeave={() => setMouseOverMe(false)}
       onMouseEnter={() => setMouseOverMe(true)}
-      onClick={onSlideSelected}
     >
+      {mouseOverMe ? (
+        <>
+          <DuplicateIcon
+            onClick={(e) => {
+              onBlockDuplicated && onBlockDuplicated();
+            }}
+          ></DuplicateIcon>
+
+          <DeleteIcon
+            onClick={(e) => {
+              onBlockDeleted && onBlockDeleted();
+            }}
+          ></DeleteIcon>
+        </>
+      ) : (
+        <></>
+      )}
       <SettingsSlideTitle>
         <SlideTitle>{block.blockName}</SlideTitle>
-        {mouseOverMe ? (
-          <SlideButtons>
-            <DuplicateIcon
-              onClick={(e) => {
-                onBlockDuplicated && onBlockDuplicated();
-              }}
-            ></DuplicateIcon>
-
-            <DeleteIcon
-              onClick={(e) => {
-                onBlockDeleted && onBlockDeleted();
-              }}
-            ></DeleteIcon>
-          </SlideButtons>
-        ) : (
-          <></>
-        )}
       </SettingsSlideTitle>
-      <SlidesContainer>
+      <SlidesContainer onClick={onSlideSelected}>
         {block.puzzles.map((puzzle, i) => {
           const slideRenderer = puzzleMappings[puzzle.type];
           return (
