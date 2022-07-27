@@ -1,8 +1,13 @@
 import styled from "styled-components";
 import { SupportedStage } from "../../../services/escapeRoomActivity.model";
-import { EscapeRoomStageSlide, EscapeRoomStageSlideProps } from "./EscapeRoomEditorSlide";
-import { EscapeRoomSettings, EscapeRoomSettingsStageSlide } from "./items/EscapeRoomSettings";
-
+import {
+  EscapeRoomStageSlide,
+  EscapeRoomStageSlideProps,
+} from "./EscapeRoomEditorSlide";
+import {
+  EscapeRoomSettings,
+  EscapeRoomSettingsStageSlide,
+} from "./items/EscapeRoomSettings";
 
 const Root = styled.div`
   position: fixed;
@@ -16,8 +21,9 @@ const Root = styled.div`
   bottom: unset;
   width: 12rem;
   height: 100%;
+  border-right: 0px solid rgb(19, 104, 206);
   background: rgb(255, 255, 255) none repeat scroll 0% 0%;
-  box-shadow: rgba(0, 0, 0, 0.15) 0px 2px 4px 0px;
+  box-shadow: rgba(0, 0, 0, 0.15) 2px 2px 4px 0px;
   padding-top: 0;
 `;
 
@@ -25,22 +31,22 @@ const SlidesContainer = styled.div`
   position: relative;
   height: 77%;
   width: 100%;
-  background-color: rgba(0,0,0,0.1);
-  overflow-y:auto; //scroll to always show
-  overflow-x:hidden;
+  background-color: rgba(0, 0, 0, 0.1);
+  overflow-y: auto; //scroll to always show
+  overflow-x: hidden;
   margin: 0px 0px;
-  scrollbar-gutter:stable;
+  scrollbar-gutter: stable;
   ::-webkit-scrollbar {
     width: 8px;
-    z-index:1000;
+    z-index: 1000;
   }
   ::-webkit-scrollbar-track {
-      -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
-      border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
   }
   ::-webkit-scrollbar-thumb {
-      border-radius: 10px;
-      -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
   }
 `;
 
@@ -56,6 +62,7 @@ const ButtonsContainer = styled.div`
   position: absolute;
   bottom: 0;
   z-index: 9999;
+  box-shadow: 0px 0px 10px 0px #000000;
 `;
 
 const AddItemButtonContainer = styled.div`
@@ -83,7 +90,7 @@ const AddItemButton = styled.button`
   font-size: 0.875rem;
   font-weight: 600;
 
-  font-family: ${props => props.theme.contentFont};
+  font-family: ${(props) => props.theme.contentFont};
   text-align: center;
   text-decoration: none;
   min-width: 42px;
@@ -104,12 +111,13 @@ const AddItemButton = styled.button`
 
 export type StageToSlideProducerMapping<T extends SupportedStage> = {
   /** What type of stage we are working with here*/
-  [P in T['type']]: ((slidePreviewProps: Extract<T, { type: P }>['payload']) => JSX.Element) | undefined;
-}
+  [P in T["type"]]:
+    | ((slidePreviewProps: Extract<T, { type: P }>["payload"]) => JSX.Element)
+    | undefined;
+};
 
 export interface EscapeRoomStageSlidesContainerProps {
-
-  escapeRoomTitle?:string
+  escapeRoomTitle?: string;
   /** list of stages currently included in the activity */
   stages: SupportedStage[];
   /** index of currently selected stage in stages */
@@ -127,10 +135,11 @@ export interface EscapeRoomStageSlidesContainerProps {
   handleGoToSettings: () => void;
 } // EscapeRoomStageSlidesContainerProps
 
-export const EscapeRoomStageSlidesContainer = (props: EscapeRoomStageSlidesContainerProps): JSX.Element => {
-
+export const EscapeRoomStageSlidesContainer = (
+  props: EscapeRoomStageSlidesContainerProps
+): JSX.Element => {
   const {
-    escapeRoomTitle="No title asigned",
+    escapeRoomTitle = "No title asigned",
     stages,
     selectedStageIndex,
     stageMappings,
@@ -138,7 +147,7 @@ export const EscapeRoomStageSlidesContainer = (props: EscapeRoomStageSlidesConta
     onSelectStage,
     handleDuplicateStage,
     handleDeleteStage,
-    handleGoToSettings
+    handleGoToSettings,
   } = props;
 
   const handleSelectStage = (index: number) => {
@@ -149,7 +158,10 @@ export const EscapeRoomStageSlidesContainer = (props: EscapeRoomStageSlidesConta
 
   return (
     <Root>
-      <EscapeRoomSettingsStageSlide title={escapeRoomTitle} goToSettings={handleGoToSettings}></EscapeRoomSettingsStageSlide>
+      <EscapeRoomSettingsStageSlide
+        title={escapeRoomTitle}
+        goToSettings={handleGoToSettings}
+      ></EscapeRoomSettingsStageSlide>
       <SlidesContainer>
         {stages.map((s, i) => {
           // This is "unsafe", but in reality due to how stageMappings is defined
@@ -162,14 +174,11 @@ export const EscapeRoomStageSlidesContainer = (props: EscapeRoomStageSlidesConta
 
             index: i,
             duplicateStage: handleDuplicateStage,
-            deleteStage: handleDeleteStage
+            deleteStage: handleDeleteStage,
           } as EscapeRoomStageSlideProps;
 
           return (
-            <EscapeRoomStageSlide
-              key={s.type + '_' + i}
-              {...slideProps}
-            />
+            <EscapeRoomStageSlide key={s.type + "_" + i} {...slideProps} />
           );
         })}
       </SlidesContainer>

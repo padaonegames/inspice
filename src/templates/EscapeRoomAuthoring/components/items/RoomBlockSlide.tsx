@@ -1,179 +1,145 @@
-import { useState } from 'react';
-import { RoomBlock, SupportedPuzzle } from "../../../../services/escapeRoomActivity.model";
+import { useState } from "react";
+import {
+  RoomBlock,
+  SupportedPuzzle,
+} from "../../../../services/escapeRoomActivity.model";
 
 import styled from "styled-components";
-import {Bin} from "@styled-icons/icomoon/Bin";
-import {Copy} from "@styled-icons/boxicons-regular/Copy";
+import { DeleteForever } from "@styled-icons/material-twotone/DeleteForever";
+import { Copy } from "@styled-icons/boxicons-regular/Copy";
+import { Settings } from "@styled-icons/fluentui-system-filled/Settings";
+import {
+  ItemPreview,
+  Slide,
+  SlideRoot,
+  SlidesContainer,
+} from "./RoomExitBlockSlide";
+
+import { CaretRightFill } from "@styled-icons/bootstrap/CaretRightFill";
+const RightArrowIcon = styled(CaretRightFill)`
+  color: rgb(15, 90, 188);
+  height: 1.75em;
+  width: 1.75em;
+  margin: auto;
+`;
+
+const SettingsIcon = styled(Settings)`
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  color: rgb(19, 104, 206);
+  transform: translate(-50%, -30%);
+  width: 50%;
+`;
 
 interface RootProps {
   selected?: boolean;
 }
-const Root = styled.div<RootProps>`
+
+const SettingsSlideRoot = styled.div<RootProps>`
   position: relative;
   box-sizing: border-box;
   height: 100%;
-  width: min-content;
-  background-color: transparent;
+  width: 150px;
+  background-color: rgb(255, 2255, 255);
   user-select: none;
-  padding: 10px 0px 10px 0px;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   flex: 0 0 auto;
-  justify-content: space-around;
-  border: 0px none;
-  border-radius: 1.25rem;
+  border: 2px solid rgb(19, 104, 206);
+  border-radius: 0.5rem;
+  overflow: hidden;
 
-  ${props => !props.selected && `
-  border: 1px dashed black;
-  `}
   font-size: 0.875rem;
   font-weight: 500;
-  font-family: ${props => props.theme.contentFont};
+  font-family: ${(props) => props.theme.contentFont};
   color: rgb(51, 51, 51);
   min-width: 141px;
-  ${props => props.selected && `
-  background-color: rgb(234, 244, 252);
-  `}
   margin-right: 1em;
+  ${(props) =>
+    props.selected &&
+    `
+  background-color: rgb(255, 2255, 255);
+  `}
+  &:hover {
+    background-color: rgb(220, 220, 220);
+  }
 `;
 
-//Entire slide of a puzzle
-const PuzzleSlide = styled.div`
+const SettingsSlideTitle = styled.div`
   position: relative;
-  box-sizing: border-box;
-  height: 100%;
-  width: max-content;
-  background-color: transparent;
-  user-select: none;
-  padding: 12px 16px 12px 0px;
-  margin: 0px 10px 0px 10px;
+  height: 20%;
+  width: 100%;
+  background-color: rgb(19, 104, 206);
+  padding-top: 3px;
   display: flex;
-  flex-direction: column;
-  border: 0px none;
-  border-radius: 0.5rem;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding-left: 0.5rem;
 
   font-size: 0.875rem;
   font-weight: 500;
-  font-family: ${props => props.theme.contentFont};
-  color: rgb(51, 51, 51);
-  background-color: rgba(248, 188, 188);
-`;
-
-const SlideTitle = styled.div`
-  display: flex;
-  z-index: 999999;
-  flex: 0 1 auto;
-  -moz-box-pack: start;
-  justify-content: flex-start;
-  box-sizing: border-box;
-  margin: 0.25em 0px 0.25em 1em;
-  padding: 0px;
-  border: 0px none;
-
-  font-size: 0.75rem;
-  font-weight: 500;
-  font-family: ${props => props.theme.contentFont};
-`;
-
-const SlideContainer = styled.div`
-  position: relative;
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  flex: 1 1 0%;
-  height: calc(100% - 1.25rem);
-  width: 100%;
-  box-sizing: border-box;
-  color: rgb(51, 51, 51);
-`;
-
-interface ItemPreviewProps {
-  selected?: boolean;
-}
-
-//Preview inside puzzle block
-const ItemPreview = styled.div<ItemPreviewProps>`
-  display: flex;
-  flex-direction: column;
-  -moz-box-pack: justify;
-  justify-content: space-between;
-  height: 100%;
-  width: 100%;
-  max-width: 100%;
-  flex: 1 1 0%;
-  padding: 0.25rem 0.5rem;
-  color: rgb(178, 178, 178);
-
-  margin: 0.25em 0.5em;
-  border: 1px solid rgb(229, 229, 229);
-  border-radius: 0.25rem;
-
-  background-color: ${props => props.selected ? 'white' : '#f2f2f1'};
-  transition: border 0.25s;
-  &:hover {
-    transition: border 0.25s;
-    ${props => !props.selected && `
-    border: 3px solid rgb(200, 200, 200);
-    `}
-  }
-`;
-
-
-interface SliceButtonProps {
-  X?: number;
-  Y?: number;
-}
-
-const SliceButton = styled.div<SliceButtonProps>`
-  position: absolute;
-  left: ${props => props.X}%;
-  top: ${props => props.Y}%;
-  padding: 3px;
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  flex: 1 1 0%;
-  box-sizing: border-box;
-  color: rgb(247, 0, 255);
-  background-color:rgb(222, 222, 222);
-  border-radius: 0.75rem;
-  &:hover {
-    transition: border background-color visibility  1s;
-    border: 3px solid rgb(200, 200, 200);
-    background-color:  rgb(180, 180, 180);
-  }
+  text-align: center;
+  font-family: ${(props) => props.theme.contentFont};
+  color: rgb(255, 255, 255);
 `;
 
 const DuplicateIcon = styled(Copy)`
-  color: rgb(0, 0, 0);
-  height: 1.25em;
-  width: 1.25em;
-`
-const DeleteIcon = styled(Bin)`
-  color: rgb(0, 0, 0);
-  height: 1.25em;
-  width: 1.25em;
-`
-
-//Container of the multiple slides that can be added to a block
-const SlidesContainer = styled.div`
-  position: relative;
+  position: absolute;
+  right: 0%;
+  top: 30%;
   cursor: pointer;
-  display: flex;
-  flex-direction: row;
-  flex: 0 0 0%;
-  //height: calc(100% - 1.25rem);
-  height: 100%;
- 
-  box-sizing: border-box;
-  color: rgb(51, 51, 51);
-  background-color: rgb(225, 132, 132);
+  z-index: 20;
+  height: 1.75em;
+  width: 1.75em;
+  border-radius: 0.25rem;
+  border: 2px solid rgb(15, 90, 188);
+  background-color: rgb(19, 104, 206);
+  color: white;
+  &:hover {
+    background-color: rgb(49, 134, 236);
+  }
+`;
+const DeleteIcon = styled(DeleteForever)`
+  position: absolute;
+  right: 0%;
+  top: 60%;
+  cursor: pointer;
+  z-index: 20;
+
+  height: 1.75em;
+  width: 1.75em;
+  border-radius: 0.25rem;
+  border: 2px solid rgb(15, 90, 188);
+  background-color: rgb(19, 104, 206);
+  color: white;
+  &:hover {
+    background-color: rgb(49, 134, 236);
+  }
 `;
 
+export const SlideTitle = styled.div`
+  position: relative;
+  height: 100%;
+  width: fit-content;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding-left: 0.5rem;
+  padding-right: 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-align: center;
+  font-family: ${(props) => props.theme.contentFont};
+  color: rgb(255, 255, 255);
+`;
 
 export type RoomPuzzleToSlideMappings<T extends SupportedPuzzle> = {
-  [P in T['type']]?: (props: Extract<SupportedPuzzle, { type: P }>['payload']) => JSX.Element;
-} // RoomPuzzleToSlideMappings
+  [P in T["type"]]?: (
+    props: Extract<SupportedPuzzle, { type: P }>["payload"]
+  ) => JSX.Element;
+}; // RoomPuzzleToSlideMappings
 
 export interface RoomBlockSlideProps {
   /** whether this slide is currently selected */
@@ -186,14 +152,12 @@ export interface RoomBlockSlideProps {
   onBlockDuplicated?: () => void;
   /** Block whose preview we wish to render */
   block: RoomBlock;
-  blockIndex:number;
+  blockIndex: number;
   /** Mappings between block puzzle types and slide view producers (instructions on how to render a given preview) */
   puzzleMappings: RoomPuzzleToSlideMappings<SupportedPuzzle>;
 } // RoomBlockSlideProps
 
-
 export const RoomBlockSlide = (props: RoomBlockSlideProps): JSX.Element => {
-
   const [mouseOverMe, setMouseOverMe] = useState<boolean>(false);
 
   const {
@@ -204,47 +168,50 @@ export const RoomBlockSlide = (props: RoomBlockSlideProps): JSX.Element => {
     onSlideSelected,
     onBlockDeleted,
     onBlockDuplicated,
-
   } = props;
 
   return (
-    <Root selected={selected} onMouseLeave = {()=>setMouseOverMe(false)}  onMouseEnter={()=>setMouseOverMe(true)}  onClick={onSlideSelected}>
+    <SlideRoot
+      selected={selected}
+      onMouseLeave={() => setMouseOverMe(false)}
+      onMouseEnter={() => setMouseOverMe(true)}
+    >
+      {mouseOverMe ? (
+        <>
+          <DuplicateIcon
+            onClick={(e) => {
+              onBlockDuplicated && onBlockDuplicated();
+            }}
+          ></DuplicateIcon>
 
-      <SlidesContainer>
+          <DeleteIcon
+            onClick={(e) => {
+              onBlockDeleted && onBlockDeleted();
+            }}
+          ></DeleteIcon>
+        </>
+      ) : (
+        <></>
+      )}
+      <SettingsSlideTitle>
+        <SlideTitle>{block.blockName}</SlideTitle>
+      </SettingsSlideTitle>
+      <SlidesContainer onClick={onSlideSelected}>
         {block.puzzles.map((puzzle, i) => {
           const slideRenderer = puzzleMappings[puzzle.type];
           return (
-            <PuzzleSlide>
-              <SlideTitle>{puzzle.type}</SlideTitle>
-              <SlideContainer>
+            <>
+              <Slide>
                 <ItemPreview selected={selected}>
                   {slideRenderer && slideRenderer(puzzle.payload as any)}
                 </ItemPreview>
-              </SlideContainer>
-
-            </PuzzleSlide>
+              </Slide>
+              {i !== block.puzzles.length - 1 && <RightArrowIcon />}
+            </>
           );
         })}
-
       </SlidesContainer>
-
-      { mouseOverMe ? 
-      <>
-        {/* Duplicate slice button */}
-        <SliceButton Y={5} X={95}  onClick={ e=>{onBlockDeleted && onBlockDeleted()}}>
-          <DeleteIcon></DeleteIcon>
-        </SliceButton>
-
-        {/* Duplicate slice button */}
-        <SliceButton Y={35} X={95}  onClick={ e=>{onBlockDuplicated && onBlockDuplicated()}}>
-          <DuplicateIcon></DuplicateIcon>
-        </SliceButton>
-      </>
-      :
-      <></>
-      }
-
-    </Root>
+    </SlideRoot>
   );
 }; // RoomBlockSlide
 
@@ -254,24 +221,15 @@ export interface RoomSettingsSlideProps {
   /** callback to parent notifying of slide being selected by the user */
   onSlideSelected?: () => void;
 }
-export const RoomSettingsSlide = (props: RoomSettingsSlideProps): JSX.Element => {
-
-  const {
-    selected,
-    onSlideSelected
-  } = props;
+export const RoomSettingsSlide = (
+  props: RoomSettingsSlideProps
+): JSX.Element => {
+  const { selected, onSlideSelected } = props;
 
   return (
-    <Root
-      onClick={onSlideSelected}
-      selected={selected}
-    >
-      <PuzzleSlide>
-        <SlideTitle>Room Settings</SlideTitle>
-        <SlideContainer>
-          <ItemPreview selected={selected} />
-        </SlideContainer>
-      </PuzzleSlide>
-    </Root>
+    <SettingsSlideRoot onClick={onSlideSelected} selected={selected}>
+      <SettingsSlideTitle>Settings</SettingsSlideTitle>
+      <SettingsIcon></SettingsIcon>
+    </SettingsSlideRoot>
   );
 }; // RoomSettingsSlide

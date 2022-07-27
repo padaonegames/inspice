@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 import styled from "styled-components";
 import { Cross } from "@styled-icons/entypo/Cross";
-import { Bin } from "@styled-icons/icomoon/Bin";
+import { DeleteForever } from "@styled-icons/material-twotone/DeleteForever";
 import { Done } from "@styled-icons/material/Done";
 import Dropzone from "react-dropzone";
 import { useParams } from "react-router-dom";
@@ -15,9 +15,13 @@ const CloseIcon = styled(Cross)`
   top: 5%;
   height: 2em;
   width: 2em;
-  color: rgb(0, 0, 0);
+
+  border-radius: 0.25rem;
+  border: 2px solid rgb(15, 90, 188);
+  background-color: rgb(19, 104, 206);
+  color: white;
   &:hover {
-    color: rgb(255, 0, 0);
+    background-color: rgb(49, 134, 236);
   }
 `;
 const SelectedIcon = styled(Done)`
@@ -40,17 +44,28 @@ const PopUpWrapper = styled.main`
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  border-radius: 2rem;
+  border-radius: 0.5rem;
   z-index: 10;
 
   border: 5px solid #000;
-  border-color: rgba(50, 50, 50, 1);
+  border-color: rgb(15, 90, 188);
 `;
 
-const DeleteIcon = styled(Bin)`
-  color: rgb(0, 0, 0);
-  height: 1.25em;
-  width: 1.25em;
+const DeleteIcon = styled(DeleteForever)`
+  position: absolute;
+  height: 1.75em;
+  width: 1.75em;
+  top: -5%;
+  right: -5%;
+  padding: 1px;
+  cursor: pointer;
+  border-radius: 0.25rem;
+  border: 2px solid rgb(15, 90, 188);
+  background-color: rgb(19, 104, 206);
+  color: white;
+  &:hover {
+    background-color: rgb(49, 134, 236);
+  }
 `;
 
 ////////////////////Title of the container
@@ -60,11 +75,12 @@ const PopUpTitle = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: rgba(150, 150, 150, 1);
+  background: rgb(49, 134, 236);
   height: 100px;
 `;
 
 const Title = styled.div`
+  color: white;
   position: relative;
   display: flex;
   height: 50%;
@@ -73,8 +89,6 @@ const Title = styled.div`
   justify-content: center;
   padding: 1rem 0.25rem 0.25rem 0.25rem;
   border-style: solid;
-  border-color: lightgray;
-  border-width: 0px 0px 2px 0px;
   font-size: 2em;
   font-weight: 200;
 `;
@@ -87,10 +101,9 @@ const PopUpBody = styled.div`
   height: 500px;
   justify-content: center;
   align-items: center;
-  background-color: rgba(180, 180, 180, 1);
-  border-top: 5px solid #000;
-  border-bottom: 5px solid #000;
-  border-color: rgba(50, 50, 50, 1);
+  background-color: rgb(240, 240, 240);
+  border-top: 5px solid rgb(15, 90, 188);
+  border-bottom: 5px solid rgb(15, 90, 188);
   z-index: 99;
 
   padding: 50px 0 50px 0;
@@ -137,6 +150,7 @@ const ResourceContainer = styled.div`
   place-self: center;
   position: relative;
   width: 125px;
+  height: 125px;
 `;
 interface ResourceProps {
   selected: boolean;
@@ -144,25 +158,27 @@ interface ResourceProps {
 const ResourceContent = styled.div<ResourceProps>`
   place-self: center;
   position: relative;
+  color: black;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  border-radius: 1rem;
-  background-color: ${(props) =>
-    props.selected ? "rgba(255,255,255,1)" : "rgba(100,100,100,1)"};
-  box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
+  justify-content: space-around;
+  border-radius: 0.25rem;
+  padding: 0.25rem 0 0.25rem 0;
+  width: 100%;
+  height: 100%;
 
+  cursor: pointer;
   &:hover {
-    transition: border 0.25s;
-    border: 3px solid rgb(0, 0, 0);
+    background-color: rgb(181, 210, 248);
   }
 `;
 
 const ResourcePreview = styled.img`
-  padding: 0 0 20px 0;
+  padding: 0 0 5px 0;
   width: 80%;
-  height: 80%;
+  // height: 80%;
 `;
 
 ////////////////////Bottom of the popup
@@ -172,7 +188,7 @@ const PopUpButtons = styled.div`
   justify-content: flex-end;
   align-items: center;
   flex-direction: row;
-  background: rgba(150, 150, 150, 1);
+  background: rgb(49, 134, 236);
   height: 100px;
 `;
 
@@ -181,22 +197,25 @@ interface SelectFileButtonProps {
 }
 const SelectFileButton = styled.div<SelectFileButtonProps>`
   position: absolute;
+
+  border: 2px solid rgb(15, 90, 188);
   background-color: ${(props) =>
-    props.avaliable ? "rgba(0,230,255,1)" : "rgba(110,165,175,0.5)"};
+    props.avaliable ? "rgb(19, 104, 206)" : "rgba(40,83,139,1)"};
+
   height: fit-content;
   width: fit-content;
+  color: white;
 
-  border-radius: 0.5rem;
+  border-radius: 0.25rem;
   padding: 0.5rem 1rem 0.5rem 1rem;
   right: 50%;
   top: 50%;
   transform: translate(50%, -50%);
+  cursor: pointer;
 
   &:hover {
     ${(props) =>
-      props.avaliable
-        ? "transition: border 0.25s; border: 3px solid rgb(0, 0, 0);"
-        : ""}
+      props.avaliable ? "background-color: rgb(49, 134, 236);" : ""}
   }
 `;
 
@@ -216,27 +235,8 @@ const DropZoneContainer = styled.div`
   background-color: #fafafa;
   color: #bdbdbd;
   outline: none;
-  transition: border 0.24s ease-in-out;
-`;
-
-const DeleteResourceButton = styled.div`
-  position: absolute;
-  top: 0%;
-  right: 0%;
-  padding: 3px;
   cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  flex: 1 1 0%;
-  box-sizing: border-box;
-  color: rgb(247, 0, 255);
-  background-color: rgb(222, 222, 222);
-  border-radius: 0.75rem;
-  &:hover {
-    transition: border background-color visibility 1s;
-    border: 3px solid rgb(0, 0, 0);
-    background-color: rgb(180, 180, 180);
-  }
+  transition: border 0.24s ease-in-out;
 `;
 
 export interface ResourcesPopUpProps {
@@ -394,7 +394,7 @@ export const ResourcesPopUpComponent = (
           </>
         }
         {/* Grid with all the resources avaliable */}
-        <SelectResourceGrid elements={resourceList.length} elementsPerRow={3}>
+        <SelectResourceGrid elements={resourceList.length} elementsPerRow={4}>
           {resourceList.map((resource, index) => (
             <ResourceContainer
               key={resource.name}
@@ -409,19 +409,13 @@ export const ResourcesPopUpComponent = (
                 }}
               >
                 <ResourcePreview src={resource.src} />
-                <h4>
-                  <b>{resource.name}</b>
-                </h4>
+                {resource.name}
                 {/* Green tick icon that shows if the resource is selected or not */}
                 {selectedResource === index && <SelectedIcon />}
               </ResourceContent>
               {/* Button to delete the specific resource */}
               {hoveredResourceIndex === index && (
-                <DeleteResourceButton
-                  onClick={() => handleResourceDeleted(index)}
-                >
-                  <DeleteIcon />
-                </DeleteResourceButton>
+                <DeleteIcon onClick={() => handleResourceDeleted(index)} />
               )}
             </ResourceContainer>
           ))}

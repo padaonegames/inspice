@@ -8,19 +8,28 @@ import { useState } from "react";
 import { EscapeRoomCharacterCard } from "./EscapeRoomCharacterCard";
 
 import styled from "styled-components";
-import { Settings } from "@styled-icons/fluentui-system-filled/Settings";
 import { UserPlus } from "@styled-icons/boxicons-regular/UserPlus";
 
+import { Settings } from "@styled-icons/fluentui-system-filled/Settings";
 const SettingsIcon = styled(Settings)`
   position: absolute;
-  right: 20%;
-  color: rgb(0, 0, 0);
-  height: 1.25em;
-  width: 1.25em;
+  right: 8%;
+  bottom: 0%;
+  color: rgb(255, 255, 255);
+
+  box-sizing: content-box;
+  padding: 4px;
+  border-radius: 100%;
+  height: 1.5em;
+  width: 1.5em;
+
+  // &:hover {
+  //   background-color: rgba(255, 255, 255, 0.3);
+  // }
 `;
 
 const AddCharacterIcon = styled(UserPlus)`
-  color: ${(props) => props.theme.textColor};
+  color: white;
   height: 1.75em;
   width: auto;
 `;
@@ -33,6 +42,7 @@ const Wrapper = styled.main`
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   overflow: hidden;
   margin: 0px;
   padding: 0px;
@@ -47,9 +57,11 @@ const CharactersContainer = styled.div`
   align-items: center;
   width: 100%;
   padding: 0.75em;
-  background-color: rgba(0, 0, 0, 0.5);
-  border-radius: 1.25rem;
-  box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
+  margin-bottom: 0rem;
+  align-self: center;
+  border: 1px solid rgb(15, 90, 188);
+  background-color: rgba(220, 220, 220, 1);
+  border-radius: 0.5rem;
 `;
 
 interface InputAreaProps {
@@ -87,17 +99,27 @@ const Root = styled.div`
   position: relative;
   height: 10%;
   width: 100%;
-  background-color: rgba(150, 150, 150, 0.5);
-  box-shadow: rgba(255, 0, 0, 1) 0px px 0px 0px;
-  border-radius: 0% 0% 0% 0%;
-  border-color: red;
-  font-size: 0.875rem;
-  font-weight: 500;
-  font-family: ${(props) => props.theme.contentFont};
+  cursor: pointer;
+  z-index: 2;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  background-color: rgb(19, 104, 206);
+  border: 3px;
+  border-radius: 0.5rem;
+  border-style: solid;
+  border-color: rgb(15, 90, 188);
+  box-shadow: 0px 0px 10px 0px #000000;
+
+  &:hover {
+    background-color: rgb(23, 128, 234);
+  }
 `;
 
 const CheckboxTitle = styled.div`
-  font-size: 2em;
+  font-size: 1.5em;
   font-weight: bold;
   font-family: ${(props) => props.theme.contentFont};
   line-height: 135%;
@@ -106,25 +128,20 @@ const CheckboxTitle = styled.div`
   height: 1.25em;
   width: fit-content;
   margin-top: 10px;
-
-  border-style: solid;
-  border-color: lightgray;
-  border-width: 0px 0px 2px 0px;
+  color: rgb(19, 104, 206);
 `;
 
 const GeneralSettingsContainer = styled.div`
-  width: 100%;
+  width: 90%;
   margin-top: 5px;
   display: flex;
-  background-color: transparent;
+  background-color: rgb(255, 255, 255);
   flex-direction: column;
   align-items: center;
   text-align: center;
-
   border-bottom: 2px solid #dadce0;
-  background-color: #dbdbdb;
 
-  border-radius: 1.25rem;
+  border-radius: 0.25rem;
   box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
 `;
 
@@ -136,13 +153,12 @@ const SettingsDiv = styled.div`
   flex-direction: column;
   align-items: left;
   text-align: center;
+  padding: 10px;
 
   margin-bottom: 2rem;
-
+  border-radius: 0.25rem;
   border-bottom: 2px solid #dadce0;
-  background-color: rgba(0, 0, 0, 0.5);
-
-  box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
+  background-color: rgba(240, 240, 240, 1);
 `;
 
 const GeneralSettingsTitle = styled.div`
@@ -150,6 +166,8 @@ const GeneralSettingsTitle = styled.div`
   font-weight: bold;
   font-family: ${(props) => props.theme.contentFont};
   line-height: 135%;
+  color: rgb(15, 90, 188);
+  border-bottom: 2px solid rgb(15, 90, 188);
 
   position: relative;
   height: 1.25em;
@@ -163,27 +181,24 @@ const AddPuzzleButton = styled.div`
   font-weight: 500;
   font-family: ${(props) => props.theme.contentFont};
   line-height: 135%;
+  cursor: pointer;
 
-  margin-top: 0.25em;
+  margin-top: 1em;
   margin-bottom: 0.25em;
-  padding: 0.75em 1.25em;
+  padding: 0.5em 0.75em;
   border-top: none;
-  color: black;
-  line-height: 135%;
-  width: fit-content;
+  color: white;
 
   display: flex;
   text-align: center;
   align-items: center;
 
-  background-color: rgb(255, 255, 255);
-
-  border-radius: 1rem;
-  box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
-
+  background-color: rgb(19, 104, 206);
+  border-radius: 0.5rem;
+  border: 3px solid rgb(15, 90, 188);
   &:hover {
     transition: border 0.25s;
-    border: 3px solid rgb(200, 200, 200);
+    border: 3px solid rgb(255, 255, 255);
   }
 `;
 export interface EscapeRoomSettingsProps {
@@ -215,6 +230,11 @@ export const EscapeRoomSettings = (
   const handleEditTitle = (value: string) => {
     if (!onTitleChanged) return;
     onTitleChanged(value);
+  }; // handleEditTitle
+
+  const handleEditDescription = (value: string) => {
+    if (!onDescriptionChanged) return;
+    onDescriptionChanged(value);
   }; // handleEditTitle
 
   const checkRepeatedName = (characterIndex: number, newName: string) => {
@@ -292,7 +312,16 @@ export const EscapeRoomSettings = (
           <PromptField
             promptText={escapeRoomTitle}
             promptPlaceholder="Activity Title"
+            textAlignment="left"
             onPromptChange={handleEditTitle}
+          />
+          <CheckboxTitle> Escape Room Description </CheckboxTitle>
+          <PromptField
+            promptText={escapeRoomDescription}
+            promptPlaceholder="Activity Description"
+            textAlignment="left"
+            initialHeight="100px"
+            onPromptChange={handleEditDescription}
           />
 
           {/* Character Section */}
@@ -315,7 +344,7 @@ export const EscapeRoomSettings = (
             {/* If there are no characters being modified a button to a add a new one is displayer */}
             {selectedCharacterIndex === "none" && (
               <AddPuzzleButton onClick={handleAddCharacter}>
-                <AddCharacterIcon />
+                <AddCharacterIcon /> New Character
               </AddPuzzleButton>
             )}
             {/* Character editor at the end of the character list to add at the end of the list */}
@@ -339,27 +368,43 @@ export const EscapeRoomSettings = (
 }; // EditableWaitingCodeItemContent
 
 const PreviewTitle = styled.div`
-  margin-bottom: 0.25rem;
-  color: rgb(110, 110, 110);
+  width: 90%;
+  height: 50%;
+
+  font-weight: 600;
+  font-family: ${(props) => props.theme.contentFont};
+  font-size: 1.5rem;
   text-align: center;
-  font-size: 0.75rem;
+  text-overflow: ellipsis;
+  color: rgb(255, 255, 255);
+
+  border-bottom: 2px solid #ffffff;
+
+  margin-bottom: 0.25rem;
   line-height: 1.33;
   letter-spacing: 0.2px;
-  max-height: 1.5rem;
-  max-width: 100%;
   overflow: hidden;
   white-space: nowrap;
-  text-overflow: ellipsis;
 `;
 
 const PreviewAnswers = styled.div`
   display: flex;
   align-items: center;
   text-align: center;
+  font-family: ${(props) => props.theme.contentFont};
+  overflow: hidden;
+  text-overflow: ellipsis;
+  height: 30%;
+  width: 90%;
+  max-width: 90%;
+  max-height: 30%;
+  display: block;
+  white-space: nowrap;
+
   justify-content: center;
   flex-wrap: wrap;
   margin-top: 3px;
-  color: rgb(0, 0, 0);
+  color: rgb(255, 255, 255);
 `;
 
 export interface EscapeRoomSettingsStageSlideProps {
@@ -379,7 +424,7 @@ export const EscapeRoomSettingsStageSlide = (
         goToSettings && goToSettings();
       }}
     >
-      <SettingsIcon />
+      {/* <SettingsIcon /> */}
       <PreviewTitle>{"Escape Room"}</PreviewTitle>
       <PreviewAnswers>{title === "" ? "No title" : title}</PreviewAnswers>
     </Root>

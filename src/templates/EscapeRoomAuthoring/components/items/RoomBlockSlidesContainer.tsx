@@ -1,8 +1,23 @@
+import {
+  RoomBlock,
+  SupportedPuzzle,
+} from "../../../../services/escapeRoomActivity.model";
+import {
+  RoomBlockSlide,
+  RoomBlockSlideProps,
+  RoomSettingsSlide,
+} from "./RoomBlockSlide";
+import { RoomExitBlockSlide } from "./RoomExitBlockSlide";
+
 import styled from "styled-components";
 import { Add } from "@styled-icons/fluentui-system-filled/Add";
-import { RoomBlock, SupportedPuzzle } from "../../../../services/escapeRoomActivity.model";
-import { RoomBlockSlide, RoomBlockSlideProps, RoomSettingsSlide } from "./RoomBlockSlide";
-import { RoomExitBlockSlide } from "./RoomExitBlockSlide";
+
+const AddIcon = styled(Add)`
+  color: white;
+  height: 1.75em;
+  width: 1.75em;
+  margin: auto;
+`;
 
 const Root = styled.div`
   position: absolute;
@@ -14,52 +29,47 @@ const Root = styled.div`
   -moz-box-align: center;
   align-blocks: center;
   width: 96%;
-  height: 8.5rem;
-
-  background-color: white;
+  // height: 8.5rem;
+  height: 10rem;
 
   border-radius: 0 0 1.25rem 1.25rem;
-  box-shadow: #d3d4d5 0px -4px 0px 0px inset;
+  border: 1px solid rgb(19, 104, 206);
+  border-top: none;
+  //box-shadow: #d3d4d5 0px -4px 0px 0px inset;
   padding: 0 0.5rem;
 `;
 
 const VerticalSpace = styled.div`
   height: 0;
-  margin-top: 7rem;
+  margin-top: 8rem;
 `;
 
 const SlidesContainer = styled.div`
   display: flex;
   flex-direction: row;
   position: relative;
+  padding-left: 0.5rem;
   z-index: 4;
-  height: 85%;
+  height: 90%;
   width: 90%;
   overflow-x: scroll;
-  overflow-y:clip;
-  background-color: rgba(220,220,220,0.5);
+  overflow-y: clip;
+  background-color: rgba(200, 200, 200, 0.5);
   border-radius: 0 0 0.25rem 0.25rem;
 
-  scrollbar-gutter:stable;
+  scrollbar-gutter: stable;
   ::-webkit-scrollbar {
     height: 8px;
-    width:8px;
+    width: 8px;
   }
   ::-webkit-scrollbar-track {
-      -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
-      border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
   }
   ::-webkit-scrollbar-thumb {
-      border-radius: 10px;
-      -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
   }
-`;
-
-const AddIcon = styled(Add)`
-  color: white;
-  height: 1.75em;
-  width: 1.75em;
-  margin: auto;
 `;
 
 const ButtonsContainer = styled.div`
@@ -101,7 +111,7 @@ const AddBlockButton = styled.button`
   font-size: 0.875rem;
   font-weight: 600;
 
-  font-family: ${props => props.theme.contentFont};
+  font-family: ${(props) => props.theme.contentFont};
   text-align: center;
   text-decoration: none;
   min-width: 42px;
@@ -122,8 +132,10 @@ const AddBlockButton = styled.button`
 
 export type ItemToSlideProducerMapping<T extends SupportedPuzzle> = {
   /** What type of puzzle we are working with here*/
-  [P in T['type']]: ((slidePreviewProps: Extract<T, { type: P }>['payload']) => JSX.Element);
-}
+  [P in T["type"]]: (
+    slidePreviewProps: Extract<T, { type: P }>["payload"]
+  ) => JSX.Element;
+};
 
 export interface RoomBlockSlidesContainerProps {
   /** list of blocks currently included in the room */
@@ -131,7 +143,7 @@ export interface RoomBlockSlidesContainerProps {
   /** block that lets the user exit a room */
   exitBlock: RoomBlock;
   /** index of currently selected block in blocks */
-  selectedBlockIndex: number | 'room-settings' | 'exit-block';
+  selectedBlockIndex: number | "room-settings" | "exit-block";
   /** What  mappings we are working with in this slides list (available puzzle types and how to render their previews) */
   itemMappings: ItemToSlideProducerMapping<SupportedPuzzle>;
   /** Callback to parent component specifying that user wishes to add a new block to the room */
@@ -141,15 +153,16 @@ export interface RoomBlockSlidesContainerProps {
   /** Callback to parent component specifying that user wishes to go back to the room settings editor */
   onSelectRoomSettings?: () => void;
   /** Callback to parent component specifying that user wishes to go to the room's exit block */
-  onSelectRoomExitBlock?: () =>void;
+  onSelectRoomExitBlock?: () => void;
   /** Callback to parent component specifying that user wishes to delete a block of puzzles from current room */
-  onDeleteBlock?: (index:number) => void;
+  onDeleteBlock?: (index: number) => void;
   /** Callback to parent component specifying that user wishes to delete a block of puzzles from current room */
-  onDuplicateBlock?: (index:number) => void;
+  onDuplicateBlock?: (index: number) => void;
 } // RoomBlockSlidesContainerProps
 
-export const RoomBlockSlidesContainer = (props: RoomBlockSlidesContainerProps): JSX.Element => {
-
+export const RoomBlockSlidesContainer = (
+  props: RoomBlockSlidesContainerProps
+): JSX.Element => {
   const {
     blocks,
     exitBlock,
@@ -181,14 +194,20 @@ export const RoomBlockSlidesContainer = (props: RoomBlockSlidesContainerProps): 
     }
   }; // handleDeleteBlock
 
-
-
   return (
     <>
       <Root>
         <SlidesContainer>
-          <RoomSettingsSlide selected={selectedBlockIndex === 'room-settings'} onSlideSelected={onSelectRoomSettings}/>
-          <RoomExitBlockSlide exitBlock={exitBlock} blockIndex={0} puzzleMappings={itemMappings} onSlideSelected={onSelectRoomExitBlock}/>
+          <RoomSettingsSlide
+            selected={selectedBlockIndex === "room-settings"}
+            onSlideSelected={onSelectRoomSettings}
+          />
+          <RoomExitBlockSlide
+            exitBlock={exitBlock}
+            blockIndex={0}
+            puzzleMappings={itemMappings}
+            onSlideSelected={onSelectRoomExitBlock}
+          />
 
           {blocks.map((block, i) => {
             // This is "unsafe", but in reality due to how itemMappings is defined
@@ -200,13 +219,13 @@ export const RoomBlockSlidesContainer = (props: RoomBlockSlidesContainerProps): 
               blockIndex: i,
               onSlideSelected: () => handleSelectBlock(i),
               onBlockDeleted: () => handleDeleteBlock(i),
-              onBlockDuplicated: () => handleDuplicateBlock(i)
+              onBlockDuplicated: () => handleDuplicateBlock(i),
             } as RoomBlockSlideProps;
 
             return (
               <>
                 <RoomBlockSlide
-                  key={block.blockName + '_' + i}
+                  key={block.blockName + "_" + i}
                   {...slideProps}
                 />
               </>
@@ -217,10 +236,7 @@ export const RoomBlockSlidesContainer = (props: RoomBlockSlidesContainerProps): 
         {/* Button to the upper right side of the editor to add a new block of puzzles to the room */}
         <ButtonsContainer>
           <AddBlockButtonContainer>
-            <AddBlockButton
-              onClick={onAddBlock}
-              title="Add Block"
-            >
+            <AddBlockButton onClick={onAddBlock} title="Add Block">
               <AddIcon />
             </AddBlockButton>
           </AddBlockButtonContainer>
