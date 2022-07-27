@@ -189,7 +189,6 @@ export const fieldMappings: FieldMappings<SupportedFormField> = {
 export const DefineMultistageFormStep = (
   props: StepComponentProps<MultistageFormActivityDefinition>
 ): JSX.Element => {
-  
   const { state, setState } = props;
 
   // Default definition of a stage
@@ -253,7 +252,7 @@ export const DefineMultistageFormStep = (
           type: "multiple-choice",
           payload: { answers: ["Option 1"] },
         },
-        id: "UniqueID",
+        _id: "",
       },
       ...currentStage.forms.slice(selectedItemIndex + 1),
     ];
@@ -322,7 +321,7 @@ export const DefineMultistageFormStep = (
     currentStage.forms = [
       ...currentStage.forms.slice(0, index),
       {
-        promptText: currentStage.forms[index].promptText,
+        ...currentStage.forms[index],
         fieldData: {
           type: value,
           payload: mapping.defaultFieldPayload,

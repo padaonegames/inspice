@@ -239,6 +239,7 @@ export const EditableFieldCard = (
           type: "multiple-choice",
           payload: fieldMappings["multiple-choice"].defaultFieldPayload,
         },
+        _id: "",
       }
     );
 
@@ -252,6 +253,7 @@ export const EditableFieldCard = (
           type: "multiple-choice",
           payload: fieldMappings["multiple-choice"].defaultFieldPayload,
         },
+        _id: "",
       }
     );
   }, [initialFieldDefinition]);

@@ -160,7 +160,8 @@ export const App = (): JSX.Element => {
                     path="curator"
                     element={
                       <ActivityScreen
-                        /*guarded*/ activityTitle="Multistage Form Activity"
+                        guarded
+                        activityTitle="Multistage Form Activity"
                       />
                     }
                   >

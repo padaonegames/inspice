@@ -100,13 +100,19 @@ function isIsoDateString(value: any): boolean {
   return value && typeof value === "string" && isoDateFormat.test(value);
 }
 
+function parseISOString(s: string) {
+  var b = s.split(/\D+/).map((elem) => parseInt(elem));
+  return new Date(Date.UTC(b[0], b[1], b[2], b[3], b[4], b[5], b[6]));
+}
+
 export function handleDates(body: any) {
   if (body === null || body === undefined || typeof body !== "object")
     return body;
 
   for (const key of Object.keys(body)) {
     const value = body[key];
-    if (isIsoDateString(value)) body[key] = new Date(value);
-    else if (typeof value === "object") handleDates(value);
+    if (isIsoDateString(value)) {
+      body[key] = parseISOString(value);
+    } else if (typeof value === "object") handleDates(value);
   }
 }

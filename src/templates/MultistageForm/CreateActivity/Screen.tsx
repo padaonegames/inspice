@@ -76,7 +76,9 @@ export const GenerateNewMultistageFormActivityScreen = () => {
   const activityDefinition =
     generateNewMultistageFormActivityStatus.result.data;
   return (
-    <Navigate to={`/multistage-form/curator/create/${activityDefinition._id}`} />
+    <Navigate
+      to={`/multistage-form/curator/create/${activityDefinition._id}`}
+    />
   );
 }; // GenerateNewMultistageFormActivityScreen
 
@@ -131,9 +133,11 @@ const CreateMultistageFormScreen = (
     );
   }; // updateDefinition
 
-  const [updateDefinitionStatus] = useAsyncRequest(updateDefinition, [
-    newActivityDefinition,
-  ]);
+  const [updateDefinitionStatus] = useAsyncRequest(
+    updateDefinition,
+    [newActivityDefinition],
+    false
+  );
   const inSyncWithServer = updateDefinitionStatus.kind === "success";
 
   return (
@@ -185,8 +189,14 @@ export const CreateMultistageFormScreenComponent = (
         : { ...sample_base }
     );
 
+  // restrict change notifications on first render (no change happening there)
+  const [isMounted, setIsMounted] = useState<boolean>(false);
   useEffect(() => {
-    if (!onActivityDefinitionChanged) return;
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!onActivityDefinitionChanged || !isMounted) return;
     onActivityDefinitionChanged(activityDefinition);
   }, [activityDefinition]);
 

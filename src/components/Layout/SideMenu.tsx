@@ -11,10 +11,10 @@ interface RootProps {
 }
 const Root = styled.div<RootProps>`
   position: fixed;
-  width: ${props => props.open ? 'min(80vw, 350px)' : 0};
+  width: ${(props) => (props.open ? "min(80vw, 350px)" : 0)};
   height: calc(100vh - 3.75em);
   top: 3.75em;
-  background-color: ${props => props.theme.headerBackground};
+  background-color: ${(props) => props.theme.headerBackground};
   z-index: 99999;
 
   display: flex;
@@ -36,7 +36,7 @@ const UserWrapper = styled.div`
 `;
 
 const UserIcon = styled(UserCircle)`
-  color: ${props => props.theme.textColor};
+  color: ${(props) => props.theme.textColor};
   height: 2.5em;
   width: 2.5em;
 `;
@@ -44,12 +44,12 @@ const UserIcon = styled(UserCircle)`
 const Username = styled.div`
   font-size: 0.9em;
   font-weight: 500;
-  font-family: ${props => props.theme.contentFont};
+  font-family: ${(props) => props.theme.contentFont};
   line-height: 135%;
   width: 100%;
   margin-left: 1em;
   letter-spacing: +1px;
-  color: ${props => props.theme.textColor};
+  color: ${(props) => props.theme.textColor};
 `;
 
 const NavigationList = styled.li`
@@ -69,24 +69,25 @@ const IconStyle = styled.span<NavigationElemProps>`
   * {
     height: 1.75em;
     width: 1.75em;
-    color: ${props => props.selected ? 'white' : props.theme.textColor};
+    color: ${(props) => (props.selected ? "white" : props.theme.textColor)};
     margin-right: 1em;
   }
 `;
 
 interface NavigationElemProps {
   selected?: boolean;
-};
+}
 const NavigationElem = styled.ul<NavigationElemProps>`
   display: flex;
   flex-direction: row;
   align-items: center;
-  color: ${props => props.selected ? 'white' : props.theme.textColor};
-  background-color: ${props => props.selected ? '#c44c49' : props.theme.headerBackground};
+  color: ${(props) => (props.selected ? "white" : props.theme.textColor)};
+  background-color: ${(props) =>
+    props.selected ? "#c44c49" : props.theme.headerBackground};
   font-size: 0.95em;
-  font-weight: ${props => props.selected ? '900' : '400'};
+  font-weight: ${(props) => (props.selected ? "900" : "400")};
   letter-spacing: +1px;
-  font-family: ${props => props.theme.contentFont};
+  font-family: ${(props) => props.theme.contentFont};
   cursor: pointer;
   margin: 0.25em 0;
   padding: 0.35em 0;
@@ -94,7 +95,8 @@ const NavigationElem = styled.ul<NavigationElemProps>`
   border-radius: 5px;
 
   &:hover {
-    background-color: ${props => `hsl(5, 80%, ${props.theme.textReadableLuminosity}%)`};
+    background-color: ${(props) =>
+      `hsl(5, 80%, ${props.theme.textReadableLuminosity}%)`};
     color: white;
   }
 
@@ -119,7 +121,7 @@ export interface NavMenuElem {
   title: string;
   /** Icon to be rendered next to element's title */
   icon: StyledIcon;
-}; // NavMenuElem
+} // NavMenuElem
 
 interface SideMenuProps {
   /** Whether side menu should be open */
@@ -130,48 +132,49 @@ interface SideMenuProps {
   navigationWarnings?: NavigationWarning[];
   /** Callback to use when component is closed from an internal action */
   onClose?: () => void;
-};
+}
 
 /**
- * Navigation menu to be rendered to the side of the screen in order to provide quick 
+ * Navigation menu to be rendered to the side of the screen in order to provide quick
  * access to template links from within the app.
  */
 export const SideMenu = (props: SideMenuProps): JSX.Element => {
-
-  const {
-    open = false,
-    entries,
-    navigationWarnings = [],
-    onClose
-  } = props;
+  const { open = false, entries, navigationWarnings = [], onClose } = props;
 
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const { userData, setAccessToken } = useContext(AuthContext);
+  const { userData, setAccessToken, setUserData } = useContext(AuthContext);
+
+  const performLogout = () => {
+    setAccessToken(undefined);
+    setUserData(undefined);
+  }; // performLogout
 
   return (
     <>
       <Root open={open}>
-        {open &&
-          (<>
+        {open && (
+          <>
             <UserWrapper>
               <UserIcon />
-              <Username>{userData?.username ?? 'Not logged in'}</Username>
+              <Username>{userData?.username ?? "Not logged in"}</Username>
             </UserWrapper>
             <NavigationList>
-              {entries.map(elem => (
+              {entries.map((elem) => (
                 <NavigationElem
                   selected={pathname.includes(elem.to)}
                   onClick={() => {
                     // don't do anything if we are already at the destination
                     if (pathname.includes(elem.to)) return;
 
-                    // before actually navigating to the new route, check whether there exists 
+                    // before actually navigating to the new route, check whether there exists
                     // a route warning. If there is one, render a window confirmation prompt to
                     // warn the user about their progress being possibly lost before transitioning.
-                    const warning = navigationWarnings.find(w => pathname.includes(w.from));
+                    const warning = navigationWarnings.find((w) =>
+                      pathname.includes(w.from)
+                    );
 
-                    if(warning !== undefined) {
+                    if (warning !== undefined) {
                       const reallyClose = window.confirm(warning.warningText);
                       if (!reallyClose) return;
                     }
@@ -194,7 +197,7 @@ export const SideMenu = (props: SideMenuProps): JSX.Element => {
               <NavigationList>
                 <NavigationElem
                   selected={false}
-                  onClick={() => setAccessToken(undefined)}
+                  onClick={performLogout}
                 >
                   <IconStyle selected={false}>
                     <PowerOff />
@@ -203,7 +206,8 @@ export const SideMenu = (props: SideMenuProps): JSX.Element => {
                 </NavigationElem>
               </NavigationList>
             )}
-          </>)}
+          </>
+        )}
       </Root>
     </>
   );

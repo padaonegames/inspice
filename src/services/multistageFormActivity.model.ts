@@ -1,31 +1,7 @@
 //------------------------------------------
 //          ACTIVITY DEFINITIONS
 //------------------------------------------
-import { ActivityInstance, InProgressActivityInstance } from "./activity.model";
-
-export interface InProgressMultistageFormActivityDefinition
-  extends InProgressActivityInstance {
-  activityType: "Multistage Form";
-  stages: MultistageFormStage[];
-  formResponsesDatasetUuid: string;
-}
-
-export type CompletedMultistageFormActivityDefinition = Omit<
-  MultistageFormActivityDefinition,
-  "_id"
->;
-
-export const defaultMultistageFormActivityDefinition: InProgressMultistageFormActivityDefinition =
-  {
-    activityType: "Multistage Form",
-    activityTitle: undefined,
-    activityAuthor: undefined,
-    beginsOn: undefined,
-    endsOn: undefined,
-    stages: [],
-    formResponsesDatasetUuid: "",
-  };
-
+import { ActivityInstance } from "./activity.model";
 
 export type ItemDefinition =
   | { type: "short-text"; payload: ShortTextFieldDefinition }
@@ -70,14 +46,14 @@ export interface MultistageFormFieldDefinition {
   /** Whether this field should always be filled in by the user */
   required?: boolean;
   /** unique id of the form*/
-  id?: string;
+  _id: string;
 } // MultistageFormFieldDefinition
 
 export interface MultistageFormActivityDefinition extends ActivityInstance {
   activityType: "Multistage Form";
   stages: MultistageFormStage[];
   formResponsesDatasetUuid: string;
-}
+} // MultistageFormActivityDefinition
 
 /**
  * Description of a general stage for a Multistage Form activity,
@@ -92,14 +68,14 @@ export interface MultistageFormStage {
    * Forms defined within this particular stage
    */
   forms: MultistageFormFieldDefinition[];
-}
+} // MultistageFormStage
 
 export interface EditableFieldProps<T> {
   /** Definition to be used to render the stateless editable field component (only the exclusive part of the definition, prompt text and type are edited elsewhere) */
   fieldPayload: T;
   /** Callback to notify parent component of a change whithin the current definition */
   onPayloadChanged?: (definition: T) => void;
-}
+} // EditableFieldProps<T>
 
 export interface ShortTextFieldDefinition {
   placeholder?: string;
