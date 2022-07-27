@@ -1,13 +1,16 @@
 import styled from "styled-components";
 import { Plus } from "styled-icons/bootstrap";
-import { Cross } from '@styled-icons/entypo/Cross';
-import { AlertCircleOutline, CloseOutline } from "styled-icons/evaicons-outline";
+import { Cross } from "@styled-icons/entypo/Cross";
+import {
+  AlertCircleOutline,
+  CloseOutline,
+} from "styled-icons/evaicons-outline";
 
 export const PromptText = styled.div`
   font-size: 1em;
   font-weight: 400;
-  color: ${props => props.theme.textColor};
-  font-family: ${props => props.theme.contentFont};
+  color: ${(props) => props.theme.textColor};
+  font-family: ${(props) => props.theme.contentFont};
   line-height: 135%;
   width: 100%;
 `;
@@ -19,11 +22,11 @@ export const InputFile = styled.input`
 export const InputFileButton = styled.label`
   font-size: 0.9em;
   font-weight: 200;
-  font-family: ${props => props.theme.contentFont};
+  font-family: ${(props) => props.theme.contentFont};
   line-height: 135%;
   margin-top: 10px;
   cursor: pointer;
-  color: ${props => props.theme.textColor};
+  color: ${(props) => props.theme.textColor};
 
   @media (max-width: 768px) {
     height: 30px;
@@ -58,11 +61,11 @@ interface InputTextProps {
 export const InputText = styled.input<InputTextProps>`
   font-size: 0.9em;
   font-weight: 200;
-  font-family: ${props => props.theme.contentFont};
+  font-family: ${(props) => props.theme.contentFont};
   line-height: 135%;
-  width: ${props => props.textWidth ? props.textWidth * 100 : 50}%;
+  width: ${(props) => (props.textWidth ? props.textWidth * 100 : 50)}%;
   margin-top: 10px;
-  color: ${props => props.theme.textColor};
+  color: ${(props) => props.theme.textColor};
   border: none;
   border-bottom: 2px solid #dadce0;
   outline: none;
@@ -82,17 +85,18 @@ interface InputAreaProps {
 export const InputArea = styled.textarea<InputAreaProps>`
   font-size: 0.9em;
   font-weight: 200;
-  font-family: ${props => props.theme.contentFont};
+  font-family: ${(props) => props.theme.contentFont};
   line-height: 135%;
-  width: ${props => props.width ?? '100%'};
-  height: ${props => props.height ?? '6em'};
+  width: ${(props) => props.width ?? "100%"};
+  height: ${(props) => props.height ?? "6em"};
   margin-top: 10px;
-  color: ${props => props.theme.textColor};
+  color: ${(props) => props.theme.textColor};
   border: none;
   border-bottom: 2px solid #dadce0;
   outline: none;
   padding: 0.65em;
-  background-color: ${props => props.dimBackground ? '#f8f9fa' : 'transparent'};
+  background-color: ${(props) =>
+    props.dimBackground ? "#f8f9fa" : "transparent"};
   resize: none;
   overflow-y: hidden;
 
@@ -104,11 +108,11 @@ export const InputArea = styled.textarea<InputAreaProps>`
 export const SelectFieldTypeDropdownButton = styled.span`
   font-size: 0.9em;
   font-weight: 200;
-  font-family: ${props => props.theme.contentFont};
+  font-family: ${(props) => props.theme.contentFont};
   line-height: 135%;
   margin-top: 10px;
   cursor: pointer;
-  color: ${props => props.theme.textColor};
+  color: ${(props) => props.theme.textColor};
 
   position: relative;
 
@@ -144,11 +148,11 @@ interface InputSegmentProps {
 export const InputSegment = styled.input<InputSegmentProps>`
   font-size: 0.9em;
   font-weight: 200;
-  font-family: ${props => props.theme.contentFont};
+  font-family: ${(props) => props.theme.contentFont};
   line-height: 135%;
-  width: ${props => props.numCharacters * 0.7}em;
+  width: ${(props) => props.numCharacters * 0.7}em;
   text-align: center;
-  color: ${props => props.theme.textColor};
+  color: ${(props) => props.theme.textColor};
   border: none;
   border-bottom: 2px solid #dadce0;
   outline: none;
@@ -174,16 +178,16 @@ export const InputSegmentTag = styled.div`
   align-items: center;
   font-size: 12px;
   font-weight: 400;
-  letter-spacing: .3px;
+  letter-spacing: 0.3px;
   line-height: 16px;
   color: #70757a;
   word-break: keep-all;
-  font-family: ${props => props.theme.contentFont};
+  font-family: ${(props) => props.theme.contentFont};
   margin-bottom: 5px;
 `;
 
 export const DateSlash = styled.div`
-  color: ${props => props.theme.textColor};
+  color: ${(props) => props.theme.textColor};
   font-weight: 600;
   align-self: flex-end;
   margin: 0 7px;
@@ -205,20 +209,20 @@ interface CardPanelProps {
   isFocused?: boolean;
 }
 export const CardPanel = styled.div<CardPanelProps>`
-  position:relative;  
+  position: relative;
   padding: 16px 16px 24px 16px;
-  background-color: ${props => props.theme.cardBackground};
-  ${props => !props.requiredAlert && 'border: 1px solid #dadce0;'}
-  ${props => props.requiredAlert && 'border: 1px solid #c44c49;'}
+  background-color: ${(props) => props.theme.cardBackground};
+  ${(props) => !props.requiredAlert && "border: 1px solid #dadce0;"}
+  ${(props) => props.requiredAlert && "border: 1px solid #c44c49;"}
   &:focus-within {
     border-left: 6px solid #c44c49;
   }
-  &:focus{
+  &:focus {
     outline: none !important;
     border-left: 6px solid #c44c49;
   }
-  ${props => props.isFocused ? "border-left: 6px solid #c44c49;" : ""}
-  
+  ${(props) => (props.isFocused ? "border-left: 6px solid #c44c49;" : "")}
+
   border-radius: 8px;
   width: 100%;
   word-wrap: break-word;
@@ -247,7 +251,7 @@ export const Root = styled.div`
 export const RequiredQuestionSpan = styled.div`
   color: #d93025;
   font-size: 0.8em;
-  font-family: ${props => props.theme.contentFont};
+  font-family: ${(props) => props.theme.contentFont};
   margin-top: 12px;
   display: flex;
   flex-direction: row;
@@ -256,7 +260,7 @@ export const RequiredQuestionSpan = styled.div`
 
 export const RequiredAlertIcon = styled(AlertCircleOutline)`
   color: #d93025;
-  font-family: ${props => props.theme.contentFont};
+  font-family: ${(props) => props.theme.contentFont};
   height: 1.25em;
   width: 1.25em;
   margin-right: 0.5em;
@@ -265,15 +269,15 @@ export const RequiredAlertIcon = styled(AlertCircleOutline)`
 export const RequiredAsterisk = styled.span`
   color: #d93025;
   font-size: 1.2em;
-  font-family: ${props => props.theme.contentFont};
+  font-family: ${(props) => props.theme.contentFont};
 `;
 
 export const TitleText = styled.div`
   // font: 400 16px Roboto,RobotoDraft,Helvetica,Arial,sans-serif;
   font-size: 1.45em;
   font-weight: 500;
-  color: ${props => props.theme.textColor};
-  font-family: ${props => props.theme.contentFont};
+  color: ${(props) => props.theme.textColor};
+  font-family: ${(props) => props.theme.contentFont};
   line-height: 135%;
   width: 100%;
 `;
@@ -282,8 +286,8 @@ export const EditableTitleText = styled.input`
   // font: 400 16px Roboto,RobotoDraft,Helvetica,Arial,sans-serif;
   font-size: 1.45em;
   font-weight: 500;
-  color: ${props => props.theme.textColor};
-  font-family: ${props => props.theme.contentFont};
+  color: ${(props) => props.theme.textColor};
+  font-family: ${(props) => props.theme.contentFont};
   line-height: 135%;
   width: 100%;
 
@@ -308,21 +312,21 @@ export const TitleColor = styled.div`
 export const StepDescription = styled.div`
   font-size: 0.95em;
   font-weight: 200;
-  font-family: ${props => props.theme.contentFont};
+  font-family: ${(props) => props.theme.contentFont};
   line-height: 135%;
   width: 100%;
   margin-top: 5px;
-  color: ${props => props.theme.textColor};
+  color: ${(props) => props.theme.textColor};
 `;
 
 export const EditableStepDescription = styled.textarea`
   font-size: 0.95em;
   font-weight: 200;
-  font-family: ${props => props.theme.contentFont};
+  font-family: ${(props) => props.theme.contentFont};
   line-height: 135%;
   width: 100%;
   margin-top: 5px;
-  color: ${props => props.theme.textColor};
+  color: ${(props) => props.theme.textColor};
 
   height: 6em;
   border: none;
@@ -337,15 +341,14 @@ export const EditableStepDescription = styled.textarea`
   }
 `;
 
-
 export const EditableText = styled.textarea`
   font-size: 0.95em;
   font-weight: 200;
-  font-family: ${props => props.theme.contentFont};
+  font-family: ${(props) => props.theme.contentFont};
   line-height: 135%;
   width: 100%;
   margin-top: 5px;
-  color: ${props => props.theme.textColor};
+  color: ${(props) => props.theme.textColor};
 
   height: 8em;
   border: none;
@@ -381,7 +384,7 @@ export const TagsContainer = styled.div`
   height: auto;
   min-height: 1.5em;
   margin-top: 10px;
-  color: ${props => props.theme.textColor};
+  color: ${(props) => props.theme.textColor};
   border: none;
   border-bottom: 2px solid #dadce0;
   padding: 2px 0;
@@ -396,9 +399,9 @@ export const TagsContainer = styled.div`
 export const TagText = styled.span`
   font-size: 0.8em;
   font-weight: 200;
-  font-family: ${props => props.theme.contentFont};
+  font-family: ${(props) => props.theme.contentFont};
   line-height: 135%;
-  color: ${props => props.theme.textColor};
+  color: ${(props) => props.theme.textColor};
 
   overflow: hidden;
   text-overflow: ellipsis;
@@ -410,9 +413,9 @@ export const TagText = styled.span`
 export const EditableTagText = styled.input`
   font-size: 0.8em;
   font-weight: 200;
-  font-family: ${props => props.theme.contentFont};
+  font-family: ${(props) => props.theme.contentFont};
   line-height: 135%;
-  color: ${props => props.theme.textColor};
+  color: ${(props) => props.theme.textColor};
 
   overflow: hidden;
   text-overflow: ellipsis;
@@ -433,8 +436,8 @@ interface TagWrapperProps {
   error?: boolean;
 }
 export const TagWrapper = styled.div<TagWrapperProps>`
-  ${props => !props.error && 'border: 2px solid #dadce0;'}
-  ${props => props.error && 'border: 2px solid #c44c49;'}
+  ${(props) => !props.error && "border: 2px solid #dadce0;"}
+  ${(props) => props.error && "border: 2px solid #c44c49;"}
   padding: 2px 5px;
   background-color: transparent;
   border-radius: 10px;
@@ -449,7 +452,7 @@ export const TagWrapper = styled.div<TagWrapperProps>`
 export const RemoveTagIcon = styled(CloseOutline)`
   height: 0.85em;
   width: 0.85em;
-  color: ${props => props.theme.textColor};
+  color: ${(props) => props.theme.textColor};
   cursor: pointer;
 
   &:hover {
@@ -461,7 +464,7 @@ export const RemoveOptionIcon = styled(Cross)`
   height: 1.5em;
   width: 1.5em;
   padding: 0.1em;
-  color: ${props => props.theme.textColor};
+  color: ${(props) => props.theme.textColor};
   cursor: pointer;
   margin: auto;
   border-radius: 50%;
@@ -492,7 +495,7 @@ export const NewTagButton = styled.div`
 `;
 
 export const NewTagIcon = styled(Plus)`
-  color: ${props => props.theme.textColor};
+  color: ${(props) => props.theme.textColor};
   height: 1.15em;
   width: 1.15em;
 `;
@@ -500,9 +503,9 @@ export const NewTagIcon = styled(Plus)`
 export const NewTagText = styled.span`
   font-size: 0.8em;
   font-weight: 200;
-  font-family: ${props => props.theme.contentFont};
+  font-family: ${(props) => props.theme.contentFont};
   line-height: 135%;
-  color: ${props => props.theme.textColor};
+  color: ${(props) => props.theme.textColor};
 
   overflow: hidden;
   text-overflow: ellipsis;
@@ -530,8 +533,8 @@ export const CheckboxOption = styled.div`
   border-top: none;
   font-size: 0.9em;
   font-weight: 200;
-  font-family: ${props => props.theme.contentFont};
-  color: ${props => props.theme.textColor};
+  font-family: ${(props) => props.theme.contentFont};
+  color: ${(props) => props.theme.textColor};
   line-height: 135%;
   width: 100%;
   display: flex;
