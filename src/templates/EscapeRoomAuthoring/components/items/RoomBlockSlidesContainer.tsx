@@ -1,5 +1,3 @@
-import styled from "styled-components";
-import { Add } from "@styled-icons/fluentui-system-filled/Add";
 import {
   RoomBlock,
   SupportedPuzzle,
@@ -11,6 +9,16 @@ import {
 } from "./RoomBlockSlide";
 import { RoomExitBlockSlide } from "./RoomExitBlockSlide";
 
+import styled from "styled-components";
+import { Add } from "@styled-icons/fluentui-system-filled/Add";
+
+const AddIcon = styled(Add)`
+  color: white;
+  height: 1.75em;
+  width: 1.75em;
+  margin: auto;
+`;
+
 const Root = styled.div`
   position: absolute;
   top: 0;
@@ -21,9 +29,8 @@ const Root = styled.div`
   -moz-box-align: center;
   align-blocks: center;
   width: 96%;
-  height: 8.5rem;
-
-  background-color: white;
+  // height: 8.5rem;
+  height: 10rem;
 
   border-radius: 0 0 1.25rem 1.25rem;
   border: 1px solid rgb(19, 104, 206);
@@ -34,7 +41,7 @@ const Root = styled.div`
 
 const VerticalSpace = styled.div`
   height: 0;
-  margin-top: 7rem;
+  margin-top: 8rem;
 `;
 
 const SlidesContainer = styled.div`
@@ -43,7 +50,7 @@ const SlidesContainer = styled.div`
   position: relative;
   padding-left: 0.5rem;
   z-index: 4;
-  height: 85%;
+  height: 90%;
   width: 90%;
   overflow-x: scroll;
   overflow-y: clip;
@@ -63,13 +70,6 @@ const SlidesContainer = styled.div`
     border-radius: 10px;
     -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
   }
-`;
-
-const AddIcon = styled(Add)`
-  color: white;
-  height: 1.75em;
-  width: 1.75em;
-  margin: auto;
 `;
 
 const ButtonsContainer = styled.div`

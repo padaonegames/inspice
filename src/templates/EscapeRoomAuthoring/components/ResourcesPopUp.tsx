@@ -53,11 +53,11 @@ const PopUpWrapper = styled.main`
 
 const DeleteIcon = styled(DeleteForever)`
   position: absolute;
-  height: 2.25em;
-  width: 2.25em;
+  height: 1.75em;
+  width: 1.75em;
   top: -5%;
   right: -5%;
-  padding: 3px;
+  padding: 1px;
   cursor: pointer;
   border-radius: 0.25rem;
   border: 2px solid rgb(15, 90, 188);
@@ -150,6 +150,7 @@ const ResourceContainer = styled.div`
   place-self: center;
   position: relative;
   width: 125px;
+  height: 125px;
 `;
 interface ResourceProps {
   selected: boolean;
@@ -157,26 +158,27 @@ interface ResourceProps {
 const ResourceContent = styled.div<ResourceProps>`
   place-self: center;
   position: relative;
-  color: white;
+  color: black;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  border-radius: 0.5rem;
-  border: 5px solid rgb(15, 90, 188);
-  padding-bottom: 1rem;
-  background-color: ${(props) =>
-    props.selected ? "rgb(49, 134, 236)" : "rgb(19, 104, 206)"};
+  justify-content: space-around;
+  border-radius: 0.25rem;
+  padding: 0.25rem 0 0.25rem 0;
+  width: 100%;
+  height: 100%;
+
   cursor: pointer;
   &:hover {
-    background-color: rgb(39, 124, 226);
+    background-color: rgb(181, 210, 248);
   }
 `;
 
 const ResourcePreview = styled.img`
-  padding: 0 0 20px 0;
+  padding: 0 0 5px 0;
   width: 80%;
-  height: 80%;
+  // height: 80%;
 `;
 
 ////////////////////Bottom of the popup
@@ -392,7 +394,7 @@ export const ResourcesPopUpComponent = (
           </>
         }
         {/* Grid with all the resources avaliable */}
-        <SelectResourceGrid elements={resourceList.length} elementsPerRow={3}>
+        <SelectResourceGrid elements={resourceList.length} elementsPerRow={4}>
           {resourceList.map((resource, index) => (
             <ResourceContainer
               key={resource.name}

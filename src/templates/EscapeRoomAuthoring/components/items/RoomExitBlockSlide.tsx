@@ -5,13 +5,19 @@ import {
 
 import styled from "styled-components";
 import { Exit } from "@styled-icons/icomoon/Exit";
-
 import { CaretRightFill } from "@styled-icons/bootstrap/CaretRightFill";
+
 const RightArrowIcon = styled(CaretRightFill)`
   color: rgb(15, 90, 188);
   height: 1.75em;
   width: 1.75em;
   margin: auto;
+`;
+
+const ExitIcon = styled(Exit)`
+  color: rgb(255, 255, 255);
+  height: 100%;
+  padding-left: 0.5rem;
 `;
 
 interface RootProps {
@@ -52,9 +58,10 @@ const Root = styled.div<RootProps>`
 `;
 
 //Entire slide of a puzzle
-const PuzzleSlide = styled.div`
+export const Slide = styled.div`
   position: relative;
-  height: 80%;
+  height: 90%;
+  width: 150px;
   cursor: pointer;
   display: flex;
   flex-direction: column;
@@ -84,7 +91,7 @@ const SlideContainer = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
-  width: 100px;
+  width: 100%;
   box-sizing: border-box;
   overflow: hidden;
   border-radius: 0 0 0.25rem 0.25rem;
@@ -97,28 +104,21 @@ interface ItemPreviewProps {
 }
 
 //Preview inside puzzle block
-const ItemPreview = styled.div<ItemPreviewProps>`
-  display: flex;
-  flex-direction: column;
-  -moz-box-pack: justify;
-  justify-content: space-between;
+export const ItemPreview = styled.div<ItemPreviewProps>`
   height: 100%;
   width: 100%;
-  max-width: 100%;
-  flex: 1 1 0%;
+  max-height: 100px;
   padding: 0.25rem 0.5rem;
   color: rgb(178, 178, 178);
+  border-radius: 0 0 0.25rem 0.25rem;
+  color: rgb(51, 51, 51);
+  border: 2px solid rgb(15, 90, 188);
+  align-self: start;
+  display: flex;
+  flex-direction: column;
 
-  border: 1px solid rgb(229, 229, 229);
-  border-radius: 0.25rem;
-
-  background-color: ${(props) => (props.selected ? "white" : "#f2f2f1")};
-`;
-
-const ExitIcon = styled(Exit)`
-  color: rgb(255, 255, 255);
-  height: 100%;
-  padding-left: 0.5rem;
+  background-color: ${(props) =>
+    props.selected ? "white" : "#f2f2f1"}; //"#f2f2f1"
 `;
 
 //Container of the multiple slides that can be added to a block
@@ -128,7 +128,7 @@ export const SlidesContainer = styled.div`
   display: flex;
   flex-direction: row;
   padding: 0px 10px 0px 10px;
-  height: 75%;
+  height: 100%;
   z-index: 19;
 
   box-sizing: border-box;
@@ -167,7 +167,7 @@ export const SlideRoot = styled.div<RootProps>`
 
 export const SettingsSlideTitle = styled.div`
   position: relative;
-  height: 25%;
+  height: 20%;
   width: 100%;
   background-color: rgb(19, 104, 206);
   padding-top: 3px;
@@ -246,14 +246,11 @@ export const RoomExitBlockSlide = (
           const slideRenderer = puzzleMappings[puzzle.type];
           return (
             <>
-              <PuzzleSlide>
-                {/* <SlideTitle>{puzzle.type}</SlideTitle> */}
-                <SlideContainer>
-                  <ItemPreview selected={selected}>
-                    {slideRenderer && slideRenderer(puzzle.payload as any)}
-                  </ItemPreview>
-                </SlideContainer>
-              </PuzzleSlide>
+              <Slide>
+                <ItemPreview selected={selected}>
+                  {slideRenderer && slideRenderer(puzzle.payload as any)}
+                </ItemPreview>
+              </Slide>
               {i !== exitBlock.puzzles.length - 1 && <RightArrowIcon />}
             </>
           );
@@ -276,12 +273,12 @@ export const RoomSettingsSlide = (
 
   return (
     <Root onClick={onSlideSelected} selected={selected}>
-      <PuzzleSlide>
+      <Slide>
         <SlideTitle>Room Settings</SlideTitle>
         <SlideContainer>
           <ItemPreview selected={selected} />
         </SlideContainer>
-      </PuzzleSlide>
+      </Slide>
     </Root>
   );
 }; // RoomExitBlockSlide

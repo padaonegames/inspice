@@ -11,11 +11,9 @@ import styled from "styled-components";
 import { ArrowDropDown } from "@styled-icons/material/ArrowDropDown";
 import { MessageRoundedAdd } from "@styled-icons/boxicons-regular/MessageRoundedAdd";
 import { DeleteForever } from "@styled-icons/material-twotone/DeleteForever";
-import { DialogflowDimensions } from "@styled-icons/simple-icons/Dialogflow";
 import { DownArrowAlt } from "@styled-icons/boxicons-regular/DownArrowAlt";
 import { UpArrowAlt } from "@styled-icons/boxicons-regular/UpArrowAlt";
 import { ThreeDots } from "@styled-icons/bootstrap/ThreeDots";
-import { DiagonalArrowRightUpDimensions } from "@styled-icons/evaicons-solid/DiagonalArrowRightUp";
 
 const UpArrowIcon = styled(UpArrowAlt)`
   position: absolute;
@@ -163,7 +161,7 @@ const CharactersInteractionsList = styled.div`
   position: relative;
   margin-top: 5px;
   align-items: center;
-  width: 15%;
+  width: 20%;
   height: 100%;
   border-bottom: 2px solid #dadce0;
   padding: 0.75em;
@@ -285,7 +283,7 @@ const InteractionContent = styled.div`
   display: flex;
   flex-direction: row;
   align-items: left;
-  width: 85%;
+  width: 80%;
   height: 100%;
   border-bottom: 2px solid #dadce0;
   padding: 0.75em;

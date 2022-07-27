@@ -80,7 +80,7 @@ const CharacterContainer = styled.div`
   width: 60%;
   max-height: 500px;
   border-bottom: 2px solid #dadce0;
-  padding: 0.75em;
+  padding: 0.25em;
   background-color: rgb(15, 90, 188);
   border-radius: 0.5rem;
   box-shadow: rgba(13, 84, 176, 1) 0px -4px 0px 0px inset;
@@ -185,10 +185,6 @@ const DataLine = styled.div`
   margin-top: 10px;
   color: rgb(19, 104, 206);
   margin-bottom: 5px;
-
-  border-style: solid;
-  border-color: rgb(19, 104, 206);
-  border-width: 0px 0px 2px 0px;
 `;
 
 export interface EscapeRoomCharacterCardProps {

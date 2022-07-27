@@ -44,7 +44,10 @@ import EscapeRoomSettings from "./components/items/EscapeRoomSettings";
 import { stageTypeIcon } from "./components/StageSettingsContainer";
 
 import { cloneDeep } from "lodash";
-import { roomItemFactory } from "./components/items/RoomItem";
+import {
+  roomItemFactory,
+  RoomItemStageSlide,
+} from "./components/items/RoomItem";
 import {
   unlockPasswordItemFactory,
   UnlockPasswordItemStageSlide,
@@ -158,7 +161,7 @@ export const stageMappings: StageMappings<SupportedStage> = {
 
 export const stageSlidesMappings: StageToSlideProducerMapping<SupportedStage> =
   {
-    room: undefined,
+    room: RoomItemStageSlide,
     "multiple-choice": MultipleChoiceItemStageSlide,
     "waiting-code": WaitingCodeItemStageSlide,
     "qr-scan": QRScanItemStageSlide,

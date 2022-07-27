@@ -8,7 +8,12 @@ import styled from "styled-components";
 import { DeleteForever } from "@styled-icons/material-twotone/DeleteForever";
 import { Copy } from "@styled-icons/boxicons-regular/Copy";
 import { Settings } from "@styled-icons/fluentui-system-filled/Settings";
-import { SlideRoot, SlidesContainer } from "./RoomExitBlockSlide";
+import {
+  ItemPreview,
+  Slide,
+  SlideRoot,
+  SlidesContainer,
+} from "./RoomExitBlockSlide";
 
 import { CaretRightFill } from "@styled-icons/bootstrap/CaretRightFill";
 const RightArrowIcon = styled(CaretRightFill)`
@@ -30,44 +35,12 @@ const SettingsIcon = styled(Settings)`
 interface RootProps {
   selected?: boolean;
 }
-const Root = styled.div<RootProps>`
-  position: relative;
-  box-sizing: border-box;
-  height: 100%;
-  width: min-content;
-  background-color: transparent;
-  user-select: none;
-  padding: 10px 0px 10px 0px;
-  display: flex;
-  flex-direction: row;
-  flex: 0 0 auto;
-  justify-content: space-around;
-  border: 0px none;
-  border-radius: 1.25rem;
-
-  ${(props) =>
-    !props.selected &&
-    `
-  border: 1px dashed black;
-  `}
-  font-size: 0.875rem;
-  font-weight: 500;
-  font-family: ${(props) => props.theme.contentFont};
-  color: rgb(51, 51, 51);
-  min-width: 141px;
-  ${(props) =>
-    props.selected &&
-    `
-  background-color: rgb(234, 244, 252);
-  `}
-  margin-right: 1em;
-`;
 
 const SettingsSlideRoot = styled.div<RootProps>`
   position: relative;
   box-sizing: border-box;
   height: 100%;
-  width: min-content;
+  width: 150px;
   background-color: rgb(255, 2255, 255);
   user-select: none;
   display: flex;
@@ -95,7 +68,7 @@ const SettingsSlideRoot = styled.div<RootProps>`
 
 const SettingsSlideTitle = styled.div`
   position: relative;
-  height: 25%;
+  height: 20%;
   width: 100%;
   background-color: rgb(19, 104, 206);
   padding-top: 3px;
@@ -110,54 +83,6 @@ const SettingsSlideTitle = styled.div`
   text-align: center;
   font-family: ${(props) => props.theme.contentFont};
   color: rgb(255, 255, 255);
-`;
-
-const Slide = styled.div`
-  position: relative;
-  height: 80%;
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  top: 50%;
-  transform: translate(0, -50%);
-`;
-
-const SlideContainer = styled.div`
-  position: relative;
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  width: 100px;
-  box-sizing: border-box;
-  overflow: hidden;
-  border-radius: 0 0 0.25rem 0.25rem;
-  color: rgb(51, 51, 51);
-  border: 2px solid rgb(15, 90, 188);
-`;
-
-interface ItemPreviewProps {
-  selected?: boolean;
-}
-
-//Preview inside puzzle block
-const ItemPreview = styled.div<ItemPreviewProps>`
-  display: flex;
-  flex-direction: column;
-  -moz-box-pack: justify;
-  justify-content: space-between;
-  height: 100%;
-  width: 100%;
-  max-width: 100%;
-  flex: 1 1 0%;
-  padding: 0.25rem 0.5rem;
-  color: rgb(178, 178, 178);
-
-  border: 1px solid rgb(229, 229, 229);
-  border-radius: 0.25rem;
-
-  background-color: ${(props) => (props.selected ? "white" : "#f2f2f1")};
-  transition: border 0.25s;
 `;
 
 const DuplicateIcon = styled(Copy)`
@@ -277,12 +202,9 @@ export const RoomBlockSlide = (props: RoomBlockSlideProps): JSX.Element => {
           return (
             <>
               <Slide>
-                {/* <SlideTitleV2>{puzzle.type}</SlideTitleV2> */}
-                <SlideContainer>
-                  <ItemPreview selected={selected}>
-                    {slideRenderer && slideRenderer(puzzle.payload as any)}
-                  </ItemPreview>
-                </SlideContainer>
+                <ItemPreview selected={selected}>
+                  {slideRenderer && slideRenderer(puzzle.payload as any)}
+                </ItemPreview>
               </Slide>
               {i !== block.puzzles.length - 1 && <RightArrowIcon />}
             </>

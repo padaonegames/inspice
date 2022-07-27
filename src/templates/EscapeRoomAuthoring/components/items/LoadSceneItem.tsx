@@ -7,13 +7,6 @@ import { PromptField } from "./PromptField";
 
 import styled from "styled-components";
 import { Unity } from "@styled-icons/fa-brands/Unity";
-import { Loader } from "@styled-icons/boxicons-regular/Loader";
-
-const LoadIcon = styled(Loader)`
-  color: ${(props) => props.theme.textColor};
-  height: 1.75em;
-  width: auto;
-`;
 
 const UnityIcon = styled(Unity)`
   position: relative;
@@ -132,7 +125,7 @@ const UnityIconPreview = styled(Unity)`
   margin-top: 0.5rem;
   align-self: center;
   color: rgb(0, 0, 0);
-  height: 50%;
+  height: 60%;
 `;
 
 export const LoadSceneItemStageSlide = (
@@ -142,7 +135,9 @@ export const LoadSceneItemStageSlide = (
 
   return (
     <>
-      <PreviewTitle>{sceneName}</PreviewTitle>
+      <PreviewTitle>
+        {sceneName === "" ? "Your scene name" : sceneName}
+      </PreviewTitle>
       <UnityIconPreview />
     </>
   );
