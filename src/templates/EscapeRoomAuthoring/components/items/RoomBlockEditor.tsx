@@ -154,10 +154,7 @@ export const RoomBlockEditor = (props: RoomBlockEditorProps): JSX.Element => {
         }}
       >
         <CardTitle>Block Information</CardTitle>
-        <TitleContainer>
-          <HintsIcon />
-          Block Title
-        </TitleContainer>
+        <TitleContainer>Block Title</TitleContainer>
         <PromptField
           promptText={block.blockName}
           promptPlaceholder="Give this block a title"
@@ -165,10 +162,7 @@ export const RoomBlockEditor = (props: RoomBlockEditorProps): JSX.Element => {
             handleChangeBlockName(value);
           }}
         />
-        <TitleContainer>
-          <HintsIcon />
-          Block Description
-        </TitleContainer>
+        <TitleContainer>Block Description</TitleContainer>
         <PromptField
           promptText={block.blockDescription}
           promptPlaceholder="Give this block a description"

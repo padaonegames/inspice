@@ -2,106 +2,123 @@ import { CharacterDefinition } from "../../../../services/escapeRoomActivity.mod
 import { PromptField } from "./PromptField";
 
 import styled from "styled-components";
-import { Cross } from '@styled-icons/entypo/Cross';
-import { AlertCircle } from "@styled-icons/evaicons-solid/AlertCircle"
-import { Save } from "@styled-icons/boxicons-solid/Save"
-import { Edit } from "@styled-icons/boxicons-solid/Edit"
+import { DeleteForever } from "@styled-icons/material-twotone/DeleteForever";
+import { AlertCircle } from "@styled-icons/evaicons-solid/AlertCircle";
+import { Save } from "@styled-icons/boxicons-solid/Save";
+import { Edit } from "@styled-icons/boxicons-solid/Edit";
 
 import { useEffect, useState } from "react";
 import { ResourcesPopUp } from "../ResourcesPopUp";
 
+const DeleteIcon = styled(DeleteForever)`
+  position: absolute;
+  right: 0.25rem;
+  top: 0.25rem;
 
-const DeleteIcon = styled(Cross)`
-  position:absolute;
-  right:5px;
-  height: 2em;
-  width: 2em;
+  height: 1.75em;
+  width: 1.75em;
+  border-radius: 0.25rem;
+  background-color: rgb(19, 104, 206);
+  border: 2px solid rgb(15, 90, 188);
+  cursor: pointer;
 
-  color: rgb(0, 0, 0);
+  color: white;
   &:hover {
-    color: rgb(255, 0, 0);
+    background-color: rgb(49, 134, 236);
   }
-`
+`;
 
 const AlertIcon = styled(AlertCircle)`
-  position:absolute;
-  left:27%;
-  top:8%;
+  position: absolute;
+  left: 27%;
+  top: 8%;
   height: 2em;
   width: 2em;
   color: rgb(255, 0, 0);
   transform: translate(-50%, -50%);
-`
+`;
 
 const SaveIcon = styled(Save)`
-position:absolute;
-right:5px;
-height: 2em;
-width: 2em;
+  position: absolute;
+  right: 0.25rem;
+  top: 0.25rem;
+  height: 1.75em;
+  width: 1.75em;
+  cursor: pointer;
 
-color: rgb(0, 0, 0);
-&:hover {
-  color: rgb(255, 0, 0);
-}
-`
+  border-radius: 0.25rem;
+  background-color: rgb(19, 104, 206);
+  border: 2px solid rgb(15, 90, 188);
+
+  color: white;
+  &:hover {
+    background-color: rgb(49, 134, 236);
+  }
+`;
 const EditIcon = styled(Edit)`
-position:absolute;
-right:30px;
-height: 2em;
-width: 2em;
+  position: absolute;
+  right: 2.5rem;
+  top: 0.25rem;
+  cursor: pointer;
 
-color: rgb(0, 0, 0);
-&:hover {
-  color: rgb(255, 0, 0);
-}
-`
+  height: 1.75em;
+  width: 1.75em;
+  border-radius: 0.25rem;
+  border: 2px solid rgb(15, 90, 188);
+  background-color: rgb(19, 104, 206);
+  color: white;
+  &:hover {
+    background-color: rgb(49, 134, 236);
+  }
+`;
 const CharacterContainer = styled.div`
-position:relative;
-margin-top: 5px;
-display: flex;
-flex-direction: row;
-align-items: left;
-width:50%;
-max-height: 500px;
-border-bottom: 2px solid #dadce0;
-padding: 0.75em;
-background-color: rgba(100,100,100,1);
-border-radius: 1.25rem;
-box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
+  position: relative;
+  margin-top: 5px;
+  display: flex;
+  flex-direction: row;
+  align-items: left;
+  width: 60%;
+  max-height: 500px;
+  border-bottom: 2px solid #dadce0;
+  padding: 0.25em;
+  background-color: rgb(15, 90, 188);
+  border-radius: 0.5rem;
+  box-shadow: rgba(13, 84, 176, 1) 0px -4px 0px 0px inset;
 `;
 const CharacterPreviewContainer = styled.div`
-display: flex;
-flex-direction: column;
-justify-content: space-between;
-align-items: center;
-width:30%;
-padding: 0 10px 0 10px;
-background-color: rgba(150,150,150,1);
-border-radius: 1.25rem 0 0 1.25rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  width: 30%;
+  padding: 0 10px 0 10px;
+  background-color: rgb(39, 134, 236);
+  border-radius: 0.5rem 0 0 0.5rem;
 `;
 
 const CharacterInfoContainer = styled.div`
-  position:relative;
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: space-between;
-  padding:0 10px 10px 10px;
-  width:100%;
-  background-color: rgba(180,180,180,1);
-  border-radius: 0 1.25rem 1.25rem 0;
-  z-index:0;
+  padding: 0 10px 10px 10px;
+  width: 100%;
+  background-color: rgb(230, 230, 230);
+  border-radius: 0 0.5rem 0.5rem 0;
+  z-index: 0;
 `;
 
 const ParragraphContainer = styled.div`
-  position:relative;
+  position: relative;
   display: flex;
-  padding:0 10px 10px 10px;
-  width:100%;
-  background-color: rgba(255,0,0,0.5);
-  border-radius: 0.25rem 0.25rem 0.25rem 0.25rem;
-  z-index:0;
+  padding: 0 10px 10px 10px;
+  width: 100%;
+  text-align: left;
+  background-color: rgba(153, 194, 247, 1);
+  border-radius: 0.1rem;
+  color: white; //rgb(19, 104, 206);
+  z-index: 0;
 `;
-
 
 interface InputAreaProps {
   width?: string;
@@ -111,16 +128,17 @@ interface InputAreaProps {
 export const InputArea = styled.textarea<InputAreaProps>`
   font-size: 0.9em;
   font-weight: 200;
-  font-family: ${props => props.theme.contentFont};
+  font-family: ${(props) => props.theme.contentFont};
   line-height: 135%;
-  width: ${props => props.width ?? '100%'};
-  height: ${props => props.height ?? '6em'};
+  width: ${(props) => props.width ?? "100%"};
+  height: ${(props) => props.height ?? "6em"};
   margin-top: 10px;
-  color: ${props => props.theme.textColor};
+  color: ${(props) => props.theme.textColor};
   border: none;
   outline: none;
   padding: 0.65em;
-  background-color: ${props => props.dimBackground ? '#f8f9fa' : 'transparent'};
+  background-color: ${(props) =>
+    props.dimBackground ? "#f8f9fa" : "transparent"};
   resize: none;
   overflow-y: hidden;
 
@@ -137,7 +155,7 @@ export const InputArea = styled.textarea<InputAreaProps>`
 const SelectCharacterButton = styled.div`
   font-size: 1em;
   font-weight: 500;
-  font-family: ${props => props.theme.contentFont};
+  font-family: ${(props) => props.theme.contentFont};
   line-height: 135%;
 
   color: black;
@@ -146,7 +164,7 @@ const SelectCharacterButton = styled.div`
   text-align: center;
   padding: 10px 0px 10px 0px;
   margin: 0px 0px 10px 0px;
-  background-color: rgba(240,240,240,1);
+  background-color: rgba(240, 240, 240, 1);
   border-radius: 0.5rem;
 
   &:hover {
@@ -156,21 +174,18 @@ const SelectCharacterButton = styled.div`
 `;
 
 const CharacterPreview = styled.img`
-  width:100%;
+  width: 100%;
   display: block;
 `;
 
 const DataLine = styled.div`
-  position:relative;
+  position: relative;
   height: 1.25em;
   width: fit-content;
-  margin-top:10px;
-
-  border-style: solid;
-  border-color: lightgray;
-  border-width: 0px 0px 2px 0px;
+  margin-top: 10px;
+  color: rgb(19, 104, 206);
+  margin-bottom: 5px;
 `;
-
 
 export interface EscapeRoomCharacterCardProps {
   initialCharacterDefinition: CharacterDefinition;
@@ -181,65 +196,74 @@ export interface EscapeRoomCharacterCardProps {
   editMode: boolean;
 } // EscapeRoomCharacterCardProps
 
-export const EscapeRoomCharacterCard = (props: EscapeRoomCharacterCardProps): JSX.Element => {
-
+export const EscapeRoomCharacterCard = (
+  props: EscapeRoomCharacterCardProps
+): JSX.Element => {
   const {
     initialCharacterDefinition,
     onSaveCharacterData,
     onDeleteCharacter,
     onEnterCharacterEditMode,
     showAlert,
-    editMode
+    editMode,
   } = props;
 
   const [showResourcesPopUp, setShowResourcesPopUp] = useState<boolean>(false);
-  const [characterData, setCharacterData] = useState<CharacterDefinition>(initialCharacterDefinition);
+  const [characterData, setCharacterData] = useState<CharacterDefinition>(
+    initialCharacterDefinition
+  );
 
   const handleCharacterNameChanged = (newName: string) => {
     setCharacterData({ ...characterData, name: newName });
-  } // handleCharacterNameChanged
+  }; // handleCharacterNameChanged
 
   const handleCharacterDescriptionChanged = (newDescription: string) => {
     setCharacterData({ ...characterData, description: newDescription });
-  } // handleCharacterDescriptionChanged
+  }; // handleCharacterDescriptionChanged
 
   const onSaveCharacterInfo = () => {
     //Trim to prevent names with empty spaces at the end/begining
-    if (onSaveCharacterData) onSaveCharacterData({ ...characterData, name: characterData.name.trim() });
-  } // onSaveCharacterInfo
+    if (onSaveCharacterData)
+      onSaveCharacterData({
+        ...characterData,
+        name: characterData.name.trim(),
+      });
+  }; // onSaveCharacterInfo
 
   const handleDeleteCharacter = () => {
     if (onDeleteCharacter) onDeleteCharacter();
-  } //handleDeleteCharacter
+  }; //handleDeleteCharacter
 
   const handleEnterEditCharacterMode = () => {
     if (onEnterCharacterEditMode) onEnterCharacterEditMode();
-  } // handleEnterEditCharacterMode
+  }; // handleEnterEditCharacterMode
 
   const handleResourceSelected = (resourceSrc: string) => {
     setCharacterData({ ...characterData, imageSrc: resourceSrc });
-    setShowResourcesPopUp(prev => !prev)
-  } // handleResourceSelected
+    setShowResourcesPopUp((prev) => !prev);
+  }; // handleResourceSelected
 
   return (
     <>
       {/* Pop up component to enable image selection from the escape room resources */}
-      {showResourcesPopUp &&
+      {showResourcesPopUp && (
         <ResourcesPopUp
           onClosePopUp={() => setShowResourcesPopUp(false)}
           onResourceSelected={handleResourceSelected}
-          popUpTitle='Select an image to scan'
+          popUpTitle="Select an image to scan"
         />
-      }
+      )}
 
       {/* Card with Prompt fields to modify the caracters name and description and a button to specify its image */}
-      {editMode === true ?
+      {editMode === true ? (
         <CharacterContainer>
           <CharacterPreviewContainer>
             {/* Image */}
             <CharacterPreview src={characterData.imageSrc} />
             <SelectCharacterButton
-              onClick={() => { setShowResourcesPopUp(true) }}
+              onClick={() => {
+                setShowResourcesPopUp(true);
+              }}
             >
               Select Image
             </SelectCharacterButton>
@@ -247,25 +271,30 @@ export const EscapeRoomCharacterCard = (props: EscapeRoomCharacterCardProps): JS
           {/* Name and description */}
           <CharacterInfoContainer>
             {showAlert(characterData.name.trim()) && <AlertIcon />}
-            <SaveIcon onClick={() => { !showAlert(characterData.name.trim()) && onSaveCharacterInfo() }} />
+            <SaveIcon
+              onClick={() => {
+                !showAlert(characterData.name.trim()) && onSaveCharacterInfo();
+              }}
+            />
             <DataLine>Character Name</DataLine>
             <PromptField
               promptText={characterData.name}
-              promptPlaceholder='Character Name'
+              promptPlaceholder="Character Name"
               onPromptChange={handleCharacterNameChanged}
               textAlignment="left"
             />
             <DataLine>Character Description</DataLine>
             <PromptField
               promptText={characterData.description}
-              promptPlaceholder='Character description'
+              promptPlaceholder="Character description"
               onPromptChange={handleCharacterDescriptionChanged}
               textAlignment="left"
               initialHeight="100px"
+              bottomColor="#00ff00"
             />
           </CharacterInfoContainer>
         </CharacterContainer>
-        :
+      ) : (
         //In display mode the charater info is displayed but cannot be modified
         <CharacterContainer>
           {/* Image */}
@@ -279,10 +308,12 @@ export const EscapeRoomCharacterCard = (props: EscapeRoomCharacterCardProps): JS
             <DataLine>Character Name</DataLine>
             <ParragraphContainer>{characterData.name}</ParragraphContainer>
             <DataLine>Character Description</DataLine>
-            <ParragraphContainer>{characterData.description}</ParragraphContainer>
+            <ParragraphContainer>
+              {characterData.description}
+            </ParragraphContainer>
           </CharacterInfoContainer>
         </CharacterContainer>
-      }
+      )}
     </>
   );
 }; // EscapeRoomCharacterCard

@@ -34,14 +34,14 @@ export const SettingsContainer = styled.div`
   overflow-y: hidden;
 
   padding: 0 0em 0.75em 0em;
-  background-color: #dbdbdb;
-  border-radius: 1.25rem;
+  background-color: white;
+  border-radius: 0.5rem;
   &:hover {
     border-left: 6px solid rgb(19, 104, 206);
   }
 `;
 export const CardTitle = styled.div`
-  font-size: 2em;
+  font-size: 1.5em;
   font-weight: 500;
   font-family: ${(props) => props.theme.contentFont};
   line-height: 135%;
