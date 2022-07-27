@@ -1,7 +1,5 @@
 import {
   EditableItemProps,
-  MultipleChoiceItemDefinition,
-  NarrativeItemDefinition,
   UnlockPasswordItemDefinition,
 } from "../../../../services/escapeRoomActivity.model";
 import { AbstractActivityItemFactory } from "../ActivityItemFactory";
@@ -11,7 +9,6 @@ import styled from "styled-components";
 import { UpArrow } from "@styled-icons/boxicons-solid/UpArrow";
 import { DownArrow } from "@styled-icons/boxicons-solid/DownArrow";
 import { DotsTwoVertical } from "@styled-icons/entypo/DotsTwoVertical";
-import { TimePicker } from "@styled-icons/fluentui-system-regular/TimePicker";
 
 const UppArrowIcon = styled(UpArrow)`
   position: absolute;
@@ -74,7 +71,6 @@ const Root = styled.div`
   align-items: center;
   text-align: center;
   padding: 0.75em;
-  border-radius: 1.25rem;
 `;
 
 const DescriptionEditorContainer = styled.div`
@@ -84,9 +80,7 @@ const DescriptionEditorContainer = styled.div`
   flex-direction: column;
   align-items: center;
   text-align: center;
-  background-color: rgba(200, 200, 200, 1);
-  border-radius: 1rem 1rem 0 0;
-  box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
+  border-radius: 0.5rem 0.5rem 0 0;
 `;
 
 const DescriptionEditorTitle = styled.div`
@@ -96,22 +90,20 @@ const DescriptionEditorTitle = styled.div`
   font-family: ${(props) => props.theme.contentFont};
   line-height: 135%;
 
-  margin-bottom: 0.25em;
-  border-top: none;
-  color: black;
   line-height: 135%;
-
   height: 50%;
-
+  width: 100%;
   display: flex;
+  flex-direction: column;
   align-items: center;
   text-align: center;
   padding: 1rem;
   margin-top: 10px;
-  border-radius: 1rem;
+  border-radius: 0.5rem;
 
-  background-color: rgba(255, 255, 255, 1);
-  box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
+  color: white;
+  background-color: rgb(19, 104, 206);
+  box-shadow: rgb(15, 90, 188) 0px -4px 0px 0px inset;
 `;
 
 const PasswordEditorContainer = styled.div`
@@ -123,21 +115,29 @@ const PasswordEditorContainer = styled.div`
   align-items: center;
   text-align: center;
   border-radius: 0 0 1rem 1rem;
-  background-color: rgba(150, 150, 150, 1);
-  box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
 `;
 
 const PasswordEditorTitle = styled.div`
   position: relative;
   height: 10%;
+  width: 100%;
+
+  font-size: 1em;
+  font-weight: 500;
+  font-family: ${(props) => props.theme.contentFont};
+  line-height: 135%;
+
   display: flex;
+  flex-direction: column;
   align-items: center;
   text-align: center;
+  justify-content: center;
   padding: 1rem;
-  margin-top: 5px;
-  border-radius: 1rem;
-  background-color: rgba(255, 255, 255, 1);
-  box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
+  margin-top: 25px;
+  border-radius: 0.5rem;
+  color: white;
+  background-color: rgb(19, 104, 206);
+  box-shadow: rgb(15, 90, 188) 0px -4px 0px 0px inset;
 `;
 
 const PasswordEditorDigits = styled.div`
@@ -149,8 +149,6 @@ const PasswordEditorDigits = styled.div`
   justify-content: center;
   align-items: center;
   text-align: center;
-  // background-color: rgba(0,0,255,0.5);
-  box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
 `;
 
 const DigitEditor = styled.div`
