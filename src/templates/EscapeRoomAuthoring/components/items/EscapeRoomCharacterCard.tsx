@@ -38,7 +38,7 @@ const AlertIcon = styled(AlertCircle)`
   transform: translate(-50%, -50%);
 `;
 
-const SaveIcon = styled(Save)`
+const SaveIcon = styled(Save)<ButtonProps>`
   position: absolute;
   right: 0.25rem;
   top: 0.25rem;
@@ -49,13 +49,17 @@ const SaveIcon = styled(Save)`
   border-radius: 0.25rem;
   background-color: rgb(19, 104, 206);
   border: 2px solid rgb(15, 90, 188);
-
+  opacity: ${(props) => (props.avaliable ? 1 : 0.3)};
   color: white;
   &:hover {
     background-color: rgb(49, 134, 236);
   }
 `;
-const EditIcon = styled(Edit)`
+
+interface ButtonProps {
+  avaliable: boolean;
+}
+const EditIcon = styled(Edit)<ButtonProps>`
   position: absolute;
   right: 2.5rem;
   top: 0.25rem;
@@ -67,6 +71,7 @@ const EditIcon = styled(Edit)`
   border: 2px solid rgb(15, 90, 188);
   background-color: rgb(19, 104, 206);
   color: white;
+  opacity: ${(props) => (props.avaliable ? 1 : 0.3)};
   &:hover {
     background-color: rgb(49, 134, 236);
   }
@@ -188,12 +193,20 @@ const DataLine = styled.div`
 `;
 
 export interface EscapeRoomCharacterCardProps {
+  /** Default definition to initialize a characters data */
   initialCharacterDefinition: CharacterDefinition;
+  /** Callback to parent component to notify that the user wants to save this characters data */
   onSaveCharacterData: (newInfo: CharacterDefinition) => void;
+  /** Callback to parent component to notify that the user wants start editign this characters data */
   onEnterCharacterEditMode: () => void;
+  /** Callback to parent component to notify that the user wants to delete this character */
   onDeleteCharacter: () => void;
+  /** Callback to parent component that recieves this characters name and returns wether that name is valid or not */
   showAlert: (name: string) => boolean;
+  /** Boolean to determine wether this card should be filled with elements that allow its edition or only its visualization */
   editMode: boolean;
+  /** Boolean to prevent the user from editing a characters name with a value that is not acceptable and change to another character's edit mode */
+  editButtonAvaliable: boolean;
 } // EscapeRoomCharacterCardProps
 
 export const EscapeRoomCharacterCard = (
@@ -206,6 +219,7 @@ export const EscapeRoomCharacterCard = (
     onEnterCharacterEditMode,
     showAlert,
     editMode,
+    editButtonAvaliable,
   } = props;
 
   const [showResourcesPopUp, setShowResourcesPopUp] = useState<boolean>(false);
@@ -272,6 +286,7 @@ export const EscapeRoomCharacterCard = (
           <CharacterInfoContainer>
             {showAlert(characterData.name.trim()) && <AlertIcon />}
             <SaveIcon
+              avaliable={!showAlert(characterData.name.trim())}
               onClick={() => {
                 !showAlert(characterData.name.trim()) && onSaveCharacterInfo();
               }}
@@ -303,7 +318,12 @@ export const EscapeRoomCharacterCard = (
           </CharacterPreviewContainer>
           {/* Name and description */}
           <CharacterInfoContainer>
-            <EditIcon onClick={handleEnterEditCharacterMode} />
+            <EditIcon
+              avaliable={editButtonAvaliable}
+              onClick={() => {
+                editButtonAvaliable && handleEnterEditCharacterMode();
+              }}
+            />
             <DeleteIcon onClick={handleDeleteCharacter} />
             <DataLine>Character Name</DataLine>
             <ParragraphContainer>{characterData.name}</ParragraphContainer>

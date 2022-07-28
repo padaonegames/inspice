@@ -5,12 +5,8 @@ import { waitingCodeItemFactory } from "./WaitingCodeItem";
 import { qrScanItemFactory } from "./QRScanItem";
 import { arScanItemFactory } from "./ARScanItem";
 import {
-  AvailableEscapeRoomStageType,
-  escapeRoomStageTypes,
   escapeRoomPuzzleTypes,
-  SupportedStage,
   SupportedPuzzle,
-  EditableItemProps,
 } from "../../../../services/escapeRoomActivity.model";
 
 import { stageMappings } from "../../Screen";
@@ -19,9 +15,52 @@ import styled, { css } from "styled-components";
 import { DeleteForever } from "@styled-icons/material-twotone/DeleteForever";
 import { Copy } from "@styled-icons/boxicons-regular/Copy";
 import { ChevronDown } from "@styled-icons/boxicons-regular/ChevronDown";
-import { Download } from "@styled-icons/bootstrap/Download";
-import { AddCircle } from "@styled-icons/fluentui-system-regular/AddCircle";
 import { Puzzle } from "@styled-icons/heroicons-outline/Puzzle";
+import { DownArrowAlt } from "@styled-icons/boxicons-regular/DownArrowAlt";
+import { UpArrowAlt } from "@styled-icons/boxicons-regular/UpArrowAlt";
+
+interface ButtonProps {
+  avaliable: boolean;
+}
+
+const UpArrowIcon = styled(UpArrowAlt)<ButtonProps>`
+  position: absolute;
+  left: 2%;
+  top: 50%;
+  cursor: pointer;
+  transform: translate(0%, -30%);
+
+  height: 1.75em;
+  width: 1.75em;
+  border-radius: 0.25rem;
+  border: 2px solid rgb(15, 90, 188);
+  background-color: rgb(19, 104, 206);
+  color: white;
+  opacity: ${(props) => (props.avaliable ? 1 : 0.3)};
+  &:hover {
+    background-color: rgb(49, 134, 236);
+  }
+`;
+
+const DownArrowIcon = styled(DownArrowAlt)<ButtonProps>`
+  position: absolute;
+  left: 7%;
+  top: 50%;
+  cursor: pointer;
+  transform: translate(0%, -30%);
+
+  height: 1.75em;
+  width: 1.75em;
+  border-radius: 0.25rem;
+  border: 2px solid rgb(15, 90, 188);
+  background-color: rgb(19, 104, 206);
+  color: white;
+  opacity: ${(props) => (props.avaliable ? 1 : 0.3)};
+
+  &:hover {
+    background-color: rgb(49, 134, 236);
+  }
+`;
 
 const PuzzleIcon = styled(Puzzle)`
   color: ${(props) => props.theme.textColor};
@@ -45,11 +84,6 @@ const CheckboxTitle = styled.div`
 
   display: flex;
   align-items: center;
-
-  // background-color: white;
-
-  // border-radius: 1rem;
-  // box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
 `;
 
 const PuzzleCard = styled.div`
@@ -91,17 +125,6 @@ const BottomContainer = styled.div`
   align-items: right;
   padding-top: 0.5rem;
   background-color: transparent;
-`;
-
-const ButtonContainer = styled.div`
-  padding: 0.75em;
-  background-color: transparent;
-  border-radius: 1.5rem;
-  &:hover {
-    background-color: rgba(180, 180, 180, 1);
-    // box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
-    // border-bottom: 2px solid #dadce0;
-  }
 `;
 
 const HorizontalLine = styled.div`
@@ -218,52 +241,15 @@ const SelectFieldTypeDropdownButton = styled.span`
   }
 `;
 
-//Components for the button to download the QR
-const AddPuzzleButton = styled.div`
-  position: relative;
-
-  font-size: 1em;
-  font-weight: 500;
-  font-family: ${(props) => props.theme.contentFont};
-  line-height: 135%;
-
-  margin-top: 0.25em;
-  margin-bottom: 0.25em;
-  padding: 0.75em 1.25em;
-  border-top: none;
-  color: black;
-  line-height: 135%;
-  width: fit-content;
-  text-align: center;
-
-  display: flex;
-  align-items: center;
-
-  background-color: rgb(255, 255, 255);
-
-  border-radius: 1rem;
-  box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
-
-  &:hover {
-    transition: border 0.25s;
-    border: 3px solid rgb(200, 200, 200);
-  }
-`;
-const DownloadIcon = styled(Download)`
-  color: ${(props) => props.theme.textColor};
-  height: 1.75em;
-  width: auto;
-`;
-
-const AddPuzzleIcon = styled(AddCircle)`
-  color: ${(props) => props.theme.textColor};
-  height: 1.75em;
-  width: auto;
-`;
-
 export interface RoomPuzzleSettingsEditorProps {
+  /** Data of the puzzle this editor is containing */
   puzzle: SupportedPuzzle;
+  /** Index of this puzzle inside the block it is currently in */
   index: number;
+  /** Boolean that specifies wether this card is the first one inside it's block and can be moved upwards or not */
+  firstCard: boolean;
+  /** Boolean that specifies wether this card is the last one inside it's block and can be moved downwards or not */
+  lastCard: boolean;
   /** callback to parent component notifying that the user wants to change a puzzle's settings */
   handlePuzzlePayloadChanged: (
     puzzlePayload: SupportedPuzzle["payload"]
@@ -274,7 +260,11 @@ export interface RoomPuzzleSettingsEditorProps {
   handlePuzzleDelete: () => void;
   /** callback to parent component notifying that the user wants to duplicate a puzzle */
   handlePuzzleDuplicate: () => void;
-
+  /** callback to parent component notifying that the user wants to move a puzzle upwards */
+  handlePuzzleMovedUpwards: () => void;
+  /** callback to parent component notifying that the user wants to move a puzzle downwards */
+  handlePuzzleMovedDownwards: () => void;
+  /** callback to parent component notifying that the user just changed some of this puzzle */
   handleSelectedPuzzleChanged: () => void;
 }
 
@@ -284,11 +274,15 @@ export const RoomPuzzleSettingsEditor = (
   const {
     puzzle,
     index,
+    firstCard,
+    lastCard,
     handlePuzzlePayloadChanged,
     handlePuzzleTypeChanged,
     handlePuzzleDelete,
     handlePuzzleDuplicate,
     handleSelectedPuzzleChanged,
+    handlePuzzleMovedUpwards,
+    handlePuzzleMovedDownwards,
   } = props;
 
   const [stageTypeDropdownOpen, setStageTypeDropdownOpen] =
@@ -352,6 +346,15 @@ export const RoomPuzzleSettingsEditor = (
       <HorizontalLine />
       {/* Buttons to duplicate and delete a puzzle from a room block */}
       <BottomContainer>
+        <UpArrowIcon
+          avaliable={!firstCard}
+          onMouseDown={handlePuzzleMovedUpwards}
+        />
+        <DownArrowIcon
+          avaliable={!lastCard}
+          onMouseDown={handlePuzzleMovedDownwards}
+        />
+
         <DeleteIcon
           onClick={() => {
             handlePuzzleDelete();

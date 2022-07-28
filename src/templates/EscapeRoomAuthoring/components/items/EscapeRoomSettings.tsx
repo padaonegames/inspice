@@ -11,6 +11,7 @@ import styled from "styled-components";
 import { UserPlus } from "@styled-icons/boxicons-regular/UserPlus";
 
 import { Settings } from "@styled-icons/fluentui-system-filled/Settings";
+import { settings } from "cluster";
 const SettingsIcon = styled(Settings)`
   position: absolute;
   right: 8%;
@@ -202,11 +203,17 @@ const AddPuzzleButton = styled.div`
   }
 `;
 export interface EscapeRoomSettingsProps {
+  /** Name of the current escape room that the user is editing */
   escapeRoomTitle: string;
+  /** Description of the current escape room that the user is editing */
   escapeRoomDescription: string;
+  /** Characters involver in the current escape room that the user is editing */
   escapeRoomCharacters: CharacterDefinition[];
+  /** Callback to parent component to notigy any changes made to the escape room's title */
   onTitleChanged?: (title: string) => void;
+  /** Callback to parent component to notigy any changes made to the escape room's description */
   onDescriptionChanged?: (title: string) => void;
+  /** Callback to parent component to notigy any changes made to the escape room's characters */
   onCharactersChanged?: (characters: CharacterDefinition[]) => void;
 } // EscapeRoomSettingsProps
 
@@ -222,10 +229,9 @@ export const EscapeRoomSettings = (
     onCharactersChanged,
   } = props;
 
+  //Index of the character that is being edited at any moment (none when ther is no character being edited)
   const [selectedCharacterIndex, setSelectedCharacterIndex] =
     useState<number | "none">("none");
-  const [editingNewCharacter, setEditingNewCharacter] =
-    useState<boolean>(false);
 
   const handleEditTitle = (value: string) => {
     if (!onTitleChanged) return;
@@ -237,15 +243,21 @@ export const EscapeRoomSettings = (
     onDescriptionChanged(value);
   }; // handleEditTitle
 
-  const checkRepeatedName = (characterIndex: number, newName: string) => {
+  const checkProblemsCharacterName = (
+    characterIndex: number,
+    newName: string
+  ) => {
+    //The new name is compared to the rest of the escape room characters
     let i = 0;
     while (i < escapeRoomCharacters.length) {
       if (i !== characterIndex && escapeRoomCharacters[i].name === newName)
         return true;
       i++;
     }
-    return false;
-  };
+
+    //Before telling it is a valid name, a final check is made to prevent empty names
+    return newName === "" ? true : false;
+  }; // checkProblemsCharacterName
 
   const handleUpdateCharacterData = (
     newData: CharacterDefinition,
@@ -267,14 +279,13 @@ export const EscapeRoomSettings = (
 
   const handleSelectCharacter = (index: number) => {
     if (index < 0 || index >= escapeRoomCharacters.length) return;
-    if (editingNewCharacter) {
+    if (selectedCharacterIndex === escapeRoomCharacters.length) {
       const res = window.confirm(
         "Select this character and lose progress for your currently selected character?"
       );
       if (!res) return;
     }
     setSelectedCharacterIndex(index);
-    setEditingNewCharacter(false);
   }; // handleSelectCharacter
 
   const handleDeleteCharacter = (index: number) => {
@@ -294,18 +305,23 @@ export const EscapeRoomSettings = (
   }; // handleDeleteCharacter
 
   const handleSaveNewCharacter = (characterData: CharacterDefinition) => {
-    if (!onCharactersChanged || !editingNewCharacter) return;
+    if (
+      !onCharactersChanged ||
+      selectedCharacterIndex !== escapeRoomCharacters.length
+    )
+      return;
     onCharactersChanged([...escapeRoomCharacters, characterData]);
-    setEditingNewCharacter(false);
+    setSelectedCharacterIndex("none");
   }; // handleSaveNewCharacter
 
   const handleAddCharacter = () => {
-    setEditingNewCharacter(true);
+    setSelectedCharacterIndex(escapeRoomCharacters.length);
   }; // handleAddCharacter
 
   return (
     <Wrapper>
       <GeneralSettingsContainer>
+        {/* Top section of the settings with the escape room's general data */}
         <GeneralSettingsTitle> Escape Room Settings </GeneralSettingsTitle>
         <SettingsDiv>
           <CheckboxTitle> Escape Room Title </CheckboxTitle>
@@ -337,27 +353,32 @@ export const EscapeRoomSettings = (
                 }
                 onEnterCharacterEditMode={() => handleSelectCharacter(index)}
                 onDeleteCharacter={() => handleDeleteCharacter(index)}
-                showAlert={(value) => checkRepeatedName(index, value)}
+                showAlert={(value) => checkProblemsCharacterName(index, value)}
                 editMode={selectedCharacterIndex === index}
+                editButtonAvaliable={
+                  selectedCharacterIndex === "none" ||
+                  selectedCharacterIndex === escapeRoomCharacters.length
+                }
               />
             ))}
-            {/* If there are no characters being modified a button to a add a new one is displayer */}
+            {/* If there are no characters being modified or being created a button to a add a new one is displayer */}
             {selectedCharacterIndex === "none" && (
               <AddPuzzleButton onClick={handleAddCharacter}>
                 <AddCharacterIcon /> New Character
               </AddPuzzleButton>
             )}
             {/* Character editor at the end of the character list to add at the end of the list */}
-            {editingNewCharacter && (
+            {selectedCharacterIndex === escapeRoomCharacters.length && (
               <EscapeRoomCharacterCard
                 initialCharacterDefinition={default_character}
                 onSaveCharacterData={handleSaveNewCharacter}
                 onEnterCharacterEditMode={() => {}}
                 onDeleteCharacter={() => {}}
                 showAlert={(value: string) =>
-                  checkRepeatedName(escapeRoomCharacters.length, value)
+                  checkProblemsCharacterName(escapeRoomCharacters.length, value)
                 }
                 editMode={true}
+                editButtonAvaliable={false}
               />
             )}
           </CharactersContainer>
