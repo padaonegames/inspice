@@ -13,6 +13,7 @@ import { useState } from "react";
 import { Add } from "@styled-icons/fluentui-system-filled/Add";
 import { Minus } from "@styled-icons/evaicons-solid/Minus";
 import { HighlightOff } from "styled-icons/material";
+import { Eraser } from "@styled-icons/fluentui-system-regular/Eraser";
 
 interface ButtonProps {
   avaliable: boolean;
@@ -52,6 +53,13 @@ const HighlighterIcon = styled(Highlight)`
   color: white;
 `;
 
+const EraserIcon = styled(Eraser)`
+  height: 1.75rem;
+  width: 1.75rem;
+  margin: 0 5px 0 5px;
+  color: black;
+`;
+
 const NumHighlightersIcon = styled(Highlight)`
   height: 90%;
   color: black;
@@ -80,6 +88,105 @@ export const TextPreview = styled.div`
   padding: 5px 10px 5px 10px;
 `;
 
+export const TagsContainer = styled.div`
+  width: 100%;
+  height: 3rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+
+  padding: 3px 5px 5px 3px;
+
+  margin-top: 10px;
+  color: ${(props) => props.theme.textColor};
+  background-color: transparent;
+
+  // border: 2px solid #c44c49;
+  border-radius: 0.5rem;
+  padding: 5px 10px 5px 10px;
+`;
+
+interface HighlighterOptionProps {
+  selected: boolean;
+}
+export const HighlighterOption = styled.div<HighlighterOptionProps>`
+  width: 15%;
+  height: 100%;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+
+  color: ${(props) => props.theme.textColor};
+  background-color: rgb(240, 240, 240);
+
+  border: 2px solid ${(props) => (props.selected ? "#c44c49" : "#dadce0")};
+  border-radius: 0.5rem;
+  padding: 5px 0px 5px 0px;
+`;
+
+export const EraserOption = styled.div<HighlighterOptionProps>`
+  height: 100%;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+
+  color: ${(props) => props.theme.textColor};
+  background-color: rgb(240, 240, 240);
+
+  border: 2px solid ${(props) => (props.selected ? "#c44c49" : "#dadce0")};
+  border-radius: 0.5rem;
+  padding: 5px 0px 5px 0px;
+`;
+
+interface HighlighterOptionColorProps {
+  color: string;
+}
+
+export const HighlighterOptionColor = styled.div<HighlighterOptionColorProps>`
+  width: 1.75rem;
+  height: 1.75rem;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+
+  color: ${(props) => props.theme.textColor};
+  background-color: ${(props) => props.color};
+
+  border: 2px solid #dadce0;
+  border-radius: 0.5rem 0rem 0rem 0.5rem;
+`;
+
+export const HighlighterOptionTag = styled.div`
+  width: 60%;
+  height: 1.75rem;
+
+  font-size: 0.9em;
+  font-weight: 200;
+  font-family: ${(props) => props.theme.contentFont};
+  line-height: 135%;
+  cursor: pointer;
+  text-align: left;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: start;
+
+  color: ${(props) => props.theme.textColor};
+  background-color: rgb(255, 255, 255);
+
+  border: 2px solid #dadce0;
+  border-radius: 0 0.5rem 0.5rem 0;
+  padding: 0px 5px 0px 5px;
+`;
+
 export interface HighlightTextCardProps extends HighlightTextFieldDefinition {
   /** Prompt for the user to fill in this field */
   promptText?: string;
@@ -92,33 +199,70 @@ export interface HighlightTextCardProps extends HighlightTextFieldDefinition {
 export const HighLightTextCard = (
   props: HighlightTextCardProps
 ): JSX.Element => {
-  const { promptText = "", requiredAlert, required, text } = props;
+  const {
+    promptText = "",
+    requiredAlert,
+    required,
+    text,
+    highlighters,
+  } = props;
 
   const [highlightColors, setHighlightColors] = useState<string[]>(
     new Array(text.length).fill("#ffffff")
   );
 
   const [selectedText, setSelectedText] = useState<string>(text);
-  const [start, setStart] = useState<number>(0);
-  const [end, setEnd] = useState<number>(0);
-  const [selectedColor, setSelectedColor] = useState<Highlighter>({
-    tag: "default",
-    color: "#dddddd",
-  });
+  const [selectedColor, setSelectedColor] = useState<number>(-1);
 
   const handleSelectionMade = (value: Selection | null) => {
     if (value === null) return;
-    value.getRangeAt(0).startOffset;
 
-    setStart(value.getRangeAt(0).startOffset);
-    setEnd(value.getRangeAt(0).endOffset);
+    //Father of all the letters from the highlightble text and its children
+    const fatherNode = value.getRangeAt(0).commonAncestorContainer;
+    //Start and end of the selected characters
+    const startNode = value.getRangeAt(0).startContainer;
+    const endNode = value.getRangeAt(0).endContainer;
+    var indexStart = -1;
+    var indexEnd = -1;
+    if (startNode === endNode) {
+      indexStart = Array.prototype.indexOf.call(
+        fatherNode.parentNode?.parentNode?.childNodes,
+        startNode.parentNode
+      );
+      indexEnd = indexStart;
+    } else {
+      //Indexes of the first and last characters that were selected by the user
+      indexStart = Array.prototype.indexOf.call(
+        fatherNode.childNodes,
+        startNode.parentNode
+      );
+      indexEnd = Array.prototype.indexOf.call(
+        fatherNode.childNodes,
+        endNode.parentNode
+      );
+    }
+
+    //Changes are applied only on the specified range and persisted
+    let resultColors = highlightColors;
+    let color =
+      selectedColor === -1 ? "#ffffff" : highlighters[selectedColor].color;
+    for (let i = indexStart; i <= indexEnd; i++) resultColors[i] = color;
+    setHighlightColors(resultColors);
 
     setSelectedText(
-      "Start: " +
-        value.getRangeAt(0).startOffset.toString() +
-        " End: " +
-        value.getRangeAt(0).endOffset
+      "Texto: " +
+        startNode.textContent +
+        " final " +
+        endNode.textContent +
+        " indice start: " +
+        indexStart +
+        " indice end: " +
+        indexEnd
     );
+  };
+
+  const handleHighlighterChanged = (newColor: Highlighter, index: number) => {
+    setSelectedColor(index);
   };
 
   const currentCharacter = (index: number, color: string) => {
@@ -126,7 +270,7 @@ export const HighLightTextCard = (
       <mark
         style={{
           color: "black",
-          backgroundColor: index >= start && index <= end ? "#ff0000" : color,
+          backgroundColor: color,
         }}
       >
         {text[index]}
@@ -149,6 +293,27 @@ export const HighLightTextCard = (
           <>{currentCharacter(qInd, question)}</>
         ))}
       </TextPreview>
+
+      <TagsContainer>
+        {highlighters.map((question, qInd) => (
+          <HighlighterOption
+            selected={qInd === selectedColor}
+            onMouseDown={() => handleHighlighterChanged(question, qInd)}
+          >
+            <HighlighterOptionColor color={question.color}>
+              <HighlighterIcon />
+            </HighlighterOptionColor>
+            <HighlighterOptionTag> {question.tag}</HighlighterOptionTag>
+          </HighlighterOption>
+        ))}
+
+        <EraserOption
+          selected={selectedColor === -1}
+          onMouseDown={() => setSelectedColor(-1)}
+        >
+          <EraserIcon />
+        </EraserOption>
+      </TagsContainer>
 
       {/* Preview of selected text */}
       <TextPreview>{selectedText}</TextPreview>
