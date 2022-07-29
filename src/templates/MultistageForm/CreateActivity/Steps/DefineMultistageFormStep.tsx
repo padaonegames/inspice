@@ -21,6 +21,7 @@ import { EditableCalendarContent } from "../../../../components/Forms/Cards/Cale
 import { EditableCheckBoxGroupCardContent } from "../../../../components/Forms/Cards/CheckBoxGroupInputCard";
 import { EditableLongTextContent } from "../../../../components/Forms/Cards/LongTextInputCard";
 import { EditableLikertScaleCardContent } from "../../../../components/Forms/Cards/LikertScaleInputCard";
+import { EditableHighLightTextCardContent } from "../../../../components/Forms/Cards/HighLightTextCard";
 
 import styled from "styled-components";
 import { FolderAdd } from "@styled-icons/foundation/FolderAdd";
@@ -34,6 +35,7 @@ import { CalendarEvent } from "@styled-icons/boxicons-regular/CalendarEvent";
 import { CardText } from "@styled-icons/bootstrap/CardText";
 import { CheckboxChecked } from "@styled-icons/fluentui-system-filled/CheckboxChecked";
 import { EditableDisplayTextCardContent } from "../../../../components/Forms/Cards/DisplayTextCard";
+import { Highlight } from "@styled-icons/boxicons-regular/Highlight";
 
 const Root = styled.div`
   display: flex;
@@ -76,6 +78,10 @@ const DisplayVideoIcon = styled(Video)`
 `;
 
 const LikerIcon = styled(Likert)`
+  ${fieldTypeIcon}
+`;
+
+const HighlighterIcon = styled(Highlight)`
   ${fieldTypeIcon}
 `;
 
@@ -182,6 +188,15 @@ export const fieldMappings: FieldMappings<SupportedFormField> = {
       scale: ["First", "Second", "Third"],
       questions: [],
       showQuestionsIndex: false,
+    },
+  },
+  "highlight-text": {
+    displayName: "Highlight Text",
+    iconComponent: <HighlighterIcon />,
+    editingComponentProducer: EditableHighLightTextCardContent,
+    defaultFieldPayload: {
+      highlighters: [],
+      text: "",
     },
   },
 }; // fieldMappings

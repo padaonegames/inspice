@@ -37,8 +37,11 @@ const HintsIcon = styled(Download)`
 `;
 
 export interface RoomBlockEditorProps {
+  /** Data of this current block with its title,description and puzzles */
   block: RoomBlock;
+  /** Position of this block inside the room that contains it */
   blockIndex: number;
+  /** Callback to parent component to notify that this block's data or puzzles have been modified */
   onPayloadChanged: (blockIndex: number, exitBlock: RoomBlock) => void;
 }
 
@@ -145,6 +148,34 @@ export const RoomBlockEditor = (props: RoomBlockEditorProps): JSX.Element => {
 
   /////////////////////////////Methods to manipulate the puzzles inside this block
 
+  const handleMovePuzzleUpwards = (puzzleIndex: number) => {
+    if (!onPayloadChanged || puzzleIndex === 0) return;
+
+    let aux = block.puzzles;
+    var element = aux[puzzleIndex];
+    aux.splice(puzzleIndex, 1);
+    aux.splice(puzzleIndex - 1, 0, element);
+
+    onPayloadChanged(blockIndex, {
+      ...block,
+      puzzles: aux,
+    });
+  }; //handleMovePuzzleUpwards
+
+  const handleMovePuzzleDownwards = (puzzleIndex: number) => {
+    if (!onPayloadChanged || puzzleIndex === block.puzzles.length - 1) return;
+
+    let aux = block.puzzles;
+    var element = aux[puzzleIndex];
+    aux.splice(puzzleIndex, 1);
+    aux.splice(puzzleIndex + 1, 0, element);
+
+    onPayloadChanged(blockIndex, {
+      ...block,
+      puzzles: aux,
+    });
+  }; //handleMovePuzzleDownwards
+
   return (
     <Root>
       {/* Element that contains the information relative to the room block */}
@@ -190,6 +221,8 @@ export const RoomBlockEditor = (props: RoomBlockEditorProps): JSX.Element => {
           <RoomPuzzleSettingsEditor
             puzzle={puzzle}
             index={i}
+            firstCard={i === 0}
+            lastCard={i === block.puzzles.length - 1}
             handlePuzzlePayloadChanged={(value) => {
               handlePuzzlePayloadChanged(i, value);
             }}
@@ -204,6 +237,12 @@ export const RoomBlockEditor = (props: RoomBlockEditorProps): JSX.Element => {
             }}
             handleSelectedPuzzleChanged={() => {
               handleSelectedPuzzleIndexChanged(i);
+            }}
+            handlePuzzleMovedUpwards={() => {
+              handleMovePuzzleUpwards(i);
+            }}
+            handlePuzzleMovedDownwards={() => {
+              handleMovePuzzleDownwards(i);
             }}
           />
 

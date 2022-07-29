@@ -86,7 +86,8 @@ export type ItemDefinition =
   | { type: "tags"; payload: TagsFieldDefinition }
   | { type: "display-image"; payload: DisplayImageFieldDefinition }
   | { type: "display-video"; payload: DisplayVideoFieldDefinition }
-  | { type: "display-text"; payload: DisplayTextFieldDefinition }; // ItemDefinition
+  | { type: "display-text"; payload: DisplayTextFieldDefinition }
+  | { type: "highlight-text"; payload: HighlightTextFieldDefinition }; // ItemDefinition
 
 export type ResponseDefinition =
   | { type: "short-text"; response: ShortTextResponseDefinition }
@@ -99,7 +100,8 @@ export type ResponseDefinition =
   | { type: "tags"; response: TagsResponseDefinition }
   | { type: "display-image"; response: {} }
   | { type: "display-video"; response: {} }
-  | { type: "display-text"; response: {} }; // ResponseDefinition
+  | { type: "display-text"; response: {} }
+  | { type: "highlight-text"; response: HighlightTextResponseDefinition }; // ResponseDefinition
 
 export const availableMultistageFormItemTypes = [
   "short-text",
@@ -111,6 +113,7 @@ export const availableMultistageFormItemTypes = [
   "display-video",
   "display-text",
   "likert-scale",
+  "highlight-text",
 ] as const; // multistageFormItemTypes
 
 export type AvailableMultistageFormFieldType =
@@ -271,3 +274,21 @@ export interface DisplayTextFieldDefinition {
   /** Content of the item */
   text: string;
 } // DisplayTextFieldDefinition
+
+//-------------------------
+//    HIGHLIGHT TEXT FIELD
+//-------------------------
+export interface Highlighter {
+  color: string;
+  tag: string;
+} // Highlighter
+
+export interface HighlightTextFieldDefinition {
+  highlighters: Highlighter[];
+  /** Text that the user is going to highlight with the different tags avaliable */
+  text: string;
+} // HighlightTextFieldDefinition
+
+export interface HighlightTextResponseDefinition {
+  highlightedTexts: string[][];
+} // HighlightTextResponseDefinition

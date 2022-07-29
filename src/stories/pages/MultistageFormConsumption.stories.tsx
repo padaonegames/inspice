@@ -76,10 +76,26 @@ const sample_base: MultistageFormActivityDefinition = {
         {
           _id: "2-1",
           fieldData: {
-            type: "short-text",
-            payload: {},
+            type: "highlight-text",
+            payload: {
+              text: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer efficitur 
+                    pellentesque lectus, sed maximus odio ullamcorper vitae. Nullam tempus consectetur 
+                    consequat. Sed sit amet pharetra leo. Phasellus faucibus iaculis accumsan. Etiam imperdiet 
+                    at mauris eget consectetur. Cras fermentum ultricies mi ac ultrices. Nunc feugiat justo ut 
+                    felis convallis, eget mattis nibh porta. Mauris turpis tellus, ultricies sed lacus ut, 
+                    tempor aliquam nisl. Aliquam enim libero, lacinia quis tortor sit amet, semper ultrices lectus. 
+                    Sed porta risus ut est tempus, ornare elementum dui consectetur.`,
+              highlighters: [
+                { tag: "1", color: "#e21b3c" },
+                { tag: "2", color: "#1368ce" },
+                { tag: "3", color: "#d89e00" },
+                { tag: "4", color: "#26890c" },
+                { tag: "5", color: "#0aa3a3" },
+                { tag: "6", color: "#864cbf" },
+              ],
+            },
           },
-          promptText: "Please enter your name:",
+          promptText: "Please highlight the following text with your emotions:",
           required: true,
         },
         {

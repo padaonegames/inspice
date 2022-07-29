@@ -123,7 +123,9 @@ const SelectedIcon = styled(Download)`
 `;
 
 export interface RoomExitBlockEditorProps {
+  /** Data of this block */
   exitBlock: RoomBlock;
+  /** Callback to parent component to notify any changes made to this block */
   onPayloadChanged: (exitBlock: RoomBlock) => void;
 }
 
@@ -232,6 +234,35 @@ export const RoomExitBlockEditor = (
 
   /////////////////////////////Methods to manipulate the puzzles inside this block
 
+  const handleMovePuzzleUpwards = (puzzleIndex: number) => {
+    if (!onPayloadChanged || puzzleIndex === 0) return;
+
+    let aux = exitBlock.puzzles;
+    var element = aux[puzzleIndex];
+    aux.splice(puzzleIndex, 1);
+    aux.splice(puzzleIndex - 1, 0, element);
+
+    onPayloadChanged({
+      ...exitBlock,
+      puzzles: aux,
+    });
+  }; //handleMovePuzzleUpwards
+
+  const handleMovePuzzleDownwards = (puzzleIndex: number) => {
+    if (!onPayloadChanged || puzzleIndex === exitBlock.puzzles.length - 1)
+      return;
+
+    let aux = exitBlock.puzzles;
+    var element = aux[puzzleIndex];
+    aux.splice(puzzleIndex, 1);
+    aux.splice(puzzleIndex + 1, 0, element);
+
+    onPayloadChanged({
+      ...exitBlock,
+      puzzles: aux,
+    });
+  }; //handleMovePuzzleDownwards
+
   return (
     <Root>
       {/* Element that contains the information relative to the room block */}
@@ -277,6 +308,8 @@ export const RoomExitBlockEditor = (
           <RoomPuzzleSettingsEditor
             puzzle={puzzle}
             index={i}
+            firstCard={i === 0}
+            lastCard={i === exitBlock.puzzles.length - 1}
             handlePuzzlePayloadChanged={(value) => {
               handlePuzzlePayloadChanged(i, value);
             }}
@@ -291,6 +324,12 @@ export const RoomExitBlockEditor = (
             }}
             handleSelectedPuzzleChanged={() => {
               handleSelectedPuzzleIndexChanged(i);
+            }}
+            handlePuzzleMovedUpwards={() => {
+              handleMovePuzzleUpwards(i);
+            }}
+            handlePuzzleMovedDownwards={() => {
+              handleMovePuzzleDownwards(i);
             }}
           />
 

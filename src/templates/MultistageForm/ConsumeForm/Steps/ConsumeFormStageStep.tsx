@@ -24,6 +24,7 @@ import {
   FormFieldMappings,
 } from "../components/ConsumableFieldCard";
 import { useEffect, useState } from "react";
+import HighLightTextCard from "../../../../components/Forms/Cards/HighLightTextCard";
 
 const Root = styled.div`
   display: flex;
@@ -90,6 +91,10 @@ export const fieldMappings: FormFieldMappings<
     defaultResponse: {
       responses: [],
     },
+  },
+  "highlight-text": {
+    consumptionComponentProducer: HighLightTextCard,
+    defaultResponse: { highlightedTexts: [] },
   },
 }; // fieldMappings
 
