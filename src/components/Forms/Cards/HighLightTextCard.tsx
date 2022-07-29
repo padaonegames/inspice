@@ -2,7 +2,6 @@ import styled from "styled-components";
 import {
   EditableFieldProps,
   HighlightTextFieldDefinition,
-  Highlighter,
 } from "../../../services/multistageFormActivity.model";
 import { EditableText, InputText, Root } from "./cardStyles";
 import FormCard from "./FormCard";
@@ -187,6 +186,37 @@ export const HighlighterOptionTag = styled.div`
   padding: 0px 5px 0px 5px;
 `;
 
+interface ResultsProps {
+  resultColor: string;
+}
+
+export const ResultHighlights = styled.div<ResultsProps>`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 0.5rem;
+  border: 1px solid ${(props) => props.resultColor};
+  background-color: rgba(240, 240, 240, 1);
+
+  margin-bottom: 1rem;
+`;
+
+export const HighlitedPart = styled.div<ResultsProps>`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 0.5rem;
+  padding: 2px 5px 2px 5px;
+  border: 2px solid ${(props) => props.resultColor};
+  background-color: rgba(240, 240, 240, 1);
+
+  margin-bottom: 1rem;
+`;
+
 export interface HighlightTextCardProps extends HighlightTextFieldDefinition {
   /** Prompt for the user to fill in this field */
   promptText?: string;
@@ -194,6 +224,8 @@ export interface HighlightTextCardProps extends HighlightTextFieldDefinition {
   required?: boolean;
   /** whether to modify the appearance of this card to reflect that the user tried to submit the form without entering a value for this field */
   requiredAlert?: boolean;
+  /** Callback to parent component specifying that user has made changes in his highlighted sections, the order of the colors is the exact same one as the highlighters given through props */
+  onHighlightedSectionsChanged?: (highlightedTexts: string[][]) => void;
 } // MultipleChoiceCardProps
 
 export const HighLightTextCard = (
@@ -205,13 +237,20 @@ export const HighLightTextCard = (
     required,
     text,
     highlighters,
+    onHighlightedSectionsChanged,
   } = props;
 
-  const [highlightColors, setHighlightColors] = useState<string[]>(
-    new Array(text.length).fill("#ffffff")
+  //Color that each character of "text" is highlighted with, if a character is not being highlighted, its highlight color is white
+  const [characterHighlightColors, setCharacterHighlightColors] = useState<
+    string[]
+  >(new Array(text.length).fill("#ffffff"));
+
+  //List of lists with the text sections that have been highlighted with each of the avaliable colors, the order of the colors is the exact same one as the highlighters given through props
+  const [highlightedSections, setHighlightedSections] = useState<string[][]>(
+    new Array(highlighters.length).fill(new Array<string>())
   );
 
-  const [selectedText, setSelectedText] = useState<string>(text);
+  //Color of the highlighter that is currently being used, -1 value is assigned to a white highlighter "eraser"
   const [selectedColor, setSelectedColor] = useState<number>(-1);
 
   const handleSelectionMade = (value: Selection | null) => {
@@ -224,13 +263,16 @@ export const HighLightTextCard = (
     const endNode = value.getRangeAt(0).endContainer;
     var indexStart = -1;
     var indexEnd = -1;
+    //In case the user has only selected one character, the granfather of the selected node is needed to determine its position inside "text"
     if (startNode === endNode) {
       indexStart = Array.prototype.indexOf.call(
         fatherNode.parentNode?.parentNode?.childNodes,
         startNode.parentNode
       );
       indexEnd = indexStart;
-    } else {
+    }
+    //If the user has selected more than one character, the father of the start and end nodes is needed to determine its positions inside "text"
+    else {
       //Indexes of the first and last characters that were selected by the user
       indexStart = Array.prototype.indexOf.call(
         fatherNode.childNodes,
@@ -243,39 +285,70 @@ export const HighLightTextCard = (
     }
 
     //Changes are applied only on the specified range and persisted
-    let resultColors = highlightColors;
+    let resultColors = characterHighlightColors;
     let color =
       selectedColor === -1 ? "#ffffff" : highlighters[selectedColor].color;
     for (let i = indexStart; i <= indexEnd; i++) resultColors[i] = color;
-    setHighlightColors(resultColors);
+    setCharacterHighlightColors([...resultColors]);
+    generateTextsFromHighlightedSections();
+  }; // handleSelectionMade
 
-    setSelectedText(
-      "Texto: " +
-        startNode.textContent +
-        " final " +
-        endNode.textContent +
-        " indice start: " +
-        indexStart +
-        " indice end: " +
-        indexEnd
-    );
-  };
+  const generateTextsFromHighlightedSections = () => {
+    //Array of arrays that will contain all the substrings of each color
+    let partesCadaColor: string[][] = [];
+    for (let j = 0; j < highlighters.length; j++) {
+      partesCadaColor.push(new Array<string>());
+    }
 
-  const handleHighlighterChanged = (newColor: Highlighter, index: number) => {
-    setSelectedColor(index);
-  };
+    let highlightStartIndex = -1;
+    let highlightColor = "#ffffff";
+    let onTopOfHighlight = false;
 
-  const currentCharacter = (index: number, color: string) => {
-    return (
-      <mark
-        style={{
-          color: "black",
-          backgroundColor: color,
-        }}
-      >
-        {text[index]}
-      </mark>
-    );
+    //Cover all the text and find all substrings with the color selected
+    for (let i = 0; i < characterHighlightColors.length; i++) {
+      //If a section with a color different from white is found, means its a new highlighted text
+      if (!onTopOfHighlight && characterHighlightColors[i] !== "#ffffff") {
+        onTopOfHighlight = true;
+        highlightStartIndex = i;
+        highlightColor = characterHighlightColors[i];
+      }
+      //If a highlighted section was being analized but a color change happened, means the analized section ended
+      else if (
+        onTopOfHighlight &&
+        characterHighlightColors[i] !== highlightColor
+      ) {
+        //New highlighted text is added to the lists
+        let parte = text.substring(highlightStartIndex, i);
+        partesCadaColor[
+          highlighters.findIndex((object) => {
+            return object.color === highlightColor;
+          })
+        ].push(parte);
+
+        //A change in the color happened, if a new color is found, a new highlighted section has just started
+        if (characterHighlightColors[i] === "#ffffff") onTopOfHighlight = false;
+        else {
+          highlightStartIndex = i;
+          highlightColor = characterHighlightColors[i];
+        }
+      }
+    }
+
+    //In case the last character is included in the selection, so that this last selection is also included
+    if (onTopOfHighlight) {
+      onTopOfHighlight = false;
+      let parte = text.substring(highlightStartIndex, text.length);
+      partesCadaColor[
+        highlighters.findIndex((object) => {
+          return object.color === highlightColor;
+        })
+      ].push(parte);
+    }
+
+    //Changes are persisted on the highlighted texts and cominicated to parent component
+    setHighlightedSections(partesCadaColor);
+    if (onHighlightedSectionsChanged)
+      onHighlightedSectionsChanged(partesCadaColor);
   };
 
   return (
@@ -284,29 +357,43 @@ export const HighLightTextCard = (
       required={required}
       requiredAlert={requiredAlert}
     >
+      {/* Text that is going to be highlighted by the user */}
       <TextPreview
         onMouseUp={() => {
           handleSelectionMade(window.getSelection());
         }}
       >
-        {highlightColors.map((question, qInd) => (
-          <>{currentCharacter(qInd, question)}</>
+        {/* For each character of the text, a <mark> character </mark> is requested with its background color applied (can be white if it has not been highlighted) */}
+        {characterHighlightColors.map((bColor, characterIndex) => (
+          <mark
+            key={characterIndex}
+            style={{
+              color: "black",
+              backgroundColor: bColor,
+            }}
+          >
+            {text[characterIndex]}
+          </mark>
         ))}
       </TextPreview>
 
+      {/* List of all the highlighters avaliable (and the eraser) */}
       <TagsContainer>
-        {highlighters.map((question, qInd) => (
+        {highlighters.map((currentHighlighter, currentHighlighterIndex) => (
           <HighlighterOption
-            selected={qInd === selectedColor}
-            onMouseDown={() => handleHighlighterChanged(question, qInd)}
+            selected={currentHighlighterIndex === selectedColor}
+            onMouseDown={() => setSelectedColor(currentHighlighterIndex)}
           >
-            <HighlighterOptionColor color={question.color}>
+            <HighlighterOptionColor color={currentHighlighter.color}>
               <HighlighterIcon />
             </HighlighterOptionColor>
-            <HighlighterOptionTag> {question.tag}</HighlighterOptionTag>
+            <HighlighterOptionTag>
+              {currentHighlighter.tag}
+            </HighlighterOptionTag>
           </HighlighterOption>
         ))}
 
+        {/* White highlighter "eraser" */}
         <EraserOption
           selected={selectedColor === -1}
           onMouseDown={() => setSelectedColor(-1)}
@@ -314,9 +401,6 @@ export const HighLightTextCard = (
           <EraserIcon />
         </EraserOption>
       </TagsContainer>
-
-      {/* Preview of selected text */}
-      <TextPreview>{selectedText}</TextPreview>
     </FormCard>
   );
 }; // DisplayImageCard
