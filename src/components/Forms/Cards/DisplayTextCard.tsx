@@ -2,10 +2,10 @@ import styled from "styled-components";
 import {
   EditableFieldProps,
   DisplayTextFieldDefinition,
+  ConsumableFieldProps,
 } from "../../../services/multistageFormActivity.model";
-import { EditableStepDescription, EditableText, Root } from "./cardStyles";
+import { EditableText, Root } from "./cardStyles";
 import FormCard from "./FormCard";
-import { AbstractFormFactory } from "./FormFactory";
 
 export const TextPreview = styled.div`
   font-size: 0.95em;
@@ -21,17 +21,20 @@ export const TextPreview = styled.div`
   padding: 5px 10px 5px 10px;
 `;
 
-export interface DisplayTextCardProps extends DisplayTextFieldDefinition {
+export interface DisplayTextCardProps
+  extends ConsumableFieldProps<DisplayTextFieldDefinition, {}> {
   /** Prompt for the user to fill in this field */
   promptText?: string;
   /** Whether this field should always be filled in by the user */
   required?: boolean;
   /** whether to modify the appearance of this card to reflect that the user tried to submit the form without entering a value for this field */
   requiredAlert?: boolean;
-} // MultipleChoiceCardProps
+} // DisplayTextCardProps
 
 export const DisplayTextCard = (props: DisplayTextCardProps): JSX.Element => {
-  const { promptText = "", requiredAlert, required, text } = props;
+  const { promptText = "", requiredAlert, required, fieldPayload } = props;
+
+  const { text } = fieldPayload;
 
   return (
     <FormCard
@@ -42,7 +45,7 @@ export const DisplayTextCard = (props: DisplayTextCardProps): JSX.Element => {
       <TextPreview>{text}</TextPreview>
     </FormCard>
   );
-}; // DisplayImageCard
+}; // DisplayTextCard
 
 export interface EditableDisplayTextCardContentProps
   extends EditableFieldProps<DisplayTextFieldDefinition> {
@@ -53,11 +56,7 @@ export interface EditableDisplayTextCardContentProps
 export const EditableDisplayTextCardContent = (
   props: EditableDisplayTextCardContentProps
 ): JSX.Element => {
-  const {
-    fieldPayload,
-    addNewOptionLabel = "New option",
-    onPayloadChanged,
-  } = props;
+  const { fieldPayload, onPayloadChanged } = props;
 
   const { text } = fieldPayload;
 
@@ -67,7 +66,7 @@ export const EditableDisplayTextCardContent = (
       ...fieldPayload,
       text: value,
     });
-  }; // handleEditOption
+  }; // handleEditText
 
   return (
     <>
@@ -82,19 +81,6 @@ export const EditableDisplayTextCardContent = (
       </Root>
     </>
   );
-}; // EditableDisplayImageCardContent
-
-export const displayTextCardFactory: AbstractFormFactory<DisplayTextFieldDefinition> =
-  {
-    userFormComponent: (useFormPayload) => (
-      <DisplayTextCard {...useFormPayload} />
-    ),
-    formEditingComponent: (editingFormProps) => (
-      <EditableDisplayTextCardContent {...editingFormProps} />
-    ),
-    defaultFormDefinition: {
-      text: "",
-    },
-  }; // DisplayImageCardFactory
+}; // EditableDisplayTextCardContent
 
 export default DisplayTextCard;

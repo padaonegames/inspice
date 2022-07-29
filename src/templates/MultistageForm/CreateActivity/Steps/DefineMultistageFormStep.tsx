@@ -196,6 +196,7 @@ export const DefineMultistageFormStep = (
     forms: [],
     title: "",
     description: "",
+    _id: "",
   };
 
   // Stages of the activity

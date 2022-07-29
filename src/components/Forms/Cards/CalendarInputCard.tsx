@@ -1,5 +1,8 @@
-import { useEffect, useState } from "react";
-import { EditableFieldProps } from "../../../services/multistageFormActivity.model";
+import {
+  CalendarResponseDefinition,
+  ConsumableFieldProps,
+  EditableFieldProps,
+} from "../../../services/multistageFormActivity.model";
 import {
   InputSegment,
   DateContainer,
@@ -9,18 +12,15 @@ import {
   Root,
 } from "./cardStyles";
 import FormCard from "./FormCard";
-import { AbstractFormFactory } from "./FormFactory";
 
-export interface CalendarInputCardProps {
+export interface CalendarInputCardProps
+  extends ConsumableFieldProps<{}, CalendarResponseDefinition> {
   /** Prompt for the user to fill in this field */
   promptText?: string;
   /** Whether this field should always be filled in by the user */
   required?: boolean;
-  onChange?: (date: Date | undefined) => void;
   /** Callback to notify the parent when the enter key is pressed while the component is focused. */
   onEnterPress?: () => void;
-  /** Default date that will be shown on the loading page before the user inserts any date. */
-  initialDate?: Date | undefined;
   /* True if user tried to submit the form without filling a required field */
   requiredAlert?: boolean;
 } // CalendarInputCardProps
@@ -32,14 +32,17 @@ export const CalendarInputCard = (
     promptText = "",
     requiredAlert,
     required,
-    initialDate,
-    onChange,
+    response,
+    onResponseChanged,
     onEnterPress,
   } = props;
 
-  const [day, setDay] = useState(initialDate?.getDate());
-  const [month, setMonth] = useState(initialDate?.getMonth());
-  const [year, setYear] = useState(initialDate?.getFullYear());
+  const { date } = response;
+  const [day, month, year] = [
+    date?.getDate(),
+    date?.getMonth(),
+    date?.getFullYear(),
+  ];
 
   const isValidDate = () => {
     if (day === undefined || month === undefined || year === undefined)
@@ -48,14 +51,31 @@ export const CalendarInputCard = (
     return date instanceof Date && !isNaN(date.valueOf());
   }; // isValidDate
 
-  useEffect(() => {
-    const date =
+  const handleDayChanged = (day: number) => {
+    handleDateChanged(day, month, year);
+  }; // handleDayChanged
+
+  const handleMonthChanged = (month: number) => {
+    handleDateChanged(day, month, year);
+  }; // handleDayChanged
+
+  const handleYearChanged = (year: number) => {
+    handleDateChanged(day, month, year);
+  }; // handleDayChanged
+
+  const handleDateChanged = (
+    day: number | undefined,
+    month: number | undefined,
+    year: number | undefined
+  ) => {
+    if (!onResponseChanged) return;
+    const newDate =
       isValidDate() &&
       !(day === undefined || month === undefined || year === undefined)
         ? new Date(`${month}/${day}/${year}`)
         : undefined;
-    if (onChange) onChange(date);
-  }, [day, month, year]); // useEffect
+    onResponseChanged({ date: newDate });
+  }; // handleDateChanged
 
   return (
     <FormCard
@@ -72,7 +92,7 @@ export const CalendarInputCard = (
             numCharacters={2}
             maxLength={2}
             value={day || ""}
-            onChange={(event) => setDay(parseInt(event.target.value))}
+            onChange={(event) => handleDayChanged(parseInt(event.target.value))}
           />
         </InputSegmentWrapper>
         <DateSlash>/</DateSlash>
@@ -83,7 +103,9 @@ export const CalendarInputCard = (
             numCharacters={2}
             maxLength={2}
             value={month || ""}
-            onChange={(event) => setMonth(parseInt(event.target.value))}
+            onChange={(event) =>
+              handleMonthChanged(parseInt(event.target.value))
+            }
           />
         </InputSegmentWrapper>
         <DateSlash>/</DateSlash>
@@ -94,7 +116,9 @@ export const CalendarInputCard = (
             numCharacters={4}
             maxLength={4}
             value={year || ""}
-            onChange={(event) => setYear(parseInt(event.target.value))}
+            onChange={(event) =>
+              handleYearChanged(parseInt(event.target.value))
+            }
           />
         </InputSegmentWrapper>
       </DateContainer>
@@ -146,15 +170,5 @@ export const EditableCalendarContent = (
     </Root>
   );
 }; // EditableCalendarContent
-
-export const calendarInputCardFactory: AbstractFormFactory<{}> = {
-  userFormComponent: (useFormPayload: CalendarInputCardProps) => (
-    <CalendarInputCard {...useFormPayload} />
-  ),
-  formEditingComponent: (editingFormProps: EditableCalendarContentProps) => (
-    <EditableCalendarContent {...editingFormProps} />
-  ),
-  defaultFormDefinition: {},
-}; // calendarInputCardFactory
 
 export default CalendarInputCard;

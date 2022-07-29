@@ -1,7 +1,9 @@
 import styled from "styled-components";
 import {
+  ConsumableFieldProps,
   EditableFieldProps,
   LikertScaleFieldDefinition,
+  LikertScaleResponseDefinition,
 } from "../../../services/multistageFormActivity.model";
 import LikertResponse, { EditableLikertResponse } from "../LikertResponse";
 import {
@@ -58,41 +60,36 @@ const VerticalSpace = styled.div`
   height: 1em;
 `;
 
-export interface LikertScaleInputCardProps {
+export interface LikertScaleInputCardProps
+  extends ConsumableFieldProps<
+    LikertScaleFieldDefinition,
+    LikertScaleResponseDefinition
+  > {
   /** Main text rendered on top of the component as a prompt for the user, indicating what they must reply to within this card.
    * This can be interpreted as a general explanation of the fields below, likely including some sort of description of the nature
    * of the questions and the meaning of the possible answers.
    */
-  promptText: string;
-  /** Callback to parent component specifying that user has specified a new value for a given question */
-  onValueSelected?: (questionIndex: number, responseIndex: number) => void;
-  /** Which answer has been selected for each of the given questions (index can be undefined to represent that it hasn't been answered yet) */
-  selectedAnswers: (number | undefined)[];
-  /** A list of possible responses to the prompt (general values that the user may choose from when repying to any given question in this card) */
-  scale: string[];
-  /** A list containing all questions asked to the user, all of which will use the scale specified above */
-  questions: string[];
+  promptText?: string;
   /** whether this field is considered required within the overall form (used to display an asterisk) */
   required?: boolean;
   /** whether to modify the appearance of this card to reflect that the user tried to submit the form without entering a value for this field */
   requiredAlert?: boolean;
-  /** Whether to display the question index next to each item */
-  showQuestionIndex?: boolean;
-}
+} // LikertScaleInputCardProps
 
 export const LikertScaleInputCard = (
   props: LikertScaleInputCardProps
 ): JSX.Element => {
   const {
-    promptText,
-    onValueSelected,
-    selectedAnswers,
+    promptText = "",
     requiredAlert,
     required,
-    scale,
-    questions,
-    showQuestionIndex = false,
+    fieldPayload,
+    response,
+    onResponseChanged,
   } = props;
+
+  const { scale, questions, showQuestionsIndex } = fieldPayload;
+  const { responses } = response;
 
   const handleResponseSelected = (
     questionIndex: number,
@@ -100,9 +97,16 @@ export const LikertScaleInputCard = (
   ) => {
     if (questionIndex < 0 || questionIndex >= questions.length) return;
     if (scaleIndex < 0 || scaleIndex >= scale.length) return;
+    if (!onResponseChanged) return;
 
-    if (onValueSelected) onValueSelected(questionIndex, scaleIndex);
-  };
+    onResponseChanged({
+      responses: [
+        ...responses.slice(0, questionIndex),
+        scaleIndex,
+        ...responses.slice(questionIndex + 1),
+      ],
+    });
+  }; // handleResponseSelected
 
   return (
     <Root>
@@ -115,7 +119,7 @@ export const LikertScaleInputCard = (
         {questions.map((question, qInd) => (
           <>
             <QuestionText>
-              {`${showQuestionIndex ? qInd + 1 + ". " : ""}${question}`}
+              {`${showQuestionsIndex ? qInd + 1 + ". " : ""}${question}`}
               {required && <RequiredAsterisk> *</RequiredAsterisk>}
             </QuestionText>
             <LikertScaleContainer>
@@ -135,8 +139,7 @@ export const LikertScaleInputCard = (
                       handleResponseSelected(qInd, rInd)
                     }
                     selected={
-                      qInd < selectedAnswers.length &&
-                      selectedAnswers[qInd] === rInd
+                      qInd < responses.length && responses[qInd] === rInd
                     }
                   />
                 ))}
@@ -154,7 +157,7 @@ export const LikertScaleInputCard = (
   );
 };
 
-//////////////Scale configuration
+////////////// Scale configuration
 const ScaleConfigContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -232,7 +235,7 @@ const DecreaseScaleIcon = styled(Minus)<ButtonProps>`
   }
 `;
 
-///////////////////Questions
+/////////////////// Questions
 
 const QuestionContainer = styled.div`
   display: flex;
@@ -341,7 +344,7 @@ export const EditableLikertScaleCardContent = (
       ...fieldPayload,
       scale: resultArray,
     });
-  }; // handleFieldTypeSelected
+  }; // handleChangeScaleSteps
 
   return (
     <>

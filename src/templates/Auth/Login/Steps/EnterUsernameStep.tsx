@@ -10,7 +10,7 @@ import {
   ButtonAction,
   ButtonActionText,
   TextActionSpan,
-  VerticalSeparator
+  VerticalSeparator,
 } from "../../components/generalStyles";
 
 const Root = styled.div`
@@ -23,30 +23,34 @@ const Root = styled.div`
 `;
 
 export const EnterUsernameStep = (props: StepComponentProps): JSX.Element => {
+  const { t } = useTranslation("gamGame");
 
-  const { t } = useTranslation('gamGame');
-  
-  const username = props.getState<string>('username', '');
+  const username = props.getState<string>("username", "");
 
   const checkValidUsername = async () => {
     return await userService.checkUsernameInUse(username);
-  };
+  }; // checkValidUsername
 
-  const [validUsernameRequest, triggerRequest] = useAsyncRequest(checkValidUsername, [], false);
-  const [alertMessage, setAlertMessage] = useState<string | undefined>(undefined);
+  const [validUsernameRequest, triggerRequest] = useAsyncRequest(
+    checkValidUsername,
+    [],
+    false
+  );
+  const [alertMessage, setAlertMessage] =
+    useState<string | undefined>(undefined);
 
   const handleNextClicked = () => {
     triggerRequest();
-  };
+  }; // handleNextClicked
 
   useEffect(() => {
-    if (validUsernameRequest.kind === 'success'
-      && validUsernameRequest.result.kind === 'ok'
+    if (
+      validUsernameRequest.kind === "success" &&
+      validUsernameRequest.result.kind === "ok"
     ) {
       if (!validUsernameRequest.result.data) {
-        setAlertMessage('No user with specified username could be found');
-      }
-      else if (props.hasNext()) {
+        setAlertMessage("No user with specified username could be found");
+      } else if (props.hasNext()) {
         props.next();
       }
     }
@@ -56,10 +60,14 @@ export const EnterUsernameStep = (props: StepComponentProps): JSX.Element => {
     <Root>
       <VerticalSeparator />
       <ShortTextInputCard
-        promptText={`${t('enterYourUsername')}:`}
-        placeholder={`${t('username')}...`}
-        value={username}
-        onChange={(val) => props.setState<string>('username', val, '')}
+        promptText={`${t("enterYourUsername")}:`}
+        fieldPayload={{
+          placeholder: `${t("username")}...`,
+        }}
+        response={{ text: username }}
+        onResponseChanged={(res) =>
+          props.setState<string>("username", res.text, "")
+        }
         requiredAlert={!!alertMessage}
         alertMessage={alertMessage}
         onEnterPress={handleNextClicked}
@@ -67,17 +75,13 @@ export const EnterUsernameStep = (props: StepComponentProps): JSX.Element => {
       <VerticalSeparator />
       <VerticalSeparator />
       <ActionsContainer>
-        <TextActionSpan>
-          {t('createAccount')}
-        </TextActionSpan>
+        <TextActionSpan>{t("createAccount")}</TextActionSpan>
         <ButtonAction onClick={handleNextClicked}>
-          <ButtonActionText>
-            {t('Next')}
-          </ButtonActionText>
+          <ButtonActionText>{t("Next")}</ButtonActionText>
         </ButtonAction>
       </ActionsContainer>
     </Root>
   );
-};
+}; // EnterUsernameStep
 
 export default EnterUsernameStep;

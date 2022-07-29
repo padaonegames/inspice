@@ -1,14 +1,11 @@
 import {
   EditableFieldProps,
   DisplayVideoFieldDefinition,
+  ConsumableFieldProps,
 } from "../../../services/multistageFormActivity.model";
-import { ImagePreview, InputText } from "./cardStyles";
+import { InputText } from "./cardStyles";
 import FormCard from "./FormCard";
-import { AbstractFormFactory } from "./FormFactory";
 import YouTube, { YouTubeProps } from "react-youtube";
-import { isValidElement } from "react";
-import { isFunction } from "lodash";
-import styled from "styled-components";
 
 const getVideoID = (link: string) => {
   var regExp =
@@ -17,19 +14,22 @@ const getVideoID = (link: string) => {
 
   if (match && match[2].length == 11) return match[2];
   else return "";
-}; //getVideoID
+}; // getVideoID
 
-export interface DisplayVideoCardProps extends DisplayVideoFieldDefinition {
+export interface DisplayVideoCardProps
+  extends ConsumableFieldProps<DisplayVideoFieldDefinition, {}> {
   /** Prompt for the user to fill in this field */
   promptText?: string;
   /** Whether this field should always be filled in by the user */
   required?: boolean;
   /** whether to modify the appearance of this card to reflect that the user tried to submit the form without entering a value for this field */
   requiredAlert?: boolean;
-} // MultipleChoiceCardProps
+} // DisplayVideoCardProps
 
 export const DisplayVideoCard = (props: DisplayVideoCardProps): JSX.Element => {
-  const { promptText = "", requiredAlert, required, src } = props;
+  const { promptText = "", requiredAlert, required, fieldPayload } = props;
+
+  const { src } = fieldPayload;
 
   const playerOptions: YouTubeProps["opts"] = {
     height: "390",
@@ -38,7 +38,7 @@ export const DisplayVideoCard = (props: DisplayVideoCardProps): JSX.Element => {
 
   const onPlayerReady: YouTubeProps["onReady"] = (event) => {
     event.target.pauseVideo();
-  };
+  }; // onPlayerReady
 
   return (
     <FormCard
@@ -54,22 +54,18 @@ export const DisplayVideoCard = (props: DisplayVideoCardProps): JSX.Element => {
       />
     </FormCard>
   );
-}; // DisplayImageCard
+}; // DisplayVideoCard
 
 export interface EditableDisplayVideoCardContentProps
   extends EditableFieldProps<DisplayVideoFieldDefinition> {
   /** text to display for the add new option label. */
   addNewOptionLabel?: string;
-} // EditableMultipleChoiceCardContentProps
+} // EditableDisplayVideoCardContentProps
 
 export const EditableDisplayVideoCardContent = (
   props: EditableDisplayVideoCardContentProps
 ): JSX.Element => {
-  const {
-    fieldPayload,
-    addNewOptionLabel = "New option",
-    onPayloadChanged,
-  } = props;
+  const { fieldPayload, onPayloadChanged } = props;
 
   const { src } = fieldPayload;
 
@@ -120,19 +116,6 @@ export const EditableDisplayVideoCardContent = (
       />
     </>
   );
-}; // EditableDisplayImageCardContent
-
-export const displayVideoCardFactory: AbstractFormFactory<DisplayVideoFieldDefinition> =
-  {
-    userFormComponent: (useFormPayload) => (
-      <DisplayVideoCard {...useFormPayload} />
-    ),
-    formEditingComponent: (editingFormProps) => (
-      <EditableDisplayVideoCardContent {...editingFormProps} />
-    ),
-    defaultFormDefinition: {
-      src: "",
-    },
-  }; // DisplayVideoCardFactory
+}; // EditableDisplayVideoCardContent
 
 export default DisplayVideoCard;

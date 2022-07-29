@@ -1,7 +1,7 @@
-import styled from 'styled-components';
-import ShortTextInputCard from '../../../../components/Forms/Cards/ShortTextInputCard';
-import StepTitleCard from '../../../../components/Forms/Cards/StepTitleCard';
-import { StepComponentProps } from '../../../../components/Navigation/Steps';
+import styled from "styled-components";
+import ShortTextInputCard from "../../../../components/Forms/Cards/ShortTextInputCard";
+import StepTitleCard from "../../../../components/Forms/Cards/StepTitleCard";
+import { StepComponentProps } from "../../../../components/Navigation/Steps";
 
 const Root = styled.div`
   display: flex;
@@ -14,31 +14,41 @@ const Root = styled.div`
 /**
  * <img src="media://InputBasicInformation.PNG" alt="InputBasicInformation">
  */
-export const BasicInformationStep = (props: StepComponentProps): JSX.Element => {
+export const BasicInformationStep = (
+  props: StepComponentProps
+): JSX.Element => {
   return (
     <Root>
       <StepTitleCard
-        stepTitle='Basic Information'
+        stepTitle="Basic Information"
         stepDescription={`Below, enter the basic information about your treasure hunt, such as its title and author.`}
       />
       <ShortTextInputCard
-        promptText='Choose a name for your treasure hunt:'
-        placeholder='Treasure Hunt name...'
-        onChange={(val) => props.setState<string>('treasureHuntTitle', val, '')}
-        value={props.getState<string>('treasureHuntTitle', '')}
-        maxLength={30}
+        promptText="Choose a name for your treasure hunt:"
+        fieldPayload={{
+          placeholder: "Treasure Hunt Name...",
+          maxLength: 30,
+        }}
+        onResponseChanged={(res) =>
+          props.setState<string>("treasureHuntTitle", res.text, "")
+        }
+        response={{ text: props.getState<string>("treasureHuntTitle", "") }}
         required
       />
       <ShortTextInputCard
         promptText={`Specify the treasure hunt's author:`}
-        placeholder='Treasure Hunt author...'
-        onChange={(val) => props.setState<string>('treasureHuntAuthor', val, '')}
-        value={props.getState<string>('treasureHuntAuthor', '')}
-        maxLength={30}
+        fieldPayload={{
+          placeholder: "Treasure Hunt author...",
+          maxLength: 30,
+        }}
+        onResponseChanged={(res) =>
+          props.setState<string>("treasureHuntAuthor", res.text, "")
+        }
+        response={{ text: props.getState<string>("treasureHuntAuthor", "") }}
         required
       />
     </Root>
   );
-}
+}; // BasicInformationStep
 
 export default BasicInformationStep;

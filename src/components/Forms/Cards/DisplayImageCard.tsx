@@ -1,26 +1,28 @@
-import styled from "styled-components";
 import {
   EditableFieldProps,
   DisplayImageFieldDefinition,
+  ConsumableFieldProps,
 } from "../../../services/multistageFormActivity.model";
 import { ImagePreview, InputText } from "./cardStyles";
 import FormCard from "./FormCard";
-import { AbstractFormFactory } from "./FormFactory";
 
 const preview_image =
   "https://icons.iconarchive.com/icons/ccard3dev/dynamic-yosemite/512/Preview-icon.png";
 
-export interface DisplayImageCardProps extends DisplayImageFieldDefinition {
+export interface DisplayImageCardProps
+  extends ConsumableFieldProps<DisplayImageFieldDefinition, {}> {
   /** Prompt for the user to fill in this field */
   promptText?: string;
   /** Whether this field should always be filled in by the user */
   required?: boolean;
   /** whether to modify the appearance of this card to reflect that the user tried to submit the form without entering a value for this field */
   requiredAlert?: boolean;
-} // MultipleChoiceCardProps
+} // DisplayImageCardProps
 
 export const DisplayImageCard = (props: DisplayImageCardProps): JSX.Element => {
-  const { promptText = "", requiredAlert, required, src } = props;
+  const { promptText = "", requiredAlert, required, fieldPayload } = props;
+
+  const { src } = fieldPayload;
 
   return (
     <FormCard
@@ -37,16 +39,12 @@ export interface EditableDisplayImageCardContentProps
   extends EditableFieldProps<DisplayImageFieldDefinition> {
   /** text to display for the add new option label. */
   addNewOptionLabel?: string;
-} // EditableMultipleChoiceCardContentProps
+} // EditableDisplayImageCardContentProps
 
 export const EditableDisplayImageCardContent = (
   props: EditableDisplayImageCardContentProps
 ): JSX.Element => {
-  const {
-    fieldPayload,
-    addNewOptionLabel = "New option",
-    onPayloadChanged,
-  } = props;
+  const { fieldPayload, onPayloadChanged } = props;
 
   const { src } = fieldPayload;
 
@@ -56,7 +54,7 @@ export const EditableDisplayImageCardContent = (
       ...fieldPayload,
       src: value,
     });
-  }; // handleEditOption
+  }; // handleEditImageSource
 
   const isValidURL = (link: string) => {
     var res = link.match(
@@ -79,18 +77,5 @@ export const EditableDisplayImageCardContent = (
     </>
   );
 }; // EditableDisplayImageCardContent
-
-export const displayImageCardFactory: AbstractFormFactory<DisplayImageFieldDefinition> =
-  {
-    userFormComponent: (useFormPayload) => (
-      <DisplayImageCard {...useFormPayload} />
-    ),
-    formEditingComponent: (editingFormProps) => (
-      <EditableDisplayImageCardContent {...editingFormProps} />
-    ),
-    defaultFormDefinition: {
-      src: "",
-    },
-  }; // DisplayImageCardFactory
 
 export default DisplayImageCard;

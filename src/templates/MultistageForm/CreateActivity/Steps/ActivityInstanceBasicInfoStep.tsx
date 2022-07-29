@@ -32,30 +32,44 @@ export const ActivityInstanceBasicInfoStep = (
       />
       <ShortTextInputCard
         promptText="Choose a name for your activity:"
-        placeholder="Activity name..."
-        onChange={(val) =>
-          setState((prev) => ({ ...prev, activityTitle: val }))
+        fieldPayload={{
+          placeholder: "Activity name...",
+          maxLength: 60,
+        }}
+        response={{
+          text: state.activityTitle,
+        }}
+        onResponseChanged={(res) =>
+          setState((prev) => ({ ...prev, activityTitle: res.text }))
         }
-        value={state.activityTitle}
-        maxLength={60}
         required
       />
       <ShortTextInputCard
-        promptText={`Enter the activity's author:`}
-        placeholder="Activity author..."
-        onChange={(val) =>
-          setState((prev) => ({ ...prev, activityAuthor: val }))
+        promptText="Enter the activity's author:"
+        fieldPayload={{
+          placeholder: "Activity author...",
+          maxLength: 30,
+        }}
+        response={{
+          text: state.activityAuthor,
+        }}
+        onResponseChanged={(res) =>
+          setState((prev) => ({ ...prev, activityAuthor: res.text }))
         }
-        value={state.activityAuthor}
-        maxLength={30}
         required
       />
       <LongTextInputCard
-        promptText={`Enter a description for your activity:`}
-        placeholder="Description..."
-        onChange={(val) => setState((prev) => ({ ...prev, description: val }))}
-        value={state.description}
-        maxLength={500}
+        promptText="Enter a description for your activity:"
+        fieldPayload={{
+          placeholder: "Description...",
+          maxLength: 500,
+        }}
+        response={{
+          text: state.description ?? "",
+        }}
+        onResponseChanged={(res) =>
+          setState((prev) => ({ ...prev, description: res.text }))
+        }
       />
       <EmbedImageLinkCard
         promptText="Paste the source url of a thumbnail image:"
@@ -70,17 +84,19 @@ export const ActivityInstanceBasicInfoStep = (
       />
       <CalendarInputCard
         promptText="Choose a starting date for this activity:"
-        initialDate={beginsOn}
-        onChange={(val) =>
-          setState((prev) => ({ ...prev, beginsOn: val ?? new Date() }))
+        response={{ date: beginsOn }}
+        fieldPayload={{}}
+        onResponseChanged={(res) =>
+          setState((prev) => ({ ...prev, beginsOn: res.date ?? new Date() }))
         }
         required
       />
       <CalendarInputCard
         promptText="Choose a closing date for this activity:"
-        initialDate={endsOn}
-        onChange={(val) =>
-          setState((prev) => ({ ...prev, endsOn: val ?? new Date() }))
+        response={{ date: endsOn }}
+        fieldPayload={{}}
+        onResponseChanged={(res) =>
+          setState((prev) => ({ ...prev, endsOn: res.date ?? new Date() }))
         }
         required
       />

@@ -153,6 +153,22 @@ const HorizontalLine = styled.div`
   margin: 0 0.5em;
 `;
 
+export type FieldMappings<T extends SupportedFormField> = {
+  /** What type of field we are working with here*/
+  [P in T["type"]]: {
+    /** How to render this option within a list. Defaults to fieldType */
+    displayName?: string;
+    /** What component to place next to the display name */
+    iconComponent?: JSX.Element;
+    /** Generation logic to use to create a form editing component */
+    editingComponentProducer: (
+      editingFormProps: EditableFieldProps<Extract<T, { type: P }>["payload"]>
+    ) => JSX.Element;
+    /** Default value for FieldPayload */
+    defaultFieldPayload: Extract<T, { type: P }>["payload"];
+  };
+}; // FieldMappings
+
 export interface EditableFieldCardProps {
   /** Placeholder for this card's prompt text */
   promptTextPlaceholder?: string;
@@ -186,23 +202,7 @@ export interface EditableFieldCardProps {
   onMoveUpCard?: () => void;
   /** Callback notifying parent component that the user wants to move this component downwards within the activity */
   onMoveDownCard?: () => void;
-}
-
-export type FieldMappings<T extends SupportedFormField> = {
-  /** What type of field we are working with here*/
-  [P in T["type"]]: {
-    /** How to render this option within a list. Defaults to fieldType */
-    displayName?: string;
-    /** What component to place next to the display name */
-    iconComponent?: JSX.Element;
-    /** Generation logic to use to create a form editing component */
-    editingComponentProducer: (
-      editingFormProps: EditableFieldProps<Extract<T, { type: P }>["payload"]>
-    ) => JSX.Element;
-    /** Default value for FieldPayload */
-    defaultFieldPayload: Extract<T, { type: P }>["payload"];
-  };
-}; // FieldMappings
+} // EditableFieldCardProps
 
 /**
  * Editable version of StepTitleCard for form editing
