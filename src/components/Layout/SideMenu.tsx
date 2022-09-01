@@ -143,11 +143,10 @@ export const SideMenu = (props: SideMenuProps): JSX.Element => {
 
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const { userData, setAccessToken, setUserData } = useContext(AuthContext);
+  const { userData, setTokenAndUpdateData } = useContext(AuthContext);
 
   const performLogout = () => {
-    setAccessToken(undefined);
-    setUserData(undefined);
+    setTokenAndUpdateData(undefined);
   }; // performLogout
 
   return (
@@ -193,12 +192,9 @@ export const SideMenu = (props: SideMenuProps): JSX.Element => {
               ))}
             </NavigationList>
 
-            {userData && (
+            {!!userData && (
               <NavigationList>
-                <NavigationElem
-                  selected={false}
-                  onClick={performLogout}
-                >
+                <NavigationElem selected={false} onClick={performLogout}>
                   <IconStyle selected={false}>
                     <PowerOff />
                   </IconStyle>

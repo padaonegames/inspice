@@ -27,7 +27,7 @@ const Root = styled.div`
 export const EnterPasswordStep = (props: StepComponentProps): JSX.Element => {
   const { t } = useTranslation("gamGame");
 
-  const { setUserData, setAccessToken } = useContext(AuthContext);
+  const { setTokenAndUpdateData } = useContext(AuthContext);
 
   const username = props.getState<string>("username", "user");
   const password = props.getState<string>("password", "");
@@ -63,8 +63,7 @@ export const EnterPasswordStep = (props: StepComponentProps): JSX.Element => {
         performLoginRequest.result.data.accessToken
       ) {
         setAlertMessage(undefined);
-        setUserData({ ...performLoginRequest.result.data });
-        setAccessToken(performLoginRequest.result.data.accessToken);
+        setTokenAndUpdateData(performLoginRequest.result.data.accessToken);
         console.log(
           `Your token: ${performLoginRequest.result.data.accessToken}`
         );
