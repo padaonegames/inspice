@@ -82,6 +82,13 @@ export const ActivityInstanceBasicInfoStep = (
         onChange={(val) => setState((prev) => ({ ...prev, tags: val }))}
         value={state.tags}
       />
+    </Root>
+  );
+};
+
+export default ActivityInstanceBasicInfoStep;
+
+/*
       <CalendarInputCard
         promptText="Choose a starting date for this activity:"
         response={{ date: beginsOn }}
@@ -100,8 +107,4 @@ export const ActivityInstanceBasicInfoStep = (
         }
         required
       />
-    </Root>
-  );
-};
-
-export default ActivityInstanceBasicInfoStep;
+*/

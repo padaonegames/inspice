@@ -30,20 +30,6 @@ const Root = styled.div`
   flex-direction: column;
 `;
 
-//-------------------------------------------------------
-//                    Defaults
-//-------------------------------------------------------
-
-const sample_base: MultistageFormActivityDefinition = {
-  activityType: "Multistage Form",
-  activityTitle: "",
-  activityAuthor: "undefined",
-  beginsOn: new Date(),
-  endsOn: new Date(),
-  stages: [],
-  formResponsesDatasetUuid: "",
-  _id: "",
-}; // sample_base
 
 //-------------------------------------------------------
 //                 State Definition
@@ -84,6 +70,7 @@ export const GenerateNewMultistageFormActivityScreen = () => {
 
 // Fetch initial Multistage Form activity definition by path id from server
 export const EditMultistageFormActivityScreen = (): JSX.Element => {
+
   const { id } = useParams();
 
   const fetchActivityDefinitionById = async () => {
@@ -123,8 +110,11 @@ const CreateMultistageFormScreen = (
 ): JSX.Element => {
   const { initialActivity } = props;
 
+  const [activityDefinition, setActivityDefinition] =
+    useState<MultistageFormActivityDefinition>(initialActivity);
+
   const [newActivityDefinition, setNewActivityDefinition] =
-    useState<MultistageFormActivityDefinition | undefined>(undefined);
+    useState<MultistageFormActivityDefinition>(initialActivity);
 
   const updateDefinition = async () => {
     if (!newActivityDefinition) return Promise.reject();
@@ -138,12 +128,20 @@ const CreateMultistageFormScreen = (
     [newActivityDefinition],
     false
   );
-  const inSyncWithServer = updateDefinitionStatus.kind === "success";
+
+  useEffect(() => {
+    if (
+      updateDefinitionStatus.kind === "success" &&
+      updateDefinitionStatus.result.kind === "ok"
+    ) {
+      setActivityDefinition({ ...updateDefinitionStatus.result.data });
+    }
+  }, [updateDefinitionStatus]);
 
   return (
     <CreateMultistageFormScreenComponent
-      initialActivityDefinition={initialActivity}
-      onActivityDefinitionChanged={setNewActivityDefinition}
+      activityDefinition={activityDefinition}
+      setActivityDefinition={setNewActivityDefinition}
     />
   );
 }; // CreateMultistageFormScreen
@@ -167,27 +165,15 @@ const isStageOneCompleted = (
 
 export interface CreateMultistageFormScreenComponentProps {
   /** Initial state that this component will take as base */
-  initialActivityDefinition?: MultistageFormActivityDefinition | undefined;
+  activityDefinition: MultistageFormActivityDefinition;
   /** callback to parent notifying of a change within the internal state of this component */
-  onActivityDefinitionChanged?: (
-    value: MultistageFormActivityDefinition
-  ) => void;
+  setActivityDefinition: React.Dispatch<React.SetStateAction<MultistageFormActivityDefinition>>;
 } // CreateMultistageFormActivityScreenProps
 
 export const CreateMultistageFormScreenComponent = (
   props: CreateMultistageFormScreenComponentProps
 ): JSX.Element => {
-  const { initialActivityDefinition, onActivityDefinitionChanged } = props;
-
-  // Initialize internal component state using fields from the provided initialActivityDefinition, if any.
-  // Note here that we are adding the minimum necessary fields to have a valid transformation from State into InProgressMultistageFormActivityDefinition
-  // by incorporating the base content from sample_base.
-  const [activityDefinition, setActivityDefinition] =
-    useState<MultistageFormActivityDefinition>(
-      initialActivityDefinition
-        ? { ...sample_base, ...initialActivityDefinition }
-        : { ...sample_base }
-    );
+  const { activityDefinition, setActivityDefinition } = props;
 
   // restrict change notifications on first render (no change happening there)
   const [isMounted, setIsMounted] = useState<boolean>(false);
@@ -196,8 +182,8 @@ export const CreateMultistageFormScreenComponent = (
   }, []);
 
   useEffect(() => {
-    if (!onActivityDefinitionChanged || !isMounted) return;
-    onActivityDefinitionChanged(activityDefinition);
+    if (!setActivityDefinition || !isMounted) return;
+    setActivityDefinition(activityDefinition);
   }, [activityDefinition]);
 
   const config: StepsConfig = {

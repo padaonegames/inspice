@@ -257,7 +257,7 @@ const TemplateDashBoardView = (
 
   const handleDeleteActivity = (activity: ActivityInstance) => {
     if (onDeleteActivity) {
-      onDeleteActivity(activity._id);
+      onDeleteActivity(activity._id ?? "");
     }
   }; // handleDeleteActivity
 

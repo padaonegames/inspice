@@ -230,5 +230,5 @@ async function putApiResult<T, R>(
 
   // TODO: we should validate the data object here against our schema
   // As it is now, this is an unsafe type coercion
-  return { kind: "ok", data: response };
+  return { kind: "ok", data: (response as any).data };
 }
