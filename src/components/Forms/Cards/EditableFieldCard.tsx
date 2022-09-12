@@ -14,6 +14,9 @@ import {
   CardPanel,
   InputArea,
   SelectFieldTypeDropdownButton,
+  CardBottomRow,
+  DottedLine,
+  HorizontalLine,
 } from "./cardStyles";
 import { ChevronDown } from "@styled-icons/boxicons-regular/ChevronDown";
 import { Delete } from "@styled-icons/fluentui-system-regular/Delete";
@@ -92,16 +95,6 @@ const HeaderRow = styled.div`
   }
 `;
 
-const BottomRow = styled.div`
-  position: relative;
-  display: flex;
-  flex-direction: row;
-  padding: 5px 0;
-  justify-content: right;
-  align-items: center;
-  margin-top: 0.25em;
-`;
-
 const DropdownMenu = styled.div`
   position: absolute;
   left: 0;
@@ -133,24 +126,6 @@ const DropdownMenuItem = styled.a`
   &:hover {
     background-color: #eeeeee;
   }
-`;
-
-const DottedLine = styled.div`
-  height: 0.5em;
-  width: 100%;
-  border-style: solid;
-  border-color: lightgray;
-  border-width: 0px 0px 1px 0px;
-  margin: 0.5em 0;
-`;
-
-const HorizontalLine = styled.div`
-  height: 1.75em;
-  width: 0.5em;
-  border-style: solid;
-  border-color: lightgray;
-  border-width: 0px 2px 0px 0px;
-  margin: 0 0.5em;
 `;
 
 export type FieldMappings<T extends SupportedFormField> = {
@@ -421,7 +396,7 @@ export const EditableFieldCard = (
           })}
         <DottedLine />
         {/* Container of the buttons that appear at the bottom of the card */}
-        <BottomRow>
+        <CardBottomRow>
           <UpArrowIcon onMouseDown={onMoveUpCard} avaliable={!firstCard} />
           <DownArrowIcon onMouseDown={onMoveDownCard} avaliable={!lastCard} />
 
@@ -433,7 +408,7 @@ export const EditableFieldCard = (
           />
           <HorizontalLine />
           <DeleteIcon onClick={onCardDeleted} />
-        </BottomRow>
+        </CardBottomRow>
         {/* Alert in case the card hasnt been filled correctly */}
         {requiredAlert && (
           <RequiredQuestionSpan>

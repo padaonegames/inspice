@@ -383,6 +383,8 @@ export const TagsContainer = styled.div`
   width: 100%;
   height: auto;
   min-height: 1.5em;
+  max-height: 35vh;
+  overflow-y: auto;
   margin-top: 10px;
   color: ${(props) => props.theme.textColor};
   border: none;
@@ -540,4 +542,32 @@ export const CheckboxOption = styled.div`
   display: flex;
   flex-direction: row;
   align-content: center;
+`;
+
+export const CardBottomRow = styled.div`
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  padding: 5px 0;
+  justify-content: right;
+  align-items: center;
+  margin-top: 0.25em;
+`;
+
+export const DottedLine = styled.div`
+  height: 0.5em;
+  width: 100%;
+  border-style: solid;
+  border-color: lightgray;
+  border-width: 0px 0px 1px 0px;
+  margin: 0.5em 0;
+`;
+
+export const HorizontalLine = styled.div`
+  height: 1.75em;
+  width: 0.5em;
+  border-style: solid;
+  border-color: lightgray;
+  border-width: 0px 2px 0px 0px;
+  margin: 0 0.5em;
 `;

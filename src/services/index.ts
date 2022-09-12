@@ -12,6 +12,7 @@ import { MncnArtifactService } from "./mncnArtifact.service";
 import { MultistageFormActivityService } from "./multistageFormActivity.service";
 import { EscapeRoomActivityService } from "./escapeRoomActivity.service";
 import axios from "axios";
+import { ActivityService } from "./activity.service";
 
 export let api: FindArtworkActivityService;
 export let artworksService: ArtworksService;
@@ -25,6 +26,7 @@ export let authService: AuthService;
 export let mncnArtifactService: MncnArtifactService;
 export let multistageFormService: MultistageFormActivityService;
 export let escapeRoomService: EscapeRoomActivityService;
+export let activityService: ActivityService;
 
 /**
  * For the time being we fetch the relevant fields from the initialize services function provided here.
@@ -78,6 +80,7 @@ export const initializeServices = () => {
   authService = new AuthService(inspiceServerApi);
   gamArtworksService = new GamArtworksService(inspiceServerApi);
   mncnArtifactService = new MncnArtifactService(inspiceServerApi);
+  activityService = new ActivityService(inspiceServerApi);
 
   // Add a response interceptor
   axios.interceptors.response.use(

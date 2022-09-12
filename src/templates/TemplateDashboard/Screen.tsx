@@ -15,6 +15,7 @@ import { GamGameActivityDefinition } from "../../services/gamGameActivity.model"
 import { Plus } from "styled-icons/bootstrap";
 import NewActivityPopup from "./components/NewActivityPopup";
 import { useEffect, useState } from "react";
+import ActivitySessionsPopup from "./components/ActivitySessionsPopup";
 
 const GridContainer = styled.div`
   display: flex;
@@ -173,8 +174,13 @@ const TemplateDashBoardView = (
   const { activities: acts, onDeleteActivity } = props;
 
   const navigate = useNavigate();
+
+  // whether new activity popup should be open
   const [newActivityPopupOpen, setNewActivityPopupOpen] =
     useState<boolean>(false);
+  // which activity has been selected to manage sessions, if any
+  const [selectedActivitySessions, setSelectedActivitySessions] =
+    useState<string | undefined>(undefined);
 
   const [displayTypes, setDisplayTypes] = useState<
     Map<SupportedActivity, boolean>
@@ -278,6 +284,10 @@ const TemplateDashBoardView = (
     });
   }; // handleDisplayTagsCheck
 
+  const handleOpenActivitySessions = (sessionId: string) => {
+    setSelectedActivitySessions(sessionId);
+  }; // handleOpenActivitySessions
+
   const noScroll = () => {
     window.scrollTo(0, 0);
   }; // noScroll
@@ -370,6 +380,9 @@ const TemplateDashBoardView = (
                   onOpenClicked={() => handleOpenActivity(activity)}
                   onEditClicked={() => handleEditActivity(activity)}
                   onDeleteClicked={() => handleDeleteActivity(activity)}
+                  onSessionsClicked={() =>
+                    handleOpenActivitySessions(activity._id)
+                  }
                 />
               );
           })}
@@ -384,6 +397,12 @@ const TemplateDashBoardView = (
         <NewActivityPopup
           onPopupClose={() => setNewActivityPopupOpen(false)}
           onTemplateSelected={handleOpenTemplate}
+        />
+      )}
+      {selectedActivitySessions && (
+        <ActivitySessionsPopup
+          activityId={selectedActivitySessions}
+          onPopupClose={() => setSelectedActivitySessions(undefined)}
         />
       )}
     </>

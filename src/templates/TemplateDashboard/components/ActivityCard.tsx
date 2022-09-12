@@ -274,6 +274,31 @@ export const ActivityCard = (props: ActivityCardProps): JSX.Element => {
     day: "2-digit",
   };
 
+  const handleOpenClicked = () => {
+    setOpenMenu(false);
+    if (onOpenClicked) onOpenClicked();
+  }; // handleOpenClicked
+
+  const handleSessionsClicked = () => {
+    setOpenMenu(false);
+    if (onSessionsClicked) onSessionsClicked();
+  }; // handleSessionsClicked
+
+  const handleEditClicked = () => {
+    setOpenMenu(false);
+    if (onEditClicked) onEditClicked();
+  }; // handleEditClicked
+
+  const handleDuplicateClicked = () => {
+    setOpenMenu(false);
+    if (onDuplicateClicked) onDuplicateClicked();
+  }; // handleDuplicateClicked
+
+  const handleDeleteClicked = () => {
+    setOpenMenu(false);
+    if (onDeleteClicked) onDeleteClicked();
+  }; // handleDeleteClicked
+
   return (
     <ActivityCardContainer>
       <ActivityImageContainer>
@@ -306,23 +331,23 @@ export const ActivityCard = (props: ActivityCardProps): JSX.Element => {
           <ActivityOptionsIcon onClick={() => setOpenMenu((prev) => !prev)} />
           {openMenu && (
             <DropdownMenu>
-              <DropdownMenuItem onClick={onOpenClicked}>
+              <DropdownMenuItem onClick={handleOpenClicked}>
                 <OpenActivityIcon />
                 Open
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={onSessionsClicked}>
+              <DropdownMenuItem onClick={handleSessionsClicked}>
                 <SessionsActivityIcon />
                 Sessions
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={onEditClicked}>
+              <DropdownMenuItem onClick={handleEditClicked}>
                 <EditActivityIcon />
                 Edit
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={onDuplicateClicked}>
+              <DropdownMenuItem onClick={handleDuplicateClicked}>
                 <DuplicateActivityIcon />
                 Duplicate
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={onDeleteClicked}>
+              <DropdownMenuItem onClick={handleDeleteClicked}>
                 <DeleteActivityIcon />
                 Delete
               </DropdownMenuItem>
