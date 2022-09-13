@@ -304,6 +304,18 @@ const TemplateDashBoardView = (
     return () => window.removeEventListener("scroll", noScroll);
   }, [newActivityPopupOpen]); // useEffect
 
+  useEffect(() => {
+    if (selectedActivitySessions) {
+      window.addEventListener("scroll", noScroll);
+      document.body.style.overflow = "hidden";
+    } else {
+      window.removeEventListener("scroll", noScroll);
+      document.body.style.overflow = "visible";
+    }
+
+    return () => window.removeEventListener("scroll", noScroll);
+  }, [selectedActivitySessions]); // useEffect
+
   const renderActivityTagsFilters = () => {
     const elems: JSX.Element[] = [];
     let it = displayTags.entries();
