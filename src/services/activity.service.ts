@@ -1,4 +1,4 @@
-import { ActivitySession } from "./activity.model";
+import { ActivitySession, NewActivitySession } from "./activity.model";
 import {
   getApiResult,
   deleteApiResult,
@@ -53,4 +53,20 @@ export class ActivityService {
     };
     return getApiResult<ActivitySession[]>(url, config);
   } // getSessionDefinitionsByActivityId
+
+  public async requestNewSessionWithNameForActivityWithId(
+    sessionName: string,
+    activityId: string
+  ): Promise<ApiResult<ActivitySession>> {
+    const url = `${this.apiUrl}/activity/session`;
+
+    const newActivitySession: NewActivitySession = {
+      sessionName,
+      activityId,
+    };
+    return postApiResult<NewActivitySession, ActivitySession>(
+      url,
+      newActivitySession
+    );
+  }
 } // ActivityService

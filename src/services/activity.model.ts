@@ -14,6 +14,10 @@ export interface ActivityInstance {
   intendedUsers?: IntendedUser[];
 } // Activity Instance
 
+export type NewActivitySession = Omit<
+  ActivitySession,
+  "_id" | "availableUsernames"
+>;
 export interface ActivitySession {
   _id: string;
   /** Id of the activity that this session is associated to */
@@ -37,20 +41,20 @@ export interface InProgressActivityInstance {
 }
 
 export const intendedUsers = [
-  'Children',
-  'Families',
-  'Adults',
-  'Teenagers',
-  'Deaf People'
+  "Children",
+  "Families",
+  "Adults",
+  "Teenagers",
+  "Deaf People",
 ];
 
 export type IntendedUser = typeof intendedUsers[number];
 
 export const supportedActivities = [
-  'Treasure Hunt',
-  'GAM Game',
-  'Multistage Form',
-  'Escape Room'
+  "Treasure Hunt",
+  "GAM Game",
+  "Multistage Form",
+  "Escape Room",
 ] as const;
 
 export type SupportedActivity = typeof supportedActivities[number];

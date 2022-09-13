@@ -90,6 +90,7 @@ const AddSessionButton = styled.button`
   height: 3.5em;
   padding: 0 2em;
   color: white;
+  margin-top: 1em;
 
   &:hover {
     box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 0.5rem 0px;
@@ -125,6 +126,9 @@ export const ActivitySessionsPopup = (
     useState<string | undefined>(undefined);
   const [selectedUsernameQuantity, setSelectedUsernameQuantity] =
     useState<number | undefined>(undefined);
+  // new session to add, if any
+  const [newSessionName, setNewSessionName] =
+    useState<string | undefined>(undefined);
   // whether we've clicked on the new session button
   const [newSessionOpen, setNewSessionOpen] = useState<boolean>(false);
 
@@ -147,9 +151,24 @@ export const ActivitySessionsPopup = (
     triggerFetchActivitySessions();
   }; // requestUsers
 
-  const [requestUsersRequest] = useAsyncRequest(
-    requestUsers,
-    [selectedSessionId],
+  const [_] = useAsyncRequest(requestUsers, [selectedSessionId], false);
+
+  const submitNewSession = async () => {
+    if (!newSessionName || newSessionName.length <= 0) return Promise.reject();
+    const res =
+      await activityService.requestNewSessionWithNameForActivityWithId(
+        newSessionName,
+        activityId
+      );
+    setNewSessionName(undefined);
+    setNewSessionOpen(false);
+    triggerFetchActivitySessions();
+    return res;
+  }; // submitNewSession
+
+  const [submitNewSessionStatus] = useAsyncRequest(
+    submitNewSession,
+    [newSessionName],
     false
   );
 
@@ -157,6 +176,10 @@ export const ActivitySessionsPopup = (
     setSelectedUsernameQuantity(usernameAmount);
     setSelectedSessionId(sessionId);
   }; // handleUsersRequested
+
+  const handleSubmitNewSession = (sessionName: string) => {
+    setNewSessionName(sessionName);
+  }; // handleSubmitNewSession
 
   if (
     fetchActivitySessionRequest.kind === "success" &&
@@ -188,6 +211,7 @@ export const ActivitySessionsPopup = (
               <NewSessionCard
                 activitySessionNames={sessions.map((s) => s.sessionName)}
                 onCancelSessionCreation={() => setNewSessionOpen(false)}
+                onSubmitNewSession={handleSubmitNewSession}
               />
             )}
           </TemplateContainer>
