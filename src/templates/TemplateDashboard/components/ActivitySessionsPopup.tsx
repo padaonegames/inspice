@@ -1,11 +1,12 @@
 import ReactDOM from "react-dom";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { Close } from "@styled-icons/evaicons-solid/Close";
 import SessionManagementCard from "../../../components/Forms/Cards/SessionManagementCard";
-import { ActivitySession } from "../../../services/activity.model";
 import { activityService } from "../../../services";
 import { useAsyncRequest } from "../../../services/useAsyncRequest";
 import { useState } from "react";
+import NewSessionCard from "./NewSessionCard";
+import { UserCog } from "styled-icons/fa-solid";
 
 const Background = styled.div`
   background-color: rgba(0, 0, 0, 0.5);
@@ -79,30 +80,33 @@ const TemplateContainer = styled.div`
   overflow-y: auto;
 `;
 
-const TemplateBox = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  border-radius: 10px;
-  box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 0.5rem 0px;
-  background-color: ${(props) => props.theme.cardBackground};
-  padding: 5px 10px;
-  height: 8.5vw;
-  width: 8.5vw;
+const AddSessionButton = styled.button`
+  font-family: ${(props) => props.theme.contentFont};
+  font-size: 0.8em;
   cursor: pointer;
+  background-color: hsl(10, 80%, 80%);
+  border-radius: 50px;
+  box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 0.5rem 0px;
+  height: 3.5em;
+  padding: 0 2em;
+  color: white;
 
   &:hover {
     box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 0.5rem 0px;
   }
 `;
 
-const TemplateText = styled.span`
-  text-align: center;
+export const fieldTypeIcon = css`
   color: ${(props) => props.theme.textColor};
-  letter-spacing: +0.5px;
-  font-family: Raleway;
-  font-size: 0.85rem;
+  height: 1.75em;
+  width: 1.75em;
+  margin-right: 0.75em;
+`;
+
+const AddUsersIcon = styled(UserCog)`
+  ${fieldTypeIcon}
+  cursor: pointer;
+  color: white;
 `;
 
 export interface ActivitySessionsPopupProps {
@@ -121,6 +125,8 @@ export const ActivitySessionsPopup = (
     useState<string | undefined>(undefined);
   const [selectedUsernameQuantity, setSelectedUsernameQuantity] =
     useState<number | undefined>(undefined);
+  // whether we've clicked on the new session button
+  const [newSessionOpen, setNewSessionOpen] = useState<boolean>(false);
 
   const fetchActivitySessions = async () => {
     return activityService.getSessionDefinitionsByActivityId(activityId);
@@ -172,6 +178,18 @@ export const ActivitySessionsPopup = (
                 }
               />
             ))}
+            {!newSessionOpen && (
+              <AddSessionButton onClick={() => setNewSessionOpen(true)}>
+                <AddUsersIcon />
+                Add New Session
+              </AddSessionButton>
+            )}
+            {newSessionOpen && (
+              <NewSessionCard
+                activitySessionNames={sessions.map((s) => s.sessionName)}
+                onCancelSessionCreation={() => setNewSessionOpen(false)}
+              />
+            )}
           </TemplateContainer>
         </Root>
       </>,

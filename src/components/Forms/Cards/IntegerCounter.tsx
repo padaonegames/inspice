@@ -80,7 +80,7 @@ export const IntegerCounter = (props: IntegerCounterProps): JSX.Element => {
         onValueChanged(numericValue);
       }
     }
-  }; // handleInput
+  }; // handleInputChanged
 
   const handleIncreaseUsers = () => {
     if (value !== undefined && value < maximum && onValueChanged) {
@@ -92,7 +92,7 @@ export const IntegerCounter = (props: IntegerCounterProps): JSX.Element => {
     if (value !== undefined && value > minimum && onValueChanged) {
       onValueChanged(value - 1);
     }
-  }; // handleIncreaseUsers
+  }; // handleDecreaseUsers
 
   return (
     <CounterContainer>
