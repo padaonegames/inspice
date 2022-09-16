@@ -1,0 +1,12 @@
+{
+  "accessActivity": "Access Activity",
+  "accessActivityDescription": "Before accessing this activity, please enter the name of the session in which you would like to take part.",
+  "sessionName": "session name",
+  "enterYourSessionName": "Enter your session's name:",
+  "Next": "Next",
+  "next": "Next",
+  "back": "Back",
+  "welcome": "Welcome!",
+  "username": "username",
+  "enterYourUsername": "Enter your username:"
+}

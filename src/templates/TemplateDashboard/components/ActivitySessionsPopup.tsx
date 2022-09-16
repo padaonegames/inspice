@@ -195,6 +195,7 @@ export const ActivitySessionsPopup = (
           <TemplateContainer>
             {sessions.map((s) => (
               <SessionManagementCard
+                key={s._id}
                 sessionData={s}
                 onUsersRequested={(amount) =>
                   handleUsersRequested(s._id, amount)

@@ -161,6 +161,7 @@ export const SideMenu = (props: SideMenuProps): JSX.Element => {
             <NavigationList>
               {entries.map((elem) => (
                 <NavigationElem
+                  key={elem.title}
                   selected={pathname.includes(elem.to)}
                   onClick={() => {
                     // don't do anything if we are already at the destination

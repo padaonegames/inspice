@@ -23,6 +23,7 @@
   "searchArtworksByTitleOrAuthor": "Cerca per titolo o autore",
   "scanQrDescription": "Usa la fotocamera del tuo dispositivo per scattare una foto del codice QR accanto a qualsiasi opera d'arte in questa attività e selezionalo da qui.",
   "fetchingActivityArtworks": "Scarico le opere",
+  "fetchingArtworkStories": "Fetching artwork stories",
   "newGamGameStory": "Nuova storia",
   "createGamGameStoryDescription": "Ora puoi selezionare le opere  per creare la tua storia (minimo 2 massimo 3).\nPer ogni opera potrai aggiungere un pensiero e esprimere i tuoi sentimenti.",
   "begin": "Inizia",

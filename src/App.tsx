@@ -30,6 +30,8 @@ import {
   EditEscapeRoomScreen,
   GenerateNewEscapeRoomActivityScreen,
 } from "./templates/EscapeRoomAuthoring/Screen";
+import SessionLoginScreen from "./templates/Auth/SessionLogin/SessionLoginScreen";
+import { SessionAuthStore } from "./auth/SessionAuthStore";
 
 /**
  * Main entrypoint for our React application within which all other components
@@ -41,147 +43,166 @@ export const App = (): JSX.Element => {
       <ThemeStore>
         <Theme>
           <AuthStore>
-            <BrowserRouter>
-              <Routes>
-                <Route
-                  path="dashboard"
-                  element={
-                    <ActivityScreen activityTitle="InSpice - Dashboard" />
-                  }
-                >
-                  <Route path="" element={<TemplateDashboard />} />
-                </Route>
-                <Route
-                  path="mncn-collection"
-                  element={<ActivityScreen activityTitle="MNCN - Colección" />}
-                >
+            <SessionAuthStore>
+              <BrowserRouter>
+                <Routes>
                   <Route
-                    path="browse"
-                    element={<MncnCatalogueBrowsingScreen />}
-                  />
+                    path="dashboard"
+                    element={
+                      <ActivityScreen activityTitle="InSpice - Dashboard" />
+                    }
+                  >
+                    <Route path="" element={<TemplateDashboard />} />
+                  </Route>
                   <Route
-                    path="artifact/:id"
-                    element={<MncnViewArtifactScreen />}
-                  />
-                </Route>
-                <Route
-                  path="viewpoints"
-                  element={<ActivityScreen activityTitle="IMMA - Viewpoints" />}
-                >
-                  <Route path="consumer">
-                    <Route path="browse" element={<HomeComponent />} />
+                    path="mncn-collection"
+                    element={
+                      <ActivityScreen activityTitle="MNCN - Colección" />
+                    }
+                  >
                     <Route
-                      path="results"
-                      element={<ViewpointsResultsComponent />}
+                      path="browse"
+                      element={<MncnCatalogueBrowsingScreen />}
                     />
                     <Route
-                      path="answer/:id"
-                      element={<AnswerViewpointComponent />}
+                      path="artifact/:id"
+                      element={<MncnViewArtifactScreen />}
+                    />
+                  </Route>
+                  <Route
+                    path="viewpoints"
+                    element={
+                      <ActivityScreen activityTitle="IMMA - Viewpoints" />
+                    }
+                  >
+                    <Route path="consumer">
+                      <Route path="browse" element={<HomeComponent />} />
+                      <Route
+                        path="results"
+                        element={<ViewpointsResultsComponent />}
+                      />
+                      <Route
+                        path="answer/:id"
+                        element={<AnswerViewpointComponent />}
+                      />
+                      <Route
+                        path=""
+                        element={<Navigate replace to="browse" />}
+                      />
+                    </Route>
+                    <Route
+                      path=""
+                      element={<Navigate replace to="consumer" />}
+                    />
+                  </Route>
+                  <Route
+                    path="find-artwork"
+                    element={
+                      <ActivityScreen activityTitle="IMMA - Find Artworks" />
+                    }
+                  >
+                    <Route path="consumer">
+                      <Route
+                        path="play/:id"
+                        element={<PlayTreasureHuntScreen />}
+                      />
+                      <Route
+                        path="create/:id"
+                        element={<CreateTreasureHuntScreen />}
+                      />
+                      <Route
+                        path="explore/:id"
+                        element={<ExploreActivityScreen />}
+                      />
+                    </Route>
+                    <Route path="curator">
+                      <Route
+                        path="create"
+                        element={<CreateFindArtworkActivityScreen />}
+                      />
+                    </Route>
+                    <Route
+                      path="browse"
+                      element={<BrowseDefinitionsScreen />}
                     />
                     <Route path="" element={<Navigate replace to="browse" />} />
                   </Route>
-                  <Route path="" element={<Navigate replace to="consumer" />} />
-                </Route>
-                <Route
-                  path="find-artwork"
-                  element={
-                    <ActivityScreen activityTitle="IMMA - Find Artworks" />
-                  }
-                >
-                  <Route path="consumer">
-                    <Route
-                      path="play/:id"
-                      element={<PlayTreasureHuntScreen />}
-                    />
-                    <Route
-                      path="create/:id"
-                      element={<CreateTreasureHuntScreen />}
-                    />
-                    <Route
-                      path="explore/:id"
-                      element={<ExploreActivityScreen />}
-                    />
-                  </Route>
-                  <Route path="curator">
-                    <Route
-                      path="create"
-                      element={<CreateFindArtworkActivityScreen />}
-                    />
-                  </Route>
-                  <Route path="browse" element={<BrowseDefinitionsScreen />} />
-                  <Route path="" element={<Navigate replace to="browse" />} />
-                </Route>
-                <Route path="gam-game">
-                  <Route path="consumer">
-                    <Route
-                      path="visit/:id/*"
-                      element={<GamGameUserMenuScreen />}
-                    />
-                  </Route>
-                  <Route
-                    path="curator"
-                    element={
-                      <ActivityScreen
-                        /*guarded*/ activityTitle="GAM - GAM Game"
+                  <Route path="gam-game">
+                    <Route path="consumer">
+                      <Route
+                        path="visit/:id/*"
+                        element={<GamGameUserMenuScreen />}
                       />
-                    }
-                  >
+                    </Route>
                     <Route
-                      path="create"
-                      element={<CreateGamGameActivityScreen />}
-                    />
-                  </Route>
-                </Route>
-                <Route path="escape-room">
-                  <Route
-                    path="curator"
-                    element={
-                      <ActivityScreen
-                        guarded
-                        activityTitle="Escape Room Creation"
+                      path="curator"
+                      element={
+                        <ActivityScreen
+                          /*guarded*/ activityTitle="GAM - GAM Game"
+                        />
+                      }
+                    >
+                      <Route
+                        path="create"
+                        element={<CreateGamGameActivityScreen />}
                       />
-                    }
-                  >
-                    <Route
-                      path="create/:id/*"
-                      element={<EditEscapeRoomScreen />}
-                    />
-                    <Route
-                      path="new-activity"
-                      element={<GenerateNewEscapeRoomActivityScreen />}
-                    />
+                    </Route>
                   </Route>
-                </Route>
-                <Route path="multistage-form">
-                  <Route path="consumer">
-                    <Route path="view/:id/*" element={<div />} />
-                  </Route>
-                  <Route
-                    path="curator"
-                    element={
-                      <ActivityScreen
-                        guarded
-                        activityTitle="Multistage Form Activity"
+                  <Route path="escape-room">
+                    <Route
+                      path="curator"
+                      element={
+                        <ActivityScreen
+                          guarded
+                          activityTitle="Escape Room Creation"
+                        />
+                      }
+                    >
+                      <Route
+                        path="create/:id/*"
+                        element={<EditEscapeRoomScreen />}
                       />
-                    }
-                  >
-                    <Route
-                      path="create/:id/*"
-                      element={<EditMultistageFormActivityScreen />}
-                    />
-                    <Route
-                      path="new-activity"
-                      element={<GenerateNewMultistageFormActivityScreen />}
-                    />
+                      <Route
+                        path="new-activity"
+                        element={<GenerateNewEscapeRoomActivityScreen />}
+                      />
+                    </Route>
                   </Route>
-                </Route>
-                <Route path="/login" element={<LoginScreen />} />
-                <Route
-                  path="/"
-                  element={<Navigate replace to="/dashboard" />}
-                />
-              </Routes>
-            </BrowserRouter>
+                  <Route path="multistage-form">
+                    <Route path="consumer">
+                      <Route path="view/:id/*" element={<div />} />
+                    </Route>
+                    <Route
+                      path="curator"
+                      element={
+                        <ActivityScreen
+                          guarded
+                          activityTitle="Multistage Form Activity"
+                        />
+                      }
+                    >
+                      <Route
+                        path="create/:id/*"
+                        element={<EditMultistageFormActivityScreen />}
+                      />
+                      <Route
+                        path="new-activity"
+                        element={<GenerateNewMultistageFormActivityScreen />}
+                      />
+                    </Route>
+                  </Route>
+                  <Route path="/login" element={<LoginScreen />} />
+                  <Route
+                    path="/session-login/:activityId"
+                    element={<SessionLoginScreen />}
+                  />
+                  <Route
+                    path="/"
+                    element={<Navigate replace to="/dashboard" />}
+                  />
+                </Routes>
+              </BrowserRouter>
+            </SessionAuthStore>
           </AuthStore>
         </Theme>
       </ThemeStore>

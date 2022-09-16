@@ -54,6 +54,57 @@ export class ActivityService {
     return getApiResult<ActivitySession[]>(url, config);
   } // getSessionDefinitionsByActivityId
 
+  /**
+   * @description Check whether given combination of username and sessionId is registered for activity with specified id
+   * @param activityId id of the activity
+   * @param username username to check
+   * @param sessionName name of the session that needs to be checked (unique within activity)
+   */
+  public async checkUsernameSessionPairForActivityId(
+    activityId: string,
+    username: string,
+    sessionName: string
+  ): Promise<ApiResult<boolean>> {
+    const url = `${this.apiUrl}/activity/validate-session`;
+
+    const config = {
+      params: {
+        activityId,
+        username,
+        sessionName,
+      },
+    };
+    return getApiResult<boolean>(url, config);
+  } // checkUsernameSessionPairForActivityId
+
+  /**
+   * @description Check whether given session name exists for current activity
+   * @param activityId id of the activity
+   * @param sessionName name of the session that needs to be checked
+   */
+  public async checkSessionNameInUse(
+    activityId: string,
+    sessionName: string
+  ): Promise<ApiResult<boolean>> {
+    const url = `${this.apiUrl}/activity/session-exists`;
+
+    const config = {
+      params: {
+        activityId,
+        sessionName,
+      },
+    };
+    return getApiResult<boolean>(url, config);
+  } // checkSessionNameInUse
+
+  /**
+   * @description Check whether current session is valid (from headers)
+   */
+  public async isCurrentSessionValid(): Promise<ApiResult<boolean>> {
+    const url = `${this.apiUrl}/activity/current-session-valid`;
+    return getApiResult<boolean>(url);
+  } // isCurrentSessionValid
+
   public async requestNewSessionWithNameForActivityWithId(
     sessionName: string,
     activityId: string
