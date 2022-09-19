@@ -200,6 +200,10 @@ export const App = (): JSX.Element => {
                     path="/"
                     element={<Navigate replace to="/dashboard" />}
                   />
+                  <Route
+                    path="*"
+                    element={<Navigate replace to="/dashboard" />}
+                  />
                 </Routes>
               </BrowserRouter>
             </SessionAuthStore>

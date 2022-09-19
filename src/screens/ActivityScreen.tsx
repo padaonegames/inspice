@@ -18,7 +18,7 @@ export interface ActivityScreenProps {
   navigationEntries?: NavMenuElem[];
   /** Guards to warn user about a possible loss of progress when transitioning from a given route */
   navigationWarnings?: NavigationWarning[];
-}
+} // ActivityScreenProps
 
 /**
  * Render an activity underneath a header component with the provided activity title.
@@ -31,12 +31,18 @@ export const ActivityScreen: React.FC<ActivityScreenProps> = ({
   navigationEntries = [],
   navigationWarnings = [],
 }) => {
+  const sideMenuMode = guarded
+    ? "system-user"
+    : sessionGuarded
+    ? "session-user"
+    : "none";
   return (
     <>
       <Header
         activityTitle={activityTitle}
         navigationEntries={navigationEntries}
         navigationWarnings={navigationWarnings}
+        sideMenuMode={sideMenuMode}
       />
       {guarded ? (
         <GuardedRoute />

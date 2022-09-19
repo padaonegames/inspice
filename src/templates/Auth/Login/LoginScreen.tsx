@@ -10,12 +10,11 @@ import EnterPasswordStep from "./Steps/EnterPasswordStep";
 import EnterUsernameStep from "./Steps/EnterUsernameStep";
 
 export const LoginScreen = (): JSX.Element => {
-
   const { userData } = useContext(AuthContext);
   const location = useLocation();
 
   if (userData) {
-    return <Navigate replace to={location.state ?? '/'} />;
+    return <Navigate replace to={location.state ?? "/"} />;
   }
 
   return <LoginFlow />;
@@ -30,23 +29,19 @@ const Root = styled.div`
 `;
 
 const LoginFlow = (): JSX.Element => {
-
   const [state, setState] = useState<State>({});
 
-  const { t } = useTranslation('gamGame');
+  const { t } = useTranslation("gamGame");
 
   return (
     <>
-      <Header />
+      <Header sideMenuMode="system-user" />
       <Root>
         <StepTitleCard
-          stepTitle={t('logIn')}
-          stepDescription={t('logInDescription')}
+          stepTitle={t("logIn")}
+          stepDescription={t("logInDescription")}
         >
-          <Steps
-            genState={state}
-            setGenState={setState}
-          >
+          <Steps genState={state} setGenState={setState}>
             <Step component={EnterUsernameStep} />
             <Step component={EnterPasswordStep} />
           </Steps>

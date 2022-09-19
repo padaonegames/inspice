@@ -5,6 +5,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../../auth/AuthStore";
 import { PowerOff } from "@styled-icons/boxicons-regular/PowerOff";
+import { SessionAuthContext } from "../../auth/SessionAuthStore";
 
 interface RootProps {
   open: boolean;
@@ -130,6 +131,16 @@ interface SideMenuProps {
   entries: NavMenuElem[];
   /** Guards to warn user about a possible loss of progress when transitioning from a given route */
   navigationWarnings?: NavigationWarning[];
+  /**
+   * What sort of user management should be done from this side menu.
+   * Three modes are currently supported:
+   * + `none`: no user nor user handling methods will be displayed.
+   * + `session-user`: assuming we are within the context of a `SessionAuthStore`, current username and session will be displayed
+   * as well as the option to log out of the session.
+   * + `system-user`: assuming we are within the context of an `AuthStore`, current username will be displayed, as well as the option
+   * to perform a logout action.
+   */
+  sideMenuMode?: "none" | "session-user" | "system-user";
   /** Callback to use when component is closed from an internal action */
   onClose?: () => void;
 }
@@ -139,25 +150,65 @@ interface SideMenuProps {
  * access to template links from within the app.
  */
 export const SideMenu = (props: SideMenuProps): JSX.Element => {
-  const { open = false, entries, navigationWarnings = [], onClose } = props;
+  const {
+    open = false,
+    entries,
+    navigationWarnings = [],
+    onClose,
+    sideMenuMode = "none",
+  } = props;
 
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const { userData, setTokenAndUpdateData } = useContext(AuthContext);
+  const { username, sessionName, setUsernameSessionActivity } =
+    useContext(SessionAuthContext);
 
   const performLogout = () => {
-    setTokenAndUpdateData(undefined);
+    if (sideMenuMode === "system-user") {
+      // Logout from auth context
+      setTokenAndUpdateData(undefined);
+    } else if (sideMenuMode === "session-user") {
+      // Logout from session auth context
+      setUsernameSessionActivity({
+        username: undefined,
+        sessionName: undefined,
+        activityId: undefined,
+      });
+    }
   }; // performLogout
+
+  let renderedUsername = "";
+  let shouldRenderLogout = false;
+
+  if (sideMenuMode === "none") {
+    renderedUsername = "";
+  } else if (sideMenuMode === "session-user") {
+    if (username && sessionName) {
+      renderedUsername = `${sessionName} [${username}]`;
+      shouldRenderLogout = true;
+    } else renderedUsername = "Not logged in";
+  } else if (sideMenuMode === "system-user") {
+    if (userData) {
+      renderedUsername = userData.username;
+      shouldRenderLogout = true;
+    } else renderedUsername = "Not logged in";
+  }
+
+  const shouldRenderUser =
+    sideMenuMode === "session-user" || sideMenuMode === "system-user";
 
   return (
     <>
       <Root open={open}>
         {open && (
           <>
-            <UserWrapper>
-              <UserIcon />
-              <Username>{userData?.username ?? "Not logged in"}</Username>
-            </UserWrapper>
+            {shouldRenderUser && (
+              <UserWrapper>
+                <UserIcon />
+                <Username>{renderedUsername}</Username>
+              </UserWrapper>
+            )}
             <NavigationList>
               {entries.map((elem) => (
                 <NavigationElem
@@ -193,7 +244,7 @@ export const SideMenu = (props: SideMenuProps): JSX.Element => {
               ))}
             </NavigationList>
 
-            {!!userData && (
+            {shouldRenderLogout && (
               <NavigationList>
                 <NavigationElem selected={false} onClick={performLogout}>
                   <IconStyle selected={false}>

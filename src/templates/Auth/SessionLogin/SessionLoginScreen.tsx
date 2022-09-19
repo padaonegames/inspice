@@ -52,7 +52,7 @@ const LoginFlow = (props: LoginFlowProps): JSX.Element => {
 
   return (
     <>
-      <Header />
+      <Header sideMenuMode="session-user" />
       <Root>
         <StepTitleCard
           stepTitle={t("accessActivity")}
