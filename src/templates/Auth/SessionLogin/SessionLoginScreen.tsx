@@ -53,7 +53,7 @@ const LoginFlow = (props: LoginFlowProps): JSX.Element => {
   const { activityId } = props;
 
   // attempt to retrieve default login parameters to perform an auto-login
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams, _] = useSearchParams();
   const pUsername = searchParams.get("username");
   const pSessionName = searchParams.get("sessionName");
 

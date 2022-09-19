@@ -57,5 +57,6 @@
   "thereWasProblemWhenFetchingArtworkStories": "There was a problem while fetching this artwork's stories.",
   "enterNewTag": "Enter a new tag",
   "fetchingRecommendations": "Fetching Recommendations",
-  "areYouSureYouWantToExitStoryCreation": "Are you sure you wish to exit the story creation mode? Your progress will be lost!"
+  "areYouSureYouWantToExitStoryCreation": "Are you sure you wish to exit the story creation mode? Your progress will be lost!",
+  "artworkNoLongerInCollection": "Artwork no longer in collection"
 }

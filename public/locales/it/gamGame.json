@@ -57,5 +57,6 @@
   "thereWasProblemWhenFetchingArtworkStories": "C'è stato un problema durante il recupero delle storie di questa opera d'arte.",
   "enterNewTag": "Inserisci un nuovo tag",
   "fetchingRecommendations": "Trovare le raccomandazioni",
-  "areYouSureYouWantToExitStoryCreation": "Siete sicuri di voler uscire dalla modalità di creazione della storia? I vostri progressi andranno persi!"
+  "areYouSureYouWantToExitStoryCreation": "Siete sicuri di voler uscire dalla modalità di creazione della storia? I vostri progressi andranno persi!",
+  "artworkNoLongerInCollection": "Opera non è più in collezione"
 }
