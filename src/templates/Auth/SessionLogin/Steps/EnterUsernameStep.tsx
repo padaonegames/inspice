@@ -77,6 +77,10 @@ export const EnterUsernameStep = (
       ) {
         setAlertMessage(undefined);
         setUsernameSessionActivity({ username, sessionName, activityId });
+      } else {
+        setAlertMessage(
+          "Entered username does not exist in this session. Please check your credentials and try again."
+        );
       }
     } else if (performLoginRequest.kind === "failure") {
       setAlertMessage(
@@ -95,9 +99,10 @@ export const EnterUsernameStep = (
           placeholder: `${t("username")}...`,
         }}
         response={{ text: username }}
-        onResponseChanged={(res) =>
-          props.setState<string>("username", res.text, "")
-        }
+        onResponseChanged={(res) => {
+          setAlertMessage(undefined);
+          props.setState<string>("username", res.text, "");
+        }}
         requiredAlert={!!alertMessage}
         alertMessage={alertMessage}
         onEnterPress={handleNextClicked}

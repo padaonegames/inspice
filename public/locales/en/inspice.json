@@ -1,6 +1,6 @@
 {
   "accessActivity": "Access Activity",
-  "accessActivityDescription": "Before accessing this activity, please enter the name of the session in which you would like to take part.",
+  "accessActivityDescription": "Before accessing this activity, please enter the name of the session in which you would like to take part and the username provided by the museum curator.",
   "sessionName": "session name",
   "enterYourSessionName": "Enter your session's name:",
   "Next": "Next",

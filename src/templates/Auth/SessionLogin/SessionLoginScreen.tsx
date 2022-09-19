@@ -1,6 +1,11 @@
 import { useContext, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Navigate, useLocation, useParams } from "react-router-dom";
+import {
+  Navigate,
+  useLocation,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
 import styled from "styled-components";
 import { SessionAuthContext } from "../../../auth/SessionAuthStore";
 import StepTitleCard from "../../../components/Forms/Cards/StepTitleCard";
@@ -46,7 +51,16 @@ interface LoginFlowProps {
 }
 const LoginFlow = (props: LoginFlowProps): JSX.Element => {
   const { activityId } = props;
-  const [state, setState] = useState<State>({});
+
+  // attempt to retrieve default login parameters to perform an auto-login
+  const [searchParams, setSearchParams] = useSearchParams();
+  const pUsername = searchParams.get("username");
+  const pSessionName = searchParams.get("sessionName");
+
+  const [state, setState] = useState<State>({
+    username: pUsername,
+    sessionName: pSessionName,
+  });
 
   const { t } = useTranslation("inspice");
 

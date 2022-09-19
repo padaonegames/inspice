@@ -1,5 +1,12 @@
 import { useContext } from "react";
-import { Navigate, Outlet, useLocation } from "react-router-dom";
+import {
+  createSearchParams,
+  Navigate,
+  Outlet,
+  useLocation,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
 import { SessionAuthContext } from "./SessionAuthStore";
 
 interface SessionProtectedRouteProps {
@@ -23,6 +30,12 @@ export const SessionProtectedRoute = (
   // after every internal route change.
   const location = useLocation();
 
+  // try to retrieve sessionName and username from url query params.
+  // we can then use this information to perform an automated login
+  const [searchParams, _] = useSearchParams();
+  const pSessionName = searchParams.get("sessionName");
+  const pUsername = searchParams.get("username");
+
   if (username && sessionName && activityId) {
     // we have all the information we need to go ahead, render outlet.
     // This is of course assuming that the triple is valid and registered server-side.
@@ -34,16 +47,24 @@ export const SessionProtectedRoute = (
     return <Outlet />;
   }
 
-  console.log("Session Protected Route");
   setUsernameSessionActivity({
     activityId: undefined,
     sessionName: undefined,
     username: undefined,
   });
+
+  const loginParams =
+    pSessionName && pUsername
+      ? `?${createSearchParams({
+          sessionName: pSessionName,
+          username: pUsername,
+        }).toString()}`
+      : undefined;
+
   // no token to begin with, redirect to login with current state
   return (
     <Navigate
-      to={`/session-login/${routeActivityId}`}
+      to={`/session-login/${routeActivityId}${loginParams ?? ""}`}
       state={location.pathname}
     />
   );
