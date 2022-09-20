@@ -224,12 +224,7 @@ const GamGameUserFlow = ({
             <Route path="home" element={<GeneralInformationStep />} />
             <Route path="collection" element={<CollectionStep />} />
             <Route path="stories/:storyId" element={<StoryViewStep />} />
-            <Route
-              path="stories/create"
-              element={/*<GuardedRoute />*/ <CreateStoryFlow />}
-            >
-              {/*<Route index element={<CreateStoryFlow />} />*/}
-            </Route>
+            <Route path="stories/create" element={<CreateStoryFlow />} />
             <Route
               path="collection/:artworkId/*"
               element={<InspectArtworkStep />}
@@ -242,9 +237,7 @@ const GamGameUserFlow = ({
               <Route path="" element={<Navigate replace to="detail" />} />
             </Route>
             <Route path="scan-qr" element={<ScanQrStep />} />
-            <Route path="my-stories" element={<GuardedRoute />}>
-              <Route index element={<MyStoriesStep />} />
-            </Route>
+            <Route path="my-stories" element={<MyStoriesStep />} />
             <Route
               path="recommendations"
               element={<RecommendationsByEmotionsScreen />}

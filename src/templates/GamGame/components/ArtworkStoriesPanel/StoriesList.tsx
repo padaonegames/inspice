@@ -11,13 +11,23 @@ export interface StoriesListProps {
   stories: GamGameStoryDefinitionData[];
   /** artworks used within these stories */
   artworks: ArtworkData[];
-  /** Callback to parent specifying that a given story with storyId has been selected */
+  /** whether delete story icons should be available */
+  enableStoryDeletion?: boolean;
+  /** Callback to parent specifying that a given story with `storyId` has been selected */
   onStorySelected?: (storyId: string) => void;
+  /** Callback to parent specifying that user wishes to delete a story with `storyId` */
+  onDeleteStory?: (storyId: string) => void;
 } // StoriesListProps
 
 export const StoriesList = (props: StoriesListProps): JSX.Element => {
   const { t } = useTranslation("gamGame");
-  const { stories, artworks, onStorySelected } = props;
+  const {
+    stories,
+    artworks,
+    enableStoryDeletion = false,
+    onStorySelected,
+    onDeleteStory,
+  } = props;
   const [filter, setFilter] = useState<string>("");
 
   const displayStories = stories.filter((elem) =>
@@ -36,6 +46,7 @@ export const StoriesList = (props: StoriesListProps): JSX.Element => {
           <StoryColumnElement
             key={elem._id}
             storyData={elem}
+            enableStoryDeletion={enableStoryDeletion}
             imageSrcs={
               elem.imageSrc
                 ? [elem.imageSrc]
@@ -48,6 +59,11 @@ export const StoriesList = (props: StoriesListProps): JSX.Element => {
             onCardClicked={() => {
               if (onStorySelected) {
                 onStorySelected(elem._id);
+              }
+            }}
+            onDeleteStory={() => {
+              if (onDeleteStory) {
+                onDeleteStory(elem._id);
               }
             }}
           />
