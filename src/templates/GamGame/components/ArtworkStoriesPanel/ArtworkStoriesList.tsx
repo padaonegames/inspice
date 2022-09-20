@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { Image } from "@styled-icons/ionicons-solid/Image";
 import { PlusCircleFill } from "@styled-icons/bootstrap/PlusCircleFill";
+import { Gallery } from "@styled-icons/remix-line/Gallery";
 import ContainerCard from "../../../../components/Forms/Cards/ContainerCard";
 import {
   ArtworkAuthor,
@@ -46,6 +47,17 @@ const AddStoryIcon = styled(PlusCircleFill)`
   cursor: pointer;
 `;
 
+const GalleryIcon = styled(Gallery)`
+  color: ${(props) => props.theme.textColor};
+  width: 28px;
+  height: 28px;
+  margin-bottom: 5px;
+`;
+
+const VerticalSpace = styled.div`
+  margin: 1em 0;
+`;
+
 interface ArtworkStoriesListProps {
   /** stories associated to this artwork */
   stories: GamGameStoryDefinitionData[];
@@ -59,6 +71,8 @@ interface ArtworkStoriesListProps {
   onCreateStoryClicked?: () => void;
   /** Callback to parent specifying that the user wishes to switch to details mode */
   onShowDetailsClicked?: () => void;
+  /** Callback to parent specifying that the user wishes to switch to artwork gallery */
+  onGalleryClicked?: () => void;
 }
 
 /** Component to render a list of stories associated to a given artwork */
@@ -72,6 +86,7 @@ export const ArtworkStoriesList = (
     onStorySelected,
     onCreateStoryClicked,
     onShowDetailsClicked,
+    onGalleryClicked,
   } = props;
 
   return (
@@ -89,6 +104,9 @@ export const ArtworkStoriesList = (
         <DetailActionPanel>
           <DetailsIcon onClick={onShowDetailsClicked} />
           Details
+          <VerticalSpace />
+          <GalleryIcon onClick={onGalleryClicked} />
+          Gallery
         </DetailActionPanel>
       </DetailUpperPanel>
 

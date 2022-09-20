@@ -216,7 +216,7 @@ export const SideMenu = (props: SideMenuProps): JSX.Element => {
                   selected={pathname.includes(elem.to)}
                   onClick={() => {
                     // don't do anything if we are already at the destination
-                    if (pathname.includes(elem.to)) return;
+                    // if (pathname.includes(elem.to)) return;
 
                     // before actually navigating to the new route, check whether there exists
                     // a route warning. If there is one, render a window confirmation prompt to

@@ -29,7 +29,6 @@ import { Books } from "@styled-icons/icomoon/Books";
 import { FeatherAlt } from "@styled-icons/fa-solid/FeatherAlt";
 import MyStoriesStep from "./Steps/MyStoriesStep";
 import CreateStoryFlow from "../components/ArtworkStoriesPanel/CreateStoryFlow";
-import GuardedRoute from "../../../auth/GuardedRoute";
 import StoryViewStep from "./Steps/StoryViewStep";
 import { useTranslation } from "react-i18next";
 import { RecommendationsByEmotionsScreen } from "../components/ArtworkStoriesPanel/CreateStorySteps/RecommendationsStep";
