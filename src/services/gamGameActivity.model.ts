@@ -4,7 +4,6 @@
 
 import { ActivityInstance, InProgressActivityInstance } from "./activity.model";
 
-
 /** Definition of a GAM Game story part, including selected artwork and user-generated multimedia data */
 export interface GamGameStoryPart {
   /** Id of the selected artwork within the database */
@@ -29,6 +28,10 @@ export interface GamGameStoryDefinitionData {
   activityId: string;
   /** List of parts containing selected artworks and multimedia data */
   parts: GamGameStoryPart[];
+  /** Username of the author of the story */
+  authorUsername: string;
+  /** Name of the session within this activity that this story belongs to */
+  sessionName: string;
 }
 
 /** Data that the user will need to fill in before submitting a definition to the persistance layer.
@@ -43,10 +46,14 @@ export interface InProgressGamGameStoryDefinitionData {
   parts: GamGameStoryPart[];
   /** Link to image that should be displayed when browsing stories */
   imageSrc?: string;
-}
+} // InProgressGamGameStoryDefinitionData
 
 /** list of available text templates that can be used to input a user's impression about an artwork */
-export const availableTextTemplates = ['itMakesMeThinkAbout', 'itRemindsMeOf', 'itMakesMeFeel'] as const;
+export const availableTextTemplates = [
+  "itMakesMeThinkAbout",
+  "itRemindsMeOf",
+  "itMakesMeFeel",
+] as const;
 
 export type AvailableTextTemplate = typeof availableTextTemplates[number];
 
@@ -79,14 +86,14 @@ export interface StoryPartEmoji extends StoryPartOverlayElement {
 }
 
 export const availableEmoji = [
-  '🤩',
-  '🥰',
-  '😱',
-  '😴',
-  '🤢',
-  '😢',
-  '😌',
-  '🧐'
+  "🤩",
+  "🥰",
+  "😱",
+  "😴",
+  "🤢",
+  "😢",
+  "😌",
+  "🧐",
 ] as const;
 
 export type Emoji = typeof availableEmoji[number];
@@ -95,8 +102,9 @@ export type Emoji = typeof availableEmoji[number];
 //         ACTIVITY DEFINITIONS
 //------------------------------------------
 
-export interface InProgressGamGameActivityDefinition extends InProgressActivityInstance {
-  activityType: 'GAM Game';
+export interface InProgressGamGameActivityDefinition
+  extends InProgressActivityInstance {
+  activityType: "GAM Game";
   minArtworks: number | undefined;
   maxArtworks: number | undefined;
   allowedResponseTypes: AllowedResponseType[];
@@ -111,22 +119,22 @@ export type CompletedGamGameActivityDefinition = Omit<
 >;
 
 export const defaultGamGameActivityDefinition: InProgressGamGameActivityDefinition =
-{
-  activityType: 'GAM Game',
-  activityTitle: undefined,
-  activityAuthor: undefined,
-  beginsOn: undefined,
-  endsOn: undefined,
-  minArtworks: undefined,
-  maxArtworks: undefined,
-  allowedResponseTypes: [],
-  storyDefinitionsDatasetUuid: undefined,
-  artworksDatasetUuid: undefined,
-  artworks: [],
-};
+  {
+    activityType: "GAM Game",
+    activityTitle: undefined,
+    activityAuthor: undefined,
+    beginsOn: undefined,
+    endsOn: undefined,
+    minArtworks: undefined,
+    maxArtworks: undefined,
+    allowedResponseTypes: [],
+    storyDefinitionsDatasetUuid: undefined,
+    artworksDatasetUuid: undefined,
+    artworks: [],
+  };
 
 export interface GamGameActivityDefinition extends ActivityInstance {
-  activityType: 'GAM Game',
+  activityType: "GAM Game";
   minArtworks: number;
   maxArtworks: number;
   allowedResponseTypes: AllowedResponseType[];
@@ -135,8 +143,9 @@ export interface GamGameActivityDefinition extends ActivityInstance {
   artworks: string[];
 }
 
-export type AllowedResponseType = 'Tags' | 'Emojis' | 'Image' | 'Text';
+export type AllowedResponseType = "Tags" | "Emojis" | "Image" | "Text";
 
 export type SubmitGamGameActivityDefinitionResponse = GamGameActivityDefinition;
 
-export type GetGamGameActivityDefinitionByIdResponse = GamGameActivityDefinition[];
+export type GetGamGameActivityDefinitionByIdResponse =
+  GamGameActivityDefinition[];

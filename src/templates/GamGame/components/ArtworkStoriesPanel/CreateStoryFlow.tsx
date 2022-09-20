@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { createSearchParams, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { GamGameStoryPart } from "../../../../services/gamGameActivity.model";
 import { GamGameActivityContext } from "../../UserPerspective/Screen";
 import ContinueOrSubmitStep from "./CreateStorySteps/ContinueOrSubmitStep";
@@ -17,6 +17,7 @@ type CreateStoryStatus =
   | "recommendation-similar"
   | "recommendation-opposite"
   | "submit";
+
 /** What sort of status we are selecting the current artwork from */
 type ArtworkSelectionStatus =
   | "select-artwork"
@@ -39,7 +40,7 @@ export const CreateStoryFlow = (): JSX.Element => {
   const handleArtworkSelected = (id: string) => {
     setCurrentArtwork(id);
     setStatus("create-story-part");
-  };
+  }; // handleArtworkSelected
 
   const handleSubmitStoryPart = (storyPart: GamGameStoryPart) => {
     if (!currentArtwork) return;
@@ -63,33 +64,25 @@ export const CreateStoryFlow = (): JSX.Element => {
     }
     // no need for current artwork anymore
     setCurrentArtwork(undefined);
-  };
+  }; // handleSubmitStoryPart
 
   const handleQuitStoryPart = () => {
     setCurrentArtwork(undefined);
     setStatus(artworkSelectionStatus);
-  };
+  }; // handleQuitStoryPart
 
   const handleContinueStory = () => {
     setStatus("select-artwork");
-  };
+  }; // handleContinueStory
 
   const handleSubmitStory = () => {
     setStatus("recommendation-similar");
     setArtworkSelectionStatus("recommendation-similar");
-  };
+  }; // handleSubmitStory
 
   const handleStorySubmitted = () => {
-    console.log("story submitted");
-    /*navigate({
-      pathname: `/gam-game/consumer/visit/${activity._id}/recommendations`,
-      search: `?${createSearchParams([
-        ['relation', 'similar'],
-        ['artworksIncluded', JSON.stringify(storyParts.map(part => part.artworkId))]
-      ])}`
-    });*/
     navigate(`/gam-game/consumer/visit/${activity._id}/home`);
-  };
+  }; // handleStorySubmitted
 
   if (status === "intro") {
     return <IntroStep onBeginClicked={() => setStatus("select-artwork")} />;
@@ -162,6 +155,6 @@ export const CreateStoryFlow = (): JSX.Element => {
   }
 
   return <>Invalid State</>;
-};
+}; // CreateStoryFlow
 
 export default CreateStoryFlow;

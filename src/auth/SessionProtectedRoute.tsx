@@ -36,7 +36,7 @@ export const SessionProtectedRoute = (
   const pSessionName = searchParams.get("sessionName");
   const pUsername = searchParams.get("username");
 
-  if (username && sessionName && activityId) {
+  if (username && sessionName && activityId && activityId === routeActivityId) {
     // we have all the information we need to go ahead, render outlet.
     // This is of course assuming that the triple is valid and registered server-side.
     // We can assume this since we are directly checking the validity of the triple every
