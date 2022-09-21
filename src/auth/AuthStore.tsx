@@ -1,6 +1,7 @@
-import axios from 'axios';
-import React, { useState } from 'react';
-import { UserData } from '../services/user.model';
+import axios from "axios";
+import React, { useEffect, useState, useCallback } from "react";
+import { authService } from "../services";
+import { UserData } from "../services/user.model";
 
 /**
  * This component provides access to a wrapping context that
@@ -13,81 +14,120 @@ interface IAuthContext {
   userData: UserData | undefined;
   /** API JWT token for current session */
   accessToken: string | undefined;
-  /** Helper method to modify currently authenticated user from useContext hook */
-  setUserData: (newData: UserData | undefined) => void;
-  /** Helper method to modify current access token from useContext hook */
-  setAccessToken: (newToken: string | undefined) => void;
-}
+  /** Helper method to modify currently authenticated user token (data and access token) from useContext hook */
+  setTokenAndUpdateData: (token: string | undefined | null) => void;
+} // IAuthContext
+
 const AuthContext = React.createContext<IAuthContext>({
   userData: undefined,
   accessToken: undefined,
-  setUserData: (_) => { },
-  setAccessToken: (_) => { }
-});
+  setTokenAndUpdateData: (_) => {},
+}); // AuthContext
 
-/** 
+interface AuthStoreState {
+  /** Data object for currently authenticated user (or undefined if not authenticated) */
+  userData: UserData | undefined;
+  /** API JWT token for current session */
+  accessToken: string | undefined;
+} // AuthStoreState
+
+/**
  * Wrapper over an AuthContext provider to provide helper methods and state management for user handling operations to children.
  * Preserves authentication data between sessions by keeping it within a localStorage variable.
  */
 const AuthStore: React.FC = ({ children }) => {
-  const [userData, setUserData] = useState<UserData | undefined>(() => {
-    const prevUserData = localStorage.getItem('userData');
-    if (prevUserData) return JSON.parse(prevUserData) as UserData;
-    return undefined;
+  // Store State (user data and access token)
+  const [state, setState] = useState<AuthStoreState>({
+    userData: undefined,
+    accessToken: undefined,
   });
 
-  const [accessToken, setAccessToken] = useState<string | undefined>(() => {
-    // Look for previously existing tokens in local storage and assign them to axios default
-    // auth headers if found
-    const prevToken = localStorage.getItem('accessToken');
-    if (prevToken) {
-      axios.defaults.headers.common['Authorization'] = `Bearer ${prevToken}`;
-      return prevToken;
-    }
-    axios.defaults.headers.common['Authorization'] = null;
-    return undefined;
-  });
+  // We wrap this function in a useCallback so that it doesn't trigger
+  // a re-render every time that the useEffect is triggered.
+  /**
+   * Validate provided token by performing a ```retrieveCurrentUserData``` request
+   * against the corresponding authentication endpoint on server. If token is valid,
+   * then this call will result in the default axios' Authorization header being set
+   * to the token in Bearer-scheme format and the state of the store being updated with
+   * both the provided token and the user data retrieved from server. In any other case,
+   * state will be reverted to ```userData``` and ```accessToken``` being set to ```undefined``` and
+   * the default axios' Authorization header being set to ```null```.
+   *
+   * @param token Token to use to retrieve current user's data.
+   */
+  const validateTokenAndUpdateUserData = useCallback(
+    async (token: string | null | undefined) => {
+      if (!token) {
+        // remove axios default Authorization header and reset state to undefined fields.
+        axios.defaults.headers.common["Authorization"] = null;
+        setAuthState({ userData: undefined, accessToken: undefined });
+        return;
+      }
 
-  const setData = (data: UserData | undefined) => {
-    setUserData(data);
-    if (data) {
-      localStorage.setItem('userData', JSON.stringify(data));
-    }
-    else {
-      localStorage.removeItem('userData');
-    }
-  };
+      // assign token to axios default header
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      // try to retrieve current user from assigned token
+      try {
+        const response = await authService.retrieveCurrentUserData();
+
+        // Only set full user data if a successful response is received from server.
+        if (response.kind === "ok" && response.data) {
+          console.log(response.data)
+          setAuthState({
+            userData: response.data,
+            accessToken: token, // token was valid
+          });
+        } else {
+          // request was successful, but there wasn't a proper user,
+          // meaning that our token was not valid. Remove authorization headers
+          // and any previous user Data
+          setAuthState({ userData: undefined, accessToken: undefined });
+          axios.defaults.headers.common["Authorization"] = null;
+        }
+      } catch (err) {
+        // There was an error while fetching user data.
+        // remove all user data, tokens, and authorization headers.
+        setAuthState({ userData: undefined, accessToken: undefined });
+        axios.defaults.headers.common["Authorization"] = null;
+      }
+    },
+    []
+  ); // validateTokenAndUpdateUserData;
+
+  useEffect(() => {
+    // Look for previously existing tokens in local storage and attempt to fetch
+    // current user data from them.
+    const prevToken = localStorage.getItem("accessToken");
+    validateTokenAndUpdateUserData(prevToken);
+  }, [validateTokenAndUpdateUserData]);
 
   /**
-   * Set a session token in authentication context and save it to browser's localStorage
-   * as well as as the default Authorization header for all axios requests. If token is set
-   * to undefined, remove access token from authentication context and localStorage entries,
-   * and set axios' default Authorization header to null.
-   * @param token 
+   * Set a session token/data in authentication context and save it to browser's localStorage.
+   * If token is set to undefined, remove access token from localStorage entries.
+   * @param token
    */
-  const setToken = (token: string | undefined) => {
-    setAccessToken(token);
-    if (token) {
-      localStorage.setItem('accessToken', token);
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+  const setAuthState = (newState: AuthStoreState) => {
+    const { accessToken } = newState;
+
+    if (accessToken) {
+      localStorage.setItem("accessToken", accessToken);
+    } else {
+      localStorage.removeItem("accessToken");
     }
-    else {
-      localStorage.removeItem('accessToken');
-      axios.defaults.headers.common['Authorization'] = null;
-      setUserData(undefined);
-    }
-  };
+    setState(newState);
+  }; // setAuthState
 
   return (
-    <AuthContext.Provider value={{
-      userData,
-      accessToken,
-      setUserData: setData,
-      setAccessToken: setToken
-    }}>
+    <AuthContext.Provider
+      value={{
+        userData: state.userData,
+        accessToken: state.accessToken,
+        setTokenAndUpdateData: validateTokenAndUpdateUserData,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
-};
+}; // AuthStore
 
 export { AuthStore, AuthContext };

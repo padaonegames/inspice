@@ -137,7 +137,7 @@ export const EditableStageComponent = (props: EditableStageComponentProps): JSX.
           {
             selectedStage.editingComponentProducer({
               payload: stageDefinition.payload as any,
-              onPayloadChanged: handleStagePayloadChanged
+              onPayloadChanged: handleStagePayloadChanged,
             })
           }
         </ContentBackground>

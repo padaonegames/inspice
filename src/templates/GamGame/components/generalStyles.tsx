@@ -1,7 +1,7 @@
 import styled, { css } from "styled-components";
-import lineBackground from './../../../components/line-header-point.png';
-import { Cross } from '@styled-icons/entypo/Cross';
-import { RightArrowCircle } from '@styled-icons/boxicons-regular/RightArrowCircle';
+import lineBackground from "./../../../components/line-header-point.png";
+import { Cross } from "@styled-icons/entypo/Cross";
+import { RightArrowCircle } from "@styled-icons/boxicons-regular/RightArrowCircle";
 
 const arrowStyle = css`
   width: auto;
@@ -24,7 +24,7 @@ export const Root = styled.div`
   }
 
   @media (min-width: 768px) {
-    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
     padding: 16px;
     width: 85%;
     max-width: 1200px;
@@ -38,6 +38,7 @@ export const Root = styled.div`
 export const DetailUpperPanel = styled.div`
   display: flex;
   flex-direction: row;
+  align-items: center;
   padding: 16px 16px 24px 16px;
 `;
 
@@ -57,20 +58,20 @@ export const DetailActionPanel = styled.div<DetailActionPanelProps>`
 
   justify-content: center;
   align-items: center;
-  color: ${props => props.theme.textColor};
+  color: ${(props) => props.theme.textColor};
   text-align: center;
   font-size: 0.65em;
   font-weight: 400;
   letter-spacing: +1px;
-  font-family: 'EB Garamond';
+  font-family: "EB Garamond";
   text-transform: uppercase;
-  ${props => !props.disabled && 'cursor: pointer;'}
-  ${props => props.disabled && 'opacity: 0.5;'}
+  ${(props) => !props.disabled && "cursor: pointer;"}
+  ${(props) => props.disabled && "opacity: 0.5;"}
 `;
 
 export interface DetailArtworkDisplayProps {
   backgroundImage: string;
-};
+}
 
 export const DetailArtworkDisplay = styled.div<DetailArtworkDisplayProps>`
   width: 100%;
@@ -86,12 +87,12 @@ export const DetailArtworkDisplay = styled.div<DetailArtworkDisplayProps>`
 
   position: relative;
 
-  background-image: ${props => `url(${props.backgroundImage})`};
+  background-image: ${(props) => `url(${props.backgroundImage})`};
   overflow: hidden;
   background-position: 50% 50%;
   background-repeat: no-repeat;
   background-size: auto 100%;
-  background-color: ${props => props.theme.artworkDisplayBackground};
+  background-color: ${(props) => props.theme.artworkDisplayBackground};
 `;
 
 export const ArtworkDescription = styled.p`
@@ -101,6 +102,14 @@ export const ArtworkDescription = styled.p`
   margin: auto 0 auto 0;
   word-wrap: break-word;
   padding-right: 15px;
+`;
+
+export const NoItemsFoundText = styled.p`
+  font-weight: 400;
+  line-height: 1.5;
+  transition: color 0.5s ease;
+  margin: 2em auto;
+  word-wrap: break-word;
 `;
 
 export const ArtworkTitle = styled.p`
@@ -140,7 +149,7 @@ export const ArtworkDataContainer = styled.div`
 export const ClickableText = styled.p`
   font-size: 0.9em;
   font-weight: 400;
-  color: ${props => props.theme.clickableTextFontColor};
+  color: ${(props) => props.theme.clickableTextFontColor};
   margin-top: 1em;
   text-decoration: underline;
   cursor: pointer;
@@ -149,12 +158,12 @@ export const ClickableText = styled.p`
 export const InputArea = styled.textarea`
   font-size: 0.9em;
   font-weight: 200;
-  font-family: ${props => props.theme.contentFont};
+  font-family: ${(props) => props.theme.contentFont};
   line-height: 135%;
   width: 100%;
   height: 6em;
   margin-top: 10px;
-  color: ${props => props.theme.textColor};
+  color: ${(props) => props.theme.textColor};
   border: none;
   border-bottom: 2px solid #dadce0;
   outline: none;
@@ -225,16 +234,19 @@ export interface ProgressButtonProps {
 }
 export const ProgressButton = styled.button<ProgressButtonProps>`
   border-radius: 15px;
-  background-color: ${props => props.enabled ? 'rgb(196, 76, 73)' : 'rgba(196, 76, 73, 0.5)'};
-  color: ${props => props.enabled ? 'white' : 'rgb(230, 230, 230)'};
+  background-color: ${(props) =>
+    props.enabled ? "rgb(196, 76, 73)" : "rgba(196, 76, 73, 0.5)"};
+  color: ${(props) => (props.enabled ? "white" : "rgb(230, 230, 230)")};
   font-weight: 700;
   padding: 6px 10px;
-  cursor: ${props => props.enabled ? 'pointer' : 'default'};
+  cursor: ${(props) => (props.enabled ? "pointer" : "default")};
   box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 0.5rem 0px;
   max-width: 25em;
   width: 100%;
 
-  ${props => props.enabled && `
+  ${(props) =>
+    props.enabled &&
+    `
     &:hover {
       box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 0.5rem 0px;
     }
@@ -244,7 +256,7 @@ export const ProgressButton = styled.button<ProgressButtonProps>`
 export const StoryDisplayUpperPanel = styled.div`
   display: flex;
   flex-direction: row;
-  width: 100%
+  width: 100%;
 `;
 
 export const StoryDisplayMainInfoPanel = styled.div`
@@ -290,7 +302,7 @@ export const StoryDisplayBottomRow = styled.div`
 `;
 
 export const StoryDisplayQuitIcon = styled(Cross)`
-  color: ${props => props.theme.textColor};
+  color: ${(props) => props.theme.textColor};
   height: 1.5em;
   width: 1.2em;
   cursor: pointer;
@@ -305,11 +317,12 @@ export interface StoryDisplayActionButtonProps {
 }
 export const StoryDisplayActionButton = styled.button<StoryDisplayActionButtonProps>`
   border-radius: 15px;
-  background-color: ${props => props.enabled ? 'rgb(196, 76, 73)' : 'rgba(196, 76, 73, 0.5)'};
-  color: ${props => props.enabled ? 'white' : 'rgb(230, 230, 230)'};
+  background-color: ${(props) =>
+    props.enabled ? "rgb(196, 76, 73)" : "rgba(196, 76, 73, 0.5)"};
+  color: ${(props) => (props.enabled ? "white" : "rgb(230, 230, 230)")};
   font-weight: 700;
   padding: 6px 10px;
-  cursor: ${props => props.enabled ? 'pointer' : 'default'};
+  cursor: ${(props) => (props.enabled ? "pointer" : "default")};
 
   box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 0.5rem 0px;
 

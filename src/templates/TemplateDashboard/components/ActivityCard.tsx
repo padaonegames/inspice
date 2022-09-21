@@ -4,9 +4,10 @@ import { ThreeDotsVertical } from "styled-icons/bootstrap";
 import { UserCircle } from "styled-icons/boxicons-regular";
 import { ActivityInstance } from "../../../services/activity.model";
 import { Open } from "@styled-icons/fluentui-system-filled/Open";
-import { Edit } from '@styled-icons/boxicons-regular/Edit';
+import { Edit } from "@styled-icons/boxicons-regular/Edit";
 import { Duplicate } from "@styled-icons/ionicons-outline/Duplicate";
-import { Delete } from '@styled-icons/fluentui-system-regular/Delete';
+import { Delete } from "@styled-icons/fluentui-system-regular/Delete";
+import { UsersCog } from "@styled-icons/fa-solid/UsersCog";
 
 const ActivityCardContainer = styled.div`
   display: flex;
@@ -68,7 +69,10 @@ const ActivityCardContent = styled.div<ActivityCardContentProps>`
   justify-content: space-between;
   padding: 0.5rem 0.5rem 1rem;
   min-height: 3.5rem;
-  background-color: ${props => props.hue ? `hsl(${props.hue}, 80%, ${props.theme.textReadableLuminosity}%)` : props.theme.cardBackground};
+  background-color: ${(props) =>
+    props.hue
+      ? `hsl(${props.hue}, 80%, ${props.theme.textReadableLuminosity}%)`
+      : props.theme.cardBackground};
   border-radius: 0 0 0.25rem 0.25rem;
 
   margin: 0px;
@@ -81,7 +85,7 @@ const ActivityCardContent = styled.div<ActivityCardContentProps>`
 
 const ActivityTypeIcon = styled(UserCircle)`
   margin: auto 0.5rem;
-  color: ${props => props.theme.textColor};
+  color: ${(props) => props.theme.textColor};
   display: inline-block;
   height: 2.5rem;
   width: 2.5rem;
@@ -100,8 +104,8 @@ const ActivityTitle = styled.a`
   overflow: hidden;
   line-height: 1rem;
   font-weight: 700;
-  color: ${props => props.theme.textColor};
-  font-family: ${props => props.theme.clickableTextFont};
+  color: ${(props) => props.theme.textColor};
+  font-family: ${(props) => props.theme.clickableTextFont};
   width: 100%;
   text-overflow: ellipsis;
   align-self: flex-start;
@@ -115,8 +119,8 @@ const ActivityAuthor = styled.a`
   display: flex;
   -moz-box-align: center;
   align-items: center;
-  color: ${props => props.theme.textColor};
-  font-family: ${props => props.theme.clickableTextFont};
+  color: ${(props) => props.theme.textColor};
+  font-family: ${(props) => props.theme.clickableTextFont};
   overflow: hidden;
   text-decoration: none;
   font-weight: normal;
@@ -124,7 +128,7 @@ const ActivityAuthor = styled.a`
 `;
 
 const ActivityOptionsIcon = styled(ThreeDotsVertical)`
-  color: ${props => props.theme.textColor};
+  color: ${(props) => props.theme.textColor};
   height: 100%;
   width: 100%;
   margin: auto;
@@ -146,7 +150,7 @@ interface ActivityTypeSpanProps {
   hue?: number;
 }
 const ActivityTypeSpan = styled.span<ActivityTypeSpanProps>`
-  font-family: ${props => props.theme.clickableTextFont};
+  font-family: ${(props) => props.theme.clickableTextFont};
   font-size: 0.625em;
   font-weight: bold;
   position: absolute;
@@ -156,8 +160,11 @@ const ActivityTypeSpan = styled.span<ActivityTypeSpanProps>`
   display: flex;
   -moz-box-align: center;
   align-items: center;
-  color: ${props => props.theme.textColor};
-  background-color: ${props => props.hue ? `hsl(${props.hue}, 80%, ${props.theme.textReadableLuminosity}%)` : '#4a90e2'};
+  color: ${(props) => props.theme.textColor};
+  background-color: ${(props) =>
+    props.hue
+      ? `hsl(${props.hue}, 80%, ${props.theme.textReadableLuminosity}%)`
+      : "#4a90e2"};
   border-radius: 0 0 0.25rem 0;
   box-shadow: rgba(37, 7, 107, 0.35) 0px 2px 4px 0px;
 `;
@@ -165,7 +172,7 @@ const ActivityTypeSpan = styled.span<ActivityTypeSpanProps>`
 const DropdownMenu = styled.div`
   position: absolute;
   right: 0;
-  background-color: ${props => props.theme.cardBackground};
+  background-color: ${(props) => props.theme.cardBackground};
   min-width: 160px;
   box-shadow: rgba(37, 7, 107, 0.35) 0px 2px 4px 0px;
   z-index: 25;
@@ -175,14 +182,14 @@ const DropdownMenu = styled.div`
 `;
 
 const DropdownMenuItem = styled.a`
-  color: ${props => props.theme.textColor};
+  color: ${(props) => props.theme.textColor};
   padding: 12px 16px;
   text-decoration: none;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: start;
-  font-family: ${props => props.theme.contentFont};
+  font-family: ${(props) => props.theme.contentFont};
 
   &:hover {
     background-color: darkgray;
@@ -190,7 +197,7 @@ const DropdownMenuItem = styled.a`
 `;
 
 const menuItemIcon = css`
-  color: ${props => props.theme.textColor};
+  color: ${(props) => props.theme.textColor};
   height: 20px;
   width: 20px;
   margin-right: 10px;
@@ -212,13 +219,17 @@ const DeleteActivityIcon = styled(Delete)`
   ${menuItemIcon}
 `;
 
+const SessionsActivityIcon = styled(UsersCog)`
+  ${menuItemIcon}
+`;
+
 const DateSpan = styled.span`
   margin: 0.5rem;
   position: absolute;
   right: 0.2rem;
   bottom: 0px;
 
-  font-family: ${props => props.theme.clickableTextFont};
+  font-family: ${(props) => props.theme.clickableTextFont};
   font-size: 0.625em;
   font-weight: bold;
   padding: 0.25rem 0.75rem;
@@ -235,6 +246,8 @@ export interface ActivityCardProps {
   activityTemplate: ActivityInstance;
   /** Callback to notify the parent when the card has been opened. */
   onOpenClicked?: () => void;
+  /** Callback to notify the parent when the user wishes to manage the activity's sessions and users */
+  onSessionsClicked?: () => void;
   /** Callback to notify the parent when the card is going to be edited. */
   onEditClicked?: () => void;
   /** Callback to notify the parent when the card is being duplicated. */
@@ -244,32 +257,68 @@ export interface ActivityCardProps {
 }
 
 export const ActivityCard = (props: ActivityCardProps): JSX.Element => {
-
   const {
     activityTemplate,
     onOpenClicked,
+    onSessionsClicked,
     onEditClicked,
     onDuplicateClicked,
-    onDeleteClicked
+    onDeleteClicked,
   } = props;
 
   const [openMenu, setOpenMenu] = useState<boolean>(false);
 
   const hue = intToHue(hashCode(activityTemplate.activityType));
   const dateOpts: Intl.DateTimeFormatOptions = {
-    month: 'short',
-    day: '2-digit'
+    month: "short",
+    day: "2-digit",
   };
+
+  const handleOpenClicked = () => {
+    setOpenMenu(false);
+    if (onOpenClicked) onOpenClicked();
+  }; // handleOpenClicked
+
+  const handleSessionsClicked = () => {
+    setOpenMenu(false);
+    if (onSessionsClicked) onSessionsClicked();
+  }; // handleSessionsClicked
+
+  const handleEditClicked = () => {
+    setOpenMenu(false);
+    if (onEditClicked) onEditClicked();
+  }; // handleEditClicked
+
+  const handleDuplicateClicked = () => {
+    setOpenMenu(false);
+    if (onDuplicateClicked) onDuplicateClicked();
+  }; // handleDuplicateClicked
+
+  const handleDeleteClicked = () => {
+    setOpenMenu(false);
+    if (onDeleteClicked) onDeleteClicked();
+  }; // handleDeleteClicked
 
   return (
     <ActivityCardContainer>
       <ActivityImageContainer>
-        <ActivityCardImage src={activityTemplate.imageSrc ?? 'https://upload.wikimedia.org/wikipedia/commons/6/65/No-Image-Placeholder.svg'} />
+        <ActivityCardImage
+          src={
+            activityTemplate.imageSrc ??
+            "https://upload.wikimedia.org/wikipedia/commons/6/65/No-Image-Placeholder.svg"
+          }
+        />
         <ActivityTypeSpan hue={hue}>
           {activityTemplate.activityType}
         </ActivityTypeSpan>
         <DateSpan>
-          {`${activityTemplate.beginsOn.toLocaleDateString(undefined, dateOpts)} to ${activityTemplate.endsOn.toLocaleDateString(undefined, dateOpts)}`}
+          {`${activityTemplate.beginsOn.toLocaleDateString(
+            undefined,
+            dateOpts
+          )} to ${activityTemplate.endsOn.toLocaleDateString(
+            undefined,
+            dateOpts
+          )}`}
         </DateSpan>
       </ActivityImageContainer>
       <ActivityCardContent hue={hue}>
@@ -279,22 +328,26 @@ export const ActivityCard = (props: ActivityCardProps): JSX.Element => {
           <ActivityAuthor>{activityTemplate.activityAuthor}</ActivityAuthor>
         </ActivityTextContainer>
         <ActivityOptionsContainer>
-          <ActivityOptionsIcon onClick={() => setOpenMenu(prev => !prev)} />
+          <ActivityOptionsIcon onClick={() => setOpenMenu((prev) => !prev)} />
           {openMenu && (
             <DropdownMenu>
-              <DropdownMenuItem onClick={onOpenClicked}>
+              <DropdownMenuItem onClick={handleOpenClicked}>
                 <OpenActivityIcon />
                 Open
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={onEditClicked}>
+              <DropdownMenuItem onClick={handleSessionsClicked}>
+                <SessionsActivityIcon />
+                Sessions
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={handleEditClicked}>
                 <EditActivityIcon />
                 Edit
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={onDuplicateClicked}>
+              <DropdownMenuItem onClick={handleDuplicateClicked}>
                 <DuplicateActivityIcon />
                 Duplicate
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={onDeleteClicked}>
+              <DropdownMenuItem onClick={handleDeleteClicked}>
                 <DeleteActivityIcon />
                 Delete
               </DropdownMenuItem>
@@ -308,8 +361,8 @@ export const ActivityCard = (props: ActivityCardProps): JSX.Element => {
 
 export default ActivityCard;
 
-
-function hashCode(str: string | undefined) { // java String#hashCode
+function hashCode(str: string | undefined) {
+  // java String#hashCode
   if (!str) return 0;
 
   var hash = 0;

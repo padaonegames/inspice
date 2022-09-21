@@ -12,7 +12,7 @@ import {
   ButtonActionText,
   StepDescription,
   TextActionSpan,
-  VerticalSeparator
+  VerticalSeparator,
 } from "../../components/generalStyles";
 
 const Root = styled.div`
@@ -25,41 +25,48 @@ const Root = styled.div`
 `;
 
 export const EnterPasswordStep = (props: StepComponentProps): JSX.Element => {
+  const { t } = useTranslation("gamGame");
 
-  const { t } = useTranslation('gamGame');
+  const { setTokenAndUpdateData } = useContext(AuthContext);
 
-  const { setUserData, setAccessToken } = useContext(AuthContext);
-
-  const username = props.getState<string>('username', 'user');
-  const password = props.getState<string>('password', '');
+  const username = props.getState<string>("username", "user");
+  const password = props.getState<string>("password", "");
 
   const performLogin = async () => {
     return await authService.performUserLogin(username, password);
-  };
+  }; // performLogin
 
-  const [performLoginRequest, triggerRequest] = useAsyncRequest(performLogin, [], false);
-  const [alertMessage, setAlertMessage] = useState<string | undefined>(undefined);
+  const [performLoginRequest, triggerRequest] = useAsyncRequest(
+    performLogin,
+    [],
+    false
+  );
+  const [alertMessage, setAlertMessage] =
+    useState<string | undefined>(undefined);
 
   const handleBackClicked = () => {
     if (props.hasPrev()) {
       props.prev();
     }
-  };
+  }; // handleBackClicked
 
   const handleNextClicked = () => {
     triggerRequest();
-  };
+  }; // handleNextClicked
 
   useEffect(() => {
-    if (performLoginRequest.kind === 'success') {
-      if (performLoginRequest.result.kind === 'http-error') {
-        setAlertMessage('Incorrect password. Please try again.');
-      }
-      else if (performLoginRequest.result.kind === 'ok' && performLoginRequest.result.data.accessToken) {
+    if (performLoginRequest.kind === "success") {
+      if (performLoginRequest.result.kind === "http-error") {
+        setAlertMessage("Incorrect password. Please try again.");
+      } else if (
+        performLoginRequest.result.kind === "ok" &&
+        performLoginRequest.result.data.accessToken
+      ) {
         setAlertMessage(undefined);
-        setUserData({ ...performLoginRequest.result.data });
-        setAccessToken(performLoginRequest.result.data.accessToken);
-        console.log(`Your token: ${performLoginRequest.result.data.accessToken}`);
+        setTokenAndUpdateData(performLoginRequest.result.data.accessToken);
+        console.log(
+          `Your token: ${performLoginRequest.result.data.accessToken}`
+        );
       }
     }
   }, [performLoginRequest]);
@@ -67,15 +74,19 @@ export const EnterPasswordStep = (props: StepComponentProps): JSX.Element => {
   return (
     <Root>
       <StepDescription>
-        {t('welcome')}, {username}!
+        {t("welcome")}, {username}!
       </StepDescription>
       <VerticalSeparator />
       <ShortTextInputCard
-        promptText={`${t('enterYourPassword')}:`}
-        placeholder={`${t('password')}...`}
-        value={password}
-        isPassword
-        onChange={(val) => props.setState<string>('password', val, '')}
+        promptText={`${t("enterYourPassword")}:`}
+        fieldPayload={{
+          placeholder: `${t("password")}...`,
+          isPassword: true,
+        }}
+        response={{ text: password }}
+        onResponseChanged={(res) =>
+          props.setState<string>("password", res.text, "")
+        }
         requiredAlert={!!alertMessage}
         alertMessage={alertMessage}
         onEnterPress={handleNextClicked}
@@ -83,17 +94,13 @@ export const EnterPasswordStep = (props: StepComponentProps): JSX.Element => {
       <VerticalSeparator />
       <VerticalSeparator />
       <ActionsContainer>
-        <TextActionSpan onClick={handleBackClicked}>
-          {t('back')}
-        </TextActionSpan>
+        <TextActionSpan onClick={handleBackClicked}>{t("back")}</TextActionSpan>
         <ButtonAction onClick={handleNextClicked}>
-          <ButtonActionText>
-            {t('next')}
-          </ButtonActionText>
+          <ButtonActionText>{t("next")}</ButtonActionText>
         </ButtonAction>
       </ActionsContainer>
     </Root>
   );
-};
+}; // EnterPasswordStep
 
 export default EnterPasswordStep;

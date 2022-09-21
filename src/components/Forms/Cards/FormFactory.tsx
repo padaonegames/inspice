@@ -1,7 +1,15 @@
-import { EditableFieldProps } from "../../../services/multistageFormActivity.model";
+import {
+  ConsumableFieldProps,
+  EditableFieldProps,
+} from "../../../services/multistageFormActivity.model";
 
-export interface AbstractFormFactory<DefinitionType> {
-  userFormComponent: <UserComponentProps extends DefinitionType>(useFormPayload: UserComponentProps) => JSX.Element;
-  formEditingComponent: (editingFormProps: EditableFieldProps<DefinitionType>) => JSX.Element;
-  defaultFormDefinition: DefinitionType;
+export interface AbstractFormFactory<Payload, Response> {
+  consumptionComponentProducer: (
+    consumptionFormProps: ConsumableFieldProps<Payload, Response>
+  ) => JSX.Element;
+  editingComponentProducer: (
+    editingFormProps: EditableFieldProps<Payload>
+  ) => JSX.Element;
+  defaultFormDefinition: Payload;
+  defaultFormResponse: Response;
 }

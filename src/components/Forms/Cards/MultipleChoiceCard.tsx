@@ -1,52 +1,53 @@
-import { useState } from "react";
-import { EditableFieldProps, MultipleChoiceFieldDefinition } from "../../../services/multistageFormActivity.model";
+import {
+  ConsumableFieldProps,
+  EditableFieldProps,
+  MultipleChoiceFieldDefinition,
+  MultipleChoiceResponseDefinition,
+} from "../../../services/multistageFormActivity.model";
 import CheckBoxInput from "../CheckBoxInput";
 import EditableCheckBoxInput from "../EditableCheckBoxInput";
-import {
-  CheckboxList,
-  CheckboxOption,
-} from "./cardStyles";
+import { CheckboxList, CheckboxOption } from "./cardStyles";
 import FormCard from "./FormCard";
-import { AbstractFormFactory } from "./FormFactory";
 
-export interface MultipleChoiceCardProps extends MultipleChoiceFieldDefinition {
+export interface MultipleChoiceCardProps
+  extends ConsumableFieldProps<
+    MultipleChoiceFieldDefinition,
+    MultipleChoiceResponseDefinition
+  > {
   /** Prompt for the user to fill in this field */
   promptText?: string;
   /** Whether this field should always be filled in by the user */
   required?: boolean;
-  /** callback to parent component specifying that a given answer has been selected */
-  onAnswerToggle?: (index: number) => void;
-  /** Indices of initially selected answers (if max answers is set to 1, then we have an array with a single element) */
-  initialAnswers?: number[];
   /** whether to modify the appearance of this card to reflect that the user tried to submit the form without entering a value for this field */
   requiredAlert?: boolean;
 } // MultipleChoiceCardProps
 
-export const MultipleChoiceCard = (props: MultipleChoiceCardProps): JSX.Element => {
-
+export const MultipleChoiceCard = (
+  props: MultipleChoiceCardProps
+): JSX.Element => {
   const {
-    promptText = '',
-    onAnswerToggle,
-    initialAnswers,
-    answers,
+    promptText = "",
     requiredAlert,
     required,
-    maxAnswers
+    fieldPayload,
+    response,
+    onResponseChanged,
   } = props;
 
-  const [selectedAnswers, setSelectedAnswers] = useState<number[]>(initialAnswers ?? []);
+  const { answers, maxAnswers } = fieldPayload;
+  const { selectedResponses } = response;
 
   const handleAnswerToggle = (index: number) => {
-    if (selectedAnswers.some(e => e === index)) {
+    if (!onResponseChanged || !isAnswerEnabled(index)) return;
+    if (selectedResponses.some((e) => e === index)) {
       // answer was already selected
-      setSelectedAnswers(prev => prev.filter(e => e !== index));
-    }
-    else {
+      onResponseChanged({
+        selectedResponses: selectedResponses.filter((e) => e !== index),
+      });
+    } else {
       // answer not present => add to list
-      setSelectedAnswers(prev => [...prev, index]);
+      onResponseChanged({ selectedResponses: [...selectedResponses, index] });
     }
-    if (!onAnswerToggle || !isAnswerEnabled(index)) return;
-    onAnswerToggle(index);
   }; // handleAnswerToggle
 
   const isAnswerEnabled = (index: number) => {
@@ -54,7 +55,11 @@ export const MultipleChoiceCard = (props: MultipleChoiceCardProps): JSX.Element 
      *  if max number of answers is 1 (in which case, any answer should be selectable),
      *  and if maximum number of answer hasn't been reached yet.
      */
-    return selectedAnswers?.some(e => e === index) || maxAnswers === 1 || selectedAnswers.length < (maxAnswers || 1);
+    return (
+      selectedResponses.some((e) => e === index) ||
+      maxAnswers === 1 ||
+      selectedResponses.length < (maxAnswers || 1)
+    );
   }; // isAnswerEnabled
 
   return (
@@ -68,9 +73,9 @@ export const MultipleChoiceCard = (props: MultipleChoiceCardProps): JSX.Element 
           <CheckboxOption key={elem}>
             <CheckBoxInput
               labelText={elem}
-              checked={selectedAnswers?.some(e => e === i)}
-              style='radio'
-              boxSize='15px'
+              checked={selectedResponses.some((e) => e === i)}
+              style="radio"
+              boxSize="15px"
               enabled={isAnswerEnabled(i)}
               onCheckedChange={() => handleAnswerToggle(i)}
             />
@@ -81,31 +86,32 @@ export const MultipleChoiceCard = (props: MultipleChoiceCardProps): JSX.Element 
   );
 }; // MultipleChoiceCard
 
-
-export interface EditableMultipleChoiceCardContentProps extends EditableFieldProps<MultipleChoiceFieldDefinition> {
+export interface EditableMultipleChoiceCardContentProps
+  extends EditableFieldProps<MultipleChoiceFieldDefinition> {
   /** text to display for the add new option label. */
   addNewOptionLabel?: string;
 } // EditableMultipleChoiceCardContentProps
 
-export const EditableMultipleChoiceCardContent = (props: EditableMultipleChoiceCardContentProps): JSX.Element => {
-
+export const EditableMultipleChoiceCardContent = (
+  props: EditableMultipleChoiceCardContentProps
+): JSX.Element => {
   const {
     fieldPayload,
-    addNewOptionLabel = 'New option',
-    onPayloadChanged
+    addNewOptionLabel = "New option",
+    onPayloadChanged,
   } = props;
 
-  const {
-    answers,
-    maxAnswers
-  } = fieldPayload;
+  const { answers } = fieldPayload;
 
   const handleAddOption = () => {
     if (!onPayloadChanged) return;
     onPayloadChanged({
       ...fieldPayload,
-      answers: [...fieldPayload.answers, `Option ${fieldPayload.answers.length + 1}`]
-    })
+      answers: [
+        ...fieldPayload.answers,
+        `Option ${fieldPayload.answers.length + 1}`,
+      ],
+    });
   }; // handleAddOption
 
   const handleEditOption = (index: number, value: string) => {
@@ -115,17 +121,17 @@ export const EditableMultipleChoiceCardContent = (props: EditableMultipleChoiceC
       answers: [
         ...fieldPayload.answers.slice(0, index),
         value,
-        ...fieldPayload.answers.slice(index + 1)
-      ]
-    })
+        ...fieldPayload.answers.slice(index + 1),
+      ],
+    });
   }; // handleEditOption
 
   const handleRemoveOption = (index: number) => {
     if (!onPayloadChanged) return;
     onPayloadChanged({
       ...fieldPayload,
-      answers: fieldPayload.answers.filter((_, i) => i !== index)
-    })
+      answers: fieldPayload.answers.filter((_, i) => i !== index),
+    });
   }; // handleRemoveOption
 
   return (
@@ -136,23 +142,20 @@ export const EditableMultipleChoiceCardContent = (props: EditableMultipleChoiceC
             <EditableCheckBoxInput
               key={`editableCheckBoxInput${i}`}
               labelText={elem}
-              style='radio'
-              boxSize='15px'
+              style="radio"
+              boxSize="15px"
               onObjectRemoved={() => handleRemoveOption(i)}
               onLabelTextChanged={(value) => handleEditOption(i, value)}
             />
           </CheckboxOption>
         ))}
-        <CheckboxOption
-          onClick={handleAddOption}
-          key='checkBoxOptionAddNew'
-        >
+        <CheckboxOption onClick={handleAddOption} key="checkBoxOptionAddNew">
           <EditableCheckBoxInput
-            key='editableCheckBoxInputAddNew'
-            labelText=''
+            key="editableCheckBoxInputAddNew"
+            labelText=""
             labelTextPlaceholder={addNewOptionLabel}
-            style='radio'
-            boxSize='15px'
+            style="radio"
+            boxSize="15px"
             enabled={false}
           />
         </CheckboxOption>
@@ -160,22 +163,5 @@ export const EditableMultipleChoiceCardContent = (props: EditableMultipleChoiceC
     </>
   );
 }; // EditableMultipleChoiceCardContent
-
-export const multipleChoiceCardFactory: AbstractFormFactory<MultipleChoiceFieldDefinition> = {
-  userFormComponent: (useFormPayload) => (
-    <MultipleChoiceCard
-      {...useFormPayload}
-    />
-  ),
-  formEditingComponent: (editingFormProps) => (
-    <EditableMultipleChoiceCardContent
-      {...editingFormProps}
-    />
-  ),
-  defaultFormDefinition: {
-    answers: ['Option 1']
-  }
-}; // ShortTextCardFactory
-
 
 export default MultipleChoiceCard;

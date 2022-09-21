@@ -1,4 +1,9 @@
-import { CheckboxGroupFieldDefinition, EditableFieldProps } from "../../../services/multistageFormActivity.model";
+import {
+  CheckboxGroupFieldDefinition,
+  CheckboxGroupResponseDefinition,
+  ConsumableFieldProps,
+  EditableFieldProps,
+} from "../../../services/multistageFormActivity.model";
 import CheckBoxInput from "../CheckBoxInput";
 import EditableCheckBoxInput from "../EditableCheckBoxInput";
 import {
@@ -9,49 +14,64 @@ import {
   RequiredQuestionSpan,
   RequiredAlertIcon,
   CheckboxList,
-  CheckboxOption
+  CheckboxOption,
 } from "./cardStyles";
 
-export interface CheckBoxGroupInputCardProps extends CheckboxGroupFieldDefinition {
+export interface CheckBoxGroupInputCardProps
+  extends ConsumableFieldProps<
+    CheckboxGroupFieldDefinition,
+    CheckboxGroupResponseDefinition
+  > {
   /** Prompt for the user to fill in this field */
   promptText?: string;
   /** Whether this field should always be filled in by the user */
   required?: boolean;
-  onFieldToggle?: (field: string) => void;
-  /** Array which contains the name of the fields checked. */
-  checked?: string[];
   /** whether to modify the appearance of this card to reflect that the user tried to submit the form without entering a value for this field */
   requiredAlert?: boolean;
 }
 
-export const CheckBoxGroupInputCard = (props: CheckBoxGroupInputCardProps): JSX.Element => {
-
+export const CheckBoxGroupInputCard = (
+  props: CheckBoxGroupInputCardProps
+): JSX.Element => {
   const {
     promptText,
-    checked,
-    fields,
     requiredAlert,
     required,
-    onFieldToggle,
+    fieldPayload,
+    response,
+    onResponseChanged,
   } = props;
+  const { fields } = fieldPayload;
+  const { selectedFields } = response;
+
+  const handleCheckedChange = (elementName: string, selected: boolean) => {
+    if (!onResponseChanged) return;
+    if (selected && !selectedFields.includes(elementName)) {
+      // case 1: element is selected and was not previously selected => add element to array
+      onResponseChanged({ selectedFields: [...selectedFields, elementName] });
+    } else if (!selected && selectedFields.includes(elementName)) {
+      // case 2: element is not selected and was previously selected => remove element from array
+      onResponseChanged({
+        selectedFields: selectedFields.filter((elem) => elem !== elementName),
+      });
+    }
+  }; // handleCheckedChange
 
   return (
     <Root>
       <CardPanel requiredAlert={requiredAlert}>
         <PromptText>
-          {promptText}{required && <RequiredAsterisk> *</RequiredAsterisk>}
+          {promptText}
+          {required && <RequiredAsterisk> *</RequiredAsterisk>}
         </PromptText>
         <CheckboxList>
-          {fields.map(elem => (
+          {fields.map((elem) => (
             <CheckboxOption key={elem}>
               <CheckBoxInput
                 labelText={elem}
-                checked={checked?.some(e => e === elem)}
-                boxSize='15px'
-                onCheckedChange={() => {
-                  if (onFieldToggle)
-                    onFieldToggle(elem);
-                }}
+                checked={selectedFields?.some((e) => e === elem)}
+                boxSize="15px"
+                onCheckedChange={(status) => handleCheckedChange(elem, status)}
               />
             </CheckboxOption>
           ))}
@@ -66,37 +86,37 @@ export const CheckBoxGroupInputCard = (props: CheckBoxGroupInputCardProps): JSX.
   );
 };
 
-export interface EditableCheckBoxGroupCardContentProps extends EditableFieldProps<CheckboxGroupFieldDefinition> {
+export interface EditableCheckBoxGroupCardContentProps
+  extends EditableFieldProps<CheckboxGroupFieldDefinition> {
   /** text to display for the add new option label. */
-  addNewOptionLabel: string;
+  addNewOptionLabel?: string;
 } // EditableCheckBoxGroupCardContentProps
 
-export const EditableCheckBoxGroupCardContent = (props: EditableCheckBoxGroupCardContentProps): JSX.Element => {
-
+export const EditableCheckBoxGroupCardContent = (
+  props: EditableCheckBoxGroupCardContentProps
+): JSX.Element => {
   const {
     fieldPayload,
-    addNewOptionLabel,
-    onPayloadChanged
+    addNewOptionLabel = "New Option",
+    onPayloadChanged,
   } = props;
 
-  const {
-    fields,
-  } = fieldPayload;
+  const { fields } = fieldPayload;
 
   const handleAddOption = () => {
     if (!onPayloadChanged) return;
     onPayloadChanged({
       ...fieldPayload,
-      fields: [...fieldPayload.fields, '']
-    })
+      fields: [...fieldPayload.fields, ""],
+    });
   };
 
   const handleRemoveOption = (index: number) => {
     if (!onPayloadChanged) return;
     onPayloadChanged({
       ...fieldPayload,
-      fields: fieldPayload.fields.filter((_, i) => i !== index)
-    })
+      fields: fieldPayload.fields.filter((_, i) => i !== index),
+    });
   };
 
   return (
@@ -106,28 +126,24 @@ export const EditableCheckBoxGroupCardContent = (props: EditableCheckBoxGroupCar
           <CheckboxOption key={elem}>
             <EditableCheckBoxInput
               labelText={elem}
-              style='checkbox'
-              boxSize='15px'
+              style="checkbox"
+              boxSize="15px"
               onObjectRemoved={() => handleRemoveOption(i)}
             />
           </CheckboxOption>
         ))}
-        <CheckboxOption
-          onClick={handleAddOption}
-          key='addNew'
-        >
+        <CheckboxOption onClick={handleAddOption} key="addNew">
           <EditableCheckBoxInput
-            labelText=''
+            labelText=""
             labelTextPlaceholder={addNewOptionLabel}
-            style='checkbox'
-            boxSize='15px'
+            style="checkbox"
+            boxSize="15px"
             enabled={false}
           />
         </CheckboxOption>
       </CheckboxList>
     </>
   );
-};
-
+}; // EditableCheckBoxGroupCardContent
 
 export default CheckBoxGroupInputCard;

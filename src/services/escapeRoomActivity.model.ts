@@ -1,76 +1,101 @@
-import { ActivityInstance, InProgressActivityInstance } from "./activity.model";
-
 // ---------------------------------------------------------------
 //           ITEM DEFINITIONS (STAGES + PUZZLES)
 // ---------------------------------------------------------------
 
-export type ItemDefinition = (
-  | { type: 'room', payload: RoomDefinition }
-  | { type: 'multiple-choice', payload: MultipleChoiceItemDefinition }
-  | { type: 'qr-scan', payload: QrScanItemDefinition }
-  | { type: 'ar-scan', payload: ArScanItemDefinition }
-); // ItemDefinition
+export type ItemDefinition =
+  | { type: "room"; payload: RoomDefinition }
+  | { type: "multiple-choice"; payload: MultipleChoiceItemDefinition }
+  | { type: "qr-scan"; payload: QrScanItemDefinition }
+  | { type: "ar-scan"; payload: ArScanItemDefinition }
+  | { type: "waiting-code"; payload: WaitingCodeDefinition }
+  | { type: "load-scene"; payload: LoadSceneDefinition }
+  | { type: "narrative"; payload: NarrativeItemDefinition }
+  | { type: "unlock-password"; payload: UnlockPasswordItemDefinition }; // ItemDefinition
 
 export const escapeRoomStageTypes = [
-  'room',
-  'multiple-choice'
+  "room",
+  "multiple-choice",
+  "waiting-code",
+  "qr-scan",
+  "ar-scan",
+  "load-scene",
+  "narrative",
+  "unlock-password",
 ] as const; // escapeRoomStageTypes
 
 export type AvailableEscapeRoomStageType = typeof escapeRoomStageTypes[number];
 
-export type SupportedStage =
-  Extract<ItemDefinition, {
-    type: AvailableEscapeRoomStageType
-  }>; // SupportedStage
+export type SupportedStage = Extract<
+  ItemDefinition,
+  {
+    type: AvailableEscapeRoomStageType;
+  }
+>; // SupportedStage
 
 export const escapeRoomPuzzleTypes = [
-  'multiple-choice'
+  "multiple-choice",
+  "waiting-code",
+  "qr-scan",
+  "ar-scan",
+  "load-scene",
+  "narrative",
+  "unlock-password",
 ] as const; // escapeRoomPuzzleTypes
 
-export type AvailableEscapeRoomPuzzleType = typeof escapeRoomPuzzleTypes[number];
+export type AvailableEscapeRoomPuzzleType =
+  typeof escapeRoomPuzzleTypes[number];
 
-export type SupportedPuzzle =
-  Extract<ItemDefinition, {
-    type: AvailableEscapeRoomPuzzleType
-  }>; // SupportedPuzzle
+export type SupportedPuzzle = Extract<
+  ItemDefinition,
+  {
+    type: AvailableEscapeRoomPuzzleType;
+  }
+>; // SupportedPuzzle
 
 /** Default puzzle definition */
 export const default_puzzle: SupportedPuzzle = {
-  type: 'multiple-choice',
+  type: "multiple-choice",
   payload: {
-    prompt: '',
-    answers: []
-  }
+    prompt: "",
+    correctAnswerIndex: 0,
+    answers: [],
+  },
 }; // default_puzzle
 
 // ---------------------------------------------------------------
 //                    ACTIVITY DEFINITIONS
 // ---------------------------------------------------------------
 
-export interface EscapeRoomActivityDefinition extends ActivityInstance {
-  activityType: 'Escape Room',
+export interface EscapeRoomActivityDefinition {
   stages: SupportedStage[];
-}
+  activityTitle: string;
+  authorUsername: string;
+  authorId: string;
+  characters: CharacterDefinition[];
+  _id: string;
+} // EscapeRoomActivityDefinition
 
-export interface InProgressEscapeRoomActivityDefinition extends InProgressActivityInstance {
-  activityType: 'Escape Room';
-  stages: SupportedStage[];
-} // InProgressEscapeRoomActivityDefinition
+export const defaultEscapeRoomActivityDefinition: EscapeRoomActivityDefinition =
+  {
+    _id: "",
+    activityTitle: "",
+    authorUsername: "",
+    authorId: "",
+    characters: [],
+    stages: [],
+  }; // defaultEscapeRoomActivityDefinition
 
-export type CompletedEscapeRoomActivityDefinition = Omit<
-  EscapeRoomActivityDefinition,
-  "_id"
->;
+export interface CharacterDefinition {
+  name: string;
+  description: string;
+  imageSrc: string;
+} // CharacterDefinition
 
-export const defaultEscapeRoomActivityDefinition: InProgressEscapeRoomActivityDefinition =
-{
-  activityType: 'Escape Room',
-  activityTitle: undefined,
-  activityAuthor: undefined,
-  beginsOn: undefined,
-  endsOn: undefined,
-  stages: []
-};
+export const default_character: CharacterDefinition = {
+  name: "",
+  description: "",
+  imageSrc: ""
+}; // default_character
 
 // ---------------------------------------------------------------
 //                    ROOM  DEFINITIONS
@@ -92,10 +117,10 @@ export const default_room: RoomDefinition = {
   blocks: [],
   availableTime: 20,
   exitBlock: {
-    blockName: 'Solve Room',
-    blockDescription: '',
-    puzzles: []
-  }
+    blockName: "Solve Room",
+    blockDescription: "",
+    puzzles: [],
+  },
 }; // default_room
 
 export interface RoomBlock {
@@ -109,9 +134,9 @@ export interface RoomBlock {
 
 /** Default definition for a Room Block */
 export const default_room_block: RoomBlock = {
-  blockName: '',
-  blockDescription: '',
-  puzzles: [default_puzzle, default_puzzle]
+  blockName: "Default Name",
+  blockDescription: "Default Description",
+  puzzles: [default_puzzle, default_puzzle],
 }; // default_room_block
 
 // ---------------------------------------------------------------
@@ -123,7 +148,7 @@ export interface EditableItemProps<T> {
   payload: T;
   /** Callback to notify parent component of a change whithin the current definition */
   onPayloadChanged?: (definition: T) => void;
-}
+} // EditableItemProps
 
 // ---------------------------------------------------------------
 //                    ITEM DEFINITIONS
@@ -134,6 +159,8 @@ export interface MultipleChoiceItemDefinition {
   prompt: string;
   /** answers to choose from */
   answers: string[];
+  /** index of the answer that is considered correct */
+  correctAnswerIndex: number;
   /** maximum number of answers to allow */
   maxAnswers?: number;
 } // MultipleChoiceItemDefinition
@@ -145,3 +172,42 @@ export interface QrScanItemDefinition {
 export interface ArScanItemDefinition {
   imageSrc: string;
 } // ArScanItemDefinition
+
+export interface WaitingCodeDefinition {
+  /** Password to enter in order to continue in the game */
+  code: string;
+  /** hints shown before requesting the password */
+  texts: string[];
+  /** maximum number of texts to show */
+  maxTexts?: number;
+} // WaitingCodeDefinition
+
+export interface LoadSceneDefinition {
+  /** Name of the scene that is going to be loaded */
+  sceneName: string;
+} // LoadSceneDefinition
+
+export interface UnlockPasswordItemDefinition {
+  /** Password that needs to be solved to exit a room */
+  password: number[];
+  /** Description to help give context to solve the password */
+  description: string;
+} // UnlockPasswordItemDefinition
+
+export interface Dialogue {
+  text: string;
+  characterName?: string;
+} // Dialogue
+
+export interface NarrativeItemDefinition {
+  dialogues: Dialogue[];
+} // NarrativeItemDefinition
+
+// ---------------------------------------------------------------
+//                      RESOURCES
+// ---------------------------------------------------------------
+
+export interface ResourceDefinition {
+  name: string;
+  src: string;
+} // ResourceDefinition

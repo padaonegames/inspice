@@ -13,30 +13,32 @@ interface InputAreaProps {
   width?: string;
   height?: string;
   dimBackground?: boolean;
+  textAlignment?: string;
 }
 export const InputArea = styled.textarea<InputAreaProps>`
   font-size: 0.9em;
   font-weight: 200;
-  font-family: ${props => props.theme.contentFont};
+  font-family: ${(props) => props.theme.contentFont};
   line-height: 135%;
-  width: ${props => props.width ?? '100%'};
-  height: ${props => props.height ?? '6em'};
+  width: ${(props) => props.width ?? "100%"};
+  height: ${(props) => props.height ?? "6em"};
   margin-top: 10px;
-  color: ${props => props.theme.textColor};
+  color: ${(props) => props.theme.textColor};
   border: none;
   outline: none;
   padding: 0.65em;
-  background-color: ${props => props.dimBackground ? '#f8f9fa' : 'transparent'};
+  background-color: ${(props) =>
+    props.dimBackground ? "#f8f9fa" : "transparent"};
   resize: none;
   overflow-y: hidden;
 
-  text-align: center;
+  text-align: ${(props) => props.textAlignment};
 
   border-radius: 0.25rem;
   box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
 
   &:focus {
-    box-shadow: #c44c49 0px -4px 0px 0px inset;
+    box-shadow: 0px -4px 0px 0px rgb(15, 90, 188) inset;
   }
 `;
 
@@ -45,16 +47,23 @@ export interface PromptFieldProps {
   promptText: string;
   /** Placeholder text to display while no text has been provided */
   promptPlaceholder?: string;
+  /** Alignment that is going to be aplied to the text */
+  textAlignment?: string;
+  /** Initial height of the input text */
+  initialHeight?: string;
+  /** Color of the bottom border when de input is has the focus */
+  bottomColor?: string;
   /** callback to notify parent of text changing within the input area */
   onPromptChange?: (value: string) => void;
 } // PromptFieldProps
 
 export const PromptField = (props: PromptFieldProps): JSX.Element => {
-
   const {
     promptText,
-    promptPlaceholder = 'Start typing your prompt',
-    onPromptChange
+    promptPlaceholder = "Start typing your prompt",
+    textAlignment = "center",
+    initialHeight = "3em",
+    onPromptChange,
   } = props;
 
   // reference to the actual DOM element for the prompt area to allow for dynamic resizing
@@ -64,15 +73,15 @@ export const PromptField = (props: PromptFieldProps): JSX.Element => {
    * useEffect hook to maintain a consistent height for the
    * HTMLTextAreaElement used to display the promptText.
    * Essentialy, this listens for changes in promptText and
-   * modifies container's height dynamically to fit the entire text 
+   * modifies container's height dynamically to fit the entire text
    * without having to scroll.
    */
   useEffect(() => {
     if (promptAreaRef.current == null) return;
 
-    promptAreaRef.current.style.height = '0px';
+    promptAreaRef.current.style.height = "0px";
     const scrollHeight = promptAreaRef.current.scrollHeight;
-    promptAreaRef.current.style.height = scrollHeight + 'px';
+    promptAreaRef.current.style.height = scrollHeight + "px";
   }, [promptText, promptAreaRef.current]); // useEffect
 
   /**
@@ -89,13 +98,14 @@ export const PromptField = (props: PromptFieldProps): JSX.Element => {
     <Root>
       <InputArea
         dimBackground
-        width='100%'
-        height='3em'
+        width="100%"
+        height={initialHeight}
+        textAlignment={textAlignment}
         ref={promptAreaRef}
         placeholder={promptPlaceholder}
         maxLength={500}
         value={promptText}
-        onChange={event => handlePromptTextChanged(event.target.value)}
+        onChange={(event) => handlePromptTextChanged(event.target.value)}
       />
     </Root>
   );

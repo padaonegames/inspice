@@ -23,6 +23,7 @@
   "searchArtworksByTitleOrAuthor": "Search artworks by title or author",
   "scanQrDescription": "Use your device's camera to take a picture of the QR code next to any artwork in this activityand select it from here.",
   "fetchingActivityArtworks": "Fetching activity artworks",
+  "fetchingArtworkStories": "Fetching artwork stories",
   "newGamGameStory": "New GAM Game Story",
   "createGamGameStoryDescription": "So you've decided to create a new GAM Game Story...\nIn the next few steps, you will be prompted to select different artworks from the GAM collection (between 2 and 3) and share your thoughts and feelings about them. You can even add your own tags and emojis to the artworks!\nPlease press BEGIN to start creating your personal story.",
   "begin": "Begin",
@@ -49,6 +50,7 @@
   "myStoriesDescription": "Here you can find a list of your personal stories. Use this page to browse, view and delete the stories you've already created.",
   "searchStoriesByTitle": "Search stories by title",
   "noArtworkFound": "No artwork found.",
+  "noArtworksFound": "No artworks found",
   "fetchingUserStories": "Fetching user stories",
   "areYouSureYouWantToGoBackToArtworkSelectionScreen": "Are you sure you want to go back to the artwork selection screen? Your progress in this story part will be lost.",
   "writeYourStoryTextHere": "Write your story text here...",
@@ -56,5 +58,6 @@
   "thereWasProblemWhenFetchingArtworkStories": "There was a problem while fetching this artwork's stories.",
   "enterNewTag": "Enter a new tag",
   "fetchingRecommendations": "Fetching Recommendations",
-  "areYouSureYouWantToExitStoryCreation": "Are you sure you wish to exit the story creation mode? Your progress will be lost!"
+  "areYouSureYouWantToExitStoryCreation": "Are you sure you wish to exit the story creation mode? Your progress will be lost!",
+  "artworkNoLongerInCollection": "Artwork no longer in collection"
 }

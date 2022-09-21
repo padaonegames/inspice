@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 export const CardImage = styled.img`
-  background-color: ${props => props.theme.artworkDisplayBackground};
+  background-color: ${(props) => props.theme.artworkDisplayBackground};
   max-height: 18rem;
   min-height: 290px;
   width: 100%;
@@ -36,13 +36,28 @@ interface CardGridCollageProps {
   imageSrcs: string[];
 }
 export const CardGridCollage = styled.div<CardGridCollageProps>`
-  background-color: ${props => props.theme.artworkDisplayBackground};
+  background-color: ${(props) => props.theme.artworkDisplayBackground};
   padding: 1em;
-  background-image: ${props => props.imageSrcs.map((elem, i) => i === 0 ? `url(${elem})` : `, url(${elem})`)};
-  background-repeat: ${props => props.imageSrcs.map((_, i) => i === 0 ? 'no-repeat' : ', no-repeat')};
-  // background-attachment: ${props => props.imageSrcs.map((_, i) => i === 0 ? 'fixed' : ', fixed')};
-  background-position: ${props => props.imageSrcs.map((_, i) => i === 0 ? `50% ${18 / props.imageSrcs.length * i}rem` : `, 50% ${18 / props.imageSrcs.length * i}rem`)};
-  background-size: ${props => props.imageSrcs.map((_, i) => i === 0 ? `auto ${100 / props.imageSrcs.length}%` : `, auto ${100 / props.imageSrcs.length}%`)};
+  background-image: ${(props) =>
+    props.imageSrcs.map((elem, i) =>
+      i === 0 ? `url(${elem})` : `, url(${elem})`
+    )};
+  background-repeat: ${(props) =>
+    props.imageSrcs.map((_, i) => (i === 0 ? "no-repeat" : ", no-repeat"))};
+  // background-attachment: ${(props) =>
+    props.imageSrcs.map((_, i) => (i === 0 ? "fixed" : ", fixed"))};
+  background-position: ${(props) =>
+    props.imageSrcs.map((_, i) =>
+      i === 0
+        ? `50% ${(18 / props.imageSrcs.length) * i}rem`
+        : `, 50% ${(18 / props.imageSrcs.length) * i}rem`
+    )};
+  background-size: ${(props) =>
+    props.imageSrcs.map((_, i) =>
+      i === 0
+        ? `auto ${100 / props.imageSrcs.length}%`
+        : `, auto ${100 / props.imageSrcs.length}%`
+    )};
   max-height: 18rem;
   min-height: 290px;
   width: 100%;
@@ -81,16 +96,19 @@ export const CardContainer = styled.figure`
 export const CardCaption = styled.figcaption`
   margin-top: 10px;
   text-align: center;
+  width: 100%;
 `;
 
 export const CardDescriptionList = styled.dl`
+  position: relative;
+  width: 100%;
 `;
 
 export const CardTitle = styled.dt`
   font-style: italic;
   overflow-wrap: break-word;
   font-size: 1.25em;
-  color: ${props => props.theme.textColor};
+  color: ${(props) => props.theme.textColor};
   font-weight: normal;
   line-height: 120%;
 `;
@@ -105,7 +123,7 @@ export const CardInfo = styled.dd`
 
 export const CardAuthor = styled.dd`
   font-size: 0.9em;
-  font-family: 'Gotham SSm A', 'Gotham SSm B';
+  font-family: "Gotham SSm A", "Gotham SSm B";
   color: #9d9d9d;
   font-weight: normal;
   text-transform: uppercase;

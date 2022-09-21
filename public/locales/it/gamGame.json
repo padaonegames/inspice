@@ -23,6 +23,7 @@
   "searchArtworksByTitleOrAuthor": "Cerca per titolo o autore",
   "scanQrDescription": "Usa la fotocamera del tuo dispositivo per scattare una foto del codice QR accanto a qualsiasi opera d'arte in questa attività e selezionalo da qui.",
   "fetchingActivityArtworks": "Scarico le opere",
+  "fetchingArtworkStories": "Fetching artwork stories",
   "newGamGameStory": "Nuova storia",
   "createGamGameStoryDescription": "Ora puoi selezionare le opere  per creare la tua storia (minimo 2 massimo 3).\nPer ogni opera potrai aggiungere un pensiero e esprimere i tuoi sentimenti.",
   "begin": "Inizia",
@@ -49,6 +50,7 @@
   "myStoriesDescription": "Ecco le storie che hai creato.\nUsa questa pagina per cercare, modificare e cancellare la tua storia",
   "searchStoriesByTitle": "Cerca storie per titolo",
   "noArtworkFound": "Nessuna opera d'arte trovata.",
+  "noArtworksFound": "Nessuna opera d'arte trovata",
   "fetchingUserStories": "Recuperare le storie degli utenti",
   "areYouSureYouWantToGoBackToArtworkSelectionScreen": "Sei sicuro di voler tornare alla schermata di selezione delle opere d'arte? I tuoi progressi in questa parte della storia andranno persi.",
   "writeYourStoryTextHere": "Scrivi qui il testo della tua storia",
@@ -56,5 +58,6 @@
   "thereWasProblemWhenFetchingArtworkStories": "C'è stato un problema durante il recupero delle storie di questa opera d'arte.",
   "enterNewTag": "Inserisci un nuovo tag",
   "fetchingRecommendations": "Trovare le raccomandazioni",
-  "areYouSureYouWantToExitStoryCreation": "Siete sicuri di voler uscire dalla modalità di creazione della storia? I vostri progressi andranno persi!"
+  "areYouSureYouWantToExitStoryCreation": "Siete sicuri di voler uscire dalla modalità di creazione della storia? I vostri progressi andranno persi!",
+  "artworkNoLongerInCollection": "Opera non è più in collezione"
 }
