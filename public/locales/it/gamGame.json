@@ -50,6 +50,7 @@
   "myStoriesDescription": "Ecco le storie che hai creato.\nUsa questa pagina per cercare, modificare e cancellare la tua storia",
   "searchStoriesByTitle": "Cerca storie per titolo",
   "noArtworkFound": "Nessuna opera d'arte trovata.",
+  "noArtworksFound": "Nessuna opera d'arte trovata",
   "fetchingUserStories": "Recuperare le storie degli utenti",
   "areYouSureYouWantToGoBackToArtworkSelectionScreen": "Sei sicuro di voler tornare alla schermata di selezione delle opere d'arte? I tuoi progressi in questa parte della storia andranno persi.",
   "writeYourStoryTextHere": "Scrivi qui il testo della tua storia",
