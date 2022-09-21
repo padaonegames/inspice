@@ -72,7 +72,9 @@ export const StoryListDisplay = (props: StoryListDisplayProps): JSX.Element => {
       <CardCaption>
         <CardDescriptionList>
           <CardTitle>{storyData.title}</CardTitle>
-          {enableStoryDeletion && <DeleteIcon onClick={handleDeleteClicked} />}
+          {enableStoryDeletion && (
+            <DeleteIcon title="Delete story" onClick={handleDeleteClicked} />
+          )}
         </CardDescriptionList>
       </CardCaption>
     </CardContainer>

@@ -53,8 +53,9 @@ export const CreateStoryFlow = (): JSX.Element => {
     } else if (artworkSelectionStatus === "recommendation-opposite") {
       setStatus("submit");
     } else if (storyParts.length + 1 >= activity.maxArtworks) {
-      // reached maximum number of story parts, move on to submit
-      setStatus("submit");
+      // reached maximum number of story parts, move on to recommendations
+      setStatus("recommendation-similar");
+      setArtworkSelectionStatus("recommendation-similar");
     } else if (storyParts.length + 1 >= activity.minArtworks) {
       // enough artworks to submit story, but still room to add more
       setStatus("continue-or-submit");
