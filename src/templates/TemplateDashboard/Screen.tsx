@@ -11,7 +11,10 @@ import { api, gamGameApi } from "../../services";
 import LoadingOverlay from "../../components/Layout/LoadingOverlay";
 import { useNavigate } from "react-router-dom";
 import { FindArtworkActivityDefinition } from "../../services/findArtworkActivity.model";
-import { GamGameActivityDefinition } from "../../services/gamGameActivity.model";
+import {
+  CompletedGamGameActivityDefinition,
+  GamGameActivityDefinition,
+} from "../../services/gamGameActivity.model";
 import { Plus } from "styled-icons/bootstrap";
 import NewActivityPopup from "./components/NewActivityPopup";
 import { useEffect, useState } from "react";
@@ -243,6 +246,19 @@ const TemplateDashBoardView = (
     }
   }; // handleEditActivity
 
+  const handleDuplicateActivity = (activity: ActivityInstance) => {
+    switch (activity.activityType) {
+      case "GAM Game":
+        const { _id, ...duplicatedActivity } = activity;
+        navigate(`/gam-game/curator/create`, {
+          state: duplicatedActivity as CompletedGamGameActivityDefinition,
+        });
+        break;
+      default:
+        return;
+    }
+  }; // handleDuplicateActivity
+
   const handleOpenTemplate = (template: SupportedActivity) => {
     window.removeEventListener("scroll", noScroll);
     document.body.style.overflow = "visible";
@@ -389,6 +405,7 @@ const TemplateDashBoardView = (
                 <ActivityCard
                   key={activity._id}
                   activityTemplate={activity}
+                  onDuplicateClicked={() => handleDuplicateActivity(activity)}
                   onOpenClicked={() => handleOpenActivity(activity)}
                   onEditClicked={() => handleEditActivity(activity)}
                   onDeleteClicked={() => handleDeleteActivity(activity)}

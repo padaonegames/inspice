@@ -3,6 +3,7 @@ import {
   deleteApiResult,
   getApiResult,
   postApiResult,
+  putApiResult,
 } from "./apiRequestUtils";
 import {
   CompletedGamGameActivityDefinition,
@@ -135,6 +136,21 @@ export class GamGameActivityService {
       GamGameActivityDefinition
     >(url, apiDefinition);
   } // submitGamGameActivityDefinition
+
+  /**
+   * @description Update an Activity Definition from the persistence layer
+   * @param activityDefinition Activity definition to update
+   */
+  public async updateGamGameActivityDefinition(
+    activityDefinition: GamGameActivityDefinition
+  ): Promise<ApiResult<GamGameActivityDefinition>> {
+    const url = `${this.apiUrl}/gam-game/activity`;
+
+    return putApiResult<GamGameActivityDefinition, GamGameActivityDefinition>(
+      url,
+      activityDefinition
+    );
+  } // updateGamGameActivityDefinition
 
   /**
    * @description Submit a user created Story Definition to the persistence layer
