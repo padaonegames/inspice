@@ -179,6 +179,14 @@ export const CreateStoryPart = (props: CreateStoryPartProps): JSX.Element => {
     ]);
   };
 
+  const handleRemoveEmoji = (index: number) => {
+    setEmojis((prev) => [...prev.slice(0, index), ...prev.slice(index + 1)]);
+  }; // handleRemoveEmoji
+
+  const handleRemoveTag = (index: number) => {
+    setTags((prev) => [...prev.slice(0, index), ...prev.slice(index + 1)]);
+  }; // handleRemoveTag
+
   const handleMoveEmoji = (index: number, pos: Position) => {
     setEmojis((prev) => {
       let copy: StoryPartEmoji[] = JSON.parse(JSON.stringify(prev));
@@ -231,6 +239,8 @@ export const CreateStoryPart = (props: CreateStoryPartProps): JSX.Element => {
           onMoveEmoji={handleMoveEmoji}
           onAddTag={handleAddTag}
           onMoveTag={handleMoveTag}
+          onRemoveEmoji={handleRemoveEmoji}
+          onRemoveTag={handleRemoveTag}
         />
 
         <ArtworkListDottedLine />

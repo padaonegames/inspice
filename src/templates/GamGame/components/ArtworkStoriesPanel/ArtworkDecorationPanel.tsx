@@ -1,11 +1,17 @@
-import styled, { css } from 'styled-components';
-import { availableEmoji, Emoji, StoryPartEmoji, StoryPartTag } from '../../../../services/gamGameActivity.model';
-import { Type } from '@styled-icons/bootstrap/Type';
-import { Sticker } from '@styled-icons/fluentui-system-filled/Sticker';
-import Draggable, { Position } from './Draggable';
-import { useState } from 'react';
-import { DetailArtworkDisplay } from '../generalStyles';
-import { useTranslation } from 'react-i18next';
+import styled, { css } from "styled-components";
+import {
+  availableEmoji,
+  Emoji,
+  StoryPartEmoji,
+  StoryPartTag,
+} from "../../../../services/gamGameActivity.model";
+import { Type } from "@styled-icons/bootstrap/Type";
+import { Sticker } from "@styled-icons/fluentui-system-filled/Sticker";
+import { Delete } from "@styled-icons/fluentui-system-regular/Delete";
+import Draggable, { Position } from "./Draggable";
+import { useState } from "react";
+import { DetailArtworkDisplay } from "../generalStyles";
+import { useTranslation } from "react-i18next";
 
 const StoryEmojiSpan = styled.span`
   font-size: 50px;
@@ -63,10 +69,14 @@ const TypeIcon = styled(Type)`
   ${ToolStyle}
 `;
 
+const DeleteIcon = styled(Delete)`
+  ${ToolStyle}
+`;
+
 const StickerSelectorContainer = styled.div`
   border-radius: 15px;
   border: 1px solid darkgray;
-  background-color: ${props => props.theme.headerBackground};
+  background-color: ${(props) => props.theme.headerBackground};
   position: absolute;
   z-index: 10;
   height: 4.5em;
@@ -135,9 +145,9 @@ export interface ArtworkDecorationPanelProps {
   emojis: StoryPartEmoji[];
   /** Tags shown in the panel. */
   tags: StoryPartTag[];
-  /** Callback to the parent notifying when is added a new emoji. */
+  /** Callback to the parent notifying when a new emoji is added. */
   onAddEmoji?: (emoji: Emoji) => void;
-  /** Callback to the parent notifying when is added a new tag. */
+  /** Callback to the parent notifying when a new tag is added. */
   onAddTag?: (tag: string) => void;
   /**
    * Called with position expressed in relative terms (% of image's height and width)
@@ -147,11 +157,16 @@ export interface ArtworkDecorationPanelProps {
    * Called with position expressed in relative terms (% of image's height and width)
    */
   onMoveTag?: (index: number, pos: Position) => void;
+  /** Callback to parent specifying the user wishes to remove emoji at given index */
+  onRemoveEmoji?: (index: number) => void;
+  /** Callback to parent specifying the user wishes to remove tag at given index */
+  onRemoveTag?: (index: number) => void;
 }
 
 /** Customizable panel where it can be added tags and emojis to an artwork piece. */
-export const ArtworkDecorationPanel = (props: ArtworkDecorationPanelProps): JSX.Element => {
-
+export const ArtworkDecorationPanel = (
+  props: ArtworkDecorationPanelProps
+): JSX.Element => {
   const {
     editEnabled = true,
     artworkSrc,
@@ -160,22 +175,89 @@ export const ArtworkDecorationPanel = (props: ArtworkDecorationPanelProps): JSX.
     onAddEmoji,
     onAddTag,
     onMoveEmoji,
-    onMoveTag
+    onMoveTag,
+    onRemoveEmoji,
+    onRemoveTag,
   } = props;
 
-  const { t } = useTranslation('gamGame');
+  const { t } = useTranslation("gamGame");
 
   const [stickersOpen, setStickersOpen] = useState<boolean>(false);
   const [tagsOpen, setTagsOpen] = useState<boolean>(false);
+  const [deletionMode, setDeletionMode] = useState<boolean>(false);
 
-  const [newTag, setNewTag] = useState<string>('');
+  const [newTag, setNewTag] = useState<string>("");
 
-  const [imageContainerRef, setImageContainerRef] = useState<HTMLDivElement | null>(null);
+  const [imageContainerRef, setImageContainerRef] =
+    useState<HTMLDivElement | null>(null);
+
+  //-----------------------------
+  //      BUTTONS MANAGEMENT
+  //-----------------------------
+  const handleToggleTags = () => {
+    setStickersOpen(false);
+    setDeletionMode(false);
+    setTagsOpen((prev) => !prev);
+  }; // handleOpenTags
+
+  const handleToggleStickers = () => {
+    setStickersOpen((prev) => !prev);
+    setDeletionMode(false);
+    setTagsOpen(false);
+  }; // handleOpenStickers
+
+  const handleToggleDeletionMode = () => {
+    setStickersOpen(false);
+    setDeletionMode((prev) => !prev);
+    setTagsOpen(false);
+  }; // handleEnableDeletionMode
+  //-----------------------------
+
+  //-----------------------------
+  //    ADD TAGS AND EMOJIS
+  //-----------------------------
 
   const handleAddEmoji = (emoji: Emoji) => {
     setStickersOpen(false);
     if (onAddEmoji) {
       onAddEmoji(emoji);
+    }
+  };
+
+  const handleCreateTag = () => {
+    setTagsOpen(false);
+    setNewTag("");
+
+    if (newTag.length === 0) {
+      return;
+    }
+
+    if (onAddTag) {
+      onAddTag(newTag);
+    }
+  };
+
+  //-----------------------------
+  //    DELETE TAGS AND EMOJIS
+  //-----------------------------
+  const handleDeleteTag = (index: number) => {
+    if (onRemoveTag) onRemoveTag(index);
+  }; // handleDeleteTag
+
+  const handleDeleteEmoji = (index: number) => {
+    if (onRemoveEmoji) onRemoveEmoji(index);
+  }; // handleDeleteEmoji
+  //-----------------------------
+
+  const handleTagEndDragging = (pos: Position, index: number) => {
+    if (onMoveTag) {
+      const rect = imageContainerRef?.getBoundingClientRect();
+      if (!rect) return;
+
+      const relX = pos.x / rect.width;
+      const relY = pos.y / rect.height;
+
+      onMoveTag(index, { x: relX, y: relY });
     }
   };
 
@@ -191,106 +273,109 @@ export const ArtworkDecorationPanel = (props: ArtworkDecorationPanelProps): JSX.
     }
   };
 
-  const handleCreateTag = () => {
-    setTagsOpen(false);
-    setNewTag('');
-
-    if (newTag.length === 0) {
-      return;
-    }
-
-    if (onAddTag) {
-      onAddTag(newTag);
-    }
-  };
-
-  const handleTagEndDragging = (pos: Position, index: number) => {
-    if (onMoveTag) {
-      const rect = imageContainerRef?.getBoundingClientRect();
-      if (!rect) return;
-
-      const relX = pos.x / rect.width;
-      const relY = pos.y / rect.height;
-
-      onMoveTag(index, { x: relX, y: relY });
-    }
-  };
-
-  const proportionToPixels = (dimension: 'x' | 'y', proportion: number): number | undefined => {
+  const proportionToPixels = (
+    dimension: "x" | "y",
+    proportion: number
+  ): number | undefined => {
     const rect = imageContainerRef?.getBoundingClientRect();
     if (!rect) return undefined;
-    return proportion * (dimension === 'x' ? rect.width : rect.height);
+    return proportion * (dimension === "x" ? rect.width : rect.height);
   };
 
-  const computeDefaultPosition = (locationX: number, locationY: number): Position => {
-    return { x: proportionToPixels('x', locationX) ?? 0, y: proportionToPixels('y', locationY) ?? 0 };
+  const computeDefaultPosition = (
+    locationX: number,
+    locationY: number
+  ): Position => {
+    return {
+      x: proportionToPixels("x", locationX) ?? 0,
+      y: proportionToPixels("y", locationY) ?? 0,
+    };
   };
 
   return (
     <DetailArtworkDisplay
-      ref={newRef => setImageContainerRef(newRef)}
+      ref={(newRef) => setImageContainerRef(newRef)}
       backgroundImage={artworkSrc}
     >
       {editEnabled && (
         <ToolsRow>
-          <ToolContainer onClick={() => setTagsOpen(prev => !stickersOpen && !prev)} >
+          <ToolContainer title="Add tags to story" onClick={handleToggleTags}>
             <TypeIcon />
           </ToolContainer>
-          <ToolContainer onClick={() => setStickersOpen(prev => !tagsOpen && !prev)} >
+          <ToolContainer
+            title="Add emojis to story"
+            onClick={handleToggleStickers}
+          >
             <StickerIcon />
-            {stickersOpen &&
+            {stickersOpen && (
               <StickerSelectorContainer>
-                {availableEmoji.map(elem =>
-                  <SelectionEmoji key={elem} onClick={() => handleAddEmoji(elem)}>
+                {availableEmoji.map((elem) => (
+                  <SelectionEmoji
+                    key={elem}
+                    onClick={() => handleAddEmoji(elem)}
+                  >
                     {elem}
                   </SelectionEmoji>
-                )}
+                ))}
               </StickerSelectorContainer>
-            }
+            )}
+          </ToolContainer>
+          <ToolContainer
+            title="Remove tags and emojis from story"
+            onClick={handleToggleDeletionMode}
+          >
+            <DeleteIcon />
           </ToolContainer>
         </ToolsRow>
       )}
-      {editEnabled && tagsOpen &&
+      {editEnabled && tagsOpen && (
         <TagTypingContainer
           onKeyPress={(e) => {
-            if (e.key === 'Enter')
-              handleCreateTag();
+            if (e.key === "Enter") handleCreateTag();
           }}
         >
           <TagTypingBackground onClick={handleCreateTag} />
           <TagTypingInput
-            placeholder={`${t('enterNewTag')}...`}
+            placeholder={`${t("enterNewTag")}...`}
             value={newTag}
             onChange={(e) => setNewTag(e.target.value)}
           />
         </TagTypingContainer>
-      }
-      {imageContainerRef && emojis.map((emoji, i) => (
-        <Draggable
-          canDrag={editEnabled}
-          key={emoji.emoji + '_' + i}
-          defaultPosition={computeDefaultPosition(emoji.locationX, emoji.locationY)}
-          onEndDragging={(pos) => handleEmojiEndDragging(pos, i)}
-          parentRef={imageContainerRef}
-        >
-          <StoryEmojiSpan>
-            {emoji.emoji}
-          </StoryEmojiSpan>
-        </Draggable>
-      ))}
-      {imageContainerRef && tags.map((tag, i) => (
-        <Draggable
-          canDrag={editEnabled}
-          key={tag.tag + '_' + i}
-          defaultPosition={computeDefaultPosition(tag.locationX, tag.locationY)}
-          onEndDragging={(pos) => handleTagEndDragging(pos, i)}
-          parentRef={imageContainerRef}
-        >
-          <StoryTagSpan>
-            {tag.tag}
-          </StoryTagSpan>
-        </Draggable>
-      ))}
+      )}
+      {imageContainerRef &&
+        emojis.map((emoji, i) => (
+          <Draggable
+            enableDeletion={deletionMode}
+            canDrag={editEnabled}
+            key={emoji.emoji + "_" + i}
+            defaultPosition={computeDefaultPosition(
+              emoji.locationX,
+              emoji.locationY
+            )}
+            onEndDragging={(pos) => handleEmojiEndDragging(pos, i)}
+            onDeleteItem={() => handleDeleteEmoji(i)}
+            parentRef={imageContainerRef}
+          >
+            <StoryEmojiSpan>{emoji.emoji}</StoryEmojiSpan>
+          </Draggable>
+        ))}
+      {imageContainerRef &&
+        tags.map((tag, i) => (
+          <Draggable
+            enableDeletion={deletionMode}
+            canDrag={editEnabled}
+            key={tag.tag + "_" + i}
+            defaultPosition={computeDefaultPosition(
+              tag.locationX,
+              tag.locationY
+            )}
+            onEndDragging={(pos) => handleTagEndDragging(pos, i)}
+            onDeleteItem={() => handleDeleteTag(i)}
+            parentRef={imageContainerRef}
+          >
+            <StoryTagSpan>{tag.tag}</StoryTagSpan>
+          </Draggable>
+        ))}
     </DetailArtworkDisplay>
   );
 };
