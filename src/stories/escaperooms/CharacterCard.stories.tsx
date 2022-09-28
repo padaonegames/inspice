@@ -31,7 +31,7 @@ Default.args = {
 export const DefaultEdit = Template.bind({});
 DefaultEdit.args = {
   editMode: true,
-  showAlert() {
+  isNameValid() {
     return true;
   },
   initialCharacterDefinition: {
@@ -54,7 +54,7 @@ Alternative.args = {
 export const AlternativeEdit = Template.bind({});
 AlternativeEdit.args = {
   editMode: true,
-  showAlert() {
+  isNameValid() {
     return false;
   },
   initialCharacterDefinition: {
@@ -68,7 +68,7 @@ AlternativeEdit.args = {
 export const InvalidCharacter = Template.bind({});
 InvalidCharacter.args = {
   editMode: true,
-  showAlert() {
+  isNameValid() {
     return true;
   },
   initialCharacterDefinition: {
