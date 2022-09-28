@@ -65,20 +65,21 @@ export const CharacterDefinitionsCard = (
   const [selectedCharacterIndex, setSelectedCharacterIndex] =
     useState<number | "none">("none");
 
-  const checkProblemsCharacterName = (
+  const isCharacterNameValid = (
     characterIndex: number,
-    newName: string
+    characterName: string
   ) => {
-    // The new name is compared to the rest of the escape room characters
-    let i = 0;
-    while (i < characters.length) {
-      if (i !== characterIndex && characters[i].name === newName) return true;
-      i++;
-    }
-
-    // Before telling it is a valid name, a final check is made to prevent empty names
-    return newName === "" ? true : false;
-  }; // checkProblemsCharacterName
+    // new name is only valid if it is non empty and
+    // for every character in our array of characters, it is either the one with the
+    // same index as ours or has a different name. (unique)
+    return (
+      characterName.length > 0 &&
+      characters.every(
+        (character, i) =>
+          i === characterIndex || character.name !== characterName
+      )
+    );
+  }; // isCharacterNameValid
 
   const handleUpdateCharacterData = (
     newData: CharacterDefinition,
@@ -95,8 +96,15 @@ export const CharacterDefinitionsCard = (
     setSelectedCharacterIndex("none");
   }; // handleUpdateCharacterData
 
-  const handleSelectCharacter = (index: number) => {
-    if (index < 0 || index >= characters.length) return;
+  const handleSelectCharacter = (index: number | "none") => {
+    if (index !== "none" && (index < 0 || index >= characters.length)) return;
+    if (index === selectedCharacterIndex) {
+      // deselect
+      const res = window.confirm("Discard changes to selected character?");
+      if (!res) return;
+      setSelectedCharacterIndex("none");
+      return;
+    }
     if (selectedCharacterIndex === characters.length) {
       const res = window.confirm(
         "Select this character and lose progress for your currently selected character?"
@@ -146,7 +154,7 @@ export const CharacterDefinitionsCard = (
           }
           onToggleCharacterEditMode={() => handleSelectCharacter(index)}
           onDeleteCharacter={() => handleDeleteCharacter(index)}
-          showAlert={(value) => checkProblemsCharacterName(index, value)}
+          isNameValid={(value) => isCharacterNameValid(index, value)}
           editMode={selectedCharacterIndex === index}
           editButtonAvaliable={
             selectedCharacterIndex === "none" ||
@@ -165,10 +173,9 @@ export const CharacterDefinitionsCard = (
         <EscapeRoomCharacterCard
           initialCharacterDefinition={default_character}
           onSaveCharacterData={handleSaveNewCharacter}
-          onToggleCharacterEditMode={() => {}}
-          onDeleteCharacter={() => {}}
-          showAlert={(value: string) =>
-            checkProblemsCharacterName(characters.length, value)
+          onToggleCharacterEditMode={() => handleSelectCharacter("none")}
+          isNameValid={(value) =>
+            isCharacterNameValid(characters.length, value)
           }
           editMode={true}
           editButtonAvaliable={false}

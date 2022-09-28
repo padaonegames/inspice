@@ -16,7 +16,6 @@ import {
   Root,
 } from "../../../../components/Forms/Cards/cardStyles";
 import { Delete } from "@styled-icons/fluentui-system-regular/Delete";
-import { PeopleCommunityAdd } from "@styled-icons/fluentui-system-regular/PeopleCommunityAdd";
 import { Cancel } from "@styled-icons/material-outlined/Cancel";
 import { ImageAdd } from "@styled-icons/boxicons-regular/ImageAdd";
 import ShortTextInputCard from "../../../../components/Forms/Cards/ShortTextInputCard";
@@ -31,9 +30,10 @@ const actionButtonStyle = css<ButtonProps>`
   padding: 0 1em;
   color: white;
   opacity: 50%;
+  cursor: default;
 
   ${(props) =>
-    props.available &&
+    !props.disabled &&
     `
   opacity: 100%;
   cursor: pointer;
@@ -43,8 +43,13 @@ const actionButtonStyle = css<ButtonProps>`
   `}
 `;
 
-export const fieldTypeIcon = css`
+interface ButtonProps {
+  disabled?: boolean;
+}
+const fieldTypeIcon = css<ButtonProps>`
   color: ${(props) => props.theme.textColor};
+  cursor: ${(props) => (props.disabled ? "default" : "pointer")};
+  opacity: ${(props) => (props.disabled ? 0.3 : 1)};
   height: 1.75em;
   width: 1.75em;
   margin-right: 0.75em;
@@ -55,42 +60,8 @@ const DeleteIcon = styled(Delete)`
   cursor: pointer;
 `;
 
-const AlertIcon = styled(AlertCircle)`
-  position: absolute;
-  left: 27%;
-  top: 8%;
-  height: 2em;
-  width: 2em;
-  color: rgb(255, 0, 0);
-  transform: translate(-50%, -50%);
-`;
-
-const SaveIcon = styled(Save)<ButtonProps>`
-  position: absolute;
-  right: 0.25rem;
-  top: 0.25rem;
-  height: 1.75em;
-  width: 1.75em;
-  cursor: pointer;
-
-  border-radius: 0.25rem;
-  background-color: rgb(19, 104, 206);
-  border: 2px solid rgb(15, 90, 188);
-  opacity: ${(props) => (props.available ? 1 : 0.3)};
-  color: white;
-  &:hover {
-    background-color: rgb(49, 134, 236);
-  }
-`;
-
-interface ButtonProps {
-  available: boolean;
-}
-const EditIcon = styled(Edit)<ButtonProps>`
+const EditIcon = styled(Edit)`
   ${fieldTypeIcon}
-  cursor: pointer;
-  margin-right: 0.75em;
-  opacity: ${(props) => (props.available ? 1 : 0.3)};
 `;
 const CharacterContainer = styled.div`
   display: flex;
@@ -110,15 +81,15 @@ const CharacterPreviewContainer = styled.div<CharacterPreviewContainerProps>`
   align-items: center;
   width: 15em;
 
-  ${(props) =>
-    props.src
-      ? `background-image: url(${props.src});`
-      : `background-color: transparent;`}
   background-size: contain;
   border-radius: 0.5rem 0rem 0rem 0.5rem;
   background-repeat: no-repeat;
   background-position: 50% 50%;
   background-color: black;
+  ${(props) =>
+    props.src
+      ? `background-image: url(${props.src});`
+      : `background-color: darkred;`}
 `;
 
 const CharacterInfoContainer = styled.div`
@@ -210,13 +181,13 @@ export interface EscapeRoomCharacterCardProps {
   /** Default definition to initialize a characters data */
   initialCharacterDefinition: CharacterDefinition;
   /** Callback to parent component to notify that the user wants to save this characters data */
-  onSaveCharacterData: (newInfo: CharacterDefinition) => void;
+  onSaveCharacterData?: (newInfo: CharacterDefinition) => void;
   /** Callback to parent component to notify that the user wants to start/finish editing data */
-  onToggleCharacterEditMode: () => void;
+  onToggleCharacterEditMode?: () => void;
   /** Callback to parent component to notify that the user wants to delete this character */
-  onDeleteCharacter: () => void;
+  onDeleteCharacter?: () => void;
   /** Callback to parent component that recieves this characters name and returns wether that name is valid or not */
-  showAlert: (name: string) => boolean;
+  isNameValid?: (newName: string) => boolean;
   /** Boolean to determine wether this card should be filled with elements that allow its edition or only its visualization */
   editMode: boolean;
   /** Boolean to prevent the user from editing a characters name with a value that is not acceptable and change to another character's edit mode */
@@ -231,7 +202,7 @@ export const EscapeRoomCharacterCard = (
     onSaveCharacterData,
     onDeleteCharacter,
     onToggleCharacterEditMode,
-    showAlert,
+    isNameValid,
     editMode,
     editButtonAvaliable,
   } = props;
@@ -250,11 +221,12 @@ export const EscapeRoomCharacterCard = (
   }; // handleCharacterDescriptionChanged
 
   const onSaveCharacterInfo = () => {
-    //Trim to prevent names with empty spaces at the end/begining
+    // Trim to prevent names with empty spaces at the end/begining
     if (onSaveCharacterData)
       onSaveCharacterData({
         ...characterData,
         name: characterData.name.trim(),
+        description: characterData.description.trim(),
       });
   }; // onSaveCharacterInfo
 
@@ -271,9 +243,18 @@ export const EscapeRoomCharacterCard = (
     setShowResourcesPopUp((prev) => !prev);
   }; // handleResourceSelected
 
+  const needsName = characterData.name.length === 0;
+  const nameNotUnique = isNameValid && !isNameValid(characterData.name);
+  const needsImage = characterData.imageSrc.length === 0;
+  const shouldAlert = editMode && (needsImage || needsName || nameNotUnique);
+
   return (
     <Root>
-      <CardPanel addPadding={false} addFocusEffect={false} requiredAlert={true}>
+      <CardPanel
+        addPadding={false}
+        addFocusEffect={false}
+        requiredAlert={shouldAlert}
+      >
         {/* Pop up component to enable image selection from the escape room resources */}
         {showResourcesPopUp && (
           <ResourcesPopUp
@@ -289,7 +270,6 @@ export const EscapeRoomCharacterCard = (
             {/* Image */}
             {editMode && (
               <SelectCharacterButton
-                available
                 onClick={() => {
                   setShowResourcesPopUp(true);
                 }}
@@ -301,8 +281,16 @@ export const EscapeRoomCharacterCard = (
           </CharacterPreviewContainer>
           {/* Name and description */}
           <CharacterInfoContainer>
-            {showAlert(characterData.name.trim()) && <AlertIcon />}
             <ShortTextInputCard
+              required
+              requiredAlert={nameNotUnique || needsName}
+              alertMessage={
+                needsName
+                  ? "This field is required"
+                  : nameNotUnique
+                  ? "Character name already in use"
+                  : undefined
+              }
               promptText="Character Name:"
               fieldPayload={{ placeholder: "Character Name" }}
               response={{ text: characterData.name }}
@@ -322,7 +310,6 @@ export const EscapeRoomCharacterCard = (
               {editMode && (
                 <>
                   <CancelEditingButton
-                    available
                     title="Discard the changes to this character"
                     onClick={handleToggleEditCharacterMode}
                   >
@@ -331,7 +318,6 @@ export const EscapeRoomCharacterCard = (
                   </CancelEditingButton>
                   <HorizontalLine />
                   <SaveChangesButton
-                    available
                     title="Save your changes to this character"
                     onClick={onSaveCharacterInfo}
                   >
@@ -344,7 +330,7 @@ export const EscapeRoomCharacterCard = (
                 <>
                   <EditIcon
                     title="Edit Character"
-                    available={editButtonAvaliable}
+                    disabled={!editButtonAvaliable}
                     onClick={() => {
                       editButtonAvaliable && handleToggleEditCharacterMode();
                     }}
@@ -356,9 +342,16 @@ export const EscapeRoomCharacterCard = (
                 </>
               )}
             </CardBottomRow>
-            <RequiredQuestionSpan>
-              <RequiredAlertIcon /> This question is required.
-            </RequiredQuestionSpan>
+            {shouldAlert && (
+              <RequiredQuestionSpan>
+                <RequiredAlertIcon />{" "}
+                {needsName || nameNotUnique
+                  ? "Please add a valid name"
+                  : needsImage
+                  ? "Please select an image for this character"
+                  : ""}
+              </RequiredQuestionSpan>
+            )}
           </CharacterInfoContainer>
         </CharacterContainer>
       </CardPanel>

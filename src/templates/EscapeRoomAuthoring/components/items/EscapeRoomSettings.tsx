@@ -107,6 +107,11 @@ export const EscapeRoomSettings = (
     onDescriptionChanged(value);
   }; // handleEditTitle
 
+  const handleEditCharacters = (value: CharacterDefinition[]) => {
+    if (!onCharactersChanged) return;
+    onCharactersChanged(value);
+  }; // handleEditCharacters
+
   return (
     <Wrapper>
       <StepTitleCard
@@ -131,6 +136,7 @@ export const EscapeRoomSettings = (
         required
         response={{ characters: escapeRoomCharacters }}
         fieldPayload={{}}
+        onResponseChanged={(value) => handleEditCharacters(value.characters)}
       />
     </Wrapper>
   );
