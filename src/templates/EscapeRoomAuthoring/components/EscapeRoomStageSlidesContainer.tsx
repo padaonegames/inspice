@@ -1,13 +1,11 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { SupportedStage } from "../../../services/escapeRoomActivity.model";
 import {
   EscapeRoomStageSlide,
   EscapeRoomStageSlideProps,
 } from "./EscapeRoomEditorSlide";
-import {
-  EscapeRoomSettings,
-  EscapeRoomSettingsStageSlide,
-} from "./items/EscapeRoomSettings";
+import { EscapeRoomSettingsStageSlide } from "./items/EscapeRoomSettings";
+import { Plus } from "styled-icons/bootstrap";
 
 const Root = styled.div`
   position: fixed;
@@ -29,7 +27,7 @@ const Root = styled.div`
 
 const SlidesContainer = styled.div`
   position: relative;
-  height: 77%;
+  height: 72.5%;
   width: 100%;
   background-color: rgba(0, 0, 0, 0.1);
   overflow-y: auto; //scroll to always show
@@ -58,9 +56,7 @@ const ButtonsContainer = styled.div`
   -moz-box-pack: start;
   justify-content: flex-start;
   min-width: 100%;
-  padding: 0px 1.5rem 1.5rem 1.5rem;
-  position: absolute;
-  bottom: 0;
+  padding: 0 0.75rem 0.75rem 0.75rem;
   z-index: 9999;
   box-shadow: 0px 0px 10px 0px #000000;
 `;
@@ -76,37 +72,30 @@ const AddItemButtonContainer = styled.div`
 `;
 
 const AddItemButton = styled.button`
-  width: 100%;
-  margin: 0px;
-  border: 0px none;
-  cursor: pointer;
-  display: inline-block;
-  vertical-align: bottom;
-  box-shadow: rgba(0, 0, 0, 0.25) 0px -4px inset;
-
-  background: rgb(19, 104, 206) none repeat scroll 0% 0%;
-  color: rgb(255, 255, 255);
-  border-radius: 4px;
-  font-size: 0.875rem;
-  font-weight: 600;
-
   font-family: ${(props) => props.theme.contentFont};
-  text-align: center;
-  text-decoration: none;
-  min-width: 42px;
-  min-height: 42px;
-  padding: 0px 16px 4px;
-  position: relative;
+  font-size: ${(props) => props.theme.contentFontSize};
+  cursor: pointer;
+  background-color: hsl(10, 80%, 80%);
+  border-radius: 50px;
+  box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 0.5rem 0px;
+  height: fit-content;
+  padding: 0.4em 0.85em 0.4em 0.6em;
+  color: white;
+  width: fit-content;
+  margin: auto;
+`;
 
-  transition: all 0s;
-  &:hover {
-    transition: all 0s;
-    min-height: 40px;
-    margin-top: 2px;
-    padding-bottom: 2px;
-    background-color: rgb(18, 96, 190);
-    box-shadow: rgba(0, 0, 0, 0.25) 0px -2px inset;
-  }
+export const fieldTypeIcon = css`
+  color: ${(props) => props.theme.textColor};
+  height: 1.75em;
+  width: 1.75em;
+  margin-right: 0.75em;
+`;
+
+const AddItemIcon = styled(Plus)`
+  ${fieldTypeIcon}
+  cursor: pointer;
+  color: white;
 `;
 
 export type StageToSlideProducerMapping<T extends SupportedStage> = {
@@ -184,7 +173,10 @@ export const EscapeRoomStageSlidesContainer = (
       </SlidesContainer>
       <ButtonsContainer>
         <AddItemButtonContainer>
-          <AddItemButton onClick={onAddStage}>Add Stage</AddItemButton>
+          <AddItemButton onClick={onAddStage}>
+            <AddItemIcon />
+            Add Stage
+          </AddItemButton>
         </AddItemButtonContainer>
       </ButtonsContainer>
     </Root>
