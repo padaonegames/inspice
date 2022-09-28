@@ -1,8 +1,8 @@
 // import original module declarations
-import 'styled-components';
+import "styled-components";
 
 // and extend them!
-declare module 'styled-components' {
+declare module "styled-components" {
   export interface DefaultTheme {
     bodyBackground: string;
     headerBackground: string;
@@ -28,5 +28,9 @@ declare module 'styled-components' {
     selectArtworkChoicesBackground: string;
     fadedContentColor: string;
     textReadableLuminosity: number;
+    buttonBorderRadius: string;
+    primaryButtonColor: string;
+    secondaryButtonColor: string;
+    smallButtonFont: string;
   }
 }

@@ -75,9 +75,6 @@ export const GeneralArtworkDetail = (
       <ArtworkDataContainer>
         <ArtworkDescription>{artworkData.info}</ArtworkDescription>
         <ArtworkNotes>{artworkData.location}</ArtworkNotes>
-        <ClickableText onClick={() => window.open(artworkData.location)}>
-          Find this work in the IMMA Collection
-        </ClickableText>
       </ArtworkDataContainer>
       <DetailArtworkDisplay backgroundImage={artworkData.src} />
     </ContainerCard>

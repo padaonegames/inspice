@@ -448,7 +448,7 @@ export const CreateEscapeRoomScreenComponent = (
         {showSettings && (
           <EscapeRoomSettings
             escapeRoomTitle={activityDefinition.activityTitle}
-            escapeRoomDescription=""
+            escapeRoomDescription={""}
             escapeRoomCharacters={activityDefinition.characters}
             onTitleChanged={handleEscapeRoomTitleChanged}
             onDescriptionChanged={handleEscapeRoomDescriptionChanged}

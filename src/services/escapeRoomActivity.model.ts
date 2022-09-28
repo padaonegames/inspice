@@ -91,10 +91,14 @@ export interface CharacterDefinition {
   imageSrc: string;
 } // CharacterDefinition
 
+export interface CharacterDefinitionsResponseDefinition {
+  characters: CharacterDefinition[];
+} // CharacterDefinitionsFieldDefinition
+
 export const default_character: CharacterDefinition = {
   name: "",
   description: "",
-  imageSrc: ""
+  imageSrc: "",
 }; // default_character
 
 // ---------------------------------------------------------------

@@ -94,7 +94,7 @@ export const InputArea = styled.textarea<InputAreaProps>`
   border: none;
   border-bottom: 2px solid #dadce0;
   outline: none;
-  padding: 0.65em;
+  padding: 0.65em 0.65em 0.65em 0.05em;
   background-color: ${(props) =>
     props.dimBackground ? "#f8f9fa" : "transparent"};
   resize: none;
@@ -207,21 +207,32 @@ interface CardPanelProps {
   requiredAlert?: boolean;
   /** True if user tried to submit the form without filling a required field */
   isFocused?: boolean;
+  /** whether to add padding to card (true by default) */
+  addPadding?: boolean;
+  /** whether to add a focus effect to left border (true by default) */
+  addFocusEffect?: boolean;
 }
 export const CardPanel = styled.div<CardPanelProps>`
   position: relative;
-  padding: 16px 16px 24px 16px;
+  ${(props) =>
+    (props.addPadding === undefined || props.addPadding) &&
+    `padding: 16px 16px 24px 16px`};
   background-color: ${(props) => props.theme.cardBackground};
   ${(props) => !props.requiredAlert && "border: 1px solid #dadce0;"}
   ${(props) => props.requiredAlert && "border: 1px solid #c44c49;"}
-  &:focus-within {
-    border-left: 6px solid #c44c49;
-  }
-  &:focus {
-    outline: none !important;
-    border-left: 6px solid #c44c49;
-  }
-  ${(props) => (props.isFocused ? "border-left: 6px solid #c44c49;" : "")}
+
+  ${(props) =>
+    (props.addFocusEffect === undefined || props.addFocusEffect) &&
+    `
+    &:focus-within {
+      border-left: 6px solid #c44c49;
+    }
+    &:focus {
+      outline: none !important;
+      border-left: 6px solid #c44c49;
+    }
+    ${props.isFocused ? "border-left: 6px solid #c44c49;" : ""}
+    `}
 
   border-radius: 8px;
   width: 100%;

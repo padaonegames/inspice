@@ -1,0 +1,12 @@
+{
+  "accessActivity": "Accesso all'attività",
+  "accessActivityDescription": "Prima di accedere a questa attività, inserire il nome della sessione a cui si desidera partecipare e il nome utente fornito dal curatore del museo.",
+  "sessionName": "nome della sessione",
+  "enterYourSessionName": "Inserire il nome della sessione:",
+  "Next": "Avanti",
+  "next": "Avanti",
+  "back": "Ritorno",
+  "welcome": "Benvenuti!",
+  "username": "username",
+  "enterYourUsername": "Inserire il nome utente:"
+}
