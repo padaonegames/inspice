@@ -4,7 +4,7 @@ import {
   PromptText,
   RequiredAsterisk,
   RequiredQuestionSpan,
-  RequiredAlertIcon
+  RequiredAlertIcon,
 } from "./cardStyles";
 
 export interface FormCardProps {
@@ -21,25 +21,19 @@ export interface FormCardProps {
 }
 
 export const FormCard = (props: FormCardProps): JSX.Element => {
-
-  const {
-    promptText,
-    requiredAlert,
-    required,
-    alertMessage,
-    children
-  } = props;
+  const { promptText, requiredAlert, required, alertMessage, children } = props;
 
   return (
     <Root>
       <CardPanel requiredAlert={requiredAlert}>
         <PromptText>
-          {promptText}{required && <RequiredAsterisk> *</RequiredAsterisk>}
+          {promptText}
+          {required && <RequiredAsterisk> *</RequiredAsterisk>}
         </PromptText>
         {children}
         {requiredAlert && (
           <RequiredQuestionSpan>
-            <RequiredAlertIcon /> {alertMessage ?? 'This question is required.'}
+            <RequiredAlertIcon /> {alertMessage ?? "This item is required."}
           </RequiredQuestionSpan>
         )}
       </CardPanel>
