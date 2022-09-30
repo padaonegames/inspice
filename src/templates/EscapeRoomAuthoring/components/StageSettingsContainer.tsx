@@ -31,7 +31,7 @@ const HorizontalLine = styled.div`
   border-style: solid;
   border-color: lightgray;
   border-width: 1px 0px 0px 0px;
-  margin: 1em auto;
+  margin: 1.5em auto;
 `;
 
 const FieldLabel = styled.label`
@@ -40,15 +40,15 @@ const FieldLabel = styled.label`
 
   font-family: ${(props) => props.theme.contentFont};
   line-height: 135%;
-  margin-top: 10px;
+  margin-top: 1.5em;
 `;
 
 const fieldIconStyle = css`
   display: inline-block;
   vertical-align: middle;
-  width: 24px;
-  height: 24px;
-  margin-right: 7px;
+  width: 1.5em;
+  height: 1.5em;
+  margin-right: 1em;
 `;
 
 const StageIcon = styled(ExtensionPuzzle)`
@@ -110,7 +110,7 @@ const SelectFieldTypeDropdownButton = styled.span`
   font-weight: 200;
   font-family: ${(props) => props.theme.contentFont};
   line-height: 135%;
-  margin-top: 10px;
+  margin-top: 1em;
   cursor: pointer;
   color: ${(props) => props.theme.textColor};
 
@@ -137,13 +137,15 @@ const SelectFieldTypeDropdownButton = styled.span`
 
 const ButtonsContainer = styled.div`
   padding: 1rem 0;
-  width: 100%;
+  width: 90%;
+  height: 5rem;
   border-top: 1px solid rgba(0, 0, 0, 0.1);
   display: flex;
   -moz-box-pack: center;
   justify-content: space-evenly;
   -moz-box-align: center;
   align-items: center;
+  align-self: center;
 
   margin: 0 1rem;
 `;
@@ -210,6 +212,12 @@ const DuplicateButton = styled.button`
   position: relative;
 `;
 
+const SettingsContainer = styled.div`
+  height: calc(100% - 6rem);
+  width: 100%;
+  padding: 0.5em;
+`;
+
 export interface StageSettingsContainerProps {
   /** What  mappings we are working with in this editiable stage container (available stage types and how to render them) */
   stageMappings: StageMappings<SupportedStage>;
@@ -247,33 +255,36 @@ export const StageSettingsContainer = (
 
   return (
     <Root>
-      <FieldLabel>
-        <StageIcon />
-        Stage Type
-        <SelectFieldTypeDropdownButton
-          onClick={() => setStageTypeDropdownOpen((prev) => !prev)}
-        >
-          {selectedStageMapping.iconComponent}
-          {selectedStageMapping?.displayName ??
-            selectedStageType ??
-            "Select a stage type"}{" "}
-          <ExpandDropdownIcon />
-          {stageTypeDropdownOpen && (
-            <DropdownMenu>
-              {escapeRoomStageTypes.map((elem) => (
-                <DropdownMenuItem
-                  onClick={() => handleStageTypeChanged(elem)}
-                  key={elem}
-                >
-                  {stageMappings[elem].iconComponent}
-                  {stageMappings[elem].displayName ?? elem}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenu>
-          )}
-        </SelectFieldTypeDropdownButton>
-      </FieldLabel>
-      <HorizontalLine />
+      <SettingsContainer>
+        <FieldLabel>
+          <StageIcon />
+          Stage Type
+          <SelectFieldTypeDropdownButton
+            onClick={() => setStageTypeDropdownOpen((prev) => !prev)}
+          >
+            {selectedStageMapping.iconComponent}
+            {selectedStageMapping?.displayName ??
+              selectedStageType ??
+              "Select a stage type"}{" "}
+            <ExpandDropdownIcon />
+            {stageTypeDropdownOpen && (
+              <DropdownMenu>
+                {escapeRoomStageTypes.map((elem) => (
+                  <DropdownMenuItem
+                    onClick={() => handleStageTypeChanged(elem)}
+                    key={elem}
+                  >
+                    {stageMappings[elem].iconComponent}
+                    {stageMappings[elem].displayName ?? elem}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenu>
+            )}
+          </SelectFieldTypeDropdownButton>
+        </FieldLabel>
+        <HorizontalLine />
+      </SettingsContainer>
+
       <ButtonsContainer>
         <DeleteButton onClick={onStageDeleted}>Delete</DeleteButton>
         <DuplicateButton onClick={onStageDuplicated}>Duplicate</DuplicateButton>

@@ -20,7 +20,6 @@ const Root = styled.div`
   width: 12rem;
   height: 100%;
   border-right: 0px solid rgb(19, 104, 206);
-  background: rgb(255, 255, 255) none repeat scroll 0% 0%;
   box-shadow: rgba(0, 0, 0, 0.15) 2px 2px 4px 0px;
   padding-top: 0;
 `;
@@ -111,7 +110,7 @@ export interface EscapeRoomStageSlidesContainerProps {
   /** list of stages currently included in the activity */
   stages: SupportedStage[];
   /** index of currently selected stage in stages */
-  selectedStageIndex: number;
+  selectedStageIndex: number | undefined;
   /** What  mappings we are working with in this slides list (available stage types and how to render their previews) */
   stageMappings: StageToSlideProducerMapping<SupportedStage>;
   /** Callback to parent component specifying that user wishes to add a new stage to the activity */

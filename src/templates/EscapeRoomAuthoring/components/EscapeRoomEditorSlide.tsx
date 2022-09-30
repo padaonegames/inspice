@@ -9,66 +9,6 @@ import styled from "styled-components";
 import { DeleteForever } from "@styled-icons/material-twotone/DeleteForever";
 import { Copy } from "@styled-icons/boxicons-regular/Copy";
 
-interface RootProps {
-  selected?: boolean;
-}
-const Root = styled.div<RootProps>`
-  position: relative;
-  box-sizing: border-box;
-  height: 100%;
-  width: 100%;
-  background-color: transparent;
-  user-select: none;
-  // padding: 12px 16px 12px 0px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-congent: center;
-  border: 0px none;
-  font-size: 0.875rem;
-  font-weight: 500;
-  font-family: ${(props) => props.theme.contentFont};
-  color: rgb(51, 51, 51);
-  max-height: 141px;
-  ${(props) =>
-    props.selected &&
-    `
-  background-color: rgb(234, 244, 252);
-  `}
-`;
-
-const DuplicateIcon = styled(Copy)`
-  position: absolute;
-  left: 0.25rem;
-  top: 30%;
-  height: 1.75em;
-  width: 1.75em;
-  border-radius: 0.25rem;
-  background-color: rgb(19, 104, 206);
-  border: 2px solid rgb(15, 90, 188);
-  cursor: pointer;
-
-  color: white;
-  &:hover {
-    background-color: rgb(49, 134, 236);
-  }
-`;
-const DeleteIcon = styled(DeleteForever)`
-  position: absolute;
-  left: 0.25rem;
-  top: 60%;
-  height: 1.75em;
-  width: 1.75em;
-  border-radius: 0.25rem;
-  background-color: rgb(19, 104, 206);
-  border: 2px solid rgb(15, 90, 188);
-  cursor: pointer;
-
-  color: white;
-  &:hover {
-    background-color: rgb(49, 134, 236);
-  }
-`;
 const Slide = styled.div`
   position: relative;
   width: 80%;
@@ -99,27 +39,98 @@ const SlideTitle = styled.div`
   font-family: ${(props) => props.theme.contentFont};
 `;
 
-interface SlideContainerProps {
-  borderActive?: boolean;
-}
-const SlideContainer = styled.div<SlideContainerProps>`
+const SlideContainer = styled.div`
   position: relative;
   cursor: pointer;
   display: flex;
   flex-direction: column;
   height: 80%;
-  box-sizing: border-box;
-  overflow: hidden;
   border-radius: 0 0 0.25rem 0.25rem;
-  color: rgb(51, 51, 51);
-  ${(props) =>
-    props.borderActive && `border: 2px solid ${props.theme.frameColor};`}
 `;
 
-interface StagePreviewProps {
+interface RootProps {
   selected?: boolean;
 }
-const StagePreview = styled.div<StagePreviewProps>`
+const Root = styled.div<RootProps>`
+  position: relative;
+  box-sizing: border-box;
+  height: 100%;
+  width: 100%;
+  user-select: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-congent: center;
+  border: 0px none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  font-family: ${(props) => props.theme.contentFont};
+  color: rgb(51, 51, 51);
+  max-height: 141px;
+
+  ${SlideContainer} {
+    background-color: #f2f2f2;
+  }
+
+  ${(props) =>
+    props.selected &&
+    `
+  background-color: rgb(234, 244, 252);
+  ${SlideContainer} {
+    background-color: white;
+  }
+  `}
+
+  &:hover {
+    ${SlideContainer} {
+      ${(props) =>
+        !props.selected &&
+        `
+        border: 2px solid ${props.theme.frameColor};
+        border-top: 0px;
+        border-radius: 0 0 0.25rem 0.25rem;
+        transition: all 0s;
+        `}
+    }
+  }
+`;
+
+const DuplicateIcon = styled(Copy)`
+  position: absolute;
+  left: 0.25rem;
+  top: 30%;
+  height: 1.75em;
+  width: 1.75em;
+  border-radius: 50%;
+  padding: 0.15em;
+  background-color: white;
+  border: 2px solid ${(props) => props.theme.frameColor};
+  cursor: pointer;
+
+  color: ${(props) => props.theme.frameColor};
+  &:hover {
+    background-color: #f2f2f2;
+  }
+`;
+const DeleteIcon = styled(DeleteForever)`
+  position: absolute;
+  left: 0.25rem;
+  top: 60%;
+  height: 1.75em;
+  width: 1.75em;
+  border-radius: 50%;
+  padding: 0.15em;
+  background-color: white;
+  border: 2px solid ${(props) => props.theme.frameColor};
+  cursor: pointer;
+
+  color: ${(props) => props.theme.frameColor};
+  &:hover {
+    background-color: #f2f2f2;
+  }
+`;
+
+const StagePreview = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
@@ -130,7 +141,6 @@ const StagePreview = styled.div<StagePreviewProps>`
   flex: 1 1 0%;
   padding: 0.25rem 0.5rem;
   color: rgb(178, 178, 178);
-  background-color: #f2f2f2;
 `;
 
 type EscapeRoomStageSlidePropsBase<T extends ItemDefinition> = {
@@ -174,35 +184,33 @@ const EscapeRoomEditorSlide = <T extends ItemDefinition>(
   return (
     <Root
       selected={selected}
-      onMouseLeave={() => setMouseOverMe(false)}
-      onMouseEnter={() => setMouseOverMe(true)}
+      onMouseOver={() => setMouseOverMe(true)}
+      onMouseOut={() => setMouseOverMe(false)}
     >
       <Slide>
-        <SlideTitle>{index + 1 + "º " + stage.type}</SlideTitle>
+        <SlideTitle>{index + 1 + " - " + stage.type}</SlideTitle>
         <SlideContainer onClick={onSlideSelected}>
-          <StagePreview selected={selected}>
+          <StagePreview>
             {slidePreviewProducer && slidePreviewProducer(stage.payload as any)}
           </StagePreview>
         </SlideContainer>
       </Slide>
 
-      {mouseOverMe ? (
+      {(mouseOverMe || selected) && (
         <>
           {/* Duplicate slice button */}
           <DuplicateIcon
-            onClick={(e) => {
+            onClick={() => {
               duplicateStage && duplicateStage(index);
             }}
           />
           {/* Duplicate slice button */}
           <DeleteIcon
-            onClick={(e) => {
+            onClick={() => {
               deleteStage && deleteStage(index);
             }}
           />
         </>
-      ) : (
-        <></>
       )}
     </Root>
   );

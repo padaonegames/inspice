@@ -58,15 +58,12 @@ const Root = styled.div`
   flex-direction: column;
   align-items: center;
 
-  background-color: rgb(19, 104, 206);
-  border: 3px;
+  background-color: ${(props) => props.theme.frameColor};
   border-radius: 0.5rem;
-  border-style: solid;
-  border-color: rgb(15, 90, 188);
-  box-shadow: 0px 0px 10px 0px #000000;
+  box-shadow: 0px 0px 3px 0px #000000;
 
   &:hover {
-    background-color: rgb(23, 128, 234);
+    box-shadow: 0px 0px 7px 0px #000000;
   }
 `;
 
