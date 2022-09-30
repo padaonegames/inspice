@@ -7,6 +7,8 @@ import { AbstractActivityItemFactory } from "../ActivityItemFactory";
 import { PromptField } from "./PromptField";
 
 import styled from "styled-components";
+import MultipleChoiceCard from "../../../../components/Forms/Cards/MultipleChoiceCard";
+import EditableFieldCard from "../../../../components/Forms/Cards/EditableFieldCard";
 
 interface InputAreaProps {
   width?: string;
@@ -88,7 +90,6 @@ export const EditableMultipleChoiceItemContent = (
   props: EditableItemProps<MultipleChoiceItemDefinition>
 ): JSX.Element => {
   const { payload, onPayloadChanged } = props;
-
   const { answers, maxAnswers } = payload;
 
   const handleAddOption = () => {

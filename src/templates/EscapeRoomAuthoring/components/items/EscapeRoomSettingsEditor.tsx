@@ -1,19 +1,11 @@
 import styled from "styled-components";
 import { Question } from "@styled-icons/evil/Question";
-import { Password } from "@styled-icons/fluentui-system-regular/Password";
 import EditableCheckBoxInput from "../EditableCheckBoxInput";
 
 const HintsIcon = styled(Question)`
   color: ${props => props.theme.textColor};
   height: 1.75em;
   width: 1.75em;
-  margin-right: 0.5em;
-`;
-
-const ExitCodeIcon = styled(Password)`
-  color: ${props => props.theme.textColor};
-  height: 1.75em;
-  width: auto;
   margin-right: 0.5em;
 `;
 

@@ -1,7 +1,6 @@
 import {
   CalendarResponseDefinition,
   ConsumableFieldProps,
-  EditableFieldProps,
 } from "../../../services/multistageFormActivity.model";
 import {
   InputSegment,
@@ -11,6 +10,7 @@ import {
   DateSlash,
   Root,
 } from "./cardStyles";
+import { EditableFieldProps } from "./EditableFieldCard";
 import FormCard from "./FormCard";
 
 export interface CalendarInputCardProps

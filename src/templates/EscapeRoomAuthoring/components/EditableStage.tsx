@@ -1,5 +1,11 @@
 import styled from "styled-components";
-import { AvailableEscapeRoomStageType, EditableItemProps, SupportedStage } from "../../../services/escapeRoomActivity.model";
+import StepTitleCard from "../../../components/Forms/Cards/StepTitleCard";
+import {
+  AvailableEscapeRoomStageType,
+  EditableItemProps,
+  SupportedStage,
+} from "../../../services/escapeRoomActivity.model";
+import { Root } from "./items/generalItemsStyles";
 import { StageSettingsContainer } from "./StageSettingsContainer";
 
 const ContentWrapper = styled.main`
@@ -52,30 +58,33 @@ export interface EditableStageComponentProps {
 
 export type StageMappings<T extends SupportedStage> = {
   /** What type of stage we are working with here*/
-  [P in T['type']]: {
+  [P in T["type"]]: {
     /** How to render this option within a list. Defaults to stageType */
     displayName?: string;
     /** What component to place next to the display name */
     iconComponent?: JSX.Element;
     /** Generation logic to use to create a form editing component */
-    editingComponentProducer: (editingFormProps: EditableItemProps<Extract<T, { type: P }>['payload']>) => JSX.Element;
+    editingComponentProducer: (
+      editingFormProps: EditableItemProps<Extract<T, { type: P }>["payload"]>
+    ) => JSX.Element;
     /** Default value for StagePayload */
-    defaultStagePayload: Extract<T, { type: P }>['payload'];
-  }
-}
+    defaultStagePayload: Extract<T, { type: P }>["payload"];
+  };
+};
 
 /**
  * Editable version of StepTitleCard for form editing
  */
-export const EditableStageComponent = (props: EditableStageComponentProps): JSX.Element => {
-
+export const EditableStageComponent = (
+  props: EditableStageComponentProps
+): JSX.Element => {
   const {
     stageDefinition,
     stageMappings,
     onStageTypeChanged,
     onStageDefinitionChanged,
     onStageDeleted,
-    onStageDuplicated
+    onStageDuplicated,
   } = props;
 
   if (!stageDefinition) return <></>;
@@ -96,7 +105,7 @@ export const EditableStageComponent = (props: EditableStageComponentProps): JSX.
     const newStageDefinition = {
       ...stageDefinition,
       type: value,
-      payload: payload
+      payload: payload,
     } as SupportedStage;
 
     // and notify parent component about the change, if callbacks have been provided for that purpose
@@ -115,11 +124,11 @@ export const EditableStageComponent = (props: EditableStageComponentProps): JSX.
    * a fitting onStageDefinitionChanged callback has been provided.
    * @param payload New stage definition payload after a change within the currently active child form.
    */
-  const handleStagePayloadChanged = (payload: SupportedStage['payload']) => {
+  const handleStagePayloadChanged = (payload: SupportedStage["payload"]) => {
     // create a new stage definition that's consistent with both new type and previous information
     const newStageDefinition = {
       ...stageDefinition,
-      payload: payload
+      payload: payload,
     } as SupportedStage;
 
     // and notify parent component about the change, if callbacks have been provided for that purpose
@@ -130,17 +139,31 @@ export const EditableStageComponent = (props: EditableStageComponentProps): JSX.
 
   const selectedStage = stageMappings[stageDefinition.type];
 
+  const renderedContent = () => {
+    const content = selectedStage.editingComponentProducer({
+      payload: stageDefinition.payload as any,
+      onPayloadChanged: handleStagePayloadChanged,
+    });
+    if (stageDefinition.type === "room") {
+      return content;
+    } else
+      return (
+        <Root>
+          <StepTitleCard
+            stepTitle={
+              `${selectedStage.displayName} stage` ?? "Stage Configuration"
+            }
+          >
+            {content}
+          </StepTitleCard>
+        </Root>
+      );
+  };
+
   return (
     <ContentWrapper>
       <Content>
-        <ContentBackground>
-          {
-            selectedStage.editingComponentProducer({
-              payload: stageDefinition.payload as any,
-              onPayloadChanged: handleStagePayloadChanged,
-            })
-          }
-        </ContentBackground>
+        <ContentBackground>{renderedContent()}</ContentBackground>
         <StageSettingsContainer
           stageMappings={stageMappings}
           selectedStageType={stageDefinition.type}

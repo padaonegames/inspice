@@ -2,6 +2,8 @@ import styled from "styled-components";
 import { Question } from "@styled-icons/evil/Question";
 import { Password } from "@styled-icons/fluentui-system-regular/Password";
 import EditableCheckBoxInput from "../EditableCheckBoxInput";
+import StepTitleCard from "../../../../components/Forms/Cards/StepTitleCard";
+import TextListCard from "../../../../components/Forms/Cards/TextListCard";
 
 const HintsIcon = styled(Question)`
   color: ${(props) => props.theme.textColor};
@@ -10,11 +12,13 @@ const HintsIcon = styled(Question)`
   margin-right: 0.5em;
 `;
 
-const ExitCodeIcon = styled(Password)`
-  color: ${(props) => props.theme.textColor};
-  height: 1.75em;
-  width: auto;
-  margin-right: 0.5em;
+const Wrapper = styled.main`
+  display: flex;
+  flex-direction: column;
+  margin-top: 4.5vh;
+  margin-bottom: 4.5vh;
+  justify-content: center;
+  align-items: center;
 `;
 
 const HintsTitle = styled.div`
@@ -138,47 +142,26 @@ export const RoomSettingsEditor = (
     onHintsChanged(hints.filter((_, i) => i !== index));
   }; // handleRemoveHint
 
+  const handleHintsChanged = (newHints: string[]) => {
+    if (!onHintsChanged) return;
+    onHintsChanged(newHints);
+  }; // handleHintsChanged
+
   return (
-    <SettingsContainer>
-      <SettingsTitle>Room Settings</SettingsTitle>
-      <SettingsContent>
-        <HintsTitle>
-          Hints
-          <HintsIcon />
-        </HintsTitle>
-        {hints.map((elem, i) => (
-          <CheckboxOption
-            backgroundColor={availableColors[i % availableColors.length]}
-            key={`checkBoxOption${i}`}
-          >
-            <EditableCheckBoxInput
-              key={`editableCheckBoxInput${i}`}
-              labelText={elem}
-              labelTextPlaceholder="Write a hint..."
-              style="radio"
-              boxSize="0"
-              onObjectRemoved={() => handleRemoveHint(i)}
-              onLabelTextChanged={(value) => handleEditHint(i, value)}
-            />
-          </CheckboxOption>
-        ))}
-        {hints.length < 6 && (
-          <CheckboxOption
-            onClick={handleAddHint}
-            key="checkBoxOptionAddNew"
-            backgroundColor="darkgray"
-          >
-            <EditableCheckBoxInput
-              key="editableCheckBoxInputAddNew"
-              labelText=""
-              labelTextPlaceholder={"New Hint"}
-              style="radio"
-              boxSize="0"
-              enabled={false}
-            />
-          </CheckboxOption>
-        )}
-      </SettingsContent>
-    </SettingsContainer>
+    <Wrapper>
+      <StepTitleCard
+        stepTitle="Room Configuration"
+        stepDescription={`Welcome to the room configuration tool!
+        Each room within your adventure is made up of "blocks", sequences of puzzles that the players will have to go through in order to escape it. You may add up to 4 puzzle blocks to your room. Manage your blocks using the block browser above.
+        There is an additional block called the "exit block which, upon being completed, will allow the player to move on to the next stage in the adventure. Make sure they won't be able to finish it before playing the other blocks!
+        `}
+      />
+      <TextListCard
+        promptText="Hints"
+        fieldPayload={{}}
+        response={{ texts: hints }}
+        onResponseChanged={(value) => handleHintsChanged(value.texts)}
+      />
+    </Wrapper>
   );
 }; // RoomSettingsEditor

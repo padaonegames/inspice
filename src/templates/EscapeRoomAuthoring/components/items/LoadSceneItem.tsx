@@ -3,26 +3,11 @@ import {
   LoadSceneDefinition,
 } from "../../../../services/escapeRoomActivity.model";
 import { AbstractActivityItemFactory } from "../ActivityItemFactory";
-import { PromptField } from "./PromptField";
 
 import styled from "styled-components";
 import { Unity } from "@styled-icons/fa-brands/Unity";
-
-const UnityIcon = styled(Unity)`
-  position: relative;
-  color: rgb(0, 0, 0);
-  height: 1.25em;
-  width: 1.25em;
-`;
-
-const Root = styled.div`
-  margin-top: 5px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 0.75em;
-  border-radius: 1.25rem;
-`;
+import { Root } from "./generalItemsStyles";
+import ShortTextInputCard from "../../../../components/Forms/Cards/ShortTextInputCard";
 
 interface InputAreaProps {
   width?: string;
@@ -56,25 +41,6 @@ export const InputArea = styled.textarea<InputAreaProps>`
   }
 `;
 
-const ItemTitle = styled.div`
-  position: relative;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: ${(props) => props.theme.contentFont};
-  line-height: 135%;
-  margin-top: 0.25em;
-  margin-bottom: 0.25em;
-  padding: 0.75em 1.25em;
-  border-bottom: 2px solid rgb(15, 90, 188);
-  color: black;
-  line-height: 135%;
-  width: fit-content;
-  text-align: left;
-  display: flex;
-  align-items: center;
-  background-color: rgb(240, 240, 240);
-`;
-
 export const EditableLoadSceneItemContent = (
   props: EditableItemProps<LoadSceneDefinition>
 ): JSX.Element => {
@@ -89,20 +55,14 @@ export const EditableLoadSceneItemContent = (
   }; // handleEditSceneName
 
   return (
-    <>
-      <Root>
-        <ItemTitle>
-          Scene to load
-          <UnityIcon />
-        </ItemTitle>
-        {/* Field to edit the name of the scene that the user wants to load with this item */}
-        <PromptField
-          promptText={payload.sceneName}
-          promptPlaceholder="Scene name"
-          onPromptChange={handleEditSceneName}
-        />
-      </Root>
-    </>
+    <Root>
+      <ShortTextInputCard
+        fieldPayload={{ placeholder: "Scene name" }}
+        response={{ text: payload.sceneName }}
+        promptText="Scene to Load"
+        onResponseChanged={(value) => handleEditSceneName(value.text)}
+      />
+    </Root>
   );
 }; // EditableLoadSceneItemContent
 

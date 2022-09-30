@@ -1,6 +1,5 @@
 import {
   ConsumableFieldProps,
-  EditableFieldProps,
   LongTextFieldDefinition,
   LongTextResponseDefinition,
 } from "../../../services/multistageFormActivity.model";
@@ -13,6 +12,7 @@ import {
   RequiredAlertIcon,
   InputArea,
 } from "./cardStyles";
+import { EditableFieldProps } from "./EditableFieldCard";
 
 export interface LongTextInputCardProps
   extends ConsumableFieldProps<
@@ -27,6 +27,7 @@ export interface LongTextInputCardProps
   required?: boolean;
   /** Modifies the appearance of the card to reflect that the user tried to submit the form without entering a value for this field. */
   requiredAlert?: boolean;
+  disabled?: boolean;
 }
 
 /** Controlled card component to support input for longer texts. */
@@ -41,6 +42,7 @@ export const LongTextInputCard = (
     fieldPayload,
     onResponseChanged,
     onEnterPress,
+    disabled = false,
   } = props;
 
   const { text } = response;
@@ -54,6 +56,7 @@ export const LongTextInputCard = (
           {required && <RequiredAsterisk> *</RequiredAsterisk>}
         </PromptText>
         <InputArea
+          disabled={disabled}
           placeholder={placeholder}
           maxLength={maxLength}
           value={text}

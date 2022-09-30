@@ -2,7 +2,6 @@ import {
   CheckboxGroupFieldDefinition,
   CheckboxGroupResponseDefinition,
   ConsumableFieldProps,
-  EditableFieldProps,
 } from "../../../services/multistageFormActivity.model";
 import CheckBoxInput from "../CheckBoxInput";
 import EditableCheckBoxInput from "../EditableCheckBoxInput";
@@ -16,6 +15,7 @@ import {
   CheckboxList,
   CheckboxOption,
 } from "./cardStyles";
+import { EditableFieldProps } from "./EditableFieldCard";
 
 export interface CheckBoxGroupInputCardProps
   extends ConsumableFieldProps<

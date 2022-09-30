@@ -12,6 +12,10 @@ const CheckMark = styled.span<CheckMarkProps>`
   width: ${props => props.size ?? '1.5em'};
   background-color: #eee;
   margin-right: 1em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.85em;
 
   ${props => props.type === 'radio' && 'border-radius: 50%;'}
 `;
@@ -81,6 +85,8 @@ export interface EditableCheckBoxInputProps {
   onObjectRemoved?: () => void;
   /** Placeholder to show if labelText is an empty string */
   labelTextPlaceholder?: string;
+  /** box number */
+  boxNumber?: number;
 };
 
 export const EditableCheckBoxInput = (props: EditableCheckBoxInputProps): JSX.Element => {
@@ -92,7 +98,8 @@ export const EditableCheckBoxInput = (props: EditableCheckBoxInputProps): JSX.El
     labelText,
     onLabelTextChanged,
     onObjectRemoved,
-    labelTextPlaceholder = 'Write an answer...'
+    labelTextPlaceholder = 'Write a text...',
+    boxNumber
   } = props;
 
   return (
@@ -100,7 +107,7 @@ export const EditableCheckBoxInput = (props: EditableCheckBoxInputProps): JSX.El
       <CheckMark
         type={style}
         size={boxSize}
-      />
+      >{boxNumber}</CheckMark>
       <InputText
         readOnly={!enabled}
         placeholder={labelTextPlaceholder}

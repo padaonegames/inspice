@@ -282,6 +282,7 @@ export const EscapeRoomCharacterCard = (
           {/* Name and description */}
           <CharacterInfoContainer>
             <ShortTextInputCard
+              disabled={!editMode}
               required
               requiredAlert={nameNotUnique || needsName}
               alertMessage={
@@ -299,6 +300,7 @@ export const EscapeRoomCharacterCard = (
               }
             />
             <LongTextInputCard
+              disabled={!editMode}
               promptText="Character Description:"
               fieldPayload={{ placeholder: "Character Description" }}
               response={{ text: characterData.description }}
