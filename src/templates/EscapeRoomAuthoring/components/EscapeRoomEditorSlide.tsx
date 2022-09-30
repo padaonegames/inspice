@@ -37,29 +37,6 @@ const Root = styled.div<RootProps>`
   `}
 `;
 
-interface SliceButtonProps {
-  heigh?: number;
-}
-
-const SliceButton = styled.div<SliceButtonProps>`
-  position: absolute;
-  top: ${(props) => props.heigh}%;
-  padding: 3px;
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  flex: 1 1 0%;
-  box-sizing: border-box;
-  color: rgb(247, 0, 255);
-  background-color: rgb(222, 222, 222);
-  border-radius: 0.75rem;
-  &:hover {
-    transition: border background-color visibility 1s;
-    border: 3px solid rgb(200, 200, 200);
-    background-color: rgb(180, 180, 180);
-  }
-`;
-
 const DuplicateIcon = styled(Copy)`
   position: absolute;
   left: 0.25rem;
@@ -113,7 +90,7 @@ const SlideTitle = styled.div`
   padding: 3px 0px 0px 10px;
   border: 0px none;
   border-radius: 0.25rem 0.25rem 0 0;
-  background-color: rgb(15, 90, 188);
+  background-color: ${(props) => props.theme.frameColor};
   color: white;
   text-align: center;
 
@@ -122,7 +99,10 @@ const SlideTitle = styled.div`
   font-family: ${(props) => props.theme.contentFont};
 `;
 
-const SlideContainer = styled.div`
+interface SlideContainerProps {
+  borderActive?: boolean;
+}
+const SlideContainer = styled.div<SlideContainerProps>`
   position: relative;
   cursor: pointer;
   display: flex;
@@ -132,7 +112,8 @@ const SlideContainer = styled.div`
   overflow: hidden;
   border-radius: 0 0 0.25rem 0.25rem;
   color: rgb(51, 51, 51);
-  border: 2px solid rgb(15, 90, 188);
+  ${(props) =>
+    props.borderActive && `border: 2px solid ${props.theme.frameColor};`}
 `;
 
 interface StagePreviewProps {
@@ -149,7 +130,7 @@ const StagePreview = styled.div<StagePreviewProps>`
   flex: 1 1 0%;
   padding: 0.25rem 0.5rem;
   color: rgb(178, 178, 178);
-  background-color: white;
+  background-color: #f2f2f2;
 `;
 
 type EscapeRoomStageSlidePropsBase<T extends ItemDefinition> = {
@@ -193,8 +174,8 @@ const EscapeRoomEditorSlide = <T extends ItemDefinition>(
   return (
     <Root
       selected={selected}
-      onMouseLeave={() => setMouseOverMe((prev) => false)}
-      onMouseEnter={() => setMouseOverMe((prev) => true)}
+      onMouseLeave={() => setMouseOverMe(false)}
+      onMouseEnter={() => setMouseOverMe(true)}
     >
       <Slide>
         <SlideTitle>{index + 1 + "º " + stage.type}</SlideTitle>

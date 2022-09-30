@@ -12,7 +12,7 @@ const ContentWrapper = styled.main`
   position: fixed;
   left: 0;
   height: 100%;
-  width: 97.5%;
+  width: 100%;
   display: flex;
   flex-direction: column;
 
@@ -34,7 +34,7 @@ const ContentBackground = styled.div`
   flex-direction: column;
   overflow-x: hidden;
   overflow-y: auto;
-  background: rgb(242, 242, 241) none repeat scroll 0% 0%;
+  background: transparent;
   flex: 1 1 calc(100% + clamp(-96px, -4vmin, -32px));
   padding: 48px clamp(16px, 2vmin, 48px);
   height: 100%;

@@ -29,8 +29,8 @@ const SlidesContainer = styled.div`
   position: relative;
   height: 72.5%;
   width: 100%;
-  background-color: rgba(0, 0, 0, 0.1);
-  overflow-y: auto; //scroll to always show
+  background-color: ${(props) => props.theme.cardBackground};
+  overflow-y: scroll; //scroll to always show
   overflow-x: hidden;
   margin: 0px 0px;
   scrollbar-gutter: stable;
@@ -58,13 +58,14 @@ const ButtonsContainer = styled.div`
   min-width: 100%;
   padding: 0 0.75rem 0.75rem 0.75rem;
   z-index: 9999;
-  box-shadow: 0px 0px 10px 0px #000000;
+  border-top: 1px solid ${(props) => props.theme.bodyBackground};
+  background-color: ${(props) => props.theme.cardBackground};
 `;
 
 const AddItemButtonContainer = styled.div`
   display: flex;
   flex-direction: column;
-  background: rgb(255, 255, 255) none repeat scroll 0% 0%;
+  background-color: transparent;
   transition: all 0.2s ease 0s;
   width: 100%;
   margin-top: 1rem;

@@ -67,9 +67,12 @@ import { Navigate, useParams } from "react-router-dom";
 import { escapeRoomService } from "../../services";
 import { LoadingOverlay } from "../../components/Layout/LoadingOverlay";
 
-const Root = styled.div`
+const Root = styled.main`
   display: flex;
   flex-direction: column;
+  width: 100%;
+  margin: 0px;
+  padding: 0px;
 `;
 
 //-------------------------------------------------------

@@ -32,6 +32,7 @@ export const themes: AvailableThemes = {
     primaryButtonColor: "#f5b1a3",
     secondaryButtonColor: "#c44c49",
     smallButtonFont: "0.8em",
+    frameColor: "#c44c49",
   },
   light: {
     bodyBackground: "#E5E5E5",
@@ -62,6 +63,7 @@ export const themes: AvailableThemes = {
     primaryButtonColor: "#f5b1a3",
     secondaryButtonColor: "#c44c49",
     smallButtonFont: "0.8em",
+    frameColor: "#c44c49",
   },
 };
 

@@ -38,7 +38,7 @@ import styled from "styled-components";
 import { ConferenceRoom } from "@styled-icons/fluentui-system-filled/ConferenceRoom";
 
 const ExitIcon = styled(ConferenceRoom)`
-  color: rgb(15, 90, 188);
+  color: ${(props) => props.theme.frameColor};
   position: relative;
   left: 50%;
   top: 50%;
@@ -229,12 +229,8 @@ export const EditableRoomItemContent = (
   );
 }; // EditableRoomItemContent
 
-export const RoomItemStageSlide = (props: RoomDefinition): JSX.Element => {
-  return (
-    <>
-      <ExitIcon />
-    </>
-  );
+export const RoomItemStageSlide = (_: RoomDefinition): JSX.Element => {
+  return <ExitIcon />;
 }; // QRScanItemStageSlide
 
 export const roomItemFactory: AbstractActivityItemFactory<RoomDefinition> = {
