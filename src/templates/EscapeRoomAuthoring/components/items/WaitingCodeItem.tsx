@@ -42,6 +42,12 @@ export const InputArea = styled.textarea<InputAreaProps>`
   }
 `;
 
+export const isWaitingCodeItemValid = (
+  item: WaitingCodeDefinition
+): boolean => {
+  return item.code.length > 0 && item.texts.length > 0;
+}; // isWaitingCodeItemValid
+
 export interface EditableWaitingCodeItemContentProps
   extends EditableItemProps<WaitingCodeDefinition> {
   /** text to display for the add new option label. */
@@ -79,14 +85,20 @@ export const EditableWaitingCodeItemContent = (
     <Root>
       {/* Code that the player is going to use during the puzzle */}
       <ShortTextInputCard
-        promptText="Code to solve this puzzle"
+        required
+        requiredAlert={code.length === 0}
+        alertMessage="Please enter a code to solve this puzzle."
+        promptText="Code to solve this puzzle:"
         fieldPayload={{ placeholder: "Enter your code" }}
         response={{ text: code }}
         onResponseChanged={(value) => handleEditcode(value.text)}
       />
       {/* List of codes that the user wants to specify in this item */}
       <TextListCard
-        promptText="Texts to show before entering code"
+        required
+        requiredAlert={texts.length === 0}
+        alertMessage="Please add at least one more text to the sequence."
+        promptText="Texts to show before entering code:"
         fieldPayload={{ addNewOptionLabel: addNewOptionLabel }}
         response={{ texts: texts }}
         onResponseChanged={(value) => handleEditTexts(value.texts)}
@@ -134,29 +146,16 @@ const PreviewAnswers = styled.div`
   overflow: hidden;
 `;
 
-interface PreviewAnswerProps {
-  color: string;
-}
-
-const PreviewAnswer = styled.div<PreviewAnswerProps>`
+const PreviewAnswer = styled.div`
   position: relative;
   width: 100%;
-  height: 10px;
+  height: 0.5em;
   margin-bottom: 3px;
   color: white;
-  background-color: ${(props) => props.color};
-  border: 1px solid rgb(229, 229, 229);
+  background-color: transparent;
+  border: 2px solid #e9e9e9;
   border-radius: 0.125rem;
 `;
-
-const availableColors = [
-  "#e21b3c",
-  "#1368ce",
-  "#d89e00",
-  "#26890c",
-  "#0aa3a3",
-  "#864cbf",
-];
 
 export const WaitingCodeItemStageSlide = (
   props: WaitingCodeDefinition
@@ -168,10 +167,7 @@ export const WaitingCodeItemStageSlide = (
       <PreviewTitle>{code === "" ? "No Code" : code}</PreviewTitle>
       <PreviewAnswers>
         {[...Array(texts.length)].map((_, i) => (
-          <PreviewAnswer
-            key={i}
-            color={availableColors[i % availableColors.length]}
-          />
+          <PreviewAnswer key={i} />
         ))}
       </PreviewAnswers>
       <WaitingIcon />

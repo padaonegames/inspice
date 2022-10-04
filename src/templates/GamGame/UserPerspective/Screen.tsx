@@ -167,6 +167,8 @@ const GamGameUserFlow = ({
 }: GamGameUserFlowProps): JSX.Element => {
   const { t } = useTranslation("gamGame");
 
+  console.log(activityDefinition);
+
   const gamGameNavigationConfig: NavMenuElem[] = [
     {
       title: t("home"),
