@@ -53,6 +53,10 @@ const Root = styled.div`
   padding: 0.75em;
 `;
 
+export const isQrScanItemValid = (item: QrScanItemDefinition): boolean => {
+  return item.encodedText.length > 0;
+}; // isQrScanItemValid
+
 export const EditableQRScanItemContent = (
   props: EditableItemProps<QrScanItemDefinition>
 ): JSX.Element => {
@@ -94,7 +98,7 @@ export const EditableQRScanItemContent = (
     <Root>
       {/* Title of the item */}
       <ShortTextInputCard
-        promptText="Text to recognize in QR"
+        promptText="Text to recognize in QR:"
         required
         requiredAlert={payload.encodedText.length === 0}
         fieldPayload={{ placeholder: "Value to encode in QR" }}
@@ -104,7 +108,7 @@ export const EditableQRScanItemContent = (
 
       {/* Preview of the QR and promptfield to edit its code */}
       <FormCard
-        promptText="QR Preview"
+        promptText="QR Preview:"
         alertMessage={qrPreviewAlertMessage}
         requiredAlert={!!qrPreviewAlertMessage}
       >
