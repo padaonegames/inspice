@@ -1,7 +1,10 @@
 //------------------------------------------
 //          ACTIVITY DEFINITIONS
 //------------------------------------------
-import { MultipleChoiceFieldDefinition, MultipleChoiceResponseDefinition } from "../components/Forms/Cards/MultipleChoiceCard";
+import {
+  MultipleChoiceFieldDefinition,
+  MultipleChoiceResponseDefinition,
+} from "../components/Forms/Cards/MultipleChoiceCard";
 import { ActivityInstance } from "./activity.model";
 
 export interface MultistageFormFieldDefinition {
@@ -151,6 +154,17 @@ export interface LongTextFieldDefinition {
 export interface LongTextResponseDefinition {
   text: string;
 } // LongTextResponseDefinition
+
+//-------------------
+//  DROPDOWN FIELD
+//-------------------
+export interface DropdownFieldDefinition {
+  options: string[];
+} // DropdownFieldDefinition
+
+export interface DropdownResponseDefinition {
+  selectedOption?: string;
+} // DropdownResponseDefinition
 
 //------------------------
 //  CALENDAR INPUT FIELD
