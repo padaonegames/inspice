@@ -13,20 +13,15 @@ import {
   InputArea,
 } from "./cardStyles";
 import { EditableFieldProps } from "./EditableFieldCard";
+import FormCard from "./FormCard";
 
 export interface LongTextInputCardProps
   extends ConsumableFieldProps<
     LongTextFieldDefinition,
     LongTextResponseDefinition
   > {
-  /** Main text rendered on top of the component as a prompt for the user, indicating what they must type into the field. */
-  promptText?: string;
   /** Callback used whenever the enter key is pressed while the component is focused. */
   onEnterPress?: () => void;
-  /** Whether this field is considered required within the overall form (used to display an asterisk). */
-  required?: boolean;
-  /** Modifies the appearance of the card to reflect that the user tried to submit the form without entering a value for this field. */
-  requiredAlert?: boolean;
   disabled?: boolean;
 }
 
@@ -40,6 +35,7 @@ export const LongTextInputCard = (
     required,
     response,
     fieldPayload,
+    alertMessage,
     onResponseChanged,
     onEnterPress,
     disabled = false,
@@ -49,34 +45,29 @@ export const LongTextInputCard = (
   const { maxLength, placeholder } = fieldPayload;
 
   return (
-    <Root>
-      <CardPanel requiredAlert={requiredAlert}>
-        <PromptText>
-          {promptText}
-          {required && <RequiredAsterisk> *</RequiredAsterisk>}
-        </PromptText>
-        <InputArea
-          disabled={disabled}
-          placeholder={placeholder}
-          maxLength={maxLength}
-          value={text}
-          onChange={(event) => {
-            if (onResponseChanged)
-              onResponseChanged({ text: event.target.value });
-          }}
-          onKeyPress={(event) => {
-            if (event.key === "Enter" && onEnterPress) {
-              onEnterPress();
-            }
-          }}
-        />
-        {requiredAlert && (
-          <RequiredQuestionSpan>
-            <RequiredAlertIcon /> This question is required.
-          </RequiredQuestionSpan>
-        )}
-      </CardPanel>
-    </Root>
+    <FormCard
+      {...props}
+      promptText={promptText}
+      required={required}
+      requiredAlert={requiredAlert}
+      alertMessage={alertMessage}
+    >
+      <InputArea
+        disabled={disabled}
+        placeholder={placeholder}
+        maxLength={maxLength}
+        value={text}
+        onChange={(event) => {
+          if (onResponseChanged)
+            onResponseChanged({ text: event.target.value });
+        }}
+        onKeyPress={(event) => {
+          if (event.key === "Enter" && onEnterPress) {
+            onEnterPress();
+          }
+        }}
+      />
+    </FormCard>
   );
 }; // LongTextInputCard
 

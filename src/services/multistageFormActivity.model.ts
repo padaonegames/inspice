@@ -51,7 +51,8 @@ export type MultistageFormResponses = {
 //          GENERIC REACT COMPONENT PROPS FOR EDITING/CONSUMPTION ITEMS
 //---------------------------------------------------------------------------------
 
-export interface ConsumableFieldProps<FieldPayload, FieldResponse> {
+export interface ConsumableFieldProps<FieldPayload, FieldResponse>
+  extends React.HTMLAttributes<HTMLDivElement> {
   /** Prompt for the user to fill in this field */
   promptText?: string;
   /** Whether this field should always be filled in by the user */

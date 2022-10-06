@@ -31,7 +31,6 @@ import {
   ItemToSlideProducerMapping,
   RoomBlockSlidesContainer,
 } from "./RoomBlockSlidesContainer";
-import { RoomExitBlockEditor } from "./RoomExitBlockEditor";
 import { RoomBlockEditor } from "./RoomBlockEditor";
 
 import styled from "styled-components";
@@ -114,7 +113,9 @@ export const EditableRoomItemContent = (
   const [selectedBlock, setSelectedBlock] =
     useState<number | "room-settings" | "exit-block">("room-settings");
 
-  //////////////////////////////Methods to manipulate entire blocks ////////////////////////////
+  // -----------------------------------------------------
+  //           Methods to manipulate entire blocks
+  // -----------------------------------------------------
   const handleAddBlock = () => {
     if (!onPayloadChanged) return;
     onPayloadChanged({
@@ -146,31 +147,34 @@ export const EditableRoomItemContent = (
     });
   }; // handleDuplicateBlock
 
-  //////////////////////////////Methods to manipulate entire blocks ////////////////////////////
+  // -----------------------------------------------------
+  //          Methods to manipulate entire blocks
+  // -----------------------------------------------------
 
-  //Method to upload all the changes ocurred to the exitblock
-  const handleExitBlockChanged = (exitBlockData: RoomBlock) => {
+  /** Apply all registered changes to given block */
+  const handleRoomBlockChanged = (
+    index: number | "exit-block",
+    blockData: RoomBlock
+  ) => {
     if (!onPayloadChanged) return;
-    onPayloadChanged({
-      ...payload,
-      exitBlock: exitBlockData,
-    });
-  };
+    if (index === "exit-block") {
+      onPayloadChanged({
+        ...payload,
+        exitBlock: blockData,
+      });
+    } else if (index >= 0 && index < payload.blocks.length) {
+      onPayloadChanged({
+        ...payload,
+        blocks: [
+          ...blocks.slice(0, index),
+          blockData,
+          ...blocks.slice(index + 1, blocks.length),
+        ],
+      });
+    }
+  }; // handleRoomBlockChanged
 
-  //Method to upload all the changes ocurred to a specific room block
-  const handleRoomBlockChanged = (index: number, blockData: RoomBlock) => {
-    if (!onPayloadChanged) return;
-    onPayloadChanged({
-      ...payload,
-      blocks: [
-        ...blocks.slice(0, index),
-        blockData,
-        ...blocks.slice(index + 1, blocks.length),
-      ],
-    });
-  };
-
-  //Method to upload changes from the room settings
+  // Method to upload changes from the room settings
   const handleHintsChanged = (value: string[]) => {
     if (!onPayloadChanged) return;
     onPayloadChanged({
@@ -209,9 +213,11 @@ export const EditableRoomItemContent = (
 
       {/* Editor for the room's exit block */}
       {selectedBlock === "exit-block" && (
-        <RoomExitBlockEditor
-          exitBlock={payload.exitBlock}
-          onPayloadChanged={handleExitBlockChanged}
+        <RoomBlockEditor
+          block={payload.exitBlock}
+          onPayloadChanged={(newPayload) =>
+            handleRoomBlockChanged("exit-block", newPayload)
+          }
         />
       )}
 
@@ -221,8 +227,9 @@ export const EditableRoomItemContent = (
         selectedBlock !== "exit-block" && (
           <RoomBlockEditor
             block={currentBlock}
-            blockIndex={selectedBlock}
-            onPayloadChanged={handleRoomBlockChanged}
+            onPayloadChanged={(newPayload) =>
+              handleRoomBlockChanged(selectedBlock, newPayload)
+            }
           />
         )}
     </>

@@ -7,7 +7,7 @@ import {
   RequiredAlertIcon,
 } from "./cardStyles";
 
-export interface FormCardProps {
+export interface FormCardProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Main text rendered on top of the component as a prompt for the user, indicating what they must type into the field */
   promptText: string;
   /** whether this field is considered required within the overall form (used to display an asterisk) */
@@ -24,7 +24,7 @@ export const FormCard = (props: FormCardProps): JSX.Element => {
   const { promptText, requiredAlert, required, alertMessage, children } = props;
 
   return (
-    <Root>
+    <Root {...props}>
       <CardPanel requiredAlert={requiredAlert}>
         <PromptText>
           {promptText}

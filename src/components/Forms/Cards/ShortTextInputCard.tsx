@@ -41,6 +41,7 @@ export const ShortTextInputCard = (
 
   return (
     <FormCard
+      {...props}
       promptText={promptText}
       required={required}
       requiredAlert={requiredAlert}
