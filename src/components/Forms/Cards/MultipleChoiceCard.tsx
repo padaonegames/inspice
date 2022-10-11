@@ -155,6 +155,7 @@ export const EditableMultipleChoiceCardContent = (
         {answers.map((elem, i) => (
           <CheckboxOption key={`checkBoxOption${i}`}>
             <EditableCheckBoxInput
+              boxContent={{ type: "none" }}
               key={`editableCheckBoxInput${i}`}
               labelText={elem}
               style="radio"
@@ -166,6 +167,7 @@ export const EditableMultipleChoiceCardContent = (
         ))}
         <CheckboxOption onClick={handleAddOption} key="checkBoxOptionAddNew">
           <EditableCheckBoxInput
+            boxContent={{ type: "none" }}
             key="editableCheckBoxInputAddNew"
             labelText=""
             labelTextPlaceholder={addNewOptionLabel}

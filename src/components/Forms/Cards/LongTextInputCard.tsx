@@ -5,11 +5,6 @@ import {
 } from "../../../services/multistageFormActivity.model";
 import {
   Root,
-  CardPanel,
-  PromptText,
-  RequiredAsterisk,
-  RequiredQuestionSpan,
-  RequiredAlertIcon,
   InputArea,
 } from "./cardStyles";
 import { EditableFieldProps } from "./EditableFieldCard";

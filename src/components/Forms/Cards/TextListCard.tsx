@@ -22,14 +22,7 @@ export interface TextListCardProps
   extends ConsumableFieldProps<
     TextListFieldDefinition,
     TextListResponseDefinition
-  > {
-  /** Prompt for the user to fill in this field */
-  promptText?: string;
-  /** Whether this field should always be filled in by the user */
-  required?: boolean;
-  /** whether to modify the appearance of this card to reflect that the user tried to submit the form without entering a value for this field */
-  requiredAlert?: boolean;
-} // TextListCardProps
+  > {} // TextListCardProps
 
 export const TextListCard = (props: TextListCardProps): JSX.Element => {
   const {
@@ -85,12 +78,13 @@ export const TextListCard = (props: TextListCardProps): JSX.Element => {
               boxSize="15px"
               onObjectRemoved={() => handleRemoveOption(i)}
               onLabelTextChanged={(value) => handleEditOption(i, value)}
-              boxNumber={i + 1}
+              boxContent={{ type: "number", boxNumber: i + 1 }}
             />
           </CheckboxOption>
         ))}
         <CheckboxOption onClick={handleAddOption} key="checkBoxOptionAddNew">
           <EditableCheckBoxInput
+            boxContent={{ type: "none" }}
             key="editableCheckBoxInputAddNew"
             labelText=""
             labelTextPlaceholder={addNewOptionLabel}

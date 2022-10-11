@@ -1,34 +1,46 @@
-import styled from 'styled-components';
-import { RemoveOptionIcon } from './Cards/cardStyles';
+import styled from "styled-components";
+import { RemoveOptionIcon } from "./Cards/cardStyles";
+import { CheckCircle } from "@styled-icons/bootstrap/CheckCircle";
 
 /* Create a custom checkbox */
 interface CheckMarkProps {
   size?: string;
-  type: 'radio' | 'checkbox';
-};
+  type: "radio" | "checkbox";
+  enabled?: boolean;
+}
 
 const CheckMark = styled.span<CheckMarkProps>`
-  height: ${props => props.size ?? '1.5em'};
-  width: ${props => props.size ?? '1.5em'};
+  height: ${(props) => props.size ?? "1.5em"};
+  width: ${(props) => props.size ?? "1.5em"};
   background-color: #eee;
   margin-right: 1em;
   display: flex;
   justify-content: center;
   align-items: center;
   font-size: 0.85em;
+  position: relative;
 
-  ${props => props.type === 'radio' && 'border-radius: 50%;'}
+  ${(props) =>
+    props.enabled &&
+    `
+  cursor: pointer;
+  &:hover {
+    box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 0.5rem 0px;
+    background-color: ${props.theme.secondaryButtonColor};
+  }
+  `}
+
+  ${(props) => props.type === "radio" && "border-radius: 50%;"}
 `;
-
 
 export const InputText = styled.input`
   font-size: 0.9em;
   font-weight: 200;
-  font-family: ${props => props.theme.contentFont};
+  font-family: ${(props) => props.theme.contentFont};
   line-height: 135%;
   width: 85%;
   margin-top: 0.2em;
-  color: ${props => props.theme.textColor};
+  color: ${(props) => props.theme.textColor};
   border: none;
   border-bottom: 2px solid transparent;
   outline: none;
@@ -51,7 +63,7 @@ const Container = styled.div<ContainerProps>`
   font-weight: normal;
   letter-spacing: +0.5px;
   font-family: Raleway;
-  color: ${props => props.theme.textColor};
+  color: ${(props) => props.theme.textColor};
 
   display: flex;
   flex-direction: row;
@@ -62,11 +74,28 @@ const Container = styled.div<ContainerProps>`
   }
 
   ${InputText} {
-    ${props => props.enabled && `
+    ${(props) =>
+      props.enabled &&
+      `
     &:focus {
       transition: border-bottom 0.25s;
       border-bottom: 3px solid #c44c49;
     }`}
+  }
+`;
+
+const BoxCheckedIcon = styled(CheckCircle)`
+  margin: auto;
+  height: 100%;
+  width: 100%;
+  padding: 0.1em;
+  cursor: pointer;
+  border-radius: 50%;
+  color: white;
+  background-color: ${(props) => props.theme.secondaryButtonColor};
+
+  &:hover {
+    box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 0.5rem 0px;
   }
 `;
 
@@ -76,7 +105,7 @@ export interface EditableCheckBoxInputProps {
   /** size of the checkbox */
   boxSize?: string;
   /** Whether to display checkbox as a radio button or a square */
-  style?: 'radio' | 'checkbox';
+  style?: "radio" | "checkbox";
   /** whether this input should be enabled */
   enabled?: boolean;
   /** callback to parent specifying that label Text has been modified by the user */
@@ -85,39 +114,79 @@ export interface EditableCheckBoxInputProps {
   onObjectRemoved?: () => void;
   /** Placeholder to show if labelText is an empty string */
   labelTextPlaceholder?: string;
-  /** box number */
-  boxNumber?: number;
-};
+  /** checkbox content */
+  boxContent:
+    | {
+        /** Whether it should be possible to check/ uncheck this box */
+        type: "check";
+        /** Whether this box is checked */
+        checked?: boolean;
+        /** callback to parent specifying that user clicked on this box */
+        onCheckToggle?: () => void;
+      }
+    | {
+        type: "number";
+        /** box number */
+        boxNumber: number;
+      }
+    | {
+        type: "none";
+      };
+} // EditableCheckBoxInputProps
 
-export const EditableCheckBoxInput = (props: EditableCheckBoxInputProps): JSX.Element => {
-
+export const EditableCheckBoxInput = (
+  props: EditableCheckBoxInputProps
+): JSX.Element => {
   const {
-    boxSize = '25px',
-    style = 'checkbox',
+    boxSize = "25px",
+    style = "checkbox",
     enabled = true,
     labelText,
     onLabelTextChanged,
     onObjectRemoved,
-    labelTextPlaceholder = 'Write a text...',
-    boxNumber
+    labelTextPlaceholder = "Write a text...",
+    boxContent,
   } = props;
+
+  const handleCheckMarkClicked = () => {
+    if (
+      boxContent.type === "none" ||
+      boxContent.type === "number" ||
+      !boxContent.onCheckToggle
+    )
+      return;
+    boxContent.onCheckToggle();
+  }; // handleCheckMarkClicked
+
+  const renderCheckMarkContent = () => {
+    if (boxContent.type === "number") {
+      return boxContent.boxNumber ? <>{boxContent.boxNumber}</> : <></>;
+    } else if (boxContent.type === "check") {
+      return boxContent.checked ? <BoxCheckedIcon /> : <></>;
+    }
+    return <></>;
+  }; // renderCheckMarkContent
 
   return (
     <Container enabled={enabled}>
       <CheckMark
         type={style}
         size={boxSize}
-      >{boxNumber}</CheckMark>
+        onClick={handleCheckMarkClicked}
+        enabled={boxContent.type === "check"}
+      >
+        {renderCheckMarkContent()}
+      </CheckMark>
       <InputText
         readOnly={!enabled}
         placeholder={labelTextPlaceholder}
         maxLength={500}
         value={labelText}
-        onChange={event => {
+        onChange={(event) => {
           if (onLabelTextChanged) onLabelTextChanged(event.target.value);
         }}
       />
-      {enabled && <RemoveOptionIcon onClick={onObjectRemoved}/>}
+      {enabled && <RemoveOptionIcon onClick={onObjectRemoved} />}
     </Container>
   );
 };

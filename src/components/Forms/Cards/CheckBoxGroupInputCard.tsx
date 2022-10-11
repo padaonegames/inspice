@@ -125,6 +125,7 @@ export const EditableCheckBoxGroupCardContent = (
         {fields.map((elem, i) => (
           <CheckboxOption key={elem}>
             <EditableCheckBoxInput
+              boxContent={{ type: "none" }}
               labelText={elem}
               style="checkbox"
               boxSize="15px"
@@ -134,6 +135,7 @@ export const EditableCheckBoxGroupCardContent = (
         ))}
         <CheckboxOption onClick={handleAddOption} key="addNew">
           <EditableCheckBoxInput
+            boxContent={{ type: "none" }}
             labelText=""
             labelTextPlaceholder={addNewOptionLabel}
             style="checkbox"

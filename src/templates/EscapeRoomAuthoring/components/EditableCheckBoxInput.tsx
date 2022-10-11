@@ -1,34 +1,33 @@
-import { useState } from 'react';
-import styled from 'styled-components';
-import { Cross } from '@styled-icons/entypo/Cross';
-import {CheckCircle} from "@styled-icons/bootstrap/CheckCircle"
+import styled from "styled-components";
+import { Cross } from "@styled-icons/entypo/Cross";
+import { CheckCircle } from "@styled-icons/bootstrap/CheckCircle";
 
 /* Create a custom checkbox */
 interface CheckMarkProps {
   size?: string;
-  type: 'radio' | 'checkbox';
-};
+  type: "radio" | "checkbox";
+}
 
 const CheckMark = styled.div<CheckMarkProps>`
-  position:relative;
-  height: ${props => props.size ?? '1.5em'};
-  width: ${props => props.size ?? '1.5em'};
+  position: relative;
+  height: ${(props) => props.size ?? "1.5em"};
+  width: ${(props) => props.size ?? "1.5em"};
   // background-color: rgba(238,238,238,1);
-  background-color:rgba(50,50,50,1);
+  background-color: rgba(50, 50, 50, 1);
   margin-right: 1em;
   align-items: right;
 
-  ${props => props.type === 'radio' && 'border-radius: 50%;'}
+  ${(props) => props.type === "radio" && "border-radius: 50%;"}
 
   &:hover {
-    background-color: rgba(120,120,120,1);
+    background-color: rgba(120, 120, 120, 1);
   }
 `;
 
 const OptionCheckedIcon = styled(CheckCircle)`
   position: absolute;
-  left:7px;
-  top:7px;
+  left: 7px;
+  top: 7px;
   height: 2em;
   width: 2em;
   padding: 0.1em;
@@ -50,7 +49,7 @@ const RemoveOptionIcon = styled(Cross)`
 export const InputText = styled.input`
   font-size: 0.9em;
   font-weight: 200;
-  font-family: ${props => props.theme.contentFont};
+  font-family: ${(props) => props.theme.contentFont};
   line-height: 135%;
   width: 85%;
   margin-top: 0.2em;
@@ -81,7 +80,7 @@ const Container = styled.div<ContainerProps>`
   font-weight: normal;
   letter-spacing: +0.5px;
   font-family: Raleway;
-  color: ${props => props.theme.textColor};
+  color: ${(props) => props.theme.textColor};
 
   display: flex;
   flex-direction: row;
@@ -99,7 +98,9 @@ const Container = styled.div<ContainerProps>`
   }
 
   ${InputText} {
-    ${props => props.enabled && `
+    ${(props) =>
+      props.enabled &&
+      `
     &:focus {
       transition: border-bottom 0.25s;
       border-bottom: 3px solid white;
@@ -113,7 +114,7 @@ export interface EditableCheckBoxInputProps {
   /** size of the checkbox */
   boxSize?: string;
   /** Whether to display checkbox as a radio button or a square */
-  style?: 'radio' | 'checkbox';
+  style?: "radio" | "checkbox";
   /** whether this input should be enabled */
   enabled?: boolean;
   /** wheter this input is checked or not */
@@ -123,45 +124,51 @@ export interface EditableCheckBoxInputProps {
   /** callback to parent specifying that user wishes to delete this option */
   onObjectRemoved?: () => void;
   /** callback from parent specifying that user has checked this option */
-  onCheckBoxChecked?: ()=> void;
+  onCheckBoxChecked?: () => void;
   /** Placeholder to show if labelText is an empty string */
   labelTextPlaceholder?: string;
-};
+}
 
-export const EditableCheckBoxInput = (props: EditableCheckBoxInputProps): JSX.Element => {
-
+export const EditableCheckBoxInput = (
+  props: EditableCheckBoxInputProps
+): JSX.Element => {
   const {
-    boxSize = '25px',
-    style = 'checkbox',
+    boxSize = "25px",
+    style = "checkbox",
     enabled = true,
     checked = false,
     labelText,
     onLabelTextChanged,
     onObjectRemoved,
     onCheckBoxChecked,
-    labelTextPlaceholder = 'Write an answer...'
+    labelTextPlaceholder = "Write an answer...",
   } = props;
 
-  const [isChecked, setIsChecked] = useState<boolean>(checked);
-
   return (
-    <Container enabled={enabled} >
+    <Container enabled={enabled}>
       {/* render checked or unchecked depending on what the father componente tells us */}
-      <CheckMark type={style} size={boxSize} onClick={()=>{onCheckBoxChecked && onCheckBoxChecked()}}>
-        {checked && <OptionCheckedIcon/>}
+      <CheckMark
+        type={style}
+        size={boxSize}
+        onClick={() => {
+          onCheckBoxChecked && onCheckBoxChecked();
+        }}
+      >
+        {checked && <OptionCheckedIcon />}
       </CheckMark>
-      
 
       <InputText
         readOnly={!enabled}
         placeholder={labelTextPlaceholder}
         maxLength={500}
         value={labelText}
-        onChange={event => {
+        onChange={(event) => {
           if (onLabelTextChanged) onLabelTextChanged(event.target.value);
         }}
       />
-      {enabled && onObjectRemoved && <RemoveOptionIcon onClick={onObjectRemoved}/>}
+      {enabled && onObjectRemoved && (
+        <RemoveOptionIcon onClick={onObjectRemoved} />
+      )}
     </Container>
   );
 };

@@ -404,6 +404,7 @@ export const EditableLikertScaleCardContent = (
           {/* Question to answer */}
           <QuestionContainer>
             <EditableCheckBoxInput
+              boxContent={{ type: "none" }}
               key={`editableCheckBoxInput${qInd}`}
               labelTextPlaceholder={"Write a question"}
               labelText={question}

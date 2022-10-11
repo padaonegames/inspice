@@ -9,6 +9,7 @@ import { Timer } from "@styled-icons/open-iconic/Timer";
 import { Root } from "./generalItemsStyles";
 import TextListCard from "../../../../components/Forms/Cards/TextListCard";
 import ShortTextInputCard from "../../../../components/Forms/Cards/ShortTextInputCard";
+import CheckBoxGroupInputCard from "../../../../components/Forms/Cards/CheckBoxGroupInputCard";
 
 interface InputAreaProps {
   width?: string;
@@ -45,7 +46,11 @@ export const InputArea = styled.textarea<InputAreaProps>`
 export const isWaitingCodeItemValid = (
   item: WaitingCodeDefinition
 ): boolean => {
-  return item.code.length > 0 && item.texts.length > 0;
+  return (
+    item.codes.length > 0 &&
+    item.text.length > 0 &&
+    item.codes.every((code) => code.length > 0)
+  );
 }; // isWaitingCodeItemValid
 
 export interface EditableWaitingCodeItemContentProps
@@ -63,45 +68,65 @@ export const EditableWaitingCodeItemContent = (
     onPayloadChanged,
   } = props;
 
-  const { code, texts } = payload;
+  const { codes, text, caseSensitive } = payload;
 
-  const handleEditTexts = (texts: string[]) => {
+  const handleEditText = (text: string) => {
     if (!onPayloadChanged) return;
     onPayloadChanged({
       ...payload,
-      texts: texts,
+      text: text,
     });
-  }; // handleEditTexts
+  }; // handleEditText
 
-  const handleEditcode = (value: string) => {
+  const handleEditCodes = (value: string[]) => {
     if (!onPayloadChanged) return;
     onPayloadChanged({
       ...payload,
-      code: value,
+      codes: value,
     });
-  }; // handleEditcode
+  }; // handleEditCodes
+
+  const handleSetCaseSensitive = (value: boolean) => {
+    if (!onPayloadChanged) return;
+    onPayloadChanged({ ...payload, caseSensitive: value });
+  }; // handleSetCaseSensitive
+
+  const makeCaseSensitiveKey = "Make codes case-sensitive.";
 
   return (
     <Root>
-      {/* Code that the player is going to use during the puzzle */}
+      {/* Text to show before entering the code to solve the puzzle */}
       <ShortTextInputCard
         required
-        requiredAlert={code.length === 0}
-        alertMessage="Please enter a code to solve this puzzle."
-        promptText="Code to solve this puzzle:"
-        fieldPayload={{ placeholder: "Enter your code" }}
-        response={{ text: code }}
-        onResponseChanged={(value) => handleEditcode(value.text)}
+        width={1}
+        requiredAlert={text.length === 0}
+        alertMessage="Please enter a text to show before entering the code."
+        promptText="Text to show before entering the code:"
+        fieldPayload={{ placeholder: "Enter your text" }}
+        response={{ text: text }}
+        onResponseChanged={(value) => handleEditText(value.text)}
       />
-      {/* List of codes that the user wants to specify in this item */}
+      {/* List of codes that will be accepted as solutions to this item */}
       <TextListCard
         required
-        requiredAlert={texts.length === 0}
-        alertMessage="Please add at least one more text to the sequence."
-        promptText="Texts to show before entering code:"
+        requiredAlert={codes.length === 0}
+        alertMessage="Please add at least one more code to the list."
+        promptText="Codes to solve this item:"
         fieldPayload={{ addNewOptionLabel: addNewOptionLabel }}
-        response={{ texts: texts }}
-        onResponseChanged={(value) => handleEditTexts(value.texts)}
+        response={{ texts: codes }}
+        onResponseChanged={(value) => handleEditCodes(value.texts)}
+      />
+      <CheckBoxGroupInputCard
+        promptText="Additional settings:"
+        fieldPayload={{ fields: [makeCaseSensitiveKey] }}
+        response={{
+          selectedFields: caseSensitive ? [makeCaseSensitiveKey] : [],
+        }}
+        onResponseChanged={(value) =>
+          handleSetCaseSensitive(
+            value.selectedFields.includes(makeCaseSensitiveKey)
+          )
+        }
       />
     </Root>
   );
@@ -160,13 +185,13 @@ const PreviewAnswer = styled.div`
 export const WaitingCodeItemStageSlide = (
   props: WaitingCodeDefinition
 ): JSX.Element => {
-  const { code, texts } = props;
+  const { codes, text } = props;
 
   return (
     <PreviewBody>
-      <PreviewTitle>{code === "" ? "No Code" : code}</PreviewTitle>
+      <PreviewTitle>{text.length === 0 ? "No Text" : text}</PreviewTitle>
       <PreviewAnswers>
-        {[...Array(texts.length)].map((_, i) => (
+        {[...Array(codes.length)].map((_, i) => (
           <PreviewAnswer key={i} />
         ))}
       </PreviewAnswers>
@@ -181,8 +206,8 @@ export const waitingCodeItemFactory: AbstractActivityItemFactory<WaitingCodeDefi
       <EditableWaitingCodeItemContent {...editingProps} />
     ),
     defaultDefinition: {
-      code: "",
-      texts: [""],
+      codes: [""],
+      text: "",
     },
   }; // waitingCodeItemFactory
 
