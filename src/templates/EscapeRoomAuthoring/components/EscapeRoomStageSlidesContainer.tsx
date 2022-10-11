@@ -118,10 +118,17 @@ export interface EscapeRoomStageSlidesContainerProps {
   /** Callback to parent component specifying that user wishes to select a given stage from the activity */
   onSelectStage?: (index: number) => void;
 
-  handleDuplicateStage?: (index: number) => void;
-  handleDeleteStage?: (index: number) => void;
+  /** callback to parent specifying that user wishes to duplicate stage with given index */
+  onDuplicateStage?: (index: number) => void;
+  /** callback to parent specifying that user wishes to delete stage with given index */
+  onDeleteStage?: (index: number) => void;
+  /** callback to parent specifying that user wishes to move stage up */
+  onStageMoveUp?: (index: number) => void;
+  /** callback to parent specifying that user wishes to move stage down */
+  onStageMoveDown?: (index: number) => void;
 
-  handleGoToSettings: () => void;
+  /** callback to parent specifying that user wishes to view settings tab */
+  onGoToSettings: () => void;
 } // EscapeRoomStageSlidesContainerProps
 
 export const EscapeRoomStageSlidesContainer = (
@@ -134,9 +141,11 @@ export const EscapeRoomStageSlidesContainer = (
     stageMappings,
     onAddStage,
     onSelectStage,
-    handleDuplicateStage,
-    handleDeleteStage,
-    handleGoToSettings,
+    onDuplicateStage,
+    onStageMoveDown,
+    onStageMoveUp,
+    onDeleteStage,
+    onGoToSettings,
   } = props;
 
   const handleSelectStage = (index: number) => {
@@ -145,11 +154,35 @@ export const EscapeRoomStageSlidesContainer = (
     }
   }; // handleSelectStage
 
+  const handleDuplicateStage = (index: number) => {
+    if (onDuplicateStage) {
+      onDuplicateStage(index);
+    }
+  }; // handleDuplicateStage
+
+  const handleDeleteStage = (index: number) => {
+    if (onDeleteStage) {
+      onDeleteStage(index);
+    }
+  }; // handleDeleteStage
+
+  const handleMoveStageUp = (index: number) => {
+    if (onStageMoveUp) {
+      onStageMoveUp(index);
+    }
+  }; // handleMoveStageUp
+
+  const handleMoveStageDown = (index: number) => {
+    if (onStageMoveDown) {
+      onStageMoveDown(index);
+    }
+  }; // handleMoveStageDown
+
   return (
     <Root>
       <EscapeRoomSettingsStageSlide
         title={escapeRoomTitle}
-        goToSettings={handleGoToSettings}
+        goToSettings={onGoToSettings}
       ></EscapeRoomSettingsStageSlide>
       <SlidesContainer>
         {stages.map((s, i) => {
@@ -161,9 +194,13 @@ export const EscapeRoomStageSlidesContainer = (
             slidePreviewProducer: stageMappings[s.type],
             onSlideSelected: () => handleSelectStage(i),
 
-            index: i,
-            duplicateStage: handleDuplicateStage,
-            deleteStage: handleDeleteStage,
+            title: `${i + 1} - ${s.type}`,
+            onDuplicateStage: () => handleDuplicateStage(i),
+            onDeleteStage: () => handleDeleteStage(i),
+            onSlideMoveUp: () => handleMoveStageUp(i),
+            onSlideMoveDown: () => handleMoveStageDown(i),
+            canMoveUp: i > 0,
+            canMoveDown: i + 1 < stages.length,
           } as EscapeRoomStageSlideProps;
 
           return (

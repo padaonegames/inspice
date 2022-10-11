@@ -8,6 +8,8 @@ import {
 import styled from "styled-components";
 import { DeleteForever } from "@styled-icons/material-twotone/DeleteForever";
 import { Copy } from "@styled-icons/boxicons-regular/Copy";
+import { DownArrowAlt } from "@styled-icons/boxicons-regular/DownArrowAlt";
+import { UpArrowAlt } from "@styled-icons/boxicons-regular/UpArrowAlt";
 
 const Slide = styled.div`
   position: relative;
@@ -60,7 +62,6 @@ const Root = styled.div<RootProps>`
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-congent: center;
   border: 0px none;
   font-size: 0.875rem;
   font-weight: 500;
@@ -143,6 +144,42 @@ const StagePreview = styled.div`
   color: rgb(178, 178, 178);
 `;
 
+const MoveUpIcon = styled(UpArrowAlt)`
+  position: absolute;
+  right: 0.35rem;
+  top: 30%;
+  height: 1.75em;
+  width: 1.75em;
+  border-radius: 50%;
+  padding: 0.15em;
+  background-color: white;
+  border: 2px solid ${(props) => props.theme.frameColor};
+  cursor: pointer;
+
+  color: ${(props) => props.theme.frameColor};
+  &:hover {
+    background-color: #f2f2f2;
+  }
+`;
+
+const MoveDownIcon = styled(DownArrowAlt)`
+  position: absolute;
+  right: 0.35rem;
+  top: 60%;
+  height: 1.75em;
+  width: 1.75em;
+  border-radius: 50%;
+  padding: 0.15em;
+  background-color: white;
+  border: 2px solid ${(props) => props.theme.frameColor};
+  cursor: pointer;
+
+  color: ${(props) => props.theme.frameColor};
+  &:hover {
+    background-color: #f2f2f2;
+  }
+`;
+
 type EscapeRoomStageSlidePropsBase<T extends ItemDefinition> = {
   [P in T["type"]]: {
     stage: Extract<ItemDefinition, { type: P }>;
@@ -154,11 +191,22 @@ type EscapeRoomStageSlidePropsBase<T extends ItemDefinition> = {
     ) => JSX.Element;
     /** callback to parent notifying of slide being selected by the user */
     onSlideSelected?: () => void;
+    /** preview title for this slide */
+    title: string;
 
-    index: number;
+    /** callback to parent notifying of slide being duplicated by the user */
+    onDuplicateStage?: () => void;
+    /** callback to parent specifying that user wishes to delete this stage */
+    onDeleteStage?: () => void;
 
-    duplicateStage: (index: number) => void;
-    deleteStage: (index: number) => void;
+    /** whether slide can be moved up */
+    canMoveUp?: boolean;
+    /** whether slide can be moved down */
+    canMoveDown?: boolean;
+    /** callback to parent specifying that user wishes to move slide up */
+    onSlideMoveUp?: () => void;
+    /** callback to parent specifying that user wishes to move slide down */
+    onSlideMoveDown?: () => void;
   };
 }; // EscapeRoomStageSlidePropsBase
 
@@ -171,14 +219,19 @@ const EscapeRoomEditorSlide = <T extends ItemDefinition>(
   const [mouseOverMe, setMouseOverMe] = useState<boolean>(false);
 
   const {
+    title,
     stage,
     selected,
     slidePreviewProducer,
     onSlideSelected,
 
-    index,
-    duplicateStage,
-    deleteStage,
+    onDeleteStage,
+    onDuplicateStage,
+
+    canMoveDown,
+    canMoveUp,
+    onSlideMoveDown,
+    onSlideMoveUp,
   } = props;
 
   return (
@@ -187,9 +240,9 @@ const EscapeRoomEditorSlide = <T extends ItemDefinition>(
       onMouseOver={() => setMouseOverMe(true)}
       onMouseOut={() => setMouseOverMe(false)}
     >
-      <Slide>
-        <SlideTitle>{index + 1 + " - " + stage.type}</SlideTitle>
-        <SlideContainer onClick={onSlideSelected}>
+      <Slide onClick={onSlideSelected}>
+        <SlideTitle>{title}</SlideTitle>
+        <SlideContainer>
           <StagePreview>
             {slidePreviewProducer && slidePreviewProducer(stage.payload as any)}
           </StagePreview>
@@ -199,17 +252,13 @@ const EscapeRoomEditorSlide = <T extends ItemDefinition>(
       {(mouseOverMe || selected) && (
         <>
           {/* Duplicate slice button */}
-          <DuplicateIcon
-            onClick={() => {
-              duplicateStage && duplicateStage(index);
-            }}
-          />
+          <DuplicateIcon onClick={onDuplicateStage} />
           {/* Duplicate slice button */}
-          <DeleteIcon
-            onClick={() => {
-              deleteStage && deleteStage(index);
-            }}
-          />
+          <DeleteIcon onClick={onDeleteStage} />
+          {/* Move slide up button */}
+          {canMoveUp && <MoveUpIcon onClick={onSlideMoveUp} />}
+          {/* Move slide down button */}
+          {canMoveDown && <MoveDownIcon onClick={onSlideMoveDown} />}
         </>
       )}
     </Root>

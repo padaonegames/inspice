@@ -34,6 +34,7 @@ export const ShortTextInputCard = (
     response,
     onResponseChanged,
     disabled = false,
+    ...htmlProps
   } = props;
 
   const { isPassword, maxLength, placeholder } = fieldPayload;
@@ -41,7 +42,7 @@ export const ShortTextInputCard = (
 
   return (
     <FormCard
-      {...props}
+      {...htmlProps}
       promptText={promptText}
       required={required}
       requiredAlert={requiredAlert}

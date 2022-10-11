@@ -39,6 +39,7 @@ export const LongTextInputCard = (
     onResponseChanged,
     onEnterPress,
     disabled = false,
+    ...htmlProps
   } = props;
 
   const { text } = response;
@@ -46,11 +47,11 @@ export const LongTextInputCard = (
 
   return (
     <FormCard
-      {...props}
       promptText={promptText}
       required={required}
       requiredAlert={requiredAlert}
       alertMessage={alertMessage}
+      {...htmlProps}
     >
       <InputArea
         disabled={disabled}

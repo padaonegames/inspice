@@ -7,17 +7,9 @@ import {
   RoomBlockSlideProps,
   RoomSettingsSlide,
 } from "./RoomBlockSlide";
-import { RoomExitBlockSlide } from "./RoomExitBlockSlide";
 
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { Add } from "@styled-icons/fluentui-system-filled/Add";
-
-const AddIcon = styled(Add)`
-  color: white;
-  height: 1.75em;
-  width: 1.75em;
-  margin: auto;
-`;
 
 const Root = styled.div`
   position: absolute;
@@ -33,15 +25,15 @@ const Root = styled.div`
   height: 10rem;
 
   border-radius: 0 0 1.25rem 1.25rem;
-  border: 1px solid rgb(19, 104, 206);
   border-top: none;
-  //box-shadow: #d3d4d5 0px -4px 0px 0px inset;
+  box-shadow: #d3d4d5 0px -4px 2px 2px inset;
+  background-color: ${(props) => props.theme.cardBackground};
   padding: 0 0.5rem;
 `;
 
 const VerticalSpace = styled.div`
   height: 0;
-  margin-top: 8rem;
+  margin-top: 6rem;
 `;
 
 const SlidesContainer = styled.div`
@@ -50,12 +42,13 @@ const SlidesContainer = styled.div`
   position: relative;
   padding-left: 0.5rem;
   z-index: 4;
-  height: 90%;
+  height: 100%;
   width: 90%;
   overflow-x: scroll;
   overflow-y: clip;
-  background-color: rgba(200, 200, 200, 0.5);
-  border-radius: 0 0 0.25rem 0.25rem;
+  background-color: ${(props) => props.theme.cardBackground};
+  border-radius: 0 0 0.5rem 1rem;
+  border-right: 1px solid #e8e8e8;
 
   scrollbar-gutter: stable;
   ::-webkit-scrollbar {
@@ -89,7 +82,7 @@ const ButtonsContainer = styled.div`
 const AddBlockButtonContainer = styled.div`
   display: flex;
   flex-direction: column;
-  background: rgb(255, 255, 255) none repeat scroll 0% 0%;
+  background-color: transparent;
   transition: all 0.2s ease 0s;
   width: 100%;
   margin-top: 1rem;
@@ -97,37 +90,30 @@ const AddBlockButtonContainer = styled.div`
 `;
 
 const AddBlockButton = styled.button`
-  width: 100%;
-  margin: 0px;
-  border: 0px none;
-  cursor: pointer;
-  display: inline-block;
-  vertical-align: bottom;
-  box-shadow: rgba(0, 0, 0, 0.25) 0px -4px inset;
-
-  background: rgb(19, 104, 206) none repeat scroll 0% 0%;
-  color: rgb(255, 255, 255);
-  border-radius: 4px;
-  font-size: 0.875rem;
-  font-weight: 600;
-
   font-family: ${(props) => props.theme.contentFont};
+  font-size: ${(props) => props.theme.contentFontSize};
+  cursor: pointer;
+  background-color: hsl(10, 80%, 80%);
+  border-radius: 50px;
+  box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 0.5rem 0px;
+  height: fit-content;
   text-align: center;
-  text-decoration: none;
-  min-width: 42px;
-  min-height: 42px;
-  padding: 0px;
-  position: relative;
+  padding: 0.65em;
+  color: white;
+  width: fit-content;
+  margin: 1em auto;
+`;
 
-  transition: all 0s;
-  &:hover {
-    transition: all 0s;
-    min-height: 40px;
-    margin-top: 2px;
-    padding-bottom: 2px;
-    background-color: rgb(18, 96, 190);
-    box-shadow: rgba(0, 0, 0, 0.25) 0px -2px inset;
-  }
+export const fieldTypeIcon = css`
+  color: ${(props) => props.theme.textColor};
+  height: 1.75em;
+  width: 1.75em;
+`;
+
+const AddBlockIcon = styled(Add)`
+  ${fieldTypeIcon}
+  cursor: pointer;
+  color: white;
 `;
 
 export type ItemToSlideProducerMapping<T extends SupportedPuzzle> = {
@@ -199,37 +185,31 @@ export const RoomBlockSlidesContainer = (
       <Root>
         <SlidesContainer>
           <RoomSettingsSlide
+            key="room_settings_slide"
             selected={selectedBlockIndex === "room-settings"}
             onSlideSelected={onSelectRoomSettings}
           />
-          <RoomExitBlockSlide
-            exitBlock={exitBlock}
-            blockIndex={0}
+          <RoomBlockSlide
+            key="exit_block_slide"
+            isExitBlock
+            selected={selectedBlockIndex === "exit-block"}
+            block={exitBlock}
             puzzleMappings={itemMappings}
             onSlideSelected={onSelectRoomExitBlock}
           />
-
           {blocks.map((block, i) => {
             // This is "unsafe", but in reality due to how itemMappings is defined
             // it will never really be problematic (s and itemMappings[s.type] are forcefully consistent)
-            const slideProps = {
+            const slideProps: RoomBlockSlideProps = {
               puzzleMappings: itemMappings,
               selected: i == selectedBlockIndex,
               block: block,
-              blockIndex: i,
               onSlideSelected: () => handleSelectBlock(i),
               onBlockDeleted: () => handleDeleteBlock(i),
               onBlockDuplicated: () => handleDuplicateBlock(i),
-            } as RoomBlockSlideProps;
+            };
 
-            return (
-              <>
-                <RoomBlockSlide
-                  key={block.blockName + "_" + i}
-                  {...slideProps}
-                />
-              </>
-            );
+            return <RoomBlockSlide key={i} {...slideProps} />;
           })}
         </SlidesContainer>
 
@@ -237,7 +217,7 @@ export const RoomBlockSlidesContainer = (
         <ButtonsContainer>
           <AddBlockButtonContainer>
             <AddBlockButton onClick={onAddBlock} title="Add Block">
-              <AddIcon />
+              <AddBlockIcon />
             </AddBlockButton>
           </AddBlockButtonContainer>
         </ButtonsContainer>

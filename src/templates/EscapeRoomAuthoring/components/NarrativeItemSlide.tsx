@@ -206,8 +206,8 @@ export const NarrativeItemSlide = (
     title,
     onSlideSelected,
 
-    canMoveDown,
-    canMoveUp,
+    canMoveDown = false,
+    canMoveUp = false,
     onDeleteSlide,
     onSlideMoveDown,
     onSlideMoveUp,
@@ -230,9 +230,9 @@ export const NarrativeItemSlide = (
         <>
           <DeleteSlideIcon onClick={onDeleteSlide} />
           {/* Move slide up button */}
-          <MoveUpIcon onClick={onSlideMoveUp} />
+          {canMoveUp && <MoveUpIcon onClick={onSlideMoveUp} />}
           {/* Move slide down button */}
-          <MoveDownIcon onClick={onSlideMoveUp} />
+          {canMoveDown && <MoveDownIcon onClick={onSlideMoveDown} />}
         </>
       )}
     </Root>

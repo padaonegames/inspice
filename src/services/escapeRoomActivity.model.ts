@@ -140,7 +140,7 @@ export interface RoomBlock {
 export const default_room_block: RoomBlock = {
   blockName: "Default Name",
   blockDescription: "Default Description",
-  puzzles: [default_puzzle, default_puzzle],
+  puzzles: [default_puzzle],
 }; // default_room_block
 
 // ---------------------------------------------------------------

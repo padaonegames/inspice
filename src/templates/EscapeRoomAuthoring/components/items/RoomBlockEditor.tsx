@@ -1,7 +1,6 @@
 import { useState } from "react";
-import { PromptField } from "./PromptField";
 
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import {
   default_puzzle,
   RoomBlock,
@@ -18,6 +17,8 @@ import LongTextInputCard from "../../../../components/Forms/Cards/LongTextInputC
 const Root = styled.div`
   position: relative;
   width: 100%;
+  height: fit-content;
+  padding: 2em 0;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -75,38 +76,42 @@ export const TitleContainer = styled.div`
   border-bottom: 2px solid white;
 `;
 
-//Components for the button to add a new Puzzle to the room block
-export const AddPuzzleButton = styled.div`
-  position: relative;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: ${(props) => props.theme.contentFont};
-  line-height: 135%;
-
-  margin-top: 1em;
-  margin-bottom: 0.25em;
-  padding: 0.5em 0.75em;
-  border-top: none;
-  color: white;
-
+const AddPuzzleButtonContainer = styled.div`
   display: flex;
-  text-align: center;
-  align-items: center;
-
-  background-color: rgb(19, 104, 206);
-  border-radius: 0.5rem;
-  border: 3px solid rgb(15, 90, 188);
-  &:hover {
-    transition: border 0.25s;
-    border: 3px solid rgb(255, 255, 255);
-  }
+  flex-direction: column;
+  background-color: transparent;
+  transition: all 0.2s ease 0s;
+  width: 100%;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
 `;
 
-export const AddPuzzleIcon = styled(SlideAdd)`
+const AddPuzzleButton = styled.button`
+  font-family: ${(props) => props.theme.contentFont};
+  font-size: ${(props) => props.theme.contentFontSize};
+  cursor: pointer;
+  background-color: hsl(10, 80%, 80%);
+  border-radius: 50px;
+  box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 0.5rem 0px;
+  height: fit-content;
+  text-align: center;
+  padding: 0.4em 0.85em 0.4em 0.6em;
   color: white;
+  width: fit-content;
+  margin: 1em auto;
+`;
+
+export const fieldTypeIcon = css`
+  color: ${(props) => props.theme.textColor};
   height: 1.75em;
-  margin-right: 1rem;
-  width: auto;
+  width: 1.75em;
+  margin-right: 0.75em;
+`;
+
+const AddPuzzleIcon = styled(SlideAdd)`
+  ${fieldTypeIcon}
+  cursor: pointer;
+  color: white;
 `;
 
 export interface RoomBlockEditorProps {
@@ -282,21 +287,25 @@ export const RoomBlockEditor = (props: RoomBlockEditorProps): JSX.Element => {
 
       {/* In case we want to add a puzzle at the beginning of the room block*/}
       {selectedPuzzleIndex === -1 && (
-        <AddPuzzleButton
-          onClick={() => {
-            handleAddNewPuzzle(-1);
-          }}
-        >
-          <AddPuzzleIcon />
-          New Puzzle
-        </AddPuzzleButton>
+        <AddPuzzleButtonContainer>
+          <AddPuzzleButton
+            onClick={() => {
+              handleAddNewPuzzle(-1);
+            }}
+          >
+            <AddPuzzleIcon />
+            New Puzzle
+          </AddPuzzleButton>
+        </AddPuzzleButtonContainer>
       )}
 
       {/* Sequence of editors to configure a room's block of puzzles */}
       {block.puzzles.map((puzzle, i) => (
         <>
           <RoomPuzzleSettingsEditor
+            key={puzzle.type + "_" + i}
             puzzle={puzzle}
+            deletionEnabled={block.puzzles.length > 1}
             index={i}
             firstCard={i === 0}
             lastCard={i === block.puzzles.length - 1}

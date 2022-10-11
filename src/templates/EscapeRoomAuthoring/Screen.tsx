@@ -431,6 +431,42 @@ export const CreateEscapeRoomScreenComponent = (
     setSelectedStage(undefined);
   }; // handleGoToSettings
 
+  const handleMoveStageUp = (index: number) => {
+    if (index <= 0) return;
+
+    setActivityDefinition((prev) => {
+      let aux = cloneDeep(prev);
+      aux.stages = [
+        ...aux.stages.slice(0, index - 1),
+        aux.stages[index],
+        aux.stages[index - 1],
+        ...aux.stages.slice(index + 1),
+      ];
+      return aux;
+    });
+
+    // ensure that stage is still selected after the change
+    if (selectedStage === index) setSelectedStage(index - 1);
+  }; // handleMoveStageUp
+
+  const handleMoveStageDown = (index: number) => {
+    if (index + 1 >= activityDefinition.stages.length) return;
+
+    setActivityDefinition((prev) => {
+      let aux = cloneDeep(prev);
+      aux.stages = [
+        ...aux.stages.slice(0, index),
+        aux.stages[index + 1],
+        aux.stages[index],
+        ...aux.stages.slice(index + 2),
+      ];
+      return aux;
+    });
+
+    // ensure that stage is still selected after the change
+    if (selectedStage === index) setSelectedStage(index + 1);
+  }; // handleMoveStageDown
+
   return (
     <Root>
       <EscapeRoomContextProvider
@@ -447,9 +483,11 @@ export const CreateEscapeRoomScreenComponent = (
             setSelectedStage(index);
             setShowSettings(false);
           }}
-          handleDuplicateStage={duplicateStage}
-          handleDeleteStage={deleteStage}
-          handleGoToSettings={handleGoToSettings}
+          onDuplicateStage={duplicateStage}
+          onDeleteStage={deleteStage}
+          onStageMoveDown={handleMoveStageDown}
+          onStageMoveUp={handleMoveStageUp}
+          onGoToSettings={handleGoToSettings}
         />
 
         {/* Editors for the multiple stages avaliable in an escape room game */}

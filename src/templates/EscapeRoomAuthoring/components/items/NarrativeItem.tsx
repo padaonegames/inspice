@@ -312,8 +312,11 @@ export const EditableNarrativeItemContent = (
             <SlidesContainer>
               {payload.dialogues.map((dialog, slideIndex) => (
                 <NarrativeItemSlide
+                  key={dialog.characterName + "_" + slideIndex}
                   onSlideSelected={() => setSelectedDialog(slideIndex)}
                   selected={slideIndex === selectedDialog}
+                  canMoveUp={slideIndex > 0}
+                  canMoveDown={slideIndex + 1 < payload.dialogues.length}
                   title={`Dialog ${slideIndex + 1}`}
                   imageSrc={findCharacterImageSrc(dialog.characterName)}
                   onDeleteSlide={() => handleDeleteDialog(slideIndex)}
