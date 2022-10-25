@@ -59,5 +59,12 @@
   "enterNewTag": "Enter a new tag",
   "fetchingRecommendations": "Fetching Recommendations",
   "areYouSureYouWantToExitStoryCreation": "Are you sure you wish to exit the story creation mode? Your progress will be lost!",
-  "artworkNoLongerInCollection": "Artwork no longer in collection"
+  "artworkNoLongerInCollection": "Artwork no longer in collection",
+  "oppositeStories": "Stories triggering opposite emotions",
+  "similarStories": "Stories triggering similar emotions",
+  "thereWasProblemWhenFetchingRecommendedStories": "There was a problem when fetching recommended stories",
+  "fetchingRecommendedStories": "Fetching recommended stories",
+  "exploreSimilarStories": "Explore stories triggering similar emotions",
+  "exploreOppositeStories": "Explore stories triggering opposite emotions",
+  "likeThisStory": "Like this story"
 }

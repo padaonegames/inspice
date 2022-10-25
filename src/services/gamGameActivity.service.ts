@@ -75,6 +75,14 @@ export class GamGameActivityService {
     return getApiResult<GamGameStoryDefinitionData[]>(url);
   } // getGamGameStoryDefinitions
 
+  public async getGamGameStoryRecommendationsByEmotion(
+    relation: "opposite" | "similar",
+    storyId: string
+  ): Promise<ApiResult<GamGameStoryDefinitionData[]>> {
+    const url = `${this.apiUrl}/gam-game/stories/story-recommendations?relation=${relation}&storyId=${storyId}`;
+    return getApiResult<GamGameStoryDefinitionData[]>(url);
+  } // getGamGameStoryRecommendationsByEmotion
+
   /**
    * @description Retrieve all GAM Game user-created story definitions
    */

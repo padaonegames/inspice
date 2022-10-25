@@ -59,5 +59,12 @@
   "enterNewTag": "Inserisci un nuovo tag",
   "fetchingRecommendations": "Trovare le raccomandazioni",
   "areYouSureYouWantToExitStoryCreation": "Siete sicuri di voler uscire dalla modalità di creazione della storia? I vostri progressi andranno persi!",
-  "artworkNoLongerInCollection": "Opera non è più in collezione"
+  "artworkNoLongerInCollection": "Opera non è più in collezione",
+  "oppositeStories": "Storie che scatenano emozioni opposte",
+  "similarStories": "Storie che scatenano emozioni simili",
+  "thereWasProblemWhenFetchingRecommendedStories": "Si è verificato un problema durante il recupero delle storie consigliate",
+  "fetchingRecommendedStories": "Recuperando le storie consigliate",
+  "exploreSimilarStories": "Esplorare storie che scatenano emozioni simili",
+  "exploreOppositeStories": "Esplorare storie che scatenano emozioni opposte",
+  "likeThisStory": "ti piace questa storia"
 }

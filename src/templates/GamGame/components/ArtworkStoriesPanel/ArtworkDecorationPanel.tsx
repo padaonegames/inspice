@@ -12,6 +12,8 @@ import Draggable, { Position } from "./Draggable";
 import { useState } from "react";
 import { DetailArtworkDisplay } from "../generalStyles";
 import { useTranslation } from "react-i18next";
+import { ArrowCircleRight } from "@styled-icons/evaicons-solid/ArrowCircleRight";
+import { ArrowCircleLeft } from "@styled-icons/evaicons-solid/ArrowCircleLeft";
 
 const StoryEmojiSpan = styled.span`
   font-size: 50px;
@@ -71,6 +73,26 @@ const TypeIcon = styled(Type)`
 
 const DeleteIcon = styled(Delete)`
   ${ToolStyle}
+`;
+
+const NavigationIconStyle = css`
+  color: white;
+  opacity: 0.9;
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  width: 2em;
+  height: 2em;
+`;
+
+const PreviousArtworkIcon = styled(ArrowCircleLeft)`
+  ${NavigationIconStyle}
+  left: 0.5em;
+`;
+
+const NextArtworkIcon = styled(ArrowCircleRight)`
+  ${NavigationIconStyle}
+  right: 0.5em;
 `;
 
 const StickerSelectorContainer = styled.div`
@@ -161,6 +183,15 @@ export interface ArtworkDecorationPanelProps {
   onRemoveEmoji?: (index: number) => void;
   /** Callback to parent specifying the user wishes to remove tag at given index */
   onRemoveTag?: (index: number) => void;
+
+  /** whether previous artwork button is enabled */
+  hasPrevious?: boolean;
+  /** whether next artwork button is enabled */
+  hasNext?: boolean;
+  /** Callback to parent specifying that the user wishes to move to the previous artwork */
+  onPreviousArtworkClicked?: () => void;
+  /** Callback to parent specifying that the user wishes to move to the next artwork */
+  onNextArtworkClicked?: () => void;
 }
 
 /** Customizable panel where it can be added tags and emojis to an artwork piece. */
@@ -178,6 +209,10 @@ export const ArtworkDecorationPanel = (
     onMoveTag,
     onRemoveEmoji,
     onRemoveTag,
+    hasNext,
+    hasPrevious,
+    onPreviousArtworkClicked,
+    onNextArtworkClicked,
   } = props;
 
   const { t } = useTranslation("gamGame");
@@ -376,6 +411,10 @@ export const ArtworkDecorationPanel = (
             <StoryTagSpan>{tag.tag}</StoryTagSpan>
           </Draggable>
         ))}
+      {hasPrevious && (
+        <PreviousArtworkIcon onClick={onPreviousArtworkClicked} />
+      )}
+      {hasNext && <NextArtworkIcon onClick={onNextArtworkClicked} />}
     </DetailArtworkDisplay>
   );
 };
