@@ -105,6 +105,19 @@ export class GamGameActivityService {
   } // getGamGameStoryDefinitionById
 
   /**
+   * @description Set the like status of given story
+   * @param storyId Id of the story to like or dislike
+   * @param likeStatus whether to like or dislike story
+   */
+  public async setStoryLikedStatus(
+    storyId: string,
+    likeStatus: boolean
+  ): Promise<ApiResult<void>> {
+    const url = `${this.apiUrl}/gam-game/stories/set-story-like-status?storyId=${storyId}&likeStatus=${likeStatus}`;
+    return putApiResult<void, void>(url, undefined);
+  } // getGamGameStoryDefinitionById
+
+  /**
    * @description Retrieve all GAM Game stories belonging to a given activity
    * @param activityId Id of the story definition to fetch
    */

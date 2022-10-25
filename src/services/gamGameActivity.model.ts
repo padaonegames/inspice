@@ -32,6 +32,8 @@ export interface GamGameStoryDefinitionData {
   authorUsername: string;
   /** Name of the session within this activity that this story belongs to */
   sessionName: string;
+  /** list of user ids that liked this story */
+  likedBy?: string[];
 }
 
 /** Data that the user will need to fill in before submitting a definition to the persistance layer.

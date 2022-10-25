@@ -1,5 +1,6 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { SessionAuthContext } from "../../../../auth/SessionAuthStore";
 import LoadingOverlay from "../../../../components/Layout/LoadingOverlay";
 import { gamGameApi } from "../../../../services";
 import { ArtworkData } from "../../../../services/artwork.model";
@@ -20,6 +21,11 @@ export const StoryViewStep = (): JSX.Element => {
   // fetch id from url
   const { storyId } = useParams() as { storyId: string };
   const { artworks } = useContext(GamGameActivityContext);
+  const { username } = useContext(SessionAuthContext);
+
+  const [liked, setLiked] = useState<boolean>(false);
+  const [nextLikedStatus, setNextLikedStatus] =
+    useState<boolean | undefined>(undefined);
 
   // Fetch story definition from server by url params' id
   const fetchStory = () => {
@@ -27,8 +33,31 @@ export const StoryViewStep = (): JSX.Element => {
     return gamGameApi.getGamGameStoryDefinitionById(storyId);
   };
 
+  const setStoryLikedStatus = async () => {
+    if (nextLikedStatus === undefined) return Promise.reject();
+    await gamGameApi.setStoryLikedStatus(storyId, nextLikedStatus);
+    setLiked(nextLikedStatus);
+    setNextLikedStatus(undefined);
+  }; // setStoryLikedStatus
+
   // Make request on first render
   const [fetchStoryRequestStatus] = useAsyncRequest(fetchStory, []);
+
+  // update liked status with every change in children
+  const [setStoryLikedStatusRequest] = useAsyncRequest(setStoryLikedStatus, [
+    nextLikedStatus,
+  ]);
+
+  useEffect(() => {
+    if (
+      fetchStoryRequestStatus.kind === "success" &&
+      fetchStoryRequestStatus.result.kind === "ok" &&
+      username
+    ) {
+      const likedBy = fetchStoryRequestStatus.result.data[0]?.likedBy;
+      setLiked(likedBy && likedBy.includes(username) ? true : false);
+    }
+  }, [fetchStoryRequestStatus]);
 
   if (
     !(
@@ -41,7 +70,18 @@ export const StoryViewStep = (): JSX.Element => {
 
   // cache the value of our activityDefinition after it is found.
   const storyDefinition = fetchStoryRequestStatus.result.data[0];
-  return <StoryViewFlow story={storyDefinition} artworks={artworks} />;
+
+  return (
+    <StoryViewFlow
+      story={{
+        ...storyDefinition,
+        likedBy: liked && username ? [username] : [],
+      }}
+      artworks={artworks}
+      onLikeStatusChanged={(value) => setNextLikedStatus(value)}
+      liked={liked}
+    />
+  );
 }; // StoryViewStep
 
 //------------------------------------------------------------------
@@ -60,6 +100,7 @@ interface StoryViewFlowProps {
 
 const StoryViewFlow = (props: StoryViewFlowProps): JSX.Element => {
   const { story, artworks, liked, onLikeStatusChanged } = props;
+
   const navigate = useNavigate();
 
   const [currentPart, setCurrentPart] = useState<number>(0);
