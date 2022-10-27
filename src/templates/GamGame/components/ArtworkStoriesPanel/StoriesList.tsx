@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { StoryGrid } from "../generalStyles";
+import { NoItemsFoundText, StoryGrid } from "../generalStyles";
 import SearchBar from "../../../../components/Forms/SearchBar";
 import StoryColumnElement from "../../../../components/ArtworkSelection/StoryColumnElement";
 import { GamGameStoryDefinitionData } from "../../../../services/gamGameActivity.model";
@@ -40,6 +40,10 @@ export const StoriesList = (props: StoriesListProps): JSX.Element => {
         placeholder={`${t("searchStoriesByTitle")}...`}
         onSearchPerformed={(search) => setFilter(search)}
       />
+
+      {displayStories.length === 0 && (
+        <NoItemsFoundText>{`${t("noStoriesFound")}`}</NoItemsFoundText>
+      )}
 
       <StoryGrid>
         {displayStories.map((elem) => (

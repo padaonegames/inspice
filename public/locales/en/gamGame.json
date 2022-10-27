@@ -51,6 +51,7 @@
   "searchStoriesByTitle": "Search stories by title",
   "noArtworkFound": "No artwork found.",
   "noArtworksFound": "No artworks found",
+  "noStoriesFound": "No stories found",
   "fetchingUserStories": "Fetching user stories",
   "areYouSureYouWantToGoBackToArtworkSelectionScreen": "Are you sure you want to go back to the artwork selection screen? Your progress in this story part will be lost.",
   "writeYourStoryTextHere": "Write your story text here...",

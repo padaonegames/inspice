@@ -18,7 +18,7 @@ import {
 // /stories/:storyId/recommended-stories
 export const RecommendedStoriesPanel = (): JSX.Element => {
   // artworks have already been collected at a higher step
-  const { artworks } = useContext(GamGameActivityContext);
+  const { artworks, activity } = useContext(GamGameActivityContext);
   // what story are we refering to?
   const { storyId } = useParams();
   // what kind of recommendations do we want to fetch?
@@ -67,7 +67,9 @@ export const RecommendedStoriesPanel = (): JSX.Element => {
   }
 
   // cache the result and then render found stories
-  const stories = fetchStoriesRequest.result.data;
+  const stories = fetchStoriesRequest.result.data.filter(
+    (s) => s.activityId === activity._id // only render stories that are associated to this activity
+  );
   return (
     <StepRoot>
       <ContainerCard upperDecorator>
