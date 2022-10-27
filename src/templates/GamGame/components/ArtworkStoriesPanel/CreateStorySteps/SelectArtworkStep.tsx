@@ -14,18 +14,24 @@ interface SelectArtworkStepProps {
   onArtworkSelected?: (id: string) => void;
 }
 
-export const SelectArtworkStep = (props: SelectArtworkStepProps): JSX.Element => {
-
-  const { t } = useTranslation('gamGame');
+export const SelectArtworkStep = (
+  props: SelectArtworkStepProps
+): JSX.Element => {
+  const { t } = useTranslation("gamGame");
   const { artworks, onArtworkSelected, index } = props;
 
   const handleArtworkSelected = (id: string) => {
-    const artwork = artworks.find(elem => elem.id === id);
+    const artwork = artworks.find((elem) => elem.id === id);
     if (!artwork) return;
 
     const time = Date.now();
-    const res = window.confirm(t('youreAboutToChooseArtwork', { artwork: artwork.title, author: artwork.author }));
-    if ((res || (Date.now() - time < 10)) && onArtworkSelected) {
+    const res = window.confirm(
+      t("youreAboutToChooseArtwork", {
+        artwork: artwork.title,
+        author: artwork.author,
+      })
+    );
+    if ((res || Date.now() - time < 10) && onArtworkSelected) {
       onArtworkSelected(id);
     }
   };
@@ -33,8 +39,10 @@ export const SelectArtworkStep = (props: SelectArtworkStepProps): JSX.Element =>
   return (
     <StepRoot>
       <StepTitleCard
-        stepTitle={`${t('selectArtwork')} ${index !== undefined ? ` #${index}` : ''}`}
-        stepDescription={t('selectArtworkDescription')}
+        stepTitle={`${t("selectArtwork")} ${
+          index !== undefined ? ` #${index}` : ""
+        }`}
+        stepDescription={t("selectArtworkDescription")}
       >
         <ArtworkListDottedLine />
         <ArtworksList

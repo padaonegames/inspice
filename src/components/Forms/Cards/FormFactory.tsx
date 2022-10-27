@@ -1,7 +1,7 @@
 import {
   ConsumableFieldProps,
-  EditableFieldProps,
 } from "../../../services/multistageFormActivity.model";
+import { EditableFieldProps } from "./EditableFieldCard";
 
 export interface AbstractFormFactory<Payload, Response> {
   consumptionComponentProducer: (

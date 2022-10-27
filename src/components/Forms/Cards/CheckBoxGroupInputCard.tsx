@@ -2,7 +2,6 @@ import {
   CheckboxGroupFieldDefinition,
   CheckboxGroupResponseDefinition,
   ConsumableFieldProps,
-  EditableFieldProps,
 } from "../../../services/multistageFormActivity.model";
 import CheckBoxInput from "../CheckBoxInput";
 import EditableCheckBoxInput from "../EditableCheckBoxInput";
@@ -16,6 +15,7 @@ import {
   CheckboxList,
   CheckboxOption,
 } from "./cardStyles";
+import { EditableFieldProps } from "./EditableFieldCard";
 
 export interface CheckBoxGroupInputCardProps
   extends ConsumableFieldProps<
@@ -125,6 +125,7 @@ export const EditableCheckBoxGroupCardContent = (
         {fields.map((elem, i) => (
           <CheckboxOption key={elem}>
             <EditableCheckBoxInput
+              boxContent={{ type: "none" }}
               labelText={elem}
               style="checkbox"
               boxSize="15px"
@@ -134,6 +135,7 @@ export const EditableCheckBoxGroupCardContent = (
         ))}
         <CheckboxOption onClick={handleAddOption} key="addNew">
           <EditableCheckBoxInput
+            boxContent={{ type: "none" }}
             labelText=""
             labelTextPlaceholder={addNewOptionLabel}
             style="checkbox"

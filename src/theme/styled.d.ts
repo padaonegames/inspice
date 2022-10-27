@@ -32,5 +32,6 @@ declare module "styled-components" {
     primaryButtonColor: string;
     secondaryButtonColor: string;
     smallButtonFont: string;
+    frameColor: string;
   }
 }

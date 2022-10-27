@@ -51,6 +51,7 @@
   "searchStoriesByTitle": "Cerca storie per titolo",
   "noArtworkFound": "Nessuna opera d'arte trovata.",
   "noArtworksFound": "Nessuna opera d'arte trovata",
+  "noStoriesFound": "Nessuna storia trovata",
   "fetchingUserStories": "Recuperare le storie degli utenti",
   "areYouSureYouWantToGoBackToArtworkSelectionScreen": "Sei sicuro di voler tornare alla schermata di selezione delle opere d'arte? I tuoi progressi in questa parte della storia andranno persi.",
   "writeYourStoryTextHere": "Scrivi qui il testo della tua storia",
@@ -59,5 +60,12 @@
   "enterNewTag": "Inserisci un nuovo tag",
   "fetchingRecommendations": "Trovare le raccomandazioni",
   "areYouSureYouWantToExitStoryCreation": "Siete sicuri di voler uscire dalla modalità di creazione della storia? I vostri progressi andranno persi!",
-  "artworkNoLongerInCollection": "Opera non è più in collezione"
+  "artworkNoLongerInCollection": "Opera non è più in collezione",
+  "oppositeStories": "Storie che scatenano emozioni opposte",
+  "similarStories": "Storie che scatenano emozioni simili",
+  "thereWasProblemWhenFetchingRecommendedStories": "Si è verificato un problema durante il recupero delle storie consigliate",
+  "fetchingRecommendedStories": "Recuperando le storie consigliate",
+  "exploreSimilarStories": "Esplorare storie che scatenano emozioni simili",
+  "exploreOppositeStories": "Esplorare storie che scatenano emozioni opposte",
+  "likeThisStory": "ti piace questa storia"
 }

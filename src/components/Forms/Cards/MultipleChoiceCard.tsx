@@ -1,13 +1,28 @@
-import {
-  ConsumableFieldProps,
-  EditableFieldProps,
-  MultipleChoiceFieldDefinition,
-  MultipleChoiceResponseDefinition,
-} from "../../../services/multistageFormActivity.model";
+import { ConsumableFieldProps } from "../../../services/multistageFormActivity.model";
 import CheckBoxInput from "../CheckBoxInput";
 import EditableCheckBoxInput from "../EditableCheckBoxInput";
 import { CheckboxList, CheckboxOption } from "./cardStyles";
+import { EditableFieldProps } from "./EditableFieldCard";
 import FormCard from "./FormCard";
+
+//------------------------
+//  MULTIPLE CHOICE FIELD
+//------------------------
+export interface MultipleChoiceFieldDefinition {
+  /** answers to choose from */
+  answers: string[];
+  /** maximum number of answers to allow */
+  maxAnswers?: number;
+} // MultipleChoiceFieldDefinition
+
+export interface MultipleChoiceResponseDefinition {
+  /**
+   * Responses to the multiple choice question.
+   * This is an array representing the indices of all
+   * selected answers within the list of possible responses.
+   */
+  selectedResponses: number[];
+} // MultipleChoiceResponseDefinition
 
 export interface MultipleChoiceCardProps
   extends ConsumableFieldProps<
@@ -140,6 +155,7 @@ export const EditableMultipleChoiceCardContent = (
         {answers.map((elem, i) => (
           <CheckboxOption key={`checkBoxOption${i}`}>
             <EditableCheckBoxInput
+              boxContent={{ type: "none" }}
               key={`editableCheckBoxInput${i}`}
               labelText={elem}
               style="radio"
@@ -151,6 +167,7 @@ export const EditableMultipleChoiceCardContent = (
         ))}
         <CheckboxOption onClick={handleAddOption} key="checkBoxOptionAddNew">
           <EditableCheckBoxInput
+            boxContent={{ type: "none" }}
             key="editableCheckBoxInputAddNew"
             labelText=""
             labelTextPlaceholder={addNewOptionLabel}

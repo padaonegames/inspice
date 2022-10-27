@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import {
   ConsumableFieldProps,
-  EditableFieldProps,
   LikertScaleFieldDefinition,
   LikertScaleResponseDefinition,
 } from "../../../services/multistageFormActivity.model";
@@ -18,6 +17,7 @@ import { AddCircle } from "@styled-icons/fluentui-system-regular/AddCircle";
 import { Add } from "@styled-icons/fluentui-system-filled/Add";
 import { Minus } from "@styled-icons/evaicons-solid/Minus";
 import EditableCheckBoxInput from "../EditableCheckBoxInput";
+import { EditableFieldProps } from "./EditableFieldCard";
 
 const QuestionText = styled.div`
   // font: 400 16px Roboto,RobotoDraft,Helvetica,Arial,sans-serif;
@@ -404,6 +404,7 @@ export const EditableLikertScaleCardContent = (
           {/* Question to answer */}
           <QuestionContainer>
             <EditableCheckBoxInput
+              boxContent={{ type: "none" }}
               key={`editableCheckBoxInput${qInd}`}
               labelTextPlaceholder={"Write a question"}
               labelText={question}

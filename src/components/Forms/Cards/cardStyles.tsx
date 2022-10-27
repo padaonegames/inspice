@@ -236,6 +236,7 @@ export const CardPanel = styled.div<CardPanelProps>`
 
   border-radius: 8px;
   width: 100%;
+  height: fit-content;
   word-wrap: break-word;
   display: flex;
   flex-direction: column;

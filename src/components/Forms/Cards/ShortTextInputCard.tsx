@@ -1,10 +1,10 @@
 import {
   ConsumableFieldProps,
-  EditableFieldProps,
   ShortTextFieldDefinition,
   ShortTextResponseDefinition,
 } from "../../../services/multistageFormActivity.model";
 import { Root, InputText } from "./cardStyles";
+import { EditableFieldProps } from "./EditableFieldCard";
 import FormCard from "./FormCard";
 
 export interface ShortTextInputCardProps
@@ -16,6 +16,7 @@ export interface ShortTextInputCardProps
   width?: number;
   /** Callback to the parent when the "Enter" key is pressed while the component is focused. */
   onEnterPress?: () => void;
+  disabled?: boolean;
 } // ShortTextInputCardProps
 
 /** Controlled card component to support input for shorter texts. */
@@ -32,6 +33,8 @@ export const ShortTextInputCard = (
     fieldPayload,
     response,
     onResponseChanged,
+    disabled = false,
+    ...htmlProps
   } = props;
 
   const { isPassword, maxLength, placeholder } = fieldPayload;
@@ -39,23 +42,25 @@ export const ShortTextInputCard = (
 
   return (
     <FormCard
+      {...htmlProps}
       promptText={promptText}
       required={required}
       requiredAlert={requiredAlert}
       alertMessage={alertMessage}
     >
       <InputText
+        disabled={disabled}
         textWidth={width}
         type={isPassword ? "password" : "text"}
         placeholder={placeholder}
         maxLength={maxLength}
         value={text}
         onChange={(event) => {
-          if (onResponseChanged)
+          if (onResponseChanged && !disabled)
             onResponseChanged({ text: event.target.value });
         }}
         onKeyPress={(event) => {
-          if (event.key === "Enter" && onEnterPress) {
+          if (event.key === "Enter" && onEnterPress && !disabled) {
             onEnterPress();
           }
         }}

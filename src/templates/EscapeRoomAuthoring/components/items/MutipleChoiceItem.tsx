@@ -7,6 +7,14 @@ import { AbstractActivityItemFactory } from "../ActivityItemFactory";
 import { PromptField } from "./PromptField";
 
 import styled from "styled-components";
+import MultipleChoiceCard, {
+  EditableMultipleChoiceCardContent,
+} from "../../../../components/Forms/Cards/MultipleChoiceCard";
+import EditableFieldCard from "../../../../components/Forms/Cards/EditableFieldCard";
+import ConfigureMultipleChoiceCard from "../../../../components/Forms/Cards/ConfigureMultipleChoiceCard";
+import ShortTextInputCard from "../../../../components/Forms/Cards/ShortTextInputCard";
+import IntegerRangeInputFieldWithTag from "../../../../components/Forms/IntegerRangeInputFieldWithTag";
+import CheckBoxGroupInputCard from "../../../../components/Forms/Cards/CheckBoxGroupInputCard";
 
 interface InputAreaProps {
   width?: string;
@@ -51,30 +59,6 @@ const AnswersContainer = styled.div`
   padding: 5px 0;
 `;
 
-interface AnswerProps {
-  backgroundColor?: string;
-}
-const Answer = styled.div<AnswerProps>`
-  margin-top: 0.25em;
-  margin-bottom: 0.25em;
-  padding: 0.75em 0 0.75em 0.75em;
-  border-top: none;
-  font-size: 1em;
-  font-weight: 200;
-  font-family: ${(props) => props.theme.contentFont};
-  color: white;
-  line-height: 135%;
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  align-content: center;
-
-  background-color: ${(props) => props.backgroundColor || "transparent"};
-
-  border-radius: 0.25rem;
-  box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
-`;
-
 const availableColors = [
   "#e21b3c",
   "#1368ce",
@@ -88,36 +72,7 @@ export const EditableMultipleChoiceItemContent = (
   props: EditableItemProps<MultipleChoiceItemDefinition>
 ): JSX.Element => {
   const { payload, onPayloadChanged } = props;
-
-  const { answers, maxAnswers } = payload;
-
-  const handleAddOption = () => {
-    if (!onPayloadChanged) return;
-    onPayloadChanged({
-      ...payload,
-      answers: [...payload.answers, ""],
-    });
-  }; // handleAddOption
-
-  const handleEditOption = (index: number, value: string) => {
-    if (!onPayloadChanged) return;
-    onPayloadChanged({
-      ...payload,
-      answers: [
-        ...payload.answers.slice(0, index),
-        value,
-        ...payload.answers.slice(index + 1),
-      ],
-    });
-  }; // handleEditOption
-
-  const handleRemoveOption = (index: number) => {
-    if (!onPayloadChanged) return;
-    onPayloadChanged({
-      ...payload,
-      answers: payload.answers.filter((_, i) => i !== index),
-    });
-  }; // handleRemoveOption
+  const { answers, maxAnswers, oneClickResponse } = payload;
 
   const handleEditPrompt = (value: string) => {
     if (!onPayloadChanged) return;
@@ -127,58 +82,58 @@ export const EditableMultipleChoiceItemContent = (
     });
   }; // handleEditPrompt
 
-  const handleCheckOption = (index: number) => {
+  const handleAnswersChanged = (
+    answers: string[],
+    correctAnswers: number[]
+  ) => {
     if (!onPayloadChanged) return;
+
     onPayloadChanged({
       ...payload,
-      correctAnswerIndex: index,
+      answers: answers,
+      correctAnswers: correctAnswers,
     });
-  }; // handleEditPrompt
+  }; // handleAnswersChanged
+
+  const handleSetOneClickResponse = (value: boolean) => {
+    if (!onPayloadChanged) return;
+    onPayloadChanged({ ...payload, oneClickResponse: value });
+  }; // handleSetOneClickResponse
+
+  const oneClickResponseKey = "Enable one-click response.";
 
   return (
     <>
-      <PromptField
-        promptText={payload.prompt}
-        promptPlaceholder="Start typing your prompt"
-        onPromptChange={handleEditPrompt}
+      <ShortTextInputCard
+        promptText="Prompt for this question:"
+        required
+        requiredAlert={payload.prompt.length === 0}
+        fieldPayload={{ placeholder: "Start typing your prompt" }}
+        response={{ text: payload.prompt }}
+        onResponseChanged={(value) => handleEditPrompt(value.text)}
       />
-      <AnswersContainer>
-        {answers.map((elem, i) => (
-          <Answer
-            backgroundColor={availableColors[i % availableColors.length]}
-            key={`checkBoxOption${i}`}
-          >
-            <EditableCheckBoxInput
-              key={`editableCheckBoxInput${i}`}
-              labelText={elem}
-              style="radio"
-              checked={i === payload.correctAnswerIndex}
-              boxSize="2.875rem"
-              onObjectRemoved={() => handleRemoveOption(i)}
-              onCheckBoxChecked={() => handleCheckOption(i)}
-              onLabelTextChanged={(value) => handleEditOption(i, value)}
-            />
-          </Answer>
-        ))}
-
-        {/* If the multiple choice has less than 6 options appears a new "answer" that functions as a button to add a new possible answer to the multiple choice item */}
-        {payload.answers.length < 6 && (
-          <Answer
-            onClick={handleAddOption}
-            key="checkBoxOptionAddNew"
-            backgroundColor="darkgray"
-          >
-            <EditableCheckBoxInput
-              key="editableCheckBoxInputAddNew"
-              labelText=""
-              labelTextPlaceholder={"New option"}
-              style="radio"
-              boxSize="0"
-              enabled={false}
-            />
-          </Answer>
-        )}
-      </AnswersContainer>
+      <ConfigureMultipleChoiceCard
+        fieldPayload={{}}
+        response={{
+          answers: payload.answers,
+          correctAnswers: payload.correctAnswers,
+        }}
+        onResponseChanged={(value) =>
+          handleAnswersChanged(value.answers, value.correctAnswers)
+        }
+      />
+      <CheckBoxGroupInputCard
+        promptText="Additional settings:"
+        fieldPayload={{ fields: [oneClickResponseKey] }}
+        response={{
+          selectedFields: oneClickResponse ? [oneClickResponseKey] : [],
+        }}
+        onResponseChanged={(value) =>
+          handleSetOneClickResponse(
+            value.selectedFields.includes(oneClickResponseKey)
+          )
+        }
+      />
     </>
   );
 }; // EditableMultipleChoiceItemContent
@@ -249,7 +204,7 @@ export const multipleChoiceItemFactory: AbstractActivityItemFactory<MultipleChoi
     ),
     defaultDefinition: {
       prompt: "",
-      correctAnswerIndex: -1,
+      correctAnswers: [],
       answers: ["", ""],
     },
   }; // multipleChoiceItemFactory

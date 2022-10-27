@@ -1,6 +1,10 @@
 //------------------------------------------
 //          ACTIVITY DEFINITIONS
 //------------------------------------------
+import {
+  MultipleChoiceFieldDefinition,
+  MultipleChoiceResponseDefinition,
+} from "../components/Forms/Cards/MultipleChoiceCard";
 import { ActivityInstance } from "./activity.model";
 
 export interface MultistageFormFieldDefinition {
@@ -47,14 +51,8 @@ export type MultistageFormResponses = {
 //          GENERIC REACT COMPONENT PROPS FOR EDITING/CONSUMPTION ITEMS
 //---------------------------------------------------------------------------------
 
-export interface EditableFieldProps<FieldPayload> {
-  /** Definition to be used to render the stateless editable field component (only the exclusive part of the definition, prompt text and type are edited elsewhere) */
-  fieldPayload: FieldPayload;
-  /** Callback to notify parent component of a change whithin the current definition */
-  onPayloadChanged?: (definition: FieldPayload) => void;
-} // EditableFieldProps<T>
-
-export interface ConsumableFieldProps<FieldPayload, FieldResponse> {
+export interface ConsumableFieldProps<FieldPayload, FieldResponse>
+  extends React.HTMLAttributes<HTMLDivElement> {
   /** Prompt for the user to fill in this field */
   promptText?: string;
   /** Whether this field should always be filled in by the user */
@@ -158,6 +156,17 @@ export interface LongTextResponseDefinition {
   text: string;
 } // LongTextResponseDefinition
 
+//-------------------
+//  DROPDOWN FIELD
+//-------------------
+export interface DropdownFieldDefinition {
+  options: string[];
+} // DropdownFieldDefinition
+
+export interface DropdownResponseDefinition {
+  selectedOption?: string;
+} // DropdownResponseDefinition
+
 //------------------------
 //  CALENDAR INPUT FIELD
 //------------------------
@@ -193,25 +202,6 @@ export interface LikertScaleResponseDefinition {
    */
   responses: (number | undefined)[];
 } // LikertScaleResponseDefinition
-
-//------------------------
-//  MULTIPLE CHOICE FIELD
-//------------------------
-export interface MultipleChoiceFieldDefinition {
-  /** answers to choose from */
-  answers: string[];
-  /** maximum number of answers to allow */
-  maxAnswers?: number;
-} // MultipleChoiceFieldDefinition
-
-export interface MultipleChoiceResponseDefinition {
-  /**
-   * Responses to the multiple choice question.
-   * This is an array representing the indices of all
-   * selected answers within the list of possible responses.
-   */
-  selectedResponses: number[];
-} // MultipleChoiceResponseDefinition
 
 //-------------------
 //    RANGE FIELD

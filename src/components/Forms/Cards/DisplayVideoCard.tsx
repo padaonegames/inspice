@@ -1,11 +1,11 @@
 import {
-  EditableFieldProps,
   DisplayVideoFieldDefinition,
   ConsumableFieldProps,
 } from "../../../services/multistageFormActivity.model";
 import { InputText } from "./cardStyles";
 import FormCard from "./FormCard";
 import YouTube, { YouTubeProps } from "react-youtube";
+import { EditableFieldProps } from "./EditableFieldCard";
 
 const getVideoID = (link: string) => {
   var regExp =

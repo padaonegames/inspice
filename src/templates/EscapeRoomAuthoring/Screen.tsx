@@ -67,9 +67,12 @@ import { Navigate, useParams } from "react-router-dom";
 import { escapeRoomService } from "../../services";
 import { LoadingOverlay } from "../../components/Layout/LoadingOverlay";
 
-const Root = styled.div`
+const Root = styled.main`
   display: flex;
   flex-direction: column;
+  width: 100%;
+  margin: 0px;
+  padding: 0px;
 `;
 
 //-------------------------------------------------------
@@ -310,7 +313,8 @@ export const CreateEscapeRoomScreenComponent = (
     );
 
   // currently selected stage from activityDefinition.stages
-  const [selectedStage, setSelectedStage] = useState<number>(0);
+  const [selectedStage, setSelectedStage] =
+    useState<number | undefined>(undefined);
 
   // State that specifies what should be displayer on the screen (Escape room general settings or one of its editors)
   const [showSettings, setShowSettings] = useState<boolean>(true);
@@ -344,7 +348,13 @@ export const CreateEscapeRoomScreenComponent = (
     });
   }; // handleAddStage
 
+  const validStageSelected =
+    selectedStage !== undefined &&
+    selectedStage < activityDefinition.stages.length &&
+    selectedStage >= 0;
+
   const handleStageDefinitionChanged = (stageDefinition: SupportedStage) => {
+    if (!validStageSelected || selectedStage === undefined) return;
     setActivityDefinition((prev) => {
       let next = cloneDeep(prev);
       next.stages[selectedStage] = stageDefinition;
@@ -353,6 +363,7 @@ export const CreateEscapeRoomScreenComponent = (
   }; // handleStageDefinitionChanged
 
   const handleDeleteStage = () => {
+    if (!validStageSelected || selectedStage === undefined) return;
     setActivityDefinition((prev) => {
       let next = cloneDeep(prev);
       next.stages = [
@@ -364,6 +375,7 @@ export const CreateEscapeRoomScreenComponent = (
   }; // handleDeleteStage
 
   const handleDuplicateStage = () => {
+    if (!validStageSelected || selectedStage === undefined) return;
     setActivityDefinition((prev) => {
       let next = cloneDeep(prev);
       next.stages = [
@@ -375,9 +387,13 @@ export const CreateEscapeRoomScreenComponent = (
     });
   }; // handleDuplicateStage
 
-  const currentStage = activityDefinition.stages[selectedStage];
+  const currentStage =
+    validStageSelected && selectedStage !== undefined
+      ? activityDefinition.stages[selectedStage]
+      : undefined;
 
   const duplicateStage = (index: number) => {
+    if (!validStageSelected) return;
     setActivityDefinition((prev) => {
       let next = cloneDeep(prev);
       next.stages = [
@@ -387,9 +403,6 @@ export const CreateEscapeRoomScreenComponent = (
       ];
       return next;
     });
-
-    // Changes index if necesary to continue displaying the same stage
-    setSelectedStage((prev) => (index < prev ? prev + 1 : prev));
   }; // duplicateStage
 
   const deleteStage = (index: number) => {
@@ -403,7 +416,7 @@ export const CreateEscapeRoomScreenComponent = (
     });
 
     // Changes index if necesary to continue displaying the same stage
-    setSelectedStage((prev) => (index < prev ? prev - 1 : prev));
+    setSelectedStage((prev) => (prev && index < prev ? prev - 1 : prev));
   }; // deleteStage
 
   const handleCharactersChanged = (characters: CharacterDefinition[]) => {
@@ -412,6 +425,47 @@ export const CreateEscapeRoomScreenComponent = (
       characters: characters,
     }));
   }; // handleCharactersChanged
+
+  const handleGoToSettings = () => {
+    setShowSettings(true);
+    setSelectedStage(undefined);
+  }; // handleGoToSettings
+
+  const handleMoveStageUp = (index: number) => {
+    if (index <= 0) return;
+
+    setActivityDefinition((prev) => {
+      let aux = cloneDeep(prev);
+      aux.stages = [
+        ...aux.stages.slice(0, index - 1),
+        aux.stages[index],
+        aux.stages[index - 1],
+        ...aux.stages.slice(index + 1),
+      ];
+      return aux;
+    });
+
+    // ensure that stage is still selected after the change
+    if (selectedStage === index) setSelectedStage(index - 1);
+  }; // handleMoveStageUp
+
+  const handleMoveStageDown = (index: number) => {
+    if (index + 1 >= activityDefinition.stages.length) return;
+
+    setActivityDefinition((prev) => {
+      let aux = cloneDeep(prev);
+      aux.stages = [
+        ...aux.stages.slice(0, index),
+        aux.stages[index + 1],
+        aux.stages[index],
+        ...aux.stages.slice(index + 2),
+      ];
+      return aux;
+    });
+
+    // ensure that stage is still selected after the change
+    if (selectedStage === index) setSelectedStage(index + 1);
+  }; // handleMoveStageDown
 
   return (
     <Root>
@@ -429,9 +483,11 @@ export const CreateEscapeRoomScreenComponent = (
             setSelectedStage(index);
             setShowSettings(false);
           }}
-          handleDuplicateStage={duplicateStage}
-          handleDeleteStage={deleteStage}
-          handleGoToSettings={() => setShowSettings(true)}
+          onDuplicateStage={duplicateStage}
+          onDeleteStage={deleteStage}
+          onStageMoveDown={handleMoveStageDown}
+          onStageMoveUp={handleMoveStageUp}
+          onGoToSettings={handleGoToSettings}
         />
 
         {/* Editors for the multiple stages avaliable in an escape room game */}

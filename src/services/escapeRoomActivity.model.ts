@@ -57,7 +57,7 @@ export const default_puzzle: SupportedPuzzle = {
   type: "multiple-choice",
   payload: {
     prompt: "",
-    correctAnswerIndex: 0,
+    correctAnswers: [],
     answers: [],
   },
 }; // default_puzzle
@@ -140,7 +140,7 @@ export interface RoomBlock {
 export const default_room_block: RoomBlock = {
   blockName: "Default Name",
   blockDescription: "Default Description",
-  puzzles: [default_puzzle, default_puzzle],
+  puzzles: [default_puzzle],
 }; // default_room_block
 
 // ---------------------------------------------------------------
@@ -163,10 +163,14 @@ export interface MultipleChoiceItemDefinition {
   prompt: string;
   /** answers to choose from */
   answers: string[];
-  /** index of the answer that is considered correct */
-  correctAnswerIndex: number;
+  /** indices of the answers that are considered correct */
+  correctAnswers: number[];
+  /** minimum number of answers to allow */
+  minAnswers?: number;
   /** maximum number of answers to allow */
   maxAnswers?: number;
+  /** whether to enable one-click response for this question */
+  oneClickResponse?: boolean;
 } // MultipleChoiceItemDefinition
 
 export interface QrScanItemDefinition {
@@ -178,12 +182,14 @@ export interface ArScanItemDefinition {
 } // ArScanItemDefinition
 
 export interface WaitingCodeDefinition {
-  /** Password to enter in order to continue in the game */
-  code: string;
-  /** hints shown before requesting the password */
-  texts: string[];
+  /** Valid passwords to enter in order to continue in the game */
+  codes: string[];
+  /** text shown before requesting the password */
+  text: string;
   /** maximum number of texts to show */
   maxTexts?: number;
+  /** whether the keys from codes are case-sensitive, defaults to false */
+  caseSensitive?: boolean;
 } // WaitingCodeDefinition
 
 export interface LoadSceneDefinition {

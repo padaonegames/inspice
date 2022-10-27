@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import styled, { css } from "styled-components";
 import {
   AvailableMultistageFormFieldType,
-  EditableFieldProps,
   MultistageFormFieldDefinition,
   availableMultistageFormItemTypes,
   SupportedFormField,
@@ -128,20 +127,29 @@ const DropdownMenuItem = styled.a`
   }
 `;
 
+export interface EditableFieldProps<FieldPayload> {
+  /** Definition to be used to render the stateless editable field component (only the exclusive part of the definition, prompt text and type are edited elsewhere) */
+  fieldPayload: FieldPayload;
+  /** Callback to notify parent component of a change whithin the current definition */
+  onPayloadChanged?: (definition: FieldPayload) => void;
+} // EditableFieldProps<T>
+
+export interface FieldMappingEntry<T extends SupportedFormField> {
+  /** How to render this option within a list. Defaults to fieldType */
+  displayName?: string;
+  /** What component to place next to the display name */
+  iconComponent?: JSX.Element;
+  /** Generation logic to use to create a form editing component */
+  editingComponentProducer: (
+    editingFormProps: EditableFieldProps<T["payload"]>
+  ) => JSX.Element;
+  /** Default value for FieldPayload */
+  defaultFieldPayload: T["payload"];
+} // FieldMappingEntry
+
 export type FieldMappings<T extends SupportedFormField> = {
   /** What type of field we are working with here*/
-  [P in T["type"]]: {
-    /** How to render this option within a list. Defaults to fieldType */
-    displayName?: string;
-    /** What component to place next to the display name */
-    iconComponent?: JSX.Element;
-    /** Generation logic to use to create a form editing component */
-    editingComponentProducer: (
-      editingFormProps: EditableFieldProps<Extract<T, { type: P }>["payload"]>
-    ) => JSX.Element;
-    /** Default value for FieldPayload */
-    defaultFieldPayload: Extract<T, { type: P }>["payload"];
-  };
+  [P in T["type"]]: FieldMappingEntry<Extract<T, { type: P }>>;
 }; // FieldMappings
 
 export interface EditableFieldCardProps {
@@ -418,6 +426,6 @@ export const EditableFieldCard = (
       </CardPanel>
     </Root>
   );
-};
+}; // EditableFieldCard
 
 export default EditableFieldCard;

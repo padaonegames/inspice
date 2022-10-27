@@ -32,6 +32,7 @@ import CreateStoryFlow from "../components/ArtworkStoriesPanel/CreateStoryFlow";
 import StoryViewStep from "./Steps/StoryViewStep";
 import { useTranslation } from "react-i18next";
 import { RecommendationsByEmotionsScreen } from "../components/ArtworkStoriesPanel/CreateStorySteps/RecommendationsStep";
+import RecommendedStoriesPanel from "../components/ArtworkStoriesPanel/RecommendedStoriesPanel";
 
 const Root = styled.div`
   display: flex;
@@ -167,6 +168,8 @@ const GamGameUserFlow = ({
 }: GamGameUserFlowProps): JSX.Element => {
   const { t } = useTranslation("gamGame");
 
+  console.log(activityDefinition);
+
   const gamGameNavigationConfig: NavMenuElem[] = [
     {
       title: t("home"),
@@ -222,7 +225,12 @@ const GamGameUserFlow = ({
           >
             <Route path="home" element={<GeneralInformationStep />} />
             <Route path="collection" element={<CollectionStep />} />
+
             <Route path="stories/:storyId" element={<StoryViewStep />} />
+            <Route
+              path="stories/:storyId/recommend-stories"
+              element={<RecommendedStoriesPanel />}
+            />
             <Route path="stories/create" element={<CreateStoryFlow />} />
             <Route
               path="collection/:artworkId/*"

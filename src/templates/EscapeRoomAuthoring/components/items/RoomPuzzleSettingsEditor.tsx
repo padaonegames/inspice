@@ -244,6 +244,8 @@ const SelectFieldTypeDropdownButton = styled.span`
 export interface RoomPuzzleSettingsEditorProps {
   /** Data of the puzzle this editor is containing */
   puzzle: SupportedPuzzle;
+  /** deletion enabled */
+  deletionEnabled?: boolean;
   /** Index of this puzzle inside the block it is currently in */
   index: number;
   /** Boolean that specifies wether this card is the first one inside it's block and can be moved upwards or not */
@@ -273,6 +275,7 @@ export const RoomPuzzleSettingsEditor = (
 ): JSX.Element => {
   const {
     puzzle,
+    deletionEnabled = true,
     index,
     firstCard,
     lastCard,
@@ -355,11 +358,13 @@ export const RoomPuzzleSettingsEditor = (
           onMouseDown={handlePuzzleMovedDownwards}
         />
 
-        <DeleteIcon
-          onClick={() => {
-            handlePuzzleDelete();
-          }}
-        />
+        {deletionEnabled && (
+          <DeleteIcon
+            onClick={() => {
+              handlePuzzleDelete();
+            }}
+          />
+        )}
 
         <CopyIcon
           onClick={() => {

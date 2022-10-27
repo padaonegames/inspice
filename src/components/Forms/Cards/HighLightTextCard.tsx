@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import {
   ConsumableFieldProps,
-  EditableFieldProps,
   HighlightTextFieldDefinition,
   HighlightTextResponseDefinition,
 } from "../../../services/multistageFormActivity.model";
@@ -14,6 +13,7 @@ import { Add } from "@styled-icons/fluentui-system-filled/Add";
 import { Minus } from "@styled-icons/evaicons-solid/Minus";
 import { HighlightOff } from "styled-icons/material";
 import { Eraser } from "@styled-icons/fluentui-system-regular/Eraser";
+import { EditableFieldProps } from "./EditableFieldCard";
 
 interface ButtonProps {
   avaliable: boolean;

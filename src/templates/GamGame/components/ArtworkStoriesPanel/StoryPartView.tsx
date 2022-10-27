@@ -12,7 +12,6 @@ import {
   ArtworkListDottedLine,
   ArtworkTitle,
   StoryDataContainer,
-  StoryDisplayActionButton,
   StoryDisplayHeaderRow,
   StoryDisplayMainInfoPanel,
   StoryDisplayQuitIcon,
@@ -23,8 +22,70 @@ import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
 import { Thinking } from "@styled-icons/fluentui-system-regular/Thinking";
 import { HeartOutlined } from "@styled-icons/entypo/HeartOutlined";
+import { HandThumbsUp } from "@styled-icons/bootstrap/HandThumbsUp";
+import { HandThumbsUpFill } from "@styled-icons/bootstrap/HandThumbsUpFill";
+import { Explore } from "@styled-icons/material-outlined/Explore";
 import { BackInTime } from "@styled-icons/entypo/BackInTime";
+import { Equals } from "@styled-icons/fa-solid/Equals";
+import { NotEqual } from "@styled-icons/fa-solid/NotEqual";
 import styled, { css } from "styled-components";
+import { useNavigate } from "react-router-dom";
+
+const StoryActionsButtonStyle = css`
+  height: 1.75em;
+  width: 1.75em;
+  color: ${(props) => props.theme.textColor};
+  cursor: pointer;
+  margin-left: 0.75em;
+`;
+
+const LikeIcon = styled(HandThumbsUp)`
+  ${StoryActionsButtonStyle}
+`;
+
+const LikeIconFilled = styled(HandThumbsUpFill)`
+  ${StoryActionsButtonStyle}
+`;
+
+const ExploreStoriesIcon = styled(Explore)`
+  height: 1.75em;
+  width: 1.75em;
+  color: ${(props) => props.theme.textColor};
+`;
+
+const ExploreStoriesContainer = styled.div`
+  ${StoryActionsButtonStyle}
+  position: relative;
+`;
+
+const SimilarOppositeOverlayStyle = css`
+  position: absolute;
+  bottom: 2.5%;
+  right: -0.2em;
+  height: 0.85em;
+  width: 0.85em;
+  color: ${(props) => props.theme.textColor};
+  background-color: ${(props) => props.theme.cardBackground};
+  border-radius: 50%;
+  border: 1px solid ${(props) => props.theme.textColor};
+  padding: 0.075em;
+`;
+
+const SimilarOverlayIcon = styled(Equals)`
+  ${SimilarOppositeOverlayStyle}
+`;
+
+const OppositeOverlayIcon = styled(NotEqual)`
+  ${SimilarOppositeOverlayStyle}
+`;
+
+const StoryActionsRow = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+`;
 
 const templateIconStyle = css`
   width: auto;
@@ -125,14 +186,35 @@ export interface StoryPartViewProps {
   storyPart: GamGameStoryPart;
   /** Artwork Data for the artwork included in storyPart as artworkId */
   artworkData?: ArtworkData;
-  /** Callback to parent component specifying that the next button has been pressed */
-  onNextClicked?: () => void;
   /** Callback to parent specifying that the user wishes to close this story */
   onQuit?: () => void;
-}
+
+  /** whether previous artwork button is enabled */
+  hasPrevious?: boolean;
+  /** whether next artwork button is enabled */
+  hasNext?: boolean;
+  /** Callback to parent specifying that the user wishes to move to the previous artwork */
+  onPreviousArtworkClicked?: () => void;
+  /** Callback to parent specifying that the user wishes to move to the next artwork */
+  onNextArtworkClicked?: () => void;
+  /** whether this story has been liked by the user */
+  liked?: boolean;
+  /** callback to parent specifying that user wishes to change whether they like the current story or not */
+  onLikeStatusChanged?: (value: boolean) => void;
+} // StoryPartViewProps
 
 export const StoryPartView = (props: StoryPartViewProps): JSX.Element => {
-  const { storyPart, artworkData, onNextClicked, onQuit } = props;
+  const {
+    storyPart,
+    artworkData,
+    onQuit,
+    hasNext,
+    hasPrevious,
+    onPreviousArtworkClicked,
+    onNextArtworkClicked,
+    liked,
+    onLikeStatusChanged,
+  } = props;
 
   const [selectedTemplate, setSelectedTemplate] =
     useState<AvailableTextTemplate>("itMakesMeThinkAbout");
@@ -150,16 +232,48 @@ export const StoryPartView = (props: StoryPartViewProps): JSX.Element => {
     setSelectedTemplate("itMakesMeThinkAbout");
   }, [storyPart]);
 
+  const handleLikeStatusChanged = (status: boolean) => {
+    if (!onLikeStatusChanged) return;
+    onLikeStatusChanged(status);
+  }; // handleLikeClicked
+
   const { t } = useTranslation("gamGame");
+  const navigate = useNavigate();
 
   return (
     <ContainerCard upperDecorator>
       <StoryDisplaySelectionPanel>
         <StoryDisplayHeaderRow>
           <StoryDisplayQuitIcon onClick={onQuit} />
-          <StoryDisplayActionButton onClick={onNextClicked} enabled>
-            {t("next")}
-          </StoryDisplayActionButton>
+          <StoryActionsRow>
+            <ExploreStoriesContainer
+              title={t("exploreSimilarStories")}
+              onClick={() => navigate("recommend-stories?relation=similar")}
+            >
+              <ExploreStoriesIcon />
+              <SimilarOverlayIcon />
+            </ExploreStoriesContainer>
+            <ExploreStoriesContainer
+              title={t("exploreOppositeStories")}
+              onClick={() => navigate("recommend-stories?relation=opposite")}
+            >
+              <ExploreStoriesIcon />
+              <OppositeOverlayIcon />
+            </ExploreStoriesContainer>
+
+            {!liked && (
+              <LikeIcon
+                title={t("likeThisStory")}
+                onClick={() => handleLikeStatusChanged(true)}
+              />
+            )}
+            {liked && (
+              <LikeIconFilled
+                title={t("dislikeThisStory")}
+                onClick={() => handleLikeStatusChanged(false)}
+              />
+            )}
+          </StoryActionsRow>
         </StoryDisplayHeaderRow>
 
         <ArtworkListDottedLine />
@@ -216,6 +330,10 @@ export const StoryPartView = (props: StoryPartViewProps): JSX.Element => {
           }
           emojis={storyPart.multimediaData.emojis}
           tags={storyPart.multimediaData.tags}
+          hasNext={hasNext}
+          hasPrevious={hasPrevious}
+          onNextArtworkClicked={onNextArtworkClicked}
+          onPreviousArtworkClicked={onPreviousArtworkClicked}
         />
       </StoryDisplaySelectionPanel>
     </ContainerCard>

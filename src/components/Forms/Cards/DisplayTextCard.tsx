@@ -1,10 +1,10 @@
 import styled from "styled-components";
 import {
-  EditableFieldProps,
   DisplayTextFieldDefinition,
   ConsumableFieldProps,
 } from "../../../services/multistageFormActivity.model";
 import { EditableText, Root } from "./cardStyles";
+import { EditableFieldProps } from "./EditableFieldCard";
 import FormCard from "./FormCard";
 
 export const TextPreview = styled.div`

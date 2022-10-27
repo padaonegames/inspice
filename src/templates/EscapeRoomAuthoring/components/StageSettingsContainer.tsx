@@ -3,19 +3,26 @@ import styled, { css } from "styled-components";
 import { StageMappings } from "./EditableStage";
 import { ChevronDown } from "@styled-icons/boxicons-regular/ChevronDown";
 import { ExtensionPuzzle } from "@styled-icons/ionicons-outline/ExtensionPuzzle";
-import { AvailableEscapeRoomStageType, escapeRoomStageTypes, SupportedStage } from "../../../services/escapeRoomActivity.model";
+import {
+  AvailableEscapeRoomStageType,
+  escapeRoomStageTypes,
+  SupportedStage,
+} from "../../../services/escapeRoomActivity.model";
 
-const Root = styled.aside`
+const Root = styled.div`
   display: flex;
   flex-direction: column;
   flex: 0 0 18rem;
   width: 18rem;
+  height: calc(100% - 2rem);
   position: relative;
   box-shadow: rgba(0, 0, 0, 0.15) -2px 0px 4px 0px;
-  background-color: rgb(255, 255, 255);
+  background-color: ${(props) => props.theme.cardBackground};
   margin-right: 0rem;
   padding: 1em;
-  padding-top: 3em;
+
+  transition: margin 0.6s ease-in-out 0s, transform 0.1s ease-in-out 0s;
+  transform: rotateY(0deg);
 `;
 
 const HorizontalLine = styled.div`
@@ -24,24 +31,24 @@ const HorizontalLine = styled.div`
   border-style: solid;
   border-color: lightgray;
   border-width: 1px 0px 0px 0px;
-  margin: 1em auto;
+  margin: 1.5em auto;
 `;
 
 const FieldLabel = styled.label`
   font-size: 0.875rem;
   font-weight: 500;
 
-  font-family: ${props => props.theme.contentFont};
+  font-family: ${(props) => props.theme.contentFont};
   line-height: 135%;
-  margin-top: 10px;
+  margin-top: 1.5em;
 `;
 
 const fieldIconStyle = css`
   display: inline-block;
   vertical-align: middle;
-  width: 24px;
-  height: 24px;
-  margin-right: 7px;
+  width: 1.5em;
+  height: 1.5em;
+  margin-right: 1em;
 `;
 
 const StageIcon = styled(ExtensionPuzzle)`
@@ -50,11 +57,11 @@ const StageIcon = styled(ExtensionPuzzle)`
 
 /**
  * Recommended styles for an icon being passed to EditableStage
- * component within a list of stage Mapping specifications for optimal 
+ * component within a list of stage Mapping specifications for optimal
  * rendering.
  */
 export const stageTypeIcon = css`
-  color: ${props => props.theme.textColor};
+  color: ${(props) => props.theme.textColor};
   height: 1.75em;
   width: 1.75em;
   margin-right: 0.75em;
@@ -69,7 +76,7 @@ const DropdownMenu = styled.div`
   position: absolute;
   left: 0;
   top: 2.5em;
-  background-color: ${props => props.theme.cardBackground};
+  background-color: ${(props) => props.theme.cardBackground};
   min-width: 160px;
   width: 100%;
   box-shadow: rgba(37, 7, 107, 0.35) 0px 2px 4px 0px;
@@ -80,7 +87,7 @@ const DropdownMenu = styled.div`
 `;
 
 const DropdownMenuItem = styled.a`
-  color: ${props => props.theme.textColor};
+  color: ${(props) => props.theme.textColor};
   padding: 0.5em 0.85em;
   margin-top: 0.2em;
   margin-bottom: 0.2em;
@@ -91,7 +98,7 @@ const DropdownMenuItem = styled.a`
   flex-direction: row;
   align-items: center;
   justify-content: start;
-  font-family: ${props => props.theme.contentFont};
+  font-family: ${(props) => props.theme.contentFont};
 
   &:hover {
     background-color: #eeeeee;
@@ -101,11 +108,11 @@ const DropdownMenuItem = styled.a`
 const SelectFieldTypeDropdownButton = styled.span`
   font-size: 0.9em;
   font-weight: 200;
-  font-family: ${props => props.theme.contentFont};
+  font-family: ${(props) => props.theme.contentFont};
   line-height: 135%;
-  margin-top: 10px;
+  margin-top: 1em;
   cursor: pointer;
-  color: ${props => props.theme.textColor};
+  color: ${(props) => props.theme.textColor};
 
   position: relative;
 
@@ -129,17 +136,18 @@ const SelectFieldTypeDropdownButton = styled.span`
 `;
 
 const ButtonsContainer = styled.div`
-  padding: 1rem 0px 2.5rem 0;
-  width: 85%;
+  padding: 1rem 0;
+  width: 90%;
+  height: 5rem;
   border-top: 1px solid rgba(0, 0, 0, 0.1);
   display: flex;
   -moz-box-pack: center;
   justify-content: space-evenly;
   -moz-box-align: center;
   align-items: center;
-  position: absolute;
-  bottom: 0;
-  left: 7.5%;
+  align-self: center;
+
+  margin: 0 1rem;
 `;
 
 const DeleteButton = styled.button`
@@ -160,7 +168,7 @@ const DeleteButton = styled.button`
 
   font-size: 0.875rem;
   font-weight: 500;
-  font-family: ${props => props.theme.contentFont};
+  font-family: ${(props) => props.theme.contentFont};
 
   text-align: center;
   text-decoration: none;
@@ -192,7 +200,7 @@ const DuplicateButton = styled.button`
 
   font-size: 0.875rem;
   font-weight: 500;
-  font-family: ${props => props.theme.contentFont};
+  font-family: ${(props) => props.theme.contentFont};
 
   text-align: center;
   text-decoration: none;
@@ -202,6 +210,12 @@ const DuplicateButton = styled.button`
   padding: 0px 16px 4px;
   line-height: 32px;
   position: relative;
+`;
+
+const SettingsContainer = styled.div`
+  height: calc(100% - 6rem);
+  width: 100%;
+  padding: 0.5em;
 `;
 
 export interface StageSettingsContainerProps {
@@ -217,17 +231,19 @@ export interface StageSettingsContainerProps {
   onStageDuplicated?: () => void;
 } // StageSettingsContainerProps
 
-export const StageSettingsContainer = (props: StageSettingsContainerProps): JSX.Element => {
-
+export const StageSettingsContainer = (
+  props: StageSettingsContainerProps
+): JSX.Element => {
   const {
     stageMappings,
     selectedStageType,
     onStageTypeChanged,
     onStageDeleted,
-    onStageDuplicated
+    onStageDuplicated,
   } = props;
 
-  const [stageTypeDropdownOpen, setStageTypeDropdownOpen] = useState<boolean>(false);
+  const [stageTypeDropdownOpen, setStageTypeDropdownOpen] =
+    useState<boolean>(false);
 
   const selectedStageMapping = stageMappings[selectedStageType];
 
@@ -239,23 +255,36 @@ export const StageSettingsContainer = (props: StageSettingsContainerProps): JSX.
 
   return (
     <Root>
-      <FieldLabel>
-        <StageIcon />
-        Stage Type
-        <SelectFieldTypeDropdownButton onClick={() => setStageTypeDropdownOpen(prev => !prev)}>
-          {selectedStageMapping.iconComponent}{selectedStageMapping?.displayName ?? selectedStageType ?? 'Select a stage type'} <ExpandDropdownIcon />
-          {stageTypeDropdownOpen &&
-            <DropdownMenu>
-              {escapeRoomStageTypes.map(elem => (
-                <DropdownMenuItem onClick={() => handleStageTypeChanged(elem)}>
-                  {stageMappings[elem].iconComponent}
-                  {stageMappings[elem].displayName ?? elem}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenu>}
-        </SelectFieldTypeDropdownButton>
-      </FieldLabel>
-      <HorizontalLine />
+      <SettingsContainer>
+        <FieldLabel>
+          <StageIcon />
+          Stage Type
+          <SelectFieldTypeDropdownButton
+            onClick={() => setStageTypeDropdownOpen((prev) => !prev)}
+          >
+            {selectedStageMapping.iconComponent}
+            {selectedStageMapping?.displayName ??
+              selectedStageType ??
+              "Select a stage type"}{" "}
+            <ExpandDropdownIcon />
+            {stageTypeDropdownOpen && (
+              <DropdownMenu>
+                {escapeRoomStageTypes.map((elem) => (
+                  <DropdownMenuItem
+                    onClick={() => handleStageTypeChanged(elem)}
+                    key={elem}
+                  >
+                    {stageMappings[elem].iconComponent}
+                    {stageMappings[elem].displayName ?? elem}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenu>
+            )}
+          </SelectFieldTypeDropdownButton>
+        </FieldLabel>
+        <HorizontalLine />
+      </SettingsContainer>
+
       <ButtonsContainer>
         <DeleteButton onClick={onStageDeleted}>Delete</DeleteButton>
         <DuplicateButton onClick={onStageDuplicated}>Duplicate</DuplicateButton>

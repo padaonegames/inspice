@@ -170,7 +170,8 @@ const DropdownMenuItem = styled.a`
   }
 `;
 
-export interface StepTitleCardProps {
+export interface StepTitleCardProps
+  extends React.HTMLAttributes<HTMLDivElement> {
   /** Step's title. */
   stepTitle: string;
   /** Short description of what needs to be done within the step. */
@@ -200,7 +201,7 @@ export const StepTitleCard = (props: StepTitleCardProps): JSX.Element => {
   useEffect(() => {}, []); // useEffect
 
   return (
-    <Root>
+    <Root {...props}>
       <TitleColor />
       <CardPanel>
         <HeaderRow>

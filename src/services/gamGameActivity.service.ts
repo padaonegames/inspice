@@ -75,6 +75,14 @@ export class GamGameActivityService {
     return getApiResult<GamGameStoryDefinitionData[]>(url);
   } // getGamGameStoryDefinitions
 
+  public async getGamGameStoryRecommendationsByEmotion(
+    relation: "opposite" | "similar",
+    storyId: string
+  ): Promise<ApiResult<GamGameStoryDefinitionData[]>> {
+    const url = `${this.apiUrl}/gam-game/stories/story-recommendations?relation=${relation}&storyId=${storyId}`;
+    return getApiResult<GamGameStoryDefinitionData[]>(url);
+  } // getGamGameStoryRecommendationsByEmotion
+
   /**
    * @description Retrieve all GAM Game user-created story definitions
    */
@@ -94,6 +102,19 @@ export class GamGameActivityService {
   ): Promise<ApiResult<GamGameStoryDefinitionData[]>> {
     const url = `${this.apiUrl}/gam-game/story/${storyId}`;
     return getApiResult<GamGameStoryDefinitionData[]>(url);
+  } // getGamGameStoryDefinitionById
+
+  /**
+   * @description Set the like status of given story
+   * @param storyId Id of the story to like or dislike
+   * @param likeStatus whether to like or dislike story
+   */
+  public async setStoryLikedStatus(
+    storyId: string,
+    likeStatus: boolean
+  ): Promise<ApiResult<void>> {
+    const url = `${this.apiUrl}/gam-game/stories/set-story-like-status?storyId=${storyId}&likeStatus=${likeStatus}`;
+    return putApiResult<void, void>(url, undefined);
   } // getGamGameStoryDefinitionById
 
   /**

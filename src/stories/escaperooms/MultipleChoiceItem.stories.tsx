@@ -38,6 +38,6 @@ Alternative.args = {
       "Could be this one",
       "Not this one",
     ],
-    correctAnswerIndex: 2,
+    correctAnswers: [2],
   },
 };

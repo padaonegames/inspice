@@ -3,75 +3,45 @@ import {
   QrScanItemDefinition,
 } from "../../../../services/escapeRoomActivity.model";
 import { AbstractActivityItemFactory } from "../ActivityItemFactory";
-import { PromptField } from "./PromptField";
 import { QRCodeCanvas } from "qrcode.react";
 
-import styled from "styled-components";
-import { QrCode } from "@styled-icons/material/QrCode";
-import { Download } from "@styled-icons/bootstrap/Download";
+import styled, { css } from "styled-components";
+import { ArrowDownload } from "@styled-icons/fluentui-system-filled/ArrowDownload";
+import ShortTextInputCard from "../../../../components/Forms/Cards/ShortTextInputCard";
+import FormCard from "../../../../components/Forms/Cards/FormCard";
 
-const DownloadIcon = styled(Download)`
-  color: white;
-  height: 1.75em;
-  width: auto;
-  margin-right: 0.5rem;
-`;
-
-const QrCodeIcon = styled(QrCode)`
+export const fieldTypeIcon = css`
   color: ${(props) => props.theme.textColor};
   height: 1.75em;
-  width: auto;
-  margin-right: 0.5em;
+  width: 1.75em;
+  margin-right: 0.75em;
 `;
 
-const ItemTitle = styled.div`
-  font-size: 1em;
-  font-weight: 500;
-  font-family: ${(props) => props.theme.contentFont};
-  line-height: 135%;
-
-  margin-top: 0.25em;
-  margin-bottom: 0.5em;
-  padding: 0.5em 1em;
-  border-top: none;
-  color: black;
-  line-height: 135%;
-  width: fit-content;
-  text-align: center;
-
-  display: flex;
-  align-items: center;
-
-  background-color: rgb(240, 240, 240);
-  border-bottom: 2px solid rgb(15, 90, 188);
-`;
-
-//Components for the button to download the QR
-const DownloadButton = styled.div`
-  font-size: 1em;
-  font-weight: 500;
+const DownloadQrIcon = styled(ArrowDownload)`
+  ${fieldTypeIcon}
+  cursor: pointer;
   color: white;
-  font-family: ${(props) => props.theme.contentFont};
-  line-height: 135%;
-  margin-top: 0.25em;
-  margin-bottom: 0.25em;
-  padding: 0.75em 1.25em;
+`;
 
+const DownloadQrButton = styled.button`
+  font-family: ${(props) => props.theme.contentFont};
+  font-size: 0.8em;
+  cursor: pointer;
+  background-color: hsl(10, 80%, 80%);
+  border-radius: 50px;
+  box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 0.5rem 0px;
+  height: 3em;
+  padding: 0 1em;
+  color: white;
+  width: fit-content;
+  margin-top: 0.75em;
+`;
+
+const QrCanvasContainer = styled.div`
   display: flex;
-  flex-direction: row;
-  text-align: center;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-
-  border-radius: 0.25rem;
-  background-color: rgb(19, 104, 206);
-  border: 2px solid rgb(15, 90, 188);
-  cursor: pointer;
-
-  color: white;
-  &:hover {
-    background-color: rgb(49, 134, 236);
-  }
 `;
 
 const Root = styled.div`
@@ -83,11 +53,14 @@ const Root = styled.div`
   padding: 0.75em;
 `;
 
+export const isQrScanItemValid = (item: QrScanItemDefinition): boolean => {
+  return item.encodedText.length > 0;
+}; // isQrScanItemValid
+
 export const EditableQRScanItemContent = (
   props: EditableItemProps<QrScanItemDefinition>
 ): JSX.Element => {
   const { payload, onPayloadChanged } = props;
-
   const { encodedText } = payload;
 
   const handleEditcode = (value: string) => {
@@ -115,46 +88,53 @@ export const EditableQRScanItemContent = (
     document.body.appendChild(downloadLink);
     downloadLink.click();
     document.body.removeChild(downloadLink);
-  }; //downloadQR
+  }; // downloadQR
 
+  const qrPreviewAlertMessage =
+    payload.encodedText.length === 0
+      ? "Please enter a QR value in order to generate a preview"
+      : undefined;
   return (
-    <>
-      <Root>
-        {/* Title of the item */}
-        <ItemTitle>
-          <QrCodeIcon />
-          QR to scan
-        </ItemTitle>
+    <Root>
+      {/* Title of the item */}
+      <ShortTextInputCard
+        promptText="Text to recognize in QR:"
+        required
+        requiredAlert={payload.encodedText.length === 0}
+        fieldPayload={{ placeholder: "Value to encode in QR" }}
+        response={{ text: payload.encodedText }}
+        onResponseChanged={(value) => handleEditcode(value.text)}
+      />
 
-        {/* Preview of the QR and promptfield to edit its code */}
-        <QRCodeCanvas
-          id="qr-generator"
-          value={payload.encodedText}
-          size={200}
-          fgColor="black"
-          bgColor="white"
-          level="H"
-          includeMargin={true}
-        />
-        <PromptField
-          promptText={payload.encodedText}
-          promptPlaceholder="Value to create a new QR"
-          onPromptChange={handleEditcode}
-        />
+      {/* Preview of the QR and promptfield to edit its code */}
+      <FormCard
+        promptText="QR Preview:"
+        alertMessage={qrPreviewAlertMessage}
+        requiredAlert={!!qrPreviewAlertMessage}
+      >
+        {!qrPreviewAlertMessage && (
+          <QrCanvasContainer>
+            <QRCodeCanvas
+              id="qr-generator"
+              value={payload.encodedText}
+              size={200}
+              fgColor="black"
+              bgColor="white"
+              level="H"
+              includeMargin={true}
+            />
 
-        {/* Button that lets the user download the QR that has specified */}
-        {encodedText === "" ? (
-          <></>
-        ) : (
-          <>
-            <DownloadButton onClick={downloadQR}>
-              <DownloadIcon />
-              Download QR
-            </DownloadButton>
-          </>
+            {/* Button that lets the user download the QR that has specified */}
+            {encodedText.length > 0 && (
+              <DownloadQrButton onClick={downloadQR}>
+                <DownloadQrIcon />
+                Download QR
+              </DownloadQrButton>
+            )}
+          </QrCanvasContainer>
         )}
-      </Root>
-    </>
+      </FormCard>
+    </Root>
   );
 }; // EditableQRScanItemContent
 
@@ -172,7 +152,10 @@ const PreviewTitle = styled.div`
   overflow: hidden;
 `;
 
-const PreviewQR = styled.div`
+interface PreviewQRProps {
+  invalid?: boolean;
+}
+const PreviewQR = styled.div<PreviewQRProps>`
   width: 100%;
   height: 80%;
   display: flex;
@@ -181,6 +164,7 @@ const PreviewQR = styled.div`
   flex-wrap: wrap;
   margin-top: 3px;
   color: rgb(178, 178, 178);
+  ${(props) => props.invalid && "opacity: 0.5;"}
 `;
 
 export const QRScanItemStageSlide = (
@@ -191,16 +175,17 @@ export const QRScanItemStageSlide = (
   return (
     <>
       <PreviewTitle>
-        {encodedText === "" ? "Empty QR" : encodedText}
+        {encodedText.length === 0 ? "Invalid QR" : encodedText}
       </PreviewTitle>
 
-      <PreviewQR>
+      <PreviewQR invalid={encodedText.length === 0}>
         <QRCodeCanvas
           value={encodedText}
           size={50}
           fgColor="black"
           bgColor="white"
           level="H"
+          includeMargin
         />
       </PreviewQR>
     </>

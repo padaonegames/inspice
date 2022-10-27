@@ -1,9 +1,9 @@
 import {
-  EditableFieldProps,
   DisplayImageFieldDefinition,
   ConsumableFieldProps,
 } from "../../../services/multistageFormActivity.model";
 import { ImagePreview, InputText } from "./cardStyles";
+import { EditableFieldProps } from "./EditableFieldCard";
 import FormCard from "./FormCard";
 
 const preview_image =
