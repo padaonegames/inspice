@@ -11,6 +11,7 @@ export type ItemDefinition =
   | { type: "waiting-code"; payload: WaitingCodeDefinition }
   | { type: "load-scene"; payload: LoadSceneDefinition }
   | { type: "narrative"; payload: NarrativeItemDefinition }
+  | { type: "session-code"; payload: SessionCodeDefinition }
   | { type: "unlock-password"; payload: UnlockPasswordItemDefinition }; // ItemDefinition
 
 export const escapeRoomStageTypes = [
@@ -23,6 +24,7 @@ export const escapeRoomStageTypes = [
   "load-scene",
   "narrative",
   "unlock-password",
+  "session-code",
 ] as const; // escapeRoomStageTypes
 
 export type AvailableEscapeRoomStageType = typeof escapeRoomStageTypes[number];
@@ -42,6 +44,7 @@ export const escapeRoomPuzzleTypes = [
   "load-scene",
   "narrative",
   "unlock-password",
+  "ar-overlay",
 ] as const; // escapeRoomPuzzleTypes
 
 export type AvailableEscapeRoomPuzzleType =
@@ -204,6 +207,22 @@ export interface WaitingCodeDefinition {
   /** whether the keys from codes are case-sensitive, defaults to false */
   caseSensitive?: boolean;
 } // WaitingCodeDefinition
+
+export interface EscapeRoomActivitySession {
+  /** Unique identifier for this session within the activity */
+  sessionName: string;
+  /** available usernames that are able to access the session */
+  availableUsernames: string[];
+} // EscapeRoomActivitySession
+
+export interface SessionCodeDefinition {
+  /** Supported session definitions */
+  sessions: EscapeRoomActivitySession[];
+  /** text shown before requesting the code */
+  text: string;
+  /** whether the keys from codes are case-sensitive, defaults to false */
+  caseSensitive?: boolean;
+} // SessionCodeDefinition
 
 export interface LoadSceneDefinition {
   /** Name of the scene that is going to be loaded */

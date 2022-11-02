@@ -7,7 +7,6 @@ import { useAsyncRequest } from "../../services/useAsyncRequest";
 import {
   CharacterDefinition,
   default_room,
-  EditableItemProps,
   EscapeRoomActivityDefinition,
   SupportedStage,
 } from "../../services/escapeRoomActivity.model";
@@ -68,10 +67,15 @@ import { EscapeRoomContextProvider } from "./EscapeRoomContext";
 import { Navigate, useParams } from "react-router-dom";
 import { escapeRoomService } from "../../services";
 import { LoadingOverlay } from "../../components/Layout/LoadingOverlay";
+import { LogInCircle } from "@styled-icons/boxicons-regular/LogInCircle";
 import {
   arOverlayItemFactory,
   AROverlayItemStageSlide,
 } from "./components/items/AROverlayItem";
+import {
+  sessionCodeItemFactory,
+  SessionCodeItemStageSlide,
+} from "./components/items/SessionCodeItem";
 
 const Root = styled.main`
   display: flex;
@@ -118,6 +122,10 @@ const NarrativeIcon = styled(HistoryEdu)`
 `;
 
 const UnlockPasswordIcon = styled(Password)`
+  ${stageTypeIcon}
+`;
+
+const SessionCodeIcon = styled(LogInCircle)`
   ${stageTypeIcon}
 `;
 
@@ -176,6 +184,12 @@ export const stageMappings: StageMappings<SupportedStage> = {
     editingComponentProducer: arOverlayItemFactory.editingComponent,
     defaultStagePayload: arOverlayItemFactory.defaultDefinition,
   },
+  "session-code": {
+    displayName: "Session Code",
+    iconComponent: <SessionCodeIcon />,
+    editingComponentProducer: sessionCodeItemFactory.editingComponent,
+    defaultStagePayload: sessionCodeItemFactory.defaultDefinition,
+  },
 }; // stageMappings
 
 export const stageSlidesMappings: StageToSlideProducerMapping<SupportedStage> =
@@ -189,6 +203,7 @@ export const stageSlidesMappings: StageToSlideProducerMapping<SupportedStage> =
     narrative: NarrativeItemStageSlide,
     "unlock-password": UnlockPasswordItemStageSlide,
     "ar-overlay": AROverlayItemStageSlide,
+    "session-code": SessionCodeItemStageSlide,
   }; // stageSlidesMappings
 
 //-------------------------------------------------------

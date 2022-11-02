@@ -35,6 +35,7 @@ import { RoomBlockEditor } from "./RoomBlockEditor";
 
 import styled from "styled-components";
 import { ConferenceRoom } from "@styled-icons/fluentui-system-filled/ConferenceRoom";
+import { arOverlayItemFactory, AROverlayItemStageSlide } from "./AROverlayItem";
 
 const ExitIcon = styled(ConferenceRoom)`
   color: ${(props) => props.theme.frameColor};
@@ -51,6 +52,7 @@ export const puzzleToSlidesMappings: ItemToSlideProducerMapping<SupportedPuzzle>
     "waiting-code": WaitingCodeItemStageSlide,
     "qr-scan": QRScanItemStageSlide,
     "ar-scan": ARScanItemStageSlide,
+    "ar-overlay": AROverlayItemStageSlide,
     "load-scene": LoadSceneItemStageSlide,
     narrative: NarrativeItemStageSlide,
     "unlock-password": UnlockPasswordItemStageSlide,
@@ -85,6 +87,10 @@ export const puzzleToEditorsMappings: PuzzleToEditorProducerMapping<SupportedPuz
     "ar-scan": {
       editingComponentProducer: arScanItemFactory.editingComponent,
       defaultStagePayload: arScanItemFactory.defaultDefinition,
+    },
+    "ar-overlay": {
+      editingComponentProducer: arOverlayItemFactory.editingComponent,
+      defaultStagePayload: arOverlayItemFactory.defaultDefinition,
     },
     "load-scene": {
       editingComponentProducer: loadSceneItemFactory.editingComponent,
