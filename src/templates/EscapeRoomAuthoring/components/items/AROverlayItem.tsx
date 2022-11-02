@@ -1,6 +1,6 @@
 import {
   EditableItemProps,
-  ArScanItemDefinition,
+  ArOverlayItemDefinition,
 } from "../../../../services/escapeRoomActivity.model";
 import { AbstractActivityItemFactory } from "../ActivityItemFactory";
 
@@ -9,12 +9,12 @@ import { Root } from "./generalItemsStyles";
 import { ImageSelectionCardCard } from "../cards/ImageSelectionCard";
 import NumberInputCard from "../../../../components/Forms/Cards/NumberInputCard";
 
-export const EditableARScanItemContent = (
-  props: EditableItemProps<ArScanItemDefinition>
+export const EditableAROverlayItemContent = (
+  props: EditableItemProps<ArOverlayItemDefinition>
 ): JSX.Element => {
   const { payload, onPayloadChanged } = props;
 
-  const { imageSrc, trackableSize } = payload;
+  const { imageSrc, trackableSize, overlayImageSrc } = payload;
 
   const handleResourceSelected = (resourceSrc: string) => {
     if (!onPayloadChanged) return;
@@ -31,6 +31,14 @@ export const EditableARScanItemContent = (
       trackableSize: size,
     });
   }; // handleTrackableSizeChanged
+
+  const handleOverlayImageChanged = (resourceSrc: string) => {
+    if (!onPayloadChanged) return;
+    onPayloadChanged({
+      ...payload,
+      overlayImageSrc: resourceSrc,
+    });
+  }; // handleOverlayImageChanged
 
   return (
     <Root>
@@ -50,9 +58,18 @@ export const EditableARScanItemContent = (
         response={{ number: trackableSize ?? 1 }}
         onResponseChanged={(res) => handleTrackableSizeChanged(res.number)}
       />
+      <ImageSelectionCardCard
+        promptText="Image to use as overlay for the trackable:"
+        fieldPayload={{}}
+        response={{ imageSrc: overlayImageSrc }}
+        onResponseChanged={(res) => handleOverlayImageChanged(res.imageSrc)}
+        required
+        requiredAlert={!overlayImageSrc}
+        alertMessage={"Please select a valid image."}
+      />
     </Root>
   );
-}; // EditableARScanItemContent
+}; // EditableAROverlayItemContent
 
 const PreviewTitle = styled.div`
   margin-bottom: 0rem;
@@ -77,8 +94,8 @@ const PreviewAR = styled.div`
   color: rgb(178, 178, 178);
 `;
 
-export const ARScanItemStageSlide = (
-  props: ArScanItemDefinition
+export const AROverlayItemStageSlide = (
+  props: ArOverlayItemDefinition
 ): JSX.Element => {
   const { imageSrc } = props;
 
@@ -90,17 +107,18 @@ export const ARScanItemStageSlide = (
       </PreviewAR>
     </>
   );
-}; // ARScanItemStageSlide
+}; // AROverlayItemStageSlide
 
-export const arScanItemFactory: AbstractActivityItemFactory<ArScanItemDefinition> =
+export const arOverlayItemFactory: AbstractActivityItemFactory<ArOverlayItemDefinition> =
   {
     editingComponent: (editingProps) => (
-      <EditableARScanItemContent {...editingProps} />
+      <EditableAROverlayItemContent {...editingProps} />
     ),
     defaultDefinition: {
       imageSrc: "",
       trackableSize: 1,
+      overlayImageSrc: "",
     },
-  }; // ARScanItemFactory
+  }; // AROverlayItemFactory
 
-export default EditableARScanItemContent;
+export default EditableAROverlayItemContent;

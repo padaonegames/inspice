@@ -9,6 +9,7 @@ import styled, { css } from "styled-components";
 import { ArrowDownload } from "@styled-icons/fluentui-system-filled/ArrowDownload";
 import ShortTextInputCard from "../../../../components/Forms/Cards/ShortTextInputCard";
 import FormCard from "../../../../components/Forms/Cards/FormCard";
+import { Root } from "./generalItemsStyles";
 
 export const fieldTypeIcon = css`
   color: ${(props) => props.theme.textColor};
@@ -42,15 +43,6 @@ const QrCanvasContainer = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-`;
-
-const Root = styled.div`
-  margin-top: 5px;
-  display: flex;
-  background-color: transparent;
-  flex-direction: column;
-  align-items: center;
-  padding: 0.75em;
 `;
 
 export const isQrScanItemValid = (item: QrScanItemDefinition): boolean => {

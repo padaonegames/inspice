@@ -9,6 +9,7 @@ import styled from "styled-components";
 import { UpArrow } from "@styled-icons/boxicons-solid/UpArrow";
 import { DownArrow } from "@styled-icons/boxicons-solid/DownArrow";
 import { DotsTwoVertical } from "@styled-icons/entypo/DotsTwoVertical";
+import { Root } from "./generalItemsStyles";
 
 const UppArrowIcon = styled(UpArrow)`
   position: absolute;
@@ -62,15 +63,6 @@ export const InputArea = styled.textarea<InputAreaProps>`
   &:focus {
     box-shadow: #c44c49 0px -4px 0px 0px inset;
   }
-`;
-
-const Root = styled.div`
-  margin-top: 5px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  padding: 0.75em;
 `;
 
 const DescriptionEditorContainer = styled.div`

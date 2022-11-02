@@ -7,6 +7,7 @@ import { useAsyncRequest } from "../../services/useAsyncRequest";
 import {
   CharacterDefinition,
   default_room,
+  EditableItemProps,
   EscapeRoomActivityDefinition,
   SupportedStage,
 } from "../../services/escapeRoomActivity.model";
@@ -62,10 +63,15 @@ import { ScanObject } from "@styled-icons/fluentui-system-filled/ScanObject";
 import { Unity } from "@styled-icons/fa-brands/Unity";
 import { HistoryEdu } from "@styled-icons/material-rounded/HistoryEdu";
 import { Password } from "@styled-icons/fluentui-system-filled/Password";
+import { Layers } from "@styled-icons/entypo/Layers";
 import { EscapeRoomContextProvider } from "./EscapeRoomContext";
 import { Navigate, useParams } from "react-router-dom";
 import { escapeRoomService } from "../../services";
 import { LoadingOverlay } from "../../components/Layout/LoadingOverlay";
+import {
+  arOverlayItemFactory,
+  AROverlayItemStageSlide,
+} from "./components/items/AROverlayItem";
 
 const Root = styled.main`
   display: flex;
@@ -96,6 +102,10 @@ const QRCodeIcon = styled(QrCode)`
 `;
 
 const ScanObjectIcon = styled(ScanObject)`
+  ${stageTypeIcon}
+`;
+
+const ArOverlayIcon = styled(Layers)`
   ${stageTypeIcon}
 `;
 
@@ -160,6 +170,12 @@ export const stageMappings: StageMappings<SupportedStage> = {
     editingComponentProducer: unlockPasswordItemFactory.editingComponent,
     defaultStagePayload: unlockPasswordItemFactory.defaultDefinition,
   },
+  "ar-overlay": {
+    displayName: "AR Overlay",
+    iconComponent: <ArOverlayIcon />,
+    editingComponentProducer: arOverlayItemFactory.editingComponent,
+    defaultStagePayload: arOverlayItemFactory.defaultDefinition,
+  },
 }; // stageMappings
 
 export const stageSlidesMappings: StageToSlideProducerMapping<SupportedStage> =
@@ -172,6 +188,7 @@ export const stageSlidesMappings: StageToSlideProducerMapping<SupportedStage> =
     "load-scene": LoadSceneItemStageSlide,
     narrative: NarrativeItemStageSlide,
     "unlock-password": UnlockPasswordItemStageSlide,
+    "ar-overlay": AROverlayItemStageSlide,
   }; // stageSlidesMappings
 
 //-------------------------------------------------------

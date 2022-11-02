@@ -7,6 +7,7 @@ export type ItemDefinition =
   | { type: "multiple-choice"; payload: MultipleChoiceItemDefinition }
   | { type: "qr-scan"; payload: QrScanItemDefinition }
   | { type: "ar-scan"; payload: ArScanItemDefinition }
+  | { type: "ar-overlay"; payload: ArOverlayItemDefinition }
   | { type: "waiting-code"; payload: WaitingCodeDefinition }
   | { type: "load-scene"; payload: LoadSceneDefinition }
   | { type: "narrative"; payload: NarrativeItemDefinition }
@@ -18,6 +19,7 @@ export const escapeRoomStageTypes = [
   "waiting-code",
   "qr-scan",
   "ar-scan",
+  "ar-overlay",
   "load-scene",
   "narrative",
   "unlock-password",
@@ -101,6 +103,10 @@ export const default_character: CharacterDefinition = {
   imageSrc: "",
 }; // default_character
 
+export interface ImageSelectionResponseDefinition {
+  imageSrc: string;
+} // ImageSelectionResponseDefinition
+
 // ---------------------------------------------------------------
 //                    ROOM  DEFINITIONS
 // ---------------------------------------------------------------
@@ -134,7 +140,7 @@ export interface RoomBlock {
   blockDescription: string;
   /** Sequence of (ordered) puzzles and items to be displayed after selecting this room block */
   puzzles: SupportedPuzzle[];
-}
+} // RoomBlock
 
 /** Default definition for a Room Block */
 export const default_room_block: RoomBlock = {
@@ -179,7 +185,14 @@ export interface QrScanItemDefinition {
 
 export interface ArScanItemDefinition {
   imageSrc: string;
+  trackableSize: number;
 } // ArScanItemDefinition
+
+export interface ArOverlayItemDefinition {
+  imageSrc: string;
+  trackableSize: number;
+  overlayImageSrc: string;
+} // ArOverlayItemDefinition
 
 export interface WaitingCodeDefinition {
   /** Valid passwords to enter in order to continue in the game */
@@ -214,7 +227,7 @@ export interface NarrativeItemDefinition {
 } // NarrativeItemDefinition
 
 // ---------------------------------------------------------------
-//                      RESOURCES
+//                         RESOURCES
 // ---------------------------------------------------------------
 
 export interface ResourceDefinition {

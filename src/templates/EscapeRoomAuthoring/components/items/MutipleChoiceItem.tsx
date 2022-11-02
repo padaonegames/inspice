@@ -2,19 +2,13 @@ import {
   EditableItemProps,
   MultipleChoiceItemDefinition,
 } from "../../../../services/escapeRoomActivity.model";
-import EditableCheckBoxInput from "../EditableCheckBoxInput";
 import { AbstractActivityItemFactory } from "../ActivityItemFactory";
-import { PromptField } from "./PromptField";
 
 import styled from "styled-components";
-import MultipleChoiceCard, {
-  EditableMultipleChoiceCardContent,
-} from "../../../../components/Forms/Cards/MultipleChoiceCard";
-import EditableFieldCard from "../../../../components/Forms/Cards/EditableFieldCard";
 import ConfigureMultipleChoiceCard from "../../../../components/Forms/Cards/ConfigureMultipleChoiceCard";
 import ShortTextInputCard from "../../../../components/Forms/Cards/ShortTextInputCard";
-import IntegerRangeInputFieldWithTag from "../../../../components/Forms/IntegerRangeInputFieldWithTag";
 import CheckBoxGroupInputCard from "../../../../components/Forms/Cards/CheckBoxGroupInputCard";
+import { Root } from "./generalItemsStyles";
 
 interface InputAreaProps {
   width?: string;
@@ -59,15 +53,6 @@ const AnswersContainer = styled.div`
   padding: 5px 0;
 `;
 
-const availableColors = [
-  "#e21b3c",
-  "#1368ce",
-  "#d89e00",
-  "#26890c",
-  "#0aa3a3",
-  "#864cbf",
-];
-
 export const EditableMultipleChoiceItemContent = (
   props: EditableItemProps<MultipleChoiceItemDefinition>
 ): JSX.Element => {
@@ -103,7 +88,7 @@ export const EditableMultipleChoiceItemContent = (
   const oneClickResponseKey = "Enable one-click response.";
 
   return (
-    <>
+    <Root>
       <ShortTextInputCard
         promptText="Prompt for this question:"
         required
@@ -134,7 +119,7 @@ export const EditableMultipleChoiceItemContent = (
           )
         }
       />
-    </>
+    </Root>
   );
 }; // EditableMultipleChoiceItemContent
 
@@ -162,18 +147,13 @@ const PreviewAnswers = styled.div`
   overflow: hidden;
 `;
 
-interface PreviewAnswerProps {
-  color: string;
-}
-
-const PreviewAnswer = styled.div<PreviewAnswerProps>`
+const PreviewAnswer = styled.div`
   position: relative;
   width: 100%;
-  height: 10px;
+  height: 0.6em;
   margin-bottom: 3px;
-  color: white;
-  background-color: ${(props) => props.color};
-  border: 1px solid rgb(229, 229, 229);
+  background-color: transparent;
+  border: 2px solid rgb(229, 229, 229);
   border-radius: 0.125rem;
 `;
 
@@ -187,10 +167,7 @@ export const MultipleChoiceItemStageSlide = (
       <PreviewTitle>{prompt === "" ? "Empty Question" : prompt}</PreviewTitle>
       <PreviewAnswers>
         {[...Array(answers.length)].map((_, i) => (
-          <PreviewAnswer
-            key={i}
-            color={availableColors[i % availableColors.length]}
-          />
+          <PreviewAnswer key={i} />
         ))}
       </PreviewAnswers>
     </>

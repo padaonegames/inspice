@@ -145,6 +145,20 @@ export interface ShortTextResponseDefinition {
 } // ShortTextResponseDefinition
 
 //-------------------
+//  NUMBER FIELD
+//-------------------
+export interface NumberFieldDefinition {
+  placeholder?: number;
+  maxLength?: number;
+  isFloat?: boolean;
+  units?: string;
+} // NumberFieldDefinition
+
+export interface NumberResponseDefinition {
+  number: number;
+} // NumberResponseDefinition
+
+//-------------------
 //  LONG TEXT FIELD
 //-------------------
 export interface LongTextFieldDefinition {
