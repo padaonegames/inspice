@@ -1,6 +1,6 @@
 import {
   EditableItemProps,
-  MultipleChoiceItemDefinition,
+  MultipleChoiceFreeAnswerItemDefinition,
 } from "../../../../services/escapeRoomActivity.model";
 import { AbstractActivityItemFactory } from "../ActivityItemFactory";
 
@@ -9,6 +9,7 @@ import ConfigureMultipleChoiceCard from "../../../../components/Forms/Cards/Conf
 import ShortTextInputCard from "../../../../components/Forms/Cards/ShortTextInputCard";
 import CheckBoxGroupInputCard from "../../../../components/Forms/Cards/CheckBoxGroupInputCard";
 import { Root } from "./generalItemsStyles";
+import NumberInputCard from "../../../../components/Forms/Cards/NumberInputCard";
 
 interface InputAreaProps {
   width?: string;
@@ -42,22 +43,11 @@ export const InputArea = styled.textarea<InputAreaProps>`
   }
 `;
 
-const AnswersContainer = styled.div`
-  margin-top: 5px;
-  display: flex;
-  background-color: transparent;
-  flex-direction: column;
-  align-items: left;
-
-  border-bottom: 2px solid #dadce0;
-  padding: 5px 0;
-`;
-
-export const EditableMultipleChoiceItemContent = (
-  props: EditableItemProps<MultipleChoiceItemDefinition>
+export const EditableMultipleChoiceFreeAnswerItemContent = (
+  props: EditableItemProps<MultipleChoiceFreeAnswerItemDefinition>
 ): JSX.Element => {
   const { payload, onPayloadChanged } = props;
-  const { answers, maxAnswers, oneClickResponse } = payload;
+  const { answers, maxAnswers, minAnswers, oneClickResponse } = payload;
 
   const handleEditPrompt = (value: string) => {
     if (!onPayloadChanged) return;
@@ -67,16 +57,12 @@ export const EditableMultipleChoiceItemContent = (
     });
   }; // handleEditPrompt
 
-  const handleAnswersChanged = (
-    answers: string[],
-    correctAnswers: number[]
-  ) => {
+  const handleAnswersChanged = (answers: string[]) => {
     if (!onPayloadChanged) return;
 
     onPayloadChanged({
       ...payload,
       answers: answers,
-      correctAnswers: correctAnswers,
     });
   }; // handleAnswersChanged
 
@@ -85,7 +71,39 @@ export const EditableMultipleChoiceItemContent = (
     onPayloadChanged({ ...payload, oneClickResponse: value });
   }; // handleSetOneClickResponse
 
+  const handleMinAnswersChanged = (value: number) => {
+    if (!onPayloadChanged) return;
+    onPayloadChanged({ ...payload, minAnswers: value });
+  }; // handleMinAnswersChanged
+
+  const handleMaxAnswersChanged = (value: number) => {
+    if (!onPayloadChanged) return;
+    onPayloadChanged({ ...payload, maxAnswers: value });
+  }; // handleMaxAnswersChanged
+
   const oneClickResponseKey = "Enable one-click response.";
+
+  const alertMessageMin =
+    minAnswers <= 0
+      ? "Minimum number of answers must be at least 1."
+      : minAnswers > maxAnswers
+      ? "Minimum number of answers can't be greater than maximum number of answers."
+      : minAnswers > answers.length
+      ? `Minimum number of answers can't be greater than total number of answers (${answers.length}).`
+      : undefined;
+
+  const alertMessageMax =
+    maxAnswers <= 0
+      ? "Maximum number of answers must be at least 1."
+      : minAnswers > maxAnswers
+      ? "Maximum number of answers can't be lower than minimum number of answers."
+      : maxAnswers > answers.length
+      ? `Maximum number of answers can't be greater than total number of answers (${answers.length}).`
+      : undefined;
+
+  const alertMessageAnswers = answers.some((answer) => answer.length <= 0)
+    ? "Please ensure that all answers have a text."
+    : undefined;
 
   return (
     <Root>
@@ -98,14 +116,34 @@ export const EditableMultipleChoiceItemContent = (
         onResponseChanged={(value) => handleEditPrompt(value.text)}
       />
       <ConfigureMultipleChoiceCard
-        fieldPayload={{}}
+        promptText="Answers to choose from:"
+        required
+        requiredAlert={alertMessageAnswers !== undefined}
+        alertMessage={alertMessageAnswers}
+        fieldPayload={{ rightAnswersEnabled: false }}
         response={{
           answers: payload.answers,
-          correctAnswers: payload.correctAnswers,
+          correctAnswers: [],
         }}
-        onResponseChanged={(value) =>
-          handleAnswersChanged(value.answers, value.correctAnswers)
-        }
+        onResponseChanged={(value) => handleAnswersChanged(value.answers)}
+      />
+      <NumberInputCard
+        promptText="Minimum number of answers to select:"
+        required
+        requiredAlert={alertMessageMin !== undefined}
+        alertMessage={alertMessageMin}
+        fieldPayload={{}}
+        response={{ number: minAnswers }}
+        onResponseChanged={(value) => handleMinAnswersChanged(value.number)}
+      />
+      <NumberInputCard
+        promptText="Maximum number of answers to select:"
+        required
+        requiredAlert={alertMessageMax !== undefined}
+        alertMessage={alertMessageMax}
+        fieldPayload={{}}
+        response={{ number: maxAnswers }}
+        onResponseChanged={(value) => handleMaxAnswersChanged(value.number)}
       />
       <CheckBoxGroupInputCard
         promptText="Additional settings:"
@@ -121,7 +159,7 @@ export const EditableMultipleChoiceItemContent = (
       />
     </Root>
   );
-}; // EditableMultipleChoiceItemContent
+}; // EditableMultipleChoiceFreeAnswerItemContent
 
 const PreviewTitle = styled.div`
   width: 100%;
@@ -157,8 +195,8 @@ const PreviewAnswer = styled.div`
   border-radius: 0.125rem;
 `;
 
-export const MultipleChoiceItemStageSlide = (
-  props: MultipleChoiceItemDefinition
+export const MultipleChoiceFreeAnswerItemStageSlide = (
+  props: MultipleChoiceFreeAnswerItemDefinition
 ): JSX.Element => {
   const { prompt, answers } = props;
 
@@ -172,18 +210,19 @@ export const MultipleChoiceItemStageSlide = (
       </PreviewAnswers>
     </>
   );
-}; // MultipleChoiceItemStageSlide
+}; // MultipleChoiceFreeAnswerItemStageSlide
 
-export const multipleChoiceItemFactory: AbstractActivityItemFactory<MultipleChoiceItemDefinition> =
+export const multipleChoiceFreeAnswerItemFactory: AbstractActivityItemFactory<MultipleChoiceFreeAnswerItemDefinition> =
   {
     editingComponent: (editingProps) => (
-      <EditableMultipleChoiceItemContent {...editingProps} />
+      <EditableMultipleChoiceFreeAnswerItemContent {...editingProps} />
     ),
     defaultDefinition: {
       prompt: "",
-      correctAnswers: [],
-      answers: ["", ""],
+      answers: [""],
+      minAnswers: 1,
+      maxAnswers: 1,
     },
-  }; // multipleChoiceItemFactory
+  }; // multipleChoiceFreeAnswerItemFactory
 
-export default EditableMultipleChoiceItemContent;
+export default EditableMultipleChoiceFreeAnswerItemContent;

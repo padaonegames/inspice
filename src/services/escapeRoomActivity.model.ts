@@ -4,7 +4,11 @@
 
 export type ItemDefinition =
   | { type: "room"; payload: RoomDefinition }
-  | { type: "multiple-choice"; payload: MultipleChoiceItemDefinition }
+  | { type: "multiple-choice-test"; payload: MultipleChoiceTestItemDefinition }
+  | {
+      type: "multiple-choice-free-answer";
+      payload: MultipleChoiceFreeAnswerItemDefinition;
+    }
   | { type: "qr-scan"; payload: QrScanItemDefinition }
   | { type: "ar-scan"; payload: ArScanItemDefinition }
   | { type: "ar-overlay"; payload: ArOverlayItemDefinition }
@@ -16,7 +20,8 @@ export type ItemDefinition =
 
 export const escapeRoomStageTypes = [
   "room",
-  "multiple-choice",
+  "multiple-choice-test",
+  "multiple-choice-free-answer",
   "waiting-code",
   "qr-scan",
   "ar-scan",
@@ -37,7 +42,8 @@ export type SupportedStage = Extract<
 >; // SupportedStage
 
 export const escapeRoomPuzzleTypes = [
-  "multiple-choice",
+  "multiple-choice-test",
+  "multiple-choice-free-answer",
   "waiting-code",
   "qr-scan",
   "ar-scan",
@@ -59,11 +65,13 @@ export type SupportedPuzzle = Extract<
 
 /** Default puzzle definition */
 export const default_puzzle: SupportedPuzzle = {
-  type: "multiple-choice",
+  type: "multiple-choice-test",
   payload: {
     prompt: "",
-    correctAnswers: [],
-    answers: [],
+    correctAnswers: [0],
+    answers: [""],
+    minAnswers: 1,
+    maxAnswers: 1,
   },
 }; // default_puzzle
 
@@ -167,20 +175,45 @@ export interface EditableItemProps<T> {
 //                    ITEM DEFINITIONS
 // ---------------------------------------------------------------
 
-export interface MultipleChoiceItemDefinition {
+/**
+ * First version of the multiple choice item, specific for quizes that have a fixed set of right
+ * answers. Users may choose as many options as they wish before submitting their answers, as long
+ * as ```oneClickResponse``` is not enabled (note that this parameter will be ignored if the length of
+ * ```correctAnswers === 1```). The number of answers chosen by the user must be bounded by the min and
+ * max answers params, where ```1 <= minAnswers <= correctAnswers.length <= maxAnswers <= answers.length```.
+ */
+export interface MultipleChoiceTestItemDefinition {
   /** Prompt that this item displays answers for */
   prompt: string;
   /** answers to choose from */
   answers: string[];
-  /** indices of the answers that are considered correct */
+  /** indices of the answers that are considered correct (0-based) */
   correctAnswers: number[];
-  /** minimum number of answers to allow */
-  minAnswers?: number;
-  /** maximum number of answers to allow */
-  maxAnswers?: number;
-  /** whether to enable one-click response for this question */
+  /** whether to enable one-click response for this question (only makes sense if correct answers has length 1) */
   oneClickResponse?: boolean;
-} // MultipleChoiceItemDefinition
+  /** minimum number of answers to allow */
+  minAnswers: number;
+  /** maximum number of answers to allow */
+  maxAnswers: number;
+} // MultipleChoiceTestItemDefinition
+
+/**
+ * Second version of the multiple choice item, specific to quizes that do not have right or wrong answers,
+ * instead allowing the user to freely choose one or more options as they see fit. The number of answers chosen
+ * by the user must be bounded by the min and max answers params, where ```1 <= minAnswers <= maxAnswers <= answers.length```.
+ */
+export interface MultipleChoiceFreeAnswerItemDefinition {
+  /** Prompt that this item displays answers for */
+  prompt: string;
+  /** answers to choose from */
+  answers: string[];
+  /** whether to enable one-click response for this question (only makes sense if ```minAnswers === maxAnswers === 1```)* */
+  oneClickResponse?: boolean;
+  /** minimum number of answers to allow */
+  minAnswers: number;
+  /** maximum number of answers to allow */
+  maxAnswers: number;
+} // MultipleChoiceFreeAnswerItemDefinition
 
 export interface QrScanItemDefinition {
   encodedText: string;

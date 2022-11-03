@@ -3,27 +3,27 @@ import {
   ComponentStory,
 } from "@storybook/react/dist/ts3.9/client/preview/types-6-3";
 import {
-  EditableMultipleChoiceItemContent,
-  multipleChoiceItemFactory,
-} from "../../templates/EscapeRoomAuthoring/components/items/MutipleChoiceItem";
+  EditableMultipleChoiceTestItemContent,
+  multipleChoiceTestItemFactory,
+} from "../../templates/EscapeRoomAuthoring/components/items/MutipleChoiceTestItem";
 
 export default {
   title: "Escape Rooms/Multiple Choice Item",
-  component: EditableMultipleChoiceItemContent,
+  component: EditableMultipleChoiceTestItemContent,
   decorators: [
     (Story) => {
       return Story();
     },
   ],
-} as ComponentMeta<typeof EditableMultipleChoiceItemContent>;
+} as ComponentMeta<typeof EditableMultipleChoiceTestItemContent>;
 
-const Template: ComponentStory<typeof EditableMultipleChoiceItemContent> = (
+const Template: ComponentStory<typeof EditableMultipleChoiceTestItemContent> = (
   args
-) => <EditableMultipleChoiceItemContent {...args} />;
+) => <EditableMultipleChoiceTestItemContent {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {
-  payload: multipleChoiceItemFactory.defaultDefinition,
+  payload: multipleChoiceTestItemFactory.defaultDefinition,
 };
 
 export const Alternative = Template.bind({});
@@ -39,5 +39,7 @@ Alternative.args = {
       "Not this one",
     ],
     correctAnswers: [2],
+    minAnswers: 1,
+    maxAnswers: 1
   },
 };

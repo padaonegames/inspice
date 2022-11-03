@@ -16,9 +16,9 @@ import {
 } from "./components/EscapeRoomStageSlidesContainer";
 import EditableStage, { StageMappings } from "./components/EditableStage";
 import {
-  multipleChoiceItemFactory,
-  MultipleChoiceItemStageSlide,
-} from "./components/items/MutipleChoiceItem";
+  multipleChoiceTestItemFactory,
+  MultipleChoiceTestItemStageSlide,
+} from "./components/items/MutipleChoiceTestItem";
 import {
   waitingCodeItemFactory,
   WaitingCodeItemStageSlide,
@@ -68,6 +68,7 @@ import { Navigate, useParams } from "react-router-dom";
 import { escapeRoomService } from "../../services";
 import { LoadingOverlay } from "../../components/Layout/LoadingOverlay";
 import { LogInCircle } from "@styled-icons/boxicons-regular/LogInCircle";
+import { SelectMultiple } from "@styled-icons/boxicons-solid/SelectMultiple";
 import {
   arOverlayItemFactory,
   AROverlayItemStageSlide,
@@ -76,6 +77,10 @@ import {
   sessionCodeItemFactory,
   SessionCodeItemStageSlide,
 } from "./components/items/SessionCodeItem";
+import {
+  multipleChoiceFreeAnswerItemFactory,
+  MultipleChoiceFreeAnswerItemStageSlide,
+} from "./components/items/MutipleChoiceFreeAnswerItem";
 
 const Root = styled.main`
   display: flex;
@@ -89,7 +94,11 @@ const Root = styled.main`
 //                 Stage Mappings
 //-------------------------------------------------------
 
-const MultipleChoiceIcon = styled(Quiz)`
+const MultipleChoiceTestIcon = styled(SelectMultiple)`
+  ${stageTypeIcon}
+`;
+
+const MultipleChoiceFreeAnswerIcon = styled(Quiz)`
   ${stageTypeIcon}
 `;
 
@@ -136,11 +145,18 @@ export const stageMappings: StageMappings<SupportedStage> = {
     editingComponentProducer: roomItemFactory.editingComponent,
     defaultStagePayload: roomItemFactory.defaultDefinition,
   },
-  "multiple-choice": {
-    displayName: "Multiple Choice",
-    iconComponent: <MultipleChoiceIcon />,
-    editingComponentProducer: multipleChoiceItemFactory.editingComponent,
-    defaultStagePayload: multipleChoiceItemFactory.defaultDefinition,
+  "multiple-choice-test": {
+    displayName: "Test (Multiple-Choice)",
+    iconComponent: <MultipleChoiceTestIcon />,
+    editingComponentProducer: multipleChoiceTestItemFactory.editingComponent,
+    defaultStagePayload: multipleChoiceTestItemFactory.defaultDefinition,
+  },
+  "multiple-choice-free-answer": {
+    displayName: "Free Answer (Multiple-Choice)",
+    iconComponent: <MultipleChoiceFreeAnswerIcon />,
+    editingComponentProducer:
+      multipleChoiceFreeAnswerItemFactory.editingComponent,
+    defaultStagePayload: multipleChoiceFreeAnswerItemFactory.defaultDefinition,
   },
   "waiting-code": {
     displayName: "Waiting Code",
@@ -195,7 +211,8 @@ export const stageMappings: StageMappings<SupportedStage> = {
 export const stageSlidesMappings: StageToSlideProducerMapping<SupportedStage> =
   {
     room: RoomItemStageSlide,
-    "multiple-choice": MultipleChoiceItemStageSlide,
+    "multiple-choice-free-answer": MultipleChoiceFreeAnswerItemStageSlide,
+    "multiple-choice-test": MultipleChoiceTestItemStageSlide,
     "waiting-code": WaitingCodeItemStageSlide,
     "qr-scan": QRScanItemStageSlide,
     "ar-scan": ARScanItemStageSlide,

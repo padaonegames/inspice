@@ -10,9 +10,9 @@ import {
 import { AbstractActivityItemFactory } from "../ActivityItemFactory";
 
 import {
-  multipleChoiceItemFactory,
-  MultipleChoiceItemStageSlide,
-} from "./MutipleChoiceItem";
+  multipleChoiceTestItemFactory,
+  MultipleChoiceTestItemStageSlide,
+} from "./MutipleChoiceTestItem";
 import {
   waitingCodeItemFactory,
   WaitingCodeItemStageSlide,
@@ -36,6 +36,10 @@ import { RoomBlockEditor } from "./RoomBlockEditor";
 import styled from "styled-components";
 import { ConferenceRoom } from "@styled-icons/fluentui-system-filled/ConferenceRoom";
 import { arOverlayItemFactory, AROverlayItemStageSlide } from "./AROverlayItem";
+import {
+  multipleChoiceFreeAnswerItemFactory,
+  MultipleChoiceFreeAnswerItemStageSlide,
+} from "./MutipleChoiceFreeAnswerItem";
 
 const ExitIcon = styled(ConferenceRoom)`
   color: ${(props) => props.theme.frameColor};
@@ -48,7 +52,8 @@ const ExitIcon = styled(ConferenceRoom)`
 
 export const puzzleToSlidesMappings: ItemToSlideProducerMapping<SupportedPuzzle> =
   {
-    "multiple-choice": MultipleChoiceItemStageSlide,
+    "multiple-choice-test": MultipleChoiceTestItemStageSlide,
+    "multiple-choice-free-answer": MultipleChoiceFreeAnswerItemStageSlide,
     "waiting-code": WaitingCodeItemStageSlide,
     "qr-scan": QRScanItemStageSlide,
     "ar-scan": ARScanItemStageSlide,
@@ -72,9 +77,15 @@ export type PuzzleToEditorProducerMapping<T extends SupportedPuzzle> = {
 
 export const puzzleToEditorsMappings: PuzzleToEditorProducerMapping<SupportedPuzzle> =
   {
-    "multiple-choice": {
-      editingComponentProducer: multipleChoiceItemFactory.editingComponent,
-      defaultStagePayload: multipleChoiceItemFactory.defaultDefinition,
+    "multiple-choice-test": {
+      editingComponentProducer: multipleChoiceTestItemFactory.editingComponent,
+      defaultStagePayload: multipleChoiceTestItemFactory.defaultDefinition,
+    },
+    "multiple-choice-free-answer": {
+      editingComponentProducer:
+        multipleChoiceFreeAnswerItemFactory.editingComponent,
+      defaultStagePayload:
+        multipleChoiceFreeAnswerItemFactory.defaultDefinition,
     },
     "waiting-code": {
       editingComponentProducer: waitingCodeItemFactory.editingComponent,
