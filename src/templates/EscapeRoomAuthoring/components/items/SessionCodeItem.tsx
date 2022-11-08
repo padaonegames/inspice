@@ -158,7 +158,15 @@ export const EditableSessionCodeItemContent = (
 
     while (newUsernames.length < originalLength + requestedUsers) {
       const num = "0000" + Math.floor(Math.random() * 10000);
-      const newUser = sessionName + num.substring(num.length - 4);
+      let checksum = 0;
+      for (let i = 0; i < num.length; i++) {
+        checksum += parseInt(num[i]) ?? 0;
+      }
+      const checksumSuffix = "00" + checksum;
+      const newUser =
+        sessionName +
+        num.substring(num.length - 4) +
+        checksumSuffix.substring(checksumSuffix.length - 2);
       if (!newUsernames.some((elem) => elem === newUser)) {
         newUsernames.push(newUser);
       }
@@ -208,6 +216,7 @@ export const EditableSessionCodeItemContent = (
           )}
           {newSessionOpen && (
             <NewSessionCard
+              maxLength={2}
               activitySessionNames={sessions.map((s) => s.sessionName)}
               onCancelSessionCreation={() => setNewSessionOpen(false)}
               onSubmitNewSession={handleSubmitNewSession}
