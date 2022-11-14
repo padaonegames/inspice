@@ -8,13 +8,14 @@ import styled from "styled-components";
 import { Root } from "./generalItemsStyles";
 import { ImageSelectionCardCard } from "../cards/ImageSelectionCard";
 import NumberInputCard from "../../../../components/Forms/Cards/NumberInputCard";
+import LongTextInputCard from "../../../../components/Forms/Cards/LongTextInputCard";
 
 export const EditableAROverlayItemContent = (
   props: EditableItemProps<ArOverlayItemDefinition>
 ): JSX.Element => {
   const { payload, onPayloadChanged } = props;
 
-  const { imageSrc, trackableSize, overlayImageSrc } = payload;
+  const { imageSrc, trackableSize, overlayImageSrc, trackableHint } = payload;
 
   const handleResourceSelected = (resourceSrc: string) => {
     if (!onPayloadChanged) return;
@@ -40,6 +41,14 @@ export const EditableAROverlayItemContent = (
     });
   }; // handleOverlayImageChanged
 
+  const handleTrackableHintChanged = (hint: string) => {
+    if (!onPayloadChanged) return;
+    onPayloadChanged({
+      ...payload,
+      trackableHint: hint,
+    });
+  }; // handleTrackableHintChanged
+
   return (
     <Root>
       <ImageSelectionCardCard
@@ -57,6 +66,14 @@ export const EditableAROverlayItemContent = (
         fieldPayload={{ units: "meters." }}
         response={{ number: trackableSize ?? 1 }}
         onResponseChanged={(res) => handleTrackableSizeChanged(res.number)}
+      />
+      <LongTextInputCard
+        promptText="Hint to help the player find the trackable:"
+        fieldPayload={{
+          placeholder: "Short description of what the player should look for.",
+        }}
+        response={{ text: trackableHint }}
+        onResponseChanged={(res) => handleTrackableHintChanged(res.text)}
       />
       <ImageSelectionCardCard
         promptText="Image to use as overlay for the trackable:"
@@ -118,6 +135,7 @@ export const arOverlayItemFactory: AbstractActivityItemFactory<ArOverlayItemDefi
       imageSrc: "",
       trackableSize: 1,
       overlayImageSrc: "",
+      trackableHint: "",
     },
   }; // AROverlayItemFactory
 

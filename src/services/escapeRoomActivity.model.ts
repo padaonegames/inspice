@@ -217,15 +217,18 @@ export interface MultipleChoiceFreeAnswerItemDefinition {
 
 export interface QrScanItemDefinition {
   encodedText: string;
+  codeHint: string;
 } // QrScanItemDefinition
 
 export interface ArScanItemDefinition {
   imageSrc: string;
+  trackableHint: string;
   trackableSize: number;
 } // ArScanItemDefinition
 
 export interface ArOverlayItemDefinition {
   imageSrc: string;
+  trackableHint: string;
   trackableSize: number;
   overlayImageSrc: string;
 } // ArOverlayItemDefinition

@@ -32,5 +32,6 @@ Alternative.args = {
     imageSrc:
       "https://cdn3.vectorstock.com/i/1000x1000/60/67/example-rubber-stamp-vector-12386067.jpg",
     trackableSize: 1,
+    trackableHint: "",
   },
 };

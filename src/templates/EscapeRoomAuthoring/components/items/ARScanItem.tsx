@@ -8,13 +8,14 @@ import styled from "styled-components";
 import { Root } from "./generalItemsStyles";
 import { ImageSelectionCardCard } from "../cards/ImageSelectionCard";
 import NumberInputCard from "../../../../components/Forms/Cards/NumberInputCard";
+import LongTextInputCard from "../../../../components/Forms/Cards/LongTextInputCard";
 
 export const EditableARScanItemContent = (
   props: EditableItemProps<ArScanItemDefinition>
 ): JSX.Element => {
   const { payload, onPayloadChanged } = props;
 
-  const { imageSrc, trackableSize } = payload;
+  const { imageSrc, trackableSize, trackableHint } = payload;
 
   const handleResourceSelected = (resourceSrc: string) => {
     if (!onPayloadChanged) return;
@@ -31,6 +32,14 @@ export const EditableARScanItemContent = (
       trackableSize: size,
     });
   }; // handleTrackableSizeChanged
+
+  const handleTrackableHintChanged = (hint: string) => {
+    if (!onPayloadChanged) return;
+    onPayloadChanged({
+      ...payload,
+      trackableHint: hint,
+    });
+  }; // handleTrackableHintChanged
 
   return (
     <Root>
@@ -49,6 +58,14 @@ export const EditableARScanItemContent = (
         fieldPayload={{ units: "meters." }}
         response={{ number: trackableSize ?? 1 }}
         onResponseChanged={(res) => handleTrackableSizeChanged(res.number)}
+      />
+      <LongTextInputCard
+        promptText="Hint to help the player find the trackable:"
+        fieldPayload={{
+          placeholder: "Short description of what the player should look for.",
+        }}
+        response={{ text: trackableHint }}
+        onResponseChanged={(res) => handleTrackableHintChanged(res.text)}
       />
     </Root>
   );
@@ -100,6 +117,7 @@ export const arScanItemFactory: AbstractActivityItemFactory<ArScanItemDefinition
     defaultDefinition: {
       imageSrc: "",
       trackableSize: 1,
+      trackableHint: "",
     },
   }; // ARScanItemFactory
 
