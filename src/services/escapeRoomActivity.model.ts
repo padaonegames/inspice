@@ -3,6 +3,7 @@
 // ---------------------------------------------------------------
 
 export type ItemDefinition =
+  | { type: "diary-page"; payload: DiaryPageItemDefinition }
   | { type: "room"; payload: RoomDefinition }
   | { type: "multiple-choice-test"; payload: MultipleChoiceTestItemDefinition }
   | {
@@ -19,6 +20,7 @@ export type ItemDefinition =
   | { type: "unlock-password"; payload: UnlockPasswordItemDefinition }; // ItemDefinition
 
 export const escapeRoomStageTypes = [
+  "diary-page",
   "room",
   "multiple-choice-test",
   "multiple-choice-free-answer",
@@ -244,6 +246,10 @@ export interface QrScanItemDefinition {
   encodedText: string;
   codeHint: string;
 } // QrScanItemDefinition
+
+export interface DiaryPageItemDefinition {
+  pageId: string;
+} // DiaryPageItemDefinition
 
 export interface ArScanItemDefinition {
   imageSrc: string;

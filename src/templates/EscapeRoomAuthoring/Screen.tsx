@@ -70,6 +70,7 @@ import { escapeRoomService } from "../../services";
 import { LoadingOverlay } from "../../components/Layout/LoadingOverlay";
 import { LogInCircle } from "@styled-icons/boxicons-regular/LogInCircle";
 import { SelectMultiple } from "@styled-icons/boxicons-solid/SelectMultiple";
+import { BookReader } from "@styled-icons/boxicons-regular/BookReader";
 import {
   arOverlayItemFactory,
   AROverlayItemStageSlide,
@@ -82,6 +83,10 @@ import {
   multipleChoiceFreeAnswerItemFactory,
   MultipleChoiceFreeAnswerItemStageSlide,
 } from "./components/items/MutipleChoiceFreeAnswerItem";
+import {
+  diaryPageItemFactory,
+  DiaryPageItemStageSlide,
+} from "./components/items/DiaryPageItem";
 
 const Root = styled.main`
   display: flex;
@@ -104,6 +109,10 @@ const MultipleChoiceFreeAnswerIcon = styled(Quiz)`
 `;
 
 const RoomIcon = styled(Exit)`
+  ${stageTypeIcon}
+`;
+
+const DiaryIcon = styled(BookReader)`
   ${stageTypeIcon}
 `;
 
@@ -140,6 +149,12 @@ const SessionCodeIcon = styled(LogInCircle)`
 `;
 
 export const stageMappings: StageMappings<SupportedStage> = {
+  "diary-page": {
+    displayName: "Diary Page",
+    iconComponent: <DiaryIcon />,
+    editingComponentProducer: diaryPageItemFactory.editingComponent,
+    defaultStagePayload: diaryPageItemFactory.defaultDefinition,
+  },
   room: {
     displayName: "Room",
     iconComponent: <RoomIcon />,
@@ -211,6 +226,7 @@ export const stageMappings: StageMappings<SupportedStage> = {
 
 export const stageSlidesMappings: StageToSlideProducerMapping<SupportedStage> =
   {
+    "diary-page": DiaryPageItemStageSlide,
     room: RoomItemStageSlide,
     "multiple-choice-free-answer": MultipleChoiceFreeAnswerItemStageSlide,
     "multiple-choice-test": MultipleChoiceTestItemStageSlide,
