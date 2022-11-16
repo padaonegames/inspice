@@ -85,6 +85,7 @@ export interface EscapeRoomActivityDefinition {
   authorUsername: string;
   authorId: string;
   characters: CharacterDefinition[];
+  diaryPages: DiaryPageDefinition[];
   _id: string;
 } // EscapeRoomActivityDefinition
 
@@ -96,6 +97,7 @@ export const defaultEscapeRoomActivityDefinition: EscapeRoomActivityDefinition =
     authorId: "",
     characters: [],
     stages: [],
+    diaryPages: [],
   }; // defaultEscapeRoomActivityDefinition
 
 export interface CharacterDefinition {
@@ -113,6 +115,29 @@ export const default_character: CharacterDefinition = {
   description: "",
   imageSrc: "",
 }; // default_character
+
+export type DiaryPageSlot =
+  | {
+      type: "sprite";
+      spriteSrc: string;
+    }
+  | { type: "text"; text: string }; // DiaryPageSlot
+
+export interface DiaryPageDefinition {
+  pageId: string;
+  leftSlots: DiaryPageSlot[];
+  rightSlots: DiaryPageSlot[];
+} // DiaryPageDefinition
+
+export interface DiaryPageDefinitionsResponseDefinition {
+  diaryPages: DiaryPageDefinition[];
+} // DiaryPageDefinitionsResponseDefinition
+
+export const default_diary_page: DiaryPageDefinition = {
+  pageId: "",
+  leftSlots: [],
+  rightSlots: [],
+}; // default_diary_page
 
 export interface ImageSelectionResponseDefinition {
   imageSrc: string;

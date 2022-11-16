@@ -7,6 +7,7 @@ import { useAsyncRequest } from "../../services/useAsyncRequest";
 import {
   CharacterDefinition,
   default_room,
+  DiaryPageDefinition,
   EscapeRoomActivityDefinition,
   SupportedStage,
 } from "../../services/escapeRoomActivity.model";
@@ -238,6 +239,7 @@ const sample_base: EscapeRoomActivityDefinition = {
   authorUsername: "",
   stages: [sample_stage],
   characters: [],
+  diaryPages: [],
   _id: "",
 }; // sample_base
 
@@ -475,6 +477,13 @@ export const CreateEscapeRoomScreenComponent = (
     }));
   }; // handleCharactersChanged
 
+  const handleDiaryPagesChanged = (diaryPages: DiaryPageDefinition[]) => {
+    setActivityDefinition((prev) => ({
+      ...prev,
+      diaryPages: diaryPages,
+    }));
+  }; // handleDiaryPagesChanged
+
   const handleGoToSettings = () => {
     setShowSettings(true);
     setSelectedStage(undefined);
@@ -554,10 +563,12 @@ export const CreateEscapeRoomScreenComponent = (
           <EscapeRoomSettings
             escapeRoomTitle={activityDefinition.activityTitle}
             escapeRoomDescription={""}
+            escapeRoomDiaryPages={activityDefinition.diaryPages}
             escapeRoomCharacters={activityDefinition.characters}
             onTitleChanged={handleEscapeRoomTitleChanged}
             onDescriptionChanged={handleEscapeRoomDescriptionChanged}
             onCharactersChanged={handleCharactersChanged}
+            onDiaryPagesChanged={handleDiaryPagesChanged}
           />
         )}
       </EscapeRoomContextProvider>

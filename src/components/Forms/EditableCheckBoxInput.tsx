@@ -1,6 +1,14 @@
 import styled from "styled-components";
-import { RemoveOptionIcon } from "./Cards/cardStyles";
+import { AddImageIcon, RemoveOptionIcon } from "./Cards/cardStyles";
 import { CheckCircle } from "@styled-icons/bootstrap/CheckCircle";
+import { useRef } from "react";
+
+const Root = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-bottom: 0.35em;
+`;
 
 /* Create a custom checkbox */
 interface CheckMarkProps {
@@ -33,7 +41,11 @@ const CheckMark = styled.span<CheckMarkProps>`
   ${(props) => props.type === "radio" && "border-radius: 50%;"}
 `;
 
-export const InputText = styled.input`
+interface InputTextProps {
+  /** whether this input admits text, click interactions, or no interactions. "text" by default */
+  inputType?: "text" | "none" | "click";
+}
+export const InputText = styled.input<InputTextProps>`
   font-size: 0.9em;
   font-weight: 200;
   font-family: ${(props) => props.theme.contentFont};
@@ -43,17 +55,32 @@ export const InputText = styled.input`
   color: ${(props) => props.theme.textColor};
   border: none;
   border-bottom: 2px solid transparent;
+  cursor: ${(props) =>
+    props.inputType === "text"
+      ? "text"
+      : props.inputType === "click"
+      ? "pointer"
+      : "default"};
   outline: none;
   padding: 2px 0;
   background-color: transparent;
   transition: all 0s;
+
+  &:hover {
+    ${(props) =>
+      props.inputType !== "none" && `border-bottom: 2px solid #dadce0;`}
+  }
+
+  ${(props) =>
+    props.inputType === "text" &&
+    `
+    &:focus {
+      transition: border-bottom 0.25s;
+      border-bottom: 3px solid #c44c49;
+    }`}
 `;
 
-/* The container */
-interface ContainerProps {
-  enabled?: boolean;
-}
-const Container = styled.div<ContainerProps>`
+const Container = styled.div`
   width: 100%;
   height: auto;
   padding: 0 0.5em;
@@ -68,20 +95,6 @@ const Container = styled.div<ContainerProps>`
   display: flex;
   flex-direction: row;
   align-items: center;
-
-  &:hover ${InputText} {
-    border-bottom: 2px solid #dadce0;
-  }
-
-  ${InputText} {
-    ${(props) =>
-      props.enabled &&
-      `
-    &:focus {
-      transition: border-bottom 0.25s;
-      border-bottom: 3px solid #c44c49;
-    }`}
-  }
 `;
 
 const BoxCheckedIcon = styled(CheckCircle)`
@@ -99,21 +112,54 @@ const BoxCheckedIcon = styled(CheckCircle)`
   }
 `;
 
+interface ImagePreviewContainerProps {
+  src?: string;
+}
+const ImagePreviewContainer = styled.div<ImagePreviewContainerProps>`
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  width: 11em;
+  height: 11em;
+  margin: 0.15em auto;
+
+  background-size: contain;
+  border-radius: 0.5rem;
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  background-color: black;
+  ${(props) =>
+    props.src
+      ? `background-image: url(${props.src});`
+      : `background-color: darkred;`}
+`;
+
 export interface EditableCheckBoxInputProps {
   /** Text that will be displayed next to the checkbox */
   labelText: string;
+  /** Image that will be displayed underneath the text input */
+  imageSrc?: string;
   /** size of the checkbox */
   boxSize?: string;
   /** Whether to display checkbox as a radio button or a square */
   style?: "radio" | "checkbox";
-  /** whether this input should be enabled */
-  enabled?: boolean;
   /** callback to parent specifying that label Text has been modified by the user */
   onLabelTextChanged?: (value: string) => void;
   /** callback to parent specifying that user wishes to delete this option */
   onObjectRemoved?: () => void;
+  /** callback to parent specifying that user wishes to add an image to this option */
+  onAddImageRequested?: () => void;
+  /** callback to parent specifying that input text was clicked on */
+  onInputTextClicked?: () => void;
   /** Placeholder to show if labelText is an empty string */
   labelTextPlaceholder?: string;
+  /** whether add image option is allowed for the current item */
+  addImageEnabled?: boolean;
+  /** whether this input admits text, click interactions, or no interactions. "text" by default */
+  inputType?: "text" | "none" | "click";
+  /** whether this input element can be removed, true by default */
+  canBeRemoved?: boolean;
   /** checkbox content */
   boxContent:
     | {
@@ -121,6 +167,8 @@ export interface EditableCheckBoxInputProps {
         type: "check";
         /** Whether this box is checked */
         checked?: boolean;
+        /** whether clicking on this box is active */
+        clickEnabled?: boolean;
         /** callback to parent specifying that user clicked on this box */
         onCheckToggle?: () => void;
       }
@@ -140,10 +188,15 @@ export const EditableCheckBoxInput = (
   const {
     boxSize = "25px",
     style = "checkbox",
-    enabled = true,
+    canBeRemoved = true,
     labelText,
+    imageSrc,
+    addImageEnabled,
+    inputType = "text",
     onLabelTextChanged,
     onObjectRemoved,
+    onAddImageRequested,
+    onInputTextClicked,
     labelTextPlaceholder = "Write a text...",
     boxContent,
   } = props;
@@ -167,27 +220,54 @@ export const EditableCheckBoxInput = (
     return <></>;
   }; // renderCheckMarkContent
 
+  const handleInputFocus = () => {
+    if (inputType !== "none" || inputRef.current === null) return;
+    inputRef.current.blur();
+  }; // handleInputFocus
+
+  const inputRef = useRef<HTMLInputElement>(null);
+
   return (
-    <Container enabled={enabled}>
-      <CheckMark
-        type={style}
-        size={boxSize}
-        onClick={handleCheckMarkClicked}
-        enabled={boxContent.type === "check"}
-      >
-        {renderCheckMarkContent()}
-      </CheckMark>
-      <InputText
-        readOnly={!enabled}
-        placeholder={labelTextPlaceholder}
-        maxLength={500}
-        value={labelText}
-        onChange={(event) => {
-          if (onLabelTextChanged) onLabelTextChanged(event.target.value);
-        }}
-      />
-      {enabled && <RemoveOptionIcon onClick={onObjectRemoved} />}
-    </Container>
+    <Root>
+      {/* Always enable interactions with container in text and click modes */}
+      <Container>
+        <CheckMark
+          type={style}
+          size={boxSize}
+          onClick={handleCheckMarkClicked}
+          enabled={boxContent.type === "check"}
+        >
+          {renderCheckMarkContent()}
+        </CheckMark>
+        <InputText
+          ref={inputRef}
+          onFocus={handleInputFocus}
+          inputType={inputType}
+          readOnly={inputType !== "text"}
+          placeholder={labelTextPlaceholder}
+          maxLength={500}
+          value={labelText}
+          onClick={() => {
+            if (inputType === "click" && onInputTextClicked)
+              onInputTextClicked();
+          }}
+          onChange={(event) => {
+            if (inputType === "text" && onLabelTextChanged)
+              onLabelTextChanged(event.target.value);
+          }}
+        />
+        {inputType === "text" && addImageEnabled && (
+          <AddImageIcon onClick={onAddImageRequested} title="Add an image" />
+        )}
+        {canBeRemoved && inputType !== "none" && (
+          <RemoveOptionIcon
+            onClick={onObjectRemoved}
+            title="Remove this answer"
+          />
+        )}
+      </Container>
+      {imageSrc && <ImagePreviewContainer src={imageSrc} />}
+    </Root>
   );
 };
 

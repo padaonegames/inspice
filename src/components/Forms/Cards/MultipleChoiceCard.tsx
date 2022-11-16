@@ -160,6 +160,7 @@ export const EditableMultipleChoiceCardContent = (
               labelText={elem}
               style="radio"
               boxSize="15px"
+              inputType="text"
               onObjectRemoved={() => handleRemoveOption(i)}
               onLabelTextChanged={(value) => handleEditOption(i, value)}
             />
@@ -173,7 +174,7 @@ export const EditableMultipleChoiceCardContent = (
             labelTextPlaceholder={addNewOptionLabel}
             style="radio"
             boxSize="15px"
-            enabled={false}
+            inputType="click"
           />
         </CheckboxOption>
       </CheckboxList>

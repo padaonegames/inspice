@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { Plus } from "styled-icons/bootstrap";
 import { Cross } from "@styled-icons/entypo/Cross";
+import { ImageAdd } from "@styled-icons/boxicons-regular/ImageAdd";
 import {
   AlertCircleOutline,
   CloseOutline,
@@ -475,6 +476,21 @@ export const RemoveTagIcon = styled(CloseOutline)`
 `;
 
 export const RemoveOptionIcon = styled(Cross)`
+  height: 1.5em;
+  width: 1.5em;
+  padding: 0.1em;
+  color: ${(props) => props.theme.textColor};
+  cursor: pointer;
+  margin: auto;
+  border-radius: 50%;
+  color: #696d72;
+
+  &:hover {
+    background-color: #f8f9fa;
+  }
+`;
+
+export const AddImageIcon = styled(ImageAdd)`
   height: 1.5em;
   width: 1.5em;
   padding: 0.1em;

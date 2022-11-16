@@ -1,4 +1,7 @@
-import { CharacterDefinition } from "../../../../services/escapeRoomActivity.model";
+import {
+  CharacterDefinition,
+  DiaryPageDefinition,
+} from "../../../../services/escapeRoomActivity.model";
 
 import styled from "styled-components";
 
@@ -6,6 +9,7 @@ import StepTitleCard from "../../../../components/Forms/Cards/StepTitleCard";
 import ShortTextInputCard from "../../../../components/Forms/Cards/ShortTextInputCard";
 import LongTextInputCard from "../../../../components/Forms/Cards/LongTextInputCard";
 import CharacterDefinitionsCard from "../cards/CharacterDefinitionsCard";
+import DiaryDefinitionCard from "../cards/DiaryDefinitionCard";
 
 const Wrapper = styled.main`
   display: flex;
@@ -72,14 +76,18 @@ export interface EscapeRoomSettingsProps {
   escapeRoomTitle: string;
   /** Description of the current escape room that the user is editing */
   escapeRoomDescription: string;
-  /** Characters involver in the current escape room that the user is editing */
+  /** Characters involved in the current escape room that the user is editing */
   escapeRoomCharacters: CharacterDefinition[];
-  /** Callback to parent component to notigy any changes made to the escape room's title */
+  /** Diary pages featured in the current escape room that the user is editing */
+  escapeRoomDiaryPages: DiaryPageDefinition[];
+  /** Callback to parent component to notify any changes made to the escape room's title */
   onTitleChanged?: (title: string) => void;
-  /** Callback to parent component to notigy any changes made to the escape room's description */
+  /** Callback to parent component to notify any changes made to the escape room's description */
   onDescriptionChanged?: (title: string) => void;
-  /** Callback to parent component to notigy any changes made to the escape room's characters */
+  /** Callback to parent component to notify any changes made to the escape room's characters */
   onCharactersChanged?: (characters: CharacterDefinition[]) => void;
+  /** Callback to parent component to notify of any changes made to the escape room's diary pages */
+  onDiaryPagesChanged?: (diaryPages: DiaryPageDefinition[]) => void;
 } // EscapeRoomSettingsProps
 
 export const EscapeRoomSettings = (
@@ -89,9 +97,11 @@ export const EscapeRoomSettings = (
     escapeRoomTitle,
     escapeRoomCharacters,
     escapeRoomDescription,
+    escapeRoomDiaryPages,
     onTitleChanged,
     onDescriptionChanged,
     onCharactersChanged,
+    onDiaryPagesChanged,
   } = props;
 
   const handleEditTitle = (value: string) => {
@@ -107,6 +117,11 @@ export const EscapeRoomSettings = (
   const handleEditCharacters = (value: CharacterDefinition[]) => {
     if (!onCharactersChanged) return;
     onCharactersChanged(value);
+  }; // handleEditCharacters
+
+  const handleEditDiaryPages = (value: DiaryPageDefinition[]) => {
+    if (!onDiaryPagesChanged) return;
+    onDiaryPagesChanged(value);
   }; // handleEditCharacters
 
   return (
@@ -134,6 +149,13 @@ export const EscapeRoomSettings = (
         response={{ characters: escapeRoomCharacters }}
         fieldPayload={{}}
         onResponseChanged={(value) => handleEditCharacters(value.characters)}
+      />
+      <DiaryDefinitionCard
+        promptText="Diary Pages:"
+        required
+        response={{ diaryPages: escapeRoomDiaryPages }}
+        fieldPayload={{}}
+        onResponseChanged={(value) => handleEditDiaryPages(value.diaryPages)}
       />
     </Wrapper>
   );

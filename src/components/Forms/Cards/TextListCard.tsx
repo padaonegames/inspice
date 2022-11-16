@@ -79,6 +79,7 @@ export const TextListCard = (props: TextListCardProps): JSX.Element => {
               onObjectRemoved={() => handleRemoveOption(i)}
               onLabelTextChanged={(value) => handleEditOption(i, value)}
               boxContent={{ type: "number", boxNumber: i + 1 }}
+              inputType="text"
             />
           </CheckboxOption>
         ))}
@@ -90,7 +91,7 @@ export const TextListCard = (props: TextListCardProps): JSX.Element => {
             labelTextPlaceholder={addNewOptionLabel}
             style="radio"
             boxSize="15px"
-            enabled={false}
+            inputType="click"
           />
         </CheckboxOption>
       </CheckboxList>

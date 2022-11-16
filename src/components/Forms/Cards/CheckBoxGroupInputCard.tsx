@@ -130,6 +130,7 @@ export const EditableCheckBoxGroupCardContent = (
               style="checkbox"
               boxSize="15px"
               onObjectRemoved={() => handleRemoveOption(i)}
+              inputType="text"
             />
           </CheckboxOption>
         ))}
@@ -140,7 +141,7 @@ export const EditableCheckBoxGroupCardContent = (
             labelTextPlaceholder={addNewOptionLabel}
             style="checkbox"
             boxSize="15px"
-            enabled={false}
+            inputType="click"
           />
         </CheckboxOption>
       </CheckboxList>

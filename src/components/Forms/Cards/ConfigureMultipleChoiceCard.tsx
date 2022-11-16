@@ -129,6 +129,7 @@ export const ConfigureMultipleChoiceCard = (
               boxSize="1.75em"
               onObjectRemoved={() => handleRemoveAnswer(i)}
               onLabelTextChanged={(value) => handleEditAnswer(i, value)}
+              inputType="text"
             />
           </CheckboxOption>
         ))}
@@ -140,7 +141,7 @@ export const ConfigureMultipleChoiceCard = (
             labelTextPlaceholder={addNewAnswerLabel}
             style="radio"
             boxSize="1.75em"
-            enabled={false}
+            inputType="click"
           />
         </CheckboxOption>
       </CheckboxList>
