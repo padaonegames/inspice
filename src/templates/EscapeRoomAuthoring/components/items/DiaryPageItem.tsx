@@ -11,7 +11,7 @@ import { useContext } from "react";
 import { EscapeRoomActivityContext } from "../../EscapeRoomContext";
 import { BookReader } from "@styled-icons/boxicons-regular/BookReader";
 
-export const DiaryPageItemContent = (
+export const EditableDiaryPageItemContent = (
   props: EditableItemProps<DiaryPageItemDefinition>
 ): JSX.Element => {
   const { payload, onPayloadChanged } = props;
@@ -46,7 +46,7 @@ export const DiaryPageItemContent = (
       />
     </Root>
   );
-}; // DiaryPageItemContent
+}; // EditableDiaryPageItemContent
 
 const PreviewTitle = styled.div`
   margin-bottom: 0rem;
@@ -86,11 +86,11 @@ export const DiaryPageItemStageSlide = (
 export const diaryPageItemFactory: AbstractActivityItemFactory<DiaryPageItemDefinition> =
   {
     editingComponent: (editingProps) => (
-      <DiaryPageItemContent {...editingProps} />
+      <EditableDiaryPageItemContent {...editingProps} />
     ),
     defaultDefinition: {
       pageId: "",
     },
   }; // DiaryPageItemFactory
 
-export default DiaryPageItemContent;
+export default EditableDiaryPageItemContent;

@@ -71,6 +71,7 @@ import { LoadingOverlay } from "../../components/Layout/LoadingOverlay";
 import { LogInCircle } from "@styled-icons/boxicons-regular/LogInCircle";
 import { SelectMultiple } from "@styled-icons/boxicons-solid/SelectMultiple";
 import { BookReader } from "@styled-icons/boxicons-regular/BookReader";
+import { BurstNew } from "@styled-icons/foundation/BurstNew";
 import {
   arOverlayItemFactory,
   AROverlayItemStageSlide,
@@ -87,6 +88,10 @@ import {
   diaryPageItemFactory,
   DiaryPageItemStageSlide,
 } from "./components/items/DiaryPageItem";
+import {
+  objectObtainedItemFactory,
+  ObjectObtainedItemStageSlide,
+} from "./components/items/ObjectObtainedItem";
 
 const Root = styled.main`
   display: flex;
@@ -124,6 +129,10 @@ const QRCodeIcon = styled(QrCode)`
   ${stageTypeIcon}
 `;
 
+const ObjectObtainedIcon = styled(BurstNew)`
+  ${stageTypeIcon}
+`;
+
 const ScanObjectIcon = styled(ScanObject)`
   ${stageTypeIcon}
 `;
@@ -149,6 +158,12 @@ const SessionCodeIcon = styled(LogInCircle)`
 `;
 
 export const stageMappings: StageMappings<SupportedStage> = {
+  "object-obtained": {
+    displayName: "Object Obtained",
+    iconComponent: <ObjectObtainedIcon />,
+    editingComponentProducer: objectObtainedItemFactory.editingComponent,
+    defaultStagePayload: objectObtainedItemFactory.defaultDefinition,
+  },
   "diary-page": {
     displayName: "Diary Page",
     iconComponent: <DiaryIcon />,
@@ -226,6 +241,7 @@ export const stageMappings: StageMappings<SupportedStage> = {
 
 export const stageSlidesMappings: StageToSlideProducerMapping<SupportedStage> =
   {
+    "object-obtained": ObjectObtainedItemStageSlide,
     "diary-page": DiaryPageItemStageSlide,
     room: RoomItemStageSlide,
     "multiple-choice-free-answer": MultipleChoiceFreeAnswerItemStageSlide,
