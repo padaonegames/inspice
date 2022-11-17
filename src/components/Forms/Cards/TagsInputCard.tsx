@@ -13,7 +13,7 @@ import {
   NewTagButton,
   NewTagIcon,
   NewTagText,
-  EditableTagText
+  EditableTagText,
 } from "./cardStyles";
 
 export interface TagsInputCardProps {
@@ -31,11 +31,12 @@ export interface TagsInputCardProps {
   required?: boolean;
   /** Modifies the appearance of the card to reflect that the user tried to submit the form without entering a required value. */
   requiredAlert?: boolean;
+  /** whether this input is currently enabled */
+  enabled?: boolean;
 }
 
 /** Controlled card component to edit and manage a set of user generated tags */
 export const TagsInputCard = (props: TagsInputCardProps): JSX.Element => {
-
   const {
     promptText,
     maxTags,
@@ -44,10 +45,11 @@ export const TagsInputCard = (props: TagsInputCardProps): JSX.Element => {
     requiredAlert,
     required,
     onChange,
+    enabled = true,
   } = props;
 
   const [newTagOpen, setNewTagOpen] = useState<boolean>(false);
-  const [newTagText, setNewTagText] = useState<string>('');
+  const [newTagText, setNewTagText] = useState<string>("");
 
   const [newTagRef, setNewTagRef] = useState<HTMLInputElement | null>(null);
   const [tagError, setTagError] = useState<boolean>(false);
@@ -59,14 +61,14 @@ export const TagsInputCard = (props: TagsInputCardProps): JSX.Element => {
       onChange([...value, newTagText]);
     }
     setNewTagOpen(false);
-    setNewTagText('');
+    setNewTagText("");
   };
 
   const handleAddTagButtonClick = () => {
     if (newTagOpen) return;
 
     setNewTagOpen(true);
-    setNewTagText('');
+    setNewTagText("");
   };
 
   const handleRemoveTag = (i: number) => {
@@ -76,45 +78,45 @@ export const TagsInputCard = (props: TagsInputCardProps): JSX.Element => {
   };
 
   useEffect(() => {
-    if (newTagRef)
-      newTagRef.focus();
+    if (newTagRef) newTagRef.focus();
   }, [newTagRef]);
 
   useEffect(() => {
     if (!newTagOpen) return;
-    setTagError(value.some(elem => elem === newTagText));
-  }, [newTagText])
+    setTagError(value.some((elem) => elem === newTagText));
+  }, [newTagText]);
 
   return (
     <Root>
       <CardPanel requiredAlert={requiredAlert}>
         <PromptText>
-          {promptText}{required && <RequiredAsterisk> *</RequiredAsterisk>}
+          {promptText}
+          {required && <RequiredAsterisk> *</RequiredAsterisk>}
         </PromptText>
         <TagsContainer>
           {value.map((tag, i) => (
             <TagWrapper key={tag}>
               <TagText>{tag}</TagText>
-              <RemoveTagIcon onClick={() => handleRemoveTag(i)} />
+              {enabled && <RemoveTagIcon onClick={() => handleRemoveTag(i)} />}
             </TagWrapper>
           ))}
           {newTagOpen && (
             <TagWrapper error={tagError}>
               <EditableTagText
-                ref={prev => setNewTagRef(prev)}
-                placeholder='Type your new tag...'
+                ref={(prev) => setNewTagRef(prev)}
+                placeholder="Type your new tag..."
                 value={newTagText}
-                onChange={(event) => setNewTagText(event.target.value || '')}
+                onChange={(event) => setNewTagText(event.target.value || "")}
                 onBlur={handleAddNewTag}
                 onKeyPress={(event) => {
-                  if (event.key === 'Enter') {
+                  if (event.key === "Enter") {
                     handleAddNewTag();
                   }
                 }}
               />
             </TagWrapper>
           )}
-          {!newTagOpen && (
+          {enabled && !newTagOpen && (
             <NewTagButton onClick={handleAddTagButtonClick}>
               <NewTagIcon />
               <NewTagText>New tag</NewTagText>

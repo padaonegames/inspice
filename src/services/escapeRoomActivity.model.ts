@@ -3,6 +3,7 @@
 // ---------------------------------------------------------------
 
 export type ItemDefinition =
+  | { type: "pack-puzzle"; payload: PackPuzzleItemDefinition }
   | { type: "object-obtained"; payload: ObjectObtainedItemDefinition }
   | { type: "diary-page"; payload: DiaryPageItemDefinition }
   | { type: "room"; payload: RoomDefinition }
@@ -21,6 +22,7 @@ export type ItemDefinition =
   | { type: "unlock-password"; payload: UnlockPasswordItemDefinition }; // ItemDefinition
 
 export const escapeRoomStageTypes = [
+  "pack-puzzle",
   "object-obtained",
   "diary-page",
   "room",
@@ -266,10 +268,17 @@ export interface ObjectObtainedItemDefinition {
 
 export interface PackPuzzlePiece {
   imageSrc: string;
-  coords: [[x: number, y: number]]; // array of pseudo-vector2 tuples
+  coords: [x: number, y: number][]; // array of pseudo-vector2 tuples
   initPosition: [x: number, y: number];
   size: [x: number, y: number];
 } // PackPuzzlePiece
+
+export const default_puzzle_piece: PackPuzzlePiece = {
+  imageSrc: "",
+  coords: [],
+  initPosition: [0, 0],
+  size: [0, 0],
+}; // default_puzzle_piece
 
 export interface PackPuzzleItemDefinition {
   puzzlePieces: PackPuzzlePiece[];

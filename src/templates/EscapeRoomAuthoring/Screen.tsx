@@ -72,6 +72,7 @@ import { LogInCircle } from "@styled-icons/boxicons-regular/LogInCircle";
 import { SelectMultiple } from "@styled-icons/boxicons-solid/SelectMultiple";
 import { BookReader } from "@styled-icons/boxicons-regular/BookReader";
 import { BurstNew } from "@styled-icons/foundation/BurstNew";
+import { PuzzleCube } from "@styled-icons/fluentui-system-regular/PuzzleCube";
 import {
   arOverlayItemFactory,
   AROverlayItemStageSlide,
@@ -92,6 +93,10 @@ import {
   objectObtainedItemFactory,
   ObjectObtainedItemStageSlide,
 } from "./components/items/ObjectObtainedItem";
+import {
+  packPuzzleItemFactory,
+  PackPuzzleItemStageSlide,
+} from "./components/items/PackPuzzleItem";
 
 const Root = styled.main`
   display: flex;
@@ -118,6 +123,10 @@ const RoomIcon = styled(Exit)`
 `;
 
 const DiaryIcon = styled(BookReader)`
+  ${stageTypeIcon}
+`;
+
+const PackPuzzleIcon = styled(PuzzleCube)`
   ${stageTypeIcon}
 `;
 
@@ -158,6 +167,12 @@ const SessionCodeIcon = styled(LogInCircle)`
 `;
 
 export const stageMappings: StageMappings<SupportedStage> = {
+  "pack-puzzle": {
+    displayName: "Pack Puzzle",
+    iconComponent: <PackPuzzleIcon />,
+    editingComponentProducer: packPuzzleItemFactory.editingComponent,
+    defaultStagePayload: packPuzzleItemFactory.defaultDefinition,
+  },
   "object-obtained": {
     displayName: "Object Obtained",
     iconComponent: <ObjectObtainedIcon />,
@@ -241,6 +256,7 @@ export const stageMappings: StageMappings<SupportedStage> = {
 
 export const stageSlidesMappings: StageToSlideProducerMapping<SupportedStage> =
   {
+    "pack-puzzle": PackPuzzleItemStageSlide,
     "object-obtained": ObjectObtainedItemStageSlide,
     "diary-page": DiaryPageItemStageSlide,
     room: RoomItemStageSlide,
