@@ -85,7 +85,10 @@ export const default_puzzle: SupportedPuzzle = {
 
 export interface EscapeRoomActivityDefinition {
   stages: SupportedStage[];
+  applicationIconSrc: string;
   activityTitle: string;
+  apkId: string;
+  versionNumber: string;
   authorUsername: string;
   authorId: string;
   characters: CharacterDefinition[];
@@ -96,6 +99,9 @@ export interface EscapeRoomActivityDefinition {
 export const defaultEscapeRoomActivityDefinition: EscapeRoomActivityDefinition =
   {
     _id: "",
+    applicationIconSrc: "",
+    apkId: "",
+    versionNumber: "0.0",
     activityTitle: "",
     authorUsername: "",
     authorId: "",
@@ -257,6 +263,17 @@ export interface ObjectObtainedItemDefinition {
   spriteSrc: string;
   text: string;
 } // ObjectObtainedItemDefinition
+
+export interface PackPuzzlePiece {
+  imageSrc: string;
+  coords: [[x: number, y: number]]; // array of pseudo-vector2 tuples
+  initPosition: [x: number, y: number];
+  size: [x: number, y: number];
+} // PackPuzzlePiece
+
+export interface PackPuzzleItemDefinition {
+  puzzlePieces: PackPuzzlePiece[];
+} // PackPuzzleItemDefinition
 
 export interface ArScanItemDefinition {
   imageSrc: string;

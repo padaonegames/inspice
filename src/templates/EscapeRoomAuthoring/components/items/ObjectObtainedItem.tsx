@@ -6,7 +6,7 @@ import { AbstractActivityItemFactory } from "../ActivityItemFactory";
 
 import styled from "styled-components";
 import { Root } from "./generalItemsStyles";
-import { ImageSelectionCardCard } from "../cards/ImageSelectionCard";
+import { ImageSelectionCard } from "../cards/ImageSelectionCard";
 import LongTextInputCard from "../../../../components/Forms/Cards/LongTextInputCard";
 
 export const EditableObjectObtainedItemContent = (
@@ -34,7 +34,7 @@ export const EditableObjectObtainedItemContent = (
 
   return (
     <Root>
-      <ImageSelectionCardCard
+      <ImageSelectionCard
         promptText="Sprite of object obtained by the player:"
         fieldPayload={{}}
         response={{ imageSrc: spriteSrc }}

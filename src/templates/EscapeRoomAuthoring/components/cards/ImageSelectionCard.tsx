@@ -76,14 +76,13 @@ const AddImageIcon = styled(ImageAdd)`
   color: white;
 `;
 
-export interface ImageSelectionCardCardProps
+export interface ImageSelectionCardProps
   extends ConsumableFieldProps<{}, ImageSelectionResponseDefinition> {
   disabled?: boolean;
-} // ImageSelectionCardCardProps
+} // ImageSelectionCardProps
 
-/** Controlled card component to support input for shorter texts. */
-export const ImageSelectionCardCard = (
-  props: ImageSelectionCardCardProps
+export const ImageSelectionCard = (
+  props: ImageSelectionCardProps
 ): JSX.Element => {
   const {
     promptText = "",
@@ -146,4 +145,4 @@ export const ImageSelectionCardCard = (
       </FormCard>
     </>
   );
-}; // ImageSelectionCardCard
+}; // ImageSelectionCard

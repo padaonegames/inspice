@@ -273,6 +273,9 @@ const sample_base: EscapeRoomActivityDefinition = {
   characters: [],
   diaryPages: [],
   _id: "",
+  applicationIconSrc: "",
+  apkId: "",
+  versionNumber: "",
 }; // sample_base
 
 //-------------------------------------------------------
@@ -414,6 +417,30 @@ export const CreateEscapeRoomScreenComponent = (
       return next;
     });
   }; // handleEscapeRoomTitleChanged
+
+  const handleApplicationIconSrcChanged = (iconSrc: string) => {
+    setActivityDefinition((prev) => {
+      let next = cloneDeep(prev);
+      next.applicationIconSrc = iconSrc;
+      return next;
+    });
+  }; // handleApplicationIconSrcChanged
+
+  const handleApplicationApkIdChanged = (apkId: string) => {
+    setActivityDefinition((prev) => {
+      let next = cloneDeep(prev);
+      next.apkId = apkId;
+      return next;
+    });
+  }; // handleApplicationApkIdChanged
+
+  const handleApplicationVersionNumberChanged = (versionNumber: string) => {
+    setActivityDefinition((prev) => {
+      let next = cloneDeep(prev);
+      next.versionNumber = versionNumber;
+      return next;
+    });
+  }; // handleApplicationVersionNumberChanged
 
   const handleEscapeRoomDescriptionChanged = (description: string) => {
     setActivityDefinition((prev) => {
@@ -597,10 +624,20 @@ export const CreateEscapeRoomScreenComponent = (
             escapeRoomDescription={""}
             escapeRoomDiaryPages={activityDefinition.diaryPages}
             escapeRoomCharacters={activityDefinition.characters}
+            escapeRoomApplicationIconSrc={activityDefinition.applicationIconSrc}
+            escapeRoomApplicationApkId={activityDefinition.apkId}
+            escapeRoomApplicationVersionNumber={
+              activityDefinition.versionNumber
+            }
             onTitleChanged={handleEscapeRoomTitleChanged}
             onDescriptionChanged={handleEscapeRoomDescriptionChanged}
             onCharactersChanged={handleCharactersChanged}
             onDiaryPagesChanged={handleDiaryPagesChanged}
+            onApplicationIconSrcChanged={handleApplicationIconSrcChanged}
+            onApplicationApkIdChanged={handleApplicationApkIdChanged}
+            onApplicationVersionNumberChanged={
+              handleApplicationVersionNumberChanged
+            }
           />
         )}
       </EscapeRoomContextProvider>

@@ -6,7 +6,7 @@ import { AbstractActivityItemFactory } from "../ActivityItemFactory";
 
 import styled from "styled-components";
 import { Root } from "./generalItemsStyles";
-import { ImageSelectionCardCard } from "../cards/ImageSelectionCard";
+import { ImageSelectionCard } from "../cards/ImageSelectionCard";
 import NumberInputCard from "../../../../components/Forms/Cards/NumberInputCard";
 import LongTextInputCard from "../../../../components/Forms/Cards/LongTextInputCard";
 
@@ -43,7 +43,7 @@ export const EditableARScanItemContent = (
 
   return (
     <Root>
-      <ImageSelectionCardCard
+      <ImageSelectionCard
         promptText="Trackable image to look for:"
         fieldPayload={{}}
         response={{ imageSrc: imageSrc }}

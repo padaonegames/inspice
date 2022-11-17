@@ -6,7 +6,7 @@ import { AbstractActivityItemFactory } from "../ActivityItemFactory";
 
 import styled from "styled-components";
 import { Root } from "./generalItemsStyles";
-import { ImageSelectionCardCard } from "../cards/ImageSelectionCard";
+import { ImageSelectionCard } from "../cards/ImageSelectionCard";
 import NumberInputCard from "../../../../components/Forms/Cards/NumberInputCard";
 import LongTextInputCard from "../../../../components/Forms/Cards/LongTextInputCard";
 
@@ -51,7 +51,7 @@ export const EditableAROverlayItemContent = (
 
   return (
     <Root>
-      <ImageSelectionCardCard
+      <ImageSelectionCard
         promptText="Trackable image to look for:"
         fieldPayload={{}}
         response={{ imageSrc: imageSrc }}
@@ -75,7 +75,7 @@ export const EditableAROverlayItemContent = (
         response={{ text: trackableHint }}
         onResponseChanged={(res) => handleTrackableHintChanged(res.text)}
       />
-      <ImageSelectionCardCard
+      <ImageSelectionCard
         promptText="Image to use as overlay for the trackable:"
         fieldPayload={{}}
         response={{ imageSrc: overlayImageSrc }}
