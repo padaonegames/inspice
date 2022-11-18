@@ -389,7 +389,7 @@ export const PackPuzzlePieceDefinitionCard = (
                 enabled={false}
                 promptText={"Detected coordinates:"}
                 value={packPuzzlePieceData.coords.map(
-                  (elem) => `[x: ${elem.x}, row: ${elem.y}]`
+                  (elem) => `[x: ${elem.x}, y: ${elem.y}]`
                 )}
               />
             )}
