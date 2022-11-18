@@ -287,6 +287,7 @@ export const default_puzzle_piece: PackPuzzlePiece = {
 
 export interface PackPuzzleItemDefinition {
   puzzlePieces: PackPuzzlePiece[];
+  finishTime: number;
 } // PackPuzzleItemDefinition
 
 export interface ArScanItemDefinition {

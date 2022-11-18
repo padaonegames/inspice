@@ -11,6 +11,7 @@ import { Root } from "./generalItemsStyles";
 import { useState } from "react";
 import { PuzzlePiece } from "@styled-icons/fa-solid/PuzzlePiece";
 import PackPuzzlePieceDefinitionCard from "../cards/PackPuzzlePieceDefinitionCard";
+import NumberInputCard from "../../../../components/Forms/Cards/NumberInputCard";
 
 const AddPuzzlePieceButton = styled.button`
   font-family: ${(props) => props.theme.contentFont};
@@ -45,11 +46,16 @@ export const EditablePackPuzzleItemContent = (
 ): JSX.Element => {
   const { payload, onPayloadChanged } = props;
 
-  const { puzzlePieces } = payload;
+  const { puzzlePieces, finishTime } = payload;
 
   // Index of the puzzle piece that is currently being edited (or `none`, if no editing is taking place)
   const [selectedPackPuzzlePieceIndex, setSelectedPackPuzzlePieceIndex] =
     useState<number | "none">("none");
+
+  const handleUpdateFinishTime = (time: number) => {
+    if (!onPayloadChanged) return;
+    onPayloadChanged({ ...payload, finishTime: time });
+  }; // handleUpdateFinishTime
 
   const handleUpdatePackPuzzlePieceData = (
     newData: PackPuzzlePiece,
@@ -57,6 +63,7 @@ export const EditablePackPuzzleItemContent = (
   ) => {
     if (!onPayloadChanged || index < 0 || index >= puzzlePieces.length) return;
     onPayloadChanged({
+      ...payload,
       puzzlePieces: [
         ...puzzlePieces.slice(0, index),
         newData,
@@ -87,6 +94,7 @@ export const EditablePackPuzzleItemContent = (
   const handleDeletePackPuzzlePiece = (index: number) => {
     if (!onPayloadChanged || index < 0 || index >= puzzlePieces.length) return;
     onPayloadChanged({
+      ...payload,
       puzzlePieces: [
         ...puzzlePieces.slice(0, index),
         ...puzzlePieces.slice(index + 1, puzzlePieces.length),
@@ -106,7 +114,10 @@ export const EditablePackPuzzleItemContent = (
       selectedPackPuzzlePieceIndex !== puzzlePieces.length
     )
       return;
-    onPayloadChanged({ puzzlePieces: [...puzzlePieces, puzzlePieceData] });
+    onPayloadChanged({
+      ...payload,
+      puzzlePieces: [...puzzlePieces, puzzlePieceData],
+    });
     setSelectedPackPuzzlePieceIndex("none");
   }; // handleSaveNewPackPuzzlePiece
 
@@ -116,6 +127,15 @@ export const EditablePackPuzzleItemContent = (
 
   return (
     <Root>
+      <NumberInputCard
+        required
+        requiredAlert={finishTime < 0}
+        alertMessage={"Please enter a valid number."}
+        promptText="Time to wait after completing the puzzle before continuing"
+        fieldPayload={{ isFloat: true, units: "seconds" }}
+        response={{ number: finishTime }}
+        onResponseChanged={(res) => handleUpdateFinishTime(res.number)}
+      />
       {puzzlePieces.map((puzzlePiece, index) => (
         // Character card that can be displayer in two modes (edit and display only)
         <PackPuzzlePieceDefinitionCard
@@ -216,6 +236,7 @@ export const packPuzzleItemFactory: AbstractActivityItemFactory<PackPuzzleItemDe
     ),
     defaultDefinition: {
       puzzlePieces: [],
+      finishTime: 5,
     },
   }; // packPuzzleItemFactory
 
