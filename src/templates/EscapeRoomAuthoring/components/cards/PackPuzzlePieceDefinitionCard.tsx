@@ -1,4 +1,7 @@
-import { PackPuzzlePiece } from "../../../../services/escapeRoomActivity.model";
+import {
+  PackPuzzlePiece,
+  Vector2,
+} from "../../../../services/escapeRoomActivity.model";
 
 import styled, { css } from "styled-components";
 import { Save } from "@styled-icons/boxicons-solid/Save";
@@ -265,7 +268,7 @@ export const PackPuzzlePieceDefinitionCard = (
       context.drawImage(img, 0, 0);
       const imageData = context.getImageData(0, 0, width, height);
 
-      const coords: [x: number, y: number][] = [];
+      const coords: Vector2[] = [];
 
       // en qué fila (casilla 5x5) estamos
       for (let i = 0; i < 5; i++) {
@@ -277,7 +280,7 @@ export const PackPuzzlePieceDefinitionCard = (
 
           const p = (x * width + y) * 4 + 3; // pasamos al array original
           if (imageData.data[p] > 0) {
-            coords.push([j - 2, i - 2]); // columna = x, fila = y
+            coords.push({ x: j - 2, y: i - 2 }); // columna = x, fila = y
           } // si algo es > 0 hay contenido
         }
       }
@@ -329,11 +332,11 @@ export const PackPuzzlePieceDefinitionCard = (
                 width={1}
                 promptText="Initial Position (x):"
                 fieldPayload={{ isFloat: true }}
-                response={{ number: packPuzzlePieceData.initPosition[0] }}
+                response={{ number: packPuzzlePieceData.initPosition.x }}
                 onResponseChanged={(res) =>
                   setPackPuzzlePieceData((prev) => ({
                     ...prev,
-                    initPosition: [res.number, prev.initPosition[1]],
+                    initPosition: { x: res.number, y: prev.initPosition.y },
                   }))
                 }
               />
@@ -342,11 +345,11 @@ export const PackPuzzlePieceDefinitionCard = (
                 width={1}
                 promptText="Initial Position (y):"
                 fieldPayload={{ isFloat: true }}
-                response={{ number: packPuzzlePieceData.initPosition[1] }}
+                response={{ number: packPuzzlePieceData.initPosition.y }}
                 onResponseChanged={(res) =>
                   setPackPuzzlePieceData((prev) => ({
                     ...prev,
-                    initPosition: [prev.initPosition[0], res.number],
+                    initPosition: { x: prev.initPosition.x, y: res.number },
                   }))
                 }
               />
@@ -358,11 +361,11 @@ export const PackPuzzlePieceDefinitionCard = (
                 width={1}
                 promptText="Piece Size (x):"
                 fieldPayload={{ isFloat: true }}
-                response={{ number: packPuzzlePieceData.size[0] }}
+                response={{ number: packPuzzlePieceData.size.x }}
                 onResponseChanged={(res) =>
                   setPackPuzzlePieceData((prev) => ({
                     ...prev,
-                    size: [res.number, prev.size[1]],
+                    size: { x: res.number, y: prev.size.y },
                   }))
                 }
               />
@@ -371,11 +374,11 @@ export const PackPuzzlePieceDefinitionCard = (
                 width={1}
                 promptText="Piece Size (y):"
                 fieldPayload={{ isFloat: true }}
-                response={{ number: packPuzzlePieceData.size[1] }}
+                response={{ number: packPuzzlePieceData.size.y }}
                 onResponseChanged={(res) =>
                   setPackPuzzlePieceData((prev) => ({
                     ...prev,
-                    size: [prev.size[0], res.number],
+                    size: { x: prev.size.x, y: res.number },
                   }))
                 }
               />
@@ -386,7 +389,7 @@ export const PackPuzzlePieceDefinitionCard = (
                 enabled={false}
                 promptText={"Detected coordinates:"}
                 value={packPuzzlePieceData.coords.map(
-                  (elem) => `[col: ${elem[0]}, row: ${elem[1]}]`
+                  (elem) => `[x: ${elem.x}, row: ${elem.y}]`
                 )}
               />
             )}

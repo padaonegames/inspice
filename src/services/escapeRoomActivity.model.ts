@@ -266,18 +266,23 @@ export interface ObjectObtainedItemDefinition {
   text: string;
 } // ObjectObtainedItemDefinition
 
+export interface Vector2 {
+  x: number;
+  y: number;
+} // Vector2
+
 export interface PackPuzzlePiece {
   imageSrc: string;
-  coords: [x: number, y: number][]; // array of pseudo-vector2 tuples
-  initPosition: [x: number, y: number];
-  size: [x: number, y: number];
+  coords: Vector2[];
+  initPosition: Vector2;
+  size: Vector2;
 } // PackPuzzlePiece
 
 export const default_puzzle_piece: PackPuzzlePiece = {
   imageSrc: "",
   coords: [],
-  initPosition: [0, 0],
-  size: [0, 0],
+  initPosition: { x: 0, y: 0 },
+  size: { x: 0, y: 0 },
 }; // default_puzzle_piece
 
 export interface PackPuzzleItemDefinition {
