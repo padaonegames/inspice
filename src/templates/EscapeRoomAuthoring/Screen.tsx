@@ -500,13 +500,17 @@ export const CreateEscapeRoomScreenComponent = (
     });
   }; // handleDeleteStage
 
+  // currently selected stage
   const handleDuplicateStage = () => {
     if (!validStageSelected || selectedStage === undefined) return;
     setActivityDefinition((prev) => {
       let next = cloneDeep(prev);
+      let nextStage = { ...next.stages[selectedStage] };
+      delete (nextStage as any)["_id"];
+      // ensure that server assigns a new guid to item
       next.stages = [
         ...next.stages.slice(0, selectedStage),
-        next.stages[selectedStage],
+        nextStage,
         ...next.stages.slice(selectedStage, next.stages.length),
       ];
       return next;
@@ -518,13 +522,15 @@ export const CreateEscapeRoomScreenComponent = (
       ? activityDefinition.stages[selectedStage]
       : undefined;
 
+  // stage by index
   const duplicateStage = (index: number) => {
-    if (!validStageSelected) return;
     setActivityDefinition((prev) => {
       let next = cloneDeep(prev);
+      let nextStage = { ...next.stages[index] };
+      delete (nextStage as any)["_id"];
       next.stages = [
         ...next.stages.slice(0, index),
-        next.stages[index],
+        nextStage,
         ...next.stages.slice(index, next.stages.length),
       ];
       return next;
