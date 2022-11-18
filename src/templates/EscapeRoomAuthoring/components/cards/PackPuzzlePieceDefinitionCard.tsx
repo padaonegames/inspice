@@ -277,7 +277,7 @@ export const PackPuzzlePieceDefinitionCard = (
 
           const p = (x * width + y) * 4 + 3; // pasamos al array original
           if (imageData.data[p] > 0) {
-            coords.push([i - 2, j - 2]);
+            coords.push([j - 2, i - 2]); // columna = x, fila = y
           } // si algo es > 0 hay contenido
         }
       }
@@ -386,7 +386,7 @@ export const PackPuzzlePieceDefinitionCard = (
                 enabled={false}
                 promptText={"Detected coordinates:"}
                 value={packPuzzlePieceData.coords.map(
-                  (elem) => `[${elem[0]}, ${elem[1]}]`
+                  (elem) => `[col: ${elem[0]}, row: ${elem[1]}]`
                 )}
               />
             )}
