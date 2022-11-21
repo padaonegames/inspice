@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import styled, { css } from "styled-components";
 import {
   ConsumableFieldProps,
@@ -9,40 +9,7 @@ import { Root } from "./cardStyles";
 import { EditableFieldProps } from "./EditableFieldCard";
 import FormCard from "./FormCard";
 import { ChevronDown } from "@styled-icons/boxicons-regular/ChevronDown";
-import { useOutsideAlerter } from "../../Utils/useOutsideAlerterer";
-
-const DropdownMenu = styled.div`
-  position: absolute;
-  left: 0;
-  top: 2.5em;
-  background-color: ${(props) => props.theme.cardBackground};
-  min-width: 160px;
-  width: 100%;
-  box-shadow: rgba(37, 7, 107, 0.35) 0px 2px 4px 0px;
-  z-index: 25;
-  display: flex;
-  flex-direction: column;
-  border-radius: 0.25rem;
-`;
-
-const DropdownMenuItem = styled.a`
-  color: ${(props) => props.theme.textColor};
-  padding: 0.5em 0.85em;
-  margin-top: 0.2em;
-  margin-bottom: 0.2em;
-  text-decoration: none;
-  height: 2.5em;
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: start;
-  font-family: ${(props) => props.theme.contentFont};
-
-  &:hover {
-    background-color: #eeeeee;
-  }
-`;
+import DropdownMenu from "../DropdownMenu";
 
 const OpenDropdownButton = styled.span`
   font-size: 0.9em;
@@ -114,12 +81,6 @@ export const DropdownInputCard = (
 
   const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
 
-  const wrapperRef = useRef<HTMLDivElement>(null);
-  useOutsideAlerter(wrapperRef, () => {
-    /** handle outside click by closing this dropdown */
-    setDropdownOpen(false);
-  });
-
   const handleDropdownItemSelected = (elem: string) => {
     setDropdownOpen(false);
     if (!onResponseChanged) return;
@@ -137,19 +98,11 @@ export const DropdownInputCard = (
         {selectedOption}
         <ExpandDropdownIcon />
         {dropdownOpen && (
-          <DropdownMenu ref={wrapperRef}>
-            {options.map((elem) => (
-              <DropdownMenuItem
-                onClick={(event) => {
-                  event.stopPropagation();
-                  handleDropdownItemSelected(elem);
-                }}
-                key={elem}
-              >
-                {elem}
-              </DropdownMenuItem>
-            ))}
-          </DropdownMenu>
+          <DropdownMenu
+            options={options.map((elem) => ({ displayName: elem }))}
+            onOptionSelected={handleDropdownItemSelected}
+            onCloseDropdown={() => setDropdownOpen(false)}
+          />
         )}
       </OpenDropdownButton>
     </FormCard>

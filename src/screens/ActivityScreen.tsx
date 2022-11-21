@@ -2,7 +2,7 @@ import React from "react";
 import { Outlet } from "react-router-dom";
 import GuardedRoute from "../auth/GuardedRoute";
 import SessionProtectedRoute from "../auth/SessionProtectedRoute";
-import Header from "../components/Layout/Header";
+import Header, { HeaderAction } from "../components/Layout/Header";
 import { NavigationWarning, NavMenuElem } from "../components/Layout/SideMenu";
 
 export interface ActivityScreenProps {
@@ -18,6 +18,8 @@ export interface ActivityScreenProps {
   navigationEntries?: NavMenuElem[];
   /** Guards to warn user about a possible loss of progress when transitioning from a given route */
   navigationWarnings?: NavigationWarning[];
+  /** actions that can be performed from the header at all times during the activity */
+  headerActions?: HeaderAction[];
 } // ActivityScreenProps
 
 /**
@@ -30,6 +32,7 @@ export const ActivityScreen: React.FC<ActivityScreenProps> = ({
   sessionGuarded = false,
   navigationEntries = [],
   navigationWarnings = [],
+  headerActions = [],
 }) => {
   const sideMenuMode = guarded
     ? "system-user"
@@ -43,6 +46,7 @@ export const ActivityScreen: React.FC<ActivityScreenProps> = ({
         navigationEntries={navigationEntries}
         navigationWarnings={navigationWarnings}
         sideMenuMode={sideMenuMode}
+        headerActions={headerActions}
       />
       {guarded ? (
         <GuardedRoute />

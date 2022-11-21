@@ -65,7 +65,7 @@ import { HistoryEdu } from "@styled-icons/material-rounded/HistoryEdu";
 import { Password } from "@styled-icons/fluentui-system-filled/Password";
 import { Layers } from "@styled-icons/entypo/Layers";
 import { EscapeRoomContextProvider } from "./EscapeRoomContext";
-import { Navigate, useParams } from "react-router-dom";
+import { Navigate, Route, Routes, useParams } from "react-router-dom";
 import { escapeRoomService } from "../../services";
 import { LoadingOverlay } from "../../components/Layout/LoadingOverlay";
 import { LogInCircle } from "@styled-icons/boxicons-regular/LogInCircle";
@@ -73,6 +73,8 @@ import { SelectMultiple } from "@styled-icons/boxicons-solid/SelectMultiple";
 import { BookReader } from "@styled-icons/boxicons-regular/BookReader";
 import { BurstNew } from "@styled-icons/foundation/BurstNew";
 import { PuzzleCube } from "@styled-icons/fluentui-system-regular/PuzzleCube";
+import { Copy } from "@styled-icons/boxicons-regular/Copy";
+import { ArrowDownload } from "@styled-icons/fluentui-system-filled/ArrowDownload";
 import {
   arOverlayItemFactory,
   AROverlayItemStageSlide,
@@ -97,6 +99,8 @@ import {
   packPuzzleItemFactory,
   PackPuzzleItemStageSlide,
 } from "./components/items/PackPuzzleItem";
+import ActivityScreen from "../../screens/ActivityScreen";
+import { HeaderAction } from "../../components/Layout/Header";
 
 const Root = styled.main`
   display: flex;
@@ -163,6 +167,14 @@ const UnlockPasswordIcon = styled(Password)`
 `;
 
 const SessionCodeIcon = styled(LogInCircle)`
+  ${stageTypeIcon}
+`;
+
+const DuplicateActivityIcon = styled(Copy)`
+  ${stageTypeIcon}
+`;
+
+const DownloadActivityDefinitionIcon = styled(ArrowDownload)`
   ${stageTypeIcon}
 `;
 
@@ -375,18 +387,102 @@ const CreateEscapeRoomScreen = (
     );
   }; // updateDefinition
 
+  const duplicateDefinition = async () => {
+    return await escapeRoomService.duplicateEscapeRoomActivityDefinition(
+      initialActivity._id
+    );
+  }; // duplicateDefinition
+
   const [updateDefinitionStatus] = useAsyncRequest(updateDefinition, [
     newActivityDefinition,
   ]);
+  const [duplicateDefinitionStatus, triggerDuplicateDefinition] =
+    useAsyncRequest(duplicateDefinition, [], false);
+
+  useEffect(() => {
+    console.log(duplicateDefinitionStatus);
+    if (duplicateDefinitionStatus.kind !== "success") return;
+    if (duplicateDefinitionStatus.result.kind !== "ok") return;
+    if (!newActivityDefinition) return;
+
+    const win = window.open(
+      window.location.href.replace(
+        newActivityDefinition._id,
+        duplicateDefinitionStatus.result.data._id
+      ),
+      "_blank"
+    );
+    win?.focus();
+  }, [duplicateDefinitionStatus]);
+
+  const handleDownloadJSON = () => {
+    var hiddenElement = document.createElement("a");
+    hiddenElement.href =
+      "data:attachment/text," +
+      encodeURI(JSON.stringify(newActivityDefinition, null, 2));
+    hiddenElement.target = "_blank";
+    hiddenElement.download = `${initialActivity._id}.json`;
+    hiddenElement.click();
+    hiddenElement.remove();
+  }; // handleDownloadJSON
+
   const inSyncWithServer = updateDefinitionStatus.kind === "success";
 
   return (
-    <CreateEscapeRoomScreenComponent
+    <EscapeRoomContextWrapper
       initialActivityDefinition={initialActivity}
       onActivityDefinitionChanged={setNewActivityDefinition}
+      onActivityDuplicated={triggerDuplicateDefinition}
+      onDownloadActivityJson={handleDownloadJSON}
     />
   );
 }; // CreateEscapeRoomScreen
+
+type EscapeRoomContextWrapperProps = CreateEscapeRoomScreenComponentProps & {
+  /** callback to parent specifying that user wishes to create a copy of current activity */
+  onActivityDuplicated?: () => void;
+  /** callback to parent specifying that user wishes to download this activity definition as JSON */
+  onDownloadActivityJson?: () => void;
+}; // EscapeRoomContextWrapperProps
+const EscapeRoomContextWrapper = (
+  props: EscapeRoomContextWrapperProps
+): JSX.Element => {
+  const headerActions: HeaderAction[] = [
+    {
+      displayName: "Make a copy",
+      iconComponent: <DuplicateActivityIcon />,
+      onActionSelected: props.onActivityDuplicated,
+    },
+    {
+      displayName: "Download JSON",
+      iconComponent: <DownloadActivityDefinitionIcon />,
+      onActionSelected: props.onDownloadActivityJson,
+    },
+  ];
+
+  return (
+    <Routes>
+      <Route
+        path=""
+        element={
+          <ActivityScreen
+            guarded
+            activityId={props.initialActivityDefinition?._id}
+            activityTitle="Escape Room Creation"
+            navigationEntries={[]}
+            navigationWarnings={[]}
+            headerActions={headerActions}
+          />
+        }
+      >
+        <Route
+          path=""
+          element={<CreateEscapeRoomScreenComponent {...props} />}
+        />
+      </Route>
+    </Routes>
+  );
+}; // EscapeRoomContextWrapper
 
 //-------------------------------------------------------
 //                 Escape Room Creation

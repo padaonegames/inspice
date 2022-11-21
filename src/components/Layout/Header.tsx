@@ -7,6 +7,8 @@ import { DarkMode } from "@styled-icons/material-sharp/DarkMode";
 import SideMenu, { NavigationWarning, NavMenuElem } from "./SideMenu";
 import { Menu } from "styled-icons/ionicons-solid";
 import { Language } from "@styled-icons/fa-solid/Language";
+import { DotsVerticalRounded } from "@styled-icons/boxicons-regular/DotsVerticalRounded";
+import DropdownMenu from "../Forms/DropdownMenu";
 
 interface BurgerIconProps {
   open?: boolean;
@@ -70,6 +72,24 @@ const modeStyle = css`
   }
 `;
 
+const OpenActionsDropdownButton = styled.span`
+  cursor: pointer;
+  position: relative;
+`;
+
+const ActionsIcon = styled(DotsVerticalRounded)`
+  margin-right: 1em;
+  position: relative;
+  ${modeStyle}
+`;
+
+const IconsSeparator = styled.div`
+  background-color: ${(props) => props.theme.textColor};
+  width: 1px;
+  height: 1.5em;
+  margin-right: 1em;
+`;
+
 const LightModeIcon = styled(LightMode)`
   ${modeStyle}
 `;
@@ -83,6 +103,15 @@ const LanguageIcon = styled(Language)`
   margin-right: 1em;
 `;
 
+export interface HeaderAction {
+  /** How to render this option within a list. Defaults to empty string */
+  displayName?: string;
+  /** What component to place next to the display name */
+  iconComponent?: JSX.Element;
+  /** action to perform upon clicking on this action */
+  onActionSelected?: () => void;
+} // HeaderAction
+
 export interface HeaderProps {
   /** Title to display on this header */
   activityTitle?: string;
@@ -90,6 +119,8 @@ export interface HeaderProps {
   navigationEntries?: NavMenuElem[];
   /** Guards to warn user about a possible loss of progress when transitioning from a given route */
   navigationWarnings?: NavigationWarning[];
+  /** actions that can be performed from the header at all times during the activity */
+  headerActions?: HeaderAction[];
   /**
    * What sort of user management should be done from this header's side menu.
    * Three modes are currently supported:
@@ -108,6 +139,7 @@ export const Header = (props: HeaderProps) => {
     activityTitle = "",
     navigationEntries = [],
     navigationWarnings = [],
+    headerActions = [],
     sideMenuMode = "none",
   } = props;
 
@@ -115,6 +147,15 @@ export const Header = (props: HeaderProps) => {
   const { theme, switchTheme } = useContext(ThemeContext);
 
   const [openMenu, setOpenMenu] = useState<boolean>(false);
+  const [actionsDropdownOpen, setActionsDropdownOpen] =
+    useState<boolean>(false);
+
+  const handleOptionSelected = (opt: string) => {
+    const action = headerActions.find((elem) => elem.displayName === opt);
+    if (action && action.onActionSelected) {
+      action.onActionSelected();
+    }
+  }; // handleOptionSelected
 
   return (
     <>
@@ -125,6 +166,28 @@ export const Header = (props: HeaderProps) => {
         />
         <AppName>{`${activityTitle && `${activityTitle}`}`}</AppName>
         <ThemeSwitch>
+          {headerActions.length > 0 && (
+            <>
+              <OpenActionsDropdownButton>
+                <ActionsIcon
+                  title="More Options"
+                  onClick={() => setActionsDropdownOpen(true)}
+                />
+                {actionsDropdownOpen && (
+                  <DropdownMenu
+                    positioning={{ right: "0.75em", top: "2em" }}
+                    options={headerActions.map((action) => ({
+                      displayName: action.displayName,
+                      iconComponent: action.iconComponent,
+                    }))}
+                    onOptionSelected={handleOptionSelected}
+                    onCloseDropdown={() => setActionsDropdownOpen(false)}
+                  />
+                )}
+              </OpenActionsDropdownButton>
+              <IconsSeparator />
+            </>
+          )}
           {
             <LanguageIcon
               title="Switch language"
