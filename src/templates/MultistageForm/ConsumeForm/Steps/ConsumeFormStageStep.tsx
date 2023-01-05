@@ -1,11 +1,7 @@
 import MultipleChoiceCard from "../../../../components/Forms/Cards/MultipleChoiceCard";
 import ShortTextInputCard from "../../../../components/Forms/Cards/ShortTextInputCard";
-import { StepComponentProps } from "../../../../components/Navigation/TypedSteps";
 import {
-  AvailableMultistageFormFieldType,
   ConsumableFieldProps,
-  MultistageFormResponses,
-  MultistageFormStage,
   SupportedFormField,
   SupportedFormResponse,
 } from "../../../../services/multistageFormActivity.model";
@@ -18,15 +14,21 @@ import DisplayImageCard from "../../../../components/Forms/Cards/DisplayImageCar
 import DisplayVideoCard from "../../../../components/Forms/Cards/DisplayVideoCard";
 import DisplayTextCard from "../../../../components/Forms/Cards/DisplayTextCard";
 import LikertScaleInputCard from "../../../../components/Forms/Cards/LikertScaleInputCard";
-import { cloneDeep } from "lodash";
 import {
   ConsumableFieldCard,
-  FormFieldMappings,
+  FieldResponseMappings,
 } from "../components/ConsumableFieldCard";
-import { useEffect, useState } from "react";
 import HighLightTextCard from "../../../../components/Forms/Cards/HighLightTextCard";
+import StepTitleCard from "../../../../components/Forms/Cards/StepTitleCard";
+import React from "react";
+import { useAppDispatch, useAppSelector } from "../../../../store/hooks";
+import {
+  formResponseChanged,
+  selectCurrentStage,
+  selectFormResponses,
+} from "../../../../store/features/multistageForm/multistageFormConsumptionSlice";
 
-const Root = styled.div`
+const StageRoot = styled.div`
   display: flex;
   flex-direction: column;
   margin-top: 4.5vh;
@@ -50,79 +52,83 @@ export const Separator = styled.div`
   // background-color:rgb(255,0,0);
 `;
 
-export const fieldMappings: FormFieldMappings<
+export const fieldMappings: FieldResponseMappings<
   SupportedFormField,
   SupportedFormResponse
 > = {
-  checkbox: {
-    consumptionComponentProducer: CheckBoxGroupInputCard,
-    defaultResponse: { selectedFields: [] },
-  },
   "short-text": {
     consumptionComponentProducer: ShortTextInputCard,
-    defaultResponse: { text: "" },
+    defaultFieldResponse: { text: "" },
   },
   "long-text": {
     consumptionComponentProducer: LongTextInputCard,
-    defaultResponse: { text: "" },
+    defaultFieldResponse: { text: "" },
   },
   "multiple-choice": {
     consumptionComponentProducer: MultipleChoiceCard,
-    defaultResponse: { selectedResponses: [] },
+    defaultFieldResponse: { selectedResponses: [] },
+  },
+  checkbox: {
+    consumptionComponentProducer: CheckBoxGroupInputCard,
+    defaultFieldResponse: { selectedFields: [] },
   },
   calendar: {
     consumptionComponentProducer: CalendarInputCard,
-    defaultResponse: { date: new Date() },
+    defaultFieldResponse: { date: new Date() },
   },
   "display-image": {
     consumptionComponentProducer: DisplayImageCard,
-    defaultResponse: {},
+    defaultFieldResponse: {},
   },
   "display-video": {
     consumptionComponentProducer: DisplayVideoCard,
-    defaultResponse: {},
+    defaultFieldResponse: {},
   },
   "display-text": {
     consumptionComponentProducer: DisplayTextCard,
-    defaultResponse: {},
+    defaultFieldResponse: {},
   },
   "likert-scale": {
     consumptionComponentProducer: LikertScaleInputCard,
-    defaultResponse: {
-      responses: [],
-    },
+    defaultFieldResponse: { responses: {} },
   },
   "highlight-text": {
     consumptionComponentProducer: HighLightTextCard,
-    defaultResponse: { highlightedTexts: [] },
+    defaultFieldResponse: { highlightedTexts: [] },
   },
 }; // fieldMappings
 
-export interface ConsumeMultistageFormStageStepProps
-  extends StepComponentProps<MultistageFormResponses> {
-  stageDefinition: MultistageFormStage;
-} // ConsumeMultistageFormStageStepProps
+export const ConsumeMultistageFormStageStep = (): JSX.Element => {
+  const dispatch = useAppDispatch();
+  const currentStage = useAppSelector(selectCurrentStage);
+  const formResponses = useAppSelector(selectFormResponses);
 
-export const ConsumeMultistageFormStageStep = (
-  props: ConsumeMultistageFormStageStepProps
-): JSX.Element => {
-  const { state: responses, setState: setResponses, stageDefinition } = props;
+  const handleResponseChanged = (
+    formId: string,
+    response: SupportedFormResponse
+  ) => {
+    dispatch(
+      formResponseChanged({ formId, data: response, bufferAction: true })
+    );
+  }; // handleResponseChanged
+
+  if (!currentStage) return <></>;
 
   return (
-    <Root>
-      {stageDefinition.forms.map((form, index) => (
-        <>
-          {index > 0 && <Separator key={`s${form._id}`} />}
+    <StageRoot>
+      <StepTitleCard
+        stepTitle={currentStage.title ?? `Stage`}
+        stepDescription={currentStage.description}
+      />
+      {currentStage.forms.map((form) => (
+        <React.Fragment key={form._id}>
           <ConsumableFieldCard
-            key={form._id}
             fieldMappings={fieldMappings}
             formDefinition={form}
-            initialUserResponses={responses}
-            onUserResponsesChanged={setResponses}
           />
-        </>
+        </React.Fragment>
       ))}
-    </Root>
+    </StageRoot>
   );
 };
 

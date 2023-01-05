@@ -5,9 +5,8 @@ import {
   MultipleChoiceFieldDefinition,
   MultipleChoiceResponseDefinition,
 } from "../components/Forms/Cards/MultipleChoiceCard";
-import { ActivityInstance } from "./activity.model";
 
-export interface MultistageFormFieldDefinition {
+export interface MultistageFormField {
   /** object describing the type and payload of the form field definition */
   fieldData: SupportedFormField;
   /** Prompt for the user to fill in this field */
@@ -18,10 +17,19 @@ export interface MultistageFormFieldDefinition {
   _id: string;
 } // MultistageFormFieldDefinition
 
-export interface MultistageFormActivityDefinition extends ActivityInstance {
-  activityType: "Multistage Form";
+export interface MultistageFormActivity {
+  /** Unique id of this definition */
+  _id: string;
+  /** short title for this activity that will be rendered on the title card */
+  title: string;
+  /** Id of the author of this activity within the system */
+  author: string;
+  /** short description of this activity that will be rendered on the title card */
+  description?: string;
+  /** list of stages comprising this activity */
   stages: MultistageFormStage[];
-  formResponsesDatasetUuid: string;
+  /** whether this activity is valid and can be deployed (no errors in the definition) */
+  isValid: boolean;
 } // MultistageFormActivityDefinition
 
 /**
@@ -40,7 +48,7 @@ export interface MultistageFormStage {
   /**
    * Forms defined within this particular stage
    */
-  forms: MultistageFormFieldDefinition[];
+  forms: MultistageFormField[];
 } // MultistageFormStage
 
 export type MultistageFormResponses = {
@@ -61,7 +69,7 @@ export interface ConsumableFieldProps<FieldPayload, FieldResponse>
   requiredAlert?: boolean;
   /** Message to display if requiredAlert is set to true */
   alertMessage?: string;
-  /** Definition to be used to render the stateless consumable field component (only the exclusive part of the definition, prompt text and type are edited elsewhere) */
+  /** Definition to be used to render the stateless consumable field component */
   fieldPayload: FieldPayload;
   /** Current response to be rendered by the component */
   response: FieldResponse;
@@ -214,7 +222,7 @@ export interface LikertScaleResponseDefinition {
    * Each item in the array represents the index of the selected
    * option within the common scale of the questionaire.
    */
-  responses: (number | undefined)[];
+  responses: { [questionIndex: number]: number };
 } // LikertScaleResponseDefinition
 
 //-------------------

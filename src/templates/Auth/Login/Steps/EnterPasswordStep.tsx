@@ -1,11 +1,11 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
-import { AuthContext } from "../../../../auth/AuthStore";
 import { ShortTextInputCard } from "../../../../components/Forms/Cards/ShortTextInputCard";
 import { StepComponentProps } from "../../../../components/Navigation/Steps";
-import { authService } from "../../../../services";
-import { useAsyncRequest } from "../../../../services/useAsyncRequest";
+import { usePerformUserLoginMutation } from "../../../../services/auth.api";
+import { useAppDispatch } from "../../../../store/hooks";
+import { setCredentials } from "../../../../store/features/auth/authSlice";
 import {
   ActionsContainer,
   ButtonAction,
@@ -27,20 +27,12 @@ const Root = styled.div`
 export const EnterPasswordStep = (props: StepComponentProps): JSX.Element => {
   const { t } = useTranslation("gamGame");
 
-  const { setTokenAndUpdateData } = useContext(AuthContext);
+  const [performUserLogin, loginResult] = usePerformUserLoginMutation();
+  const dispatch = useAppDispatch();
 
   const username = props.getState<string>("username", "user");
   const password = props.getState<string>("password", "");
 
-  const performLogin = async () => {
-    return await authService.performUserLogin(username, password);
-  }; // performLogin
-
-  const [performLoginRequest, triggerRequest] = useAsyncRequest(
-    performLogin,
-    [],
-    false
-  );
   const [alertMessage, setAlertMessage] =
     useState<string | undefined>(undefined);
 
@@ -51,25 +43,29 @@ export const EnterPasswordStep = (props: StepComponentProps): JSX.Element => {
   }; // handleBackClicked
 
   const handleNextClicked = () => {
-    triggerRequest();
+    performUserLogin({ username, password });
   }; // handleNextClicked
 
   useEffect(() => {
-    if (performLoginRequest.kind === "success") {
-      if (performLoginRequest.result.kind === "http-error") {
-        setAlertMessage("Incorrect password. Please try again.");
-      } else if (
-        performLoginRequest.result.kind === "ok" &&
-        performLoginRequest.result.data.accessToken
-      ) {
+    if (loginResult.isError) {
+      setAlertMessage("Incorrect credentials. Please try again.");
+    } else if (loginResult.isSuccess) {
+      if (loginResult.data.accessToken !== null) {
         setAlertMessage(undefined);
-        setTokenAndUpdateData(performLoginRequest.result.data.accessToken);
-        console.log(
-          `Your token: ${performLoginRequest.result.data.accessToken}`
+        dispatch(setCredentials(loginResult.data));
+        console.log(`Your token: ${loginResult.data.accessToken}`);
+      } else {
+        // no access token, reset credentials
+        setAlertMessage(
+          loginResult.data.message ??
+            "There was a problem during login. Please try again."
+        );
+        dispatch(
+          setCredentials({ accessToken: undefined, userData: undefined })
         );
       }
     }
-  }, [performLoginRequest]);
+  }, [loginResult]);
 
   return (
     <Root>

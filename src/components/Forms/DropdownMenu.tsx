@@ -44,17 +44,17 @@ const DropdownMenuItem = styled.a`
 `;
 
 export interface DropdownMenuOption {
-  /** How to render this option within a list. Defaults to empty string */
-  displayName?: string;
+  /** How to render this option within a list. */
+  displayName: string;
   /** What component to place next to the display name */
   iconComponent?: JSX.Element;
+  /** callback to parent specifying that given option has been selected by the user */
+  onOptionSelected?: () => void;
 } // DropdownMenuOption
 
 export interface DropdownMenuProps {
   /** list of options to render within this component */
   options: DropdownMenuOption[];
-  /** callback to parent specifying that a given option has been selected by the user */
-  onOptionSelected?: (option: string) => void;
   /** callback to parent specifying that dropdown should be closed */
   onCloseDropdown?: () => void;
   /** positioning of the options */
@@ -69,7 +69,6 @@ export interface DropdownMenuProps {
 export const DropdownMenu = (props: DropdownMenuProps): JSX.Element => {
   const {
     options,
-    onOptionSelected,
     onCloseDropdown,
     positioning = { left: "0", top: "2.5em" },
   } = props;
@@ -79,21 +78,16 @@ export const DropdownMenu = (props: DropdownMenuProps): JSX.Element => {
     if (onCloseDropdown) onCloseDropdown();
   });
 
-  const handleDropdownItemSelected = (elem: string) => {
-    if (onCloseDropdown) onCloseDropdown();
-    if (!onOptionSelected) return;
-    onOptionSelected(elem);
-  }; // handleDropdownItemSelected
-
   return (
     <Root ref={wrapperRef} {...positioning}>
       {options.map((elem) => (
         <DropdownMenuItem
           onClick={(event) => {
             event.stopPropagation();
-            handleDropdownItemSelected(elem.displayName ?? "");
+            if (onCloseDropdown) onCloseDropdown();
+            if (elem.onOptionSelected) elem.onOptionSelected();
           }}
-          key={elem.displayName ?? ""}
+          key={elem.displayName}
         >
           {elem.iconComponent}
           {elem.displayName}

@@ -1,23 +1,23 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import {
   ConsumableFieldProps,
   LikertScaleFieldDefinition,
   LikertScaleResponseDefinition,
 } from "../../../services/multistageFormActivity.model";
 import LikertResponse, { EditableLikertResponse } from "../LikertResponse";
-import {
-  Root,
-  CardPanel,
-  PromptText,
-  RequiredAsterisk,
-  RequiredQuestionSpan,
-  RequiredAlertIcon,
-} from "./cardStyles";
+import { RequiredAsterisk } from "./cardStyles";
 import { AddCircle } from "@styled-icons/fluentui-system-regular/AddCircle";
 import { Add } from "@styled-icons/fluentui-system-filled/Add";
 import { Minus } from "@styled-icons/evaicons-solid/Minus";
 import EditableCheckBoxInput from "../EditableCheckBoxInput";
 import { EditableFieldProps } from "./EditableFieldCard";
+import FormCard from "./FormCard";
+import {
+  addItemToArray,
+  removeItemFromArrayByIndex,
+  transformItemFromArrayByIndex,
+} from "../../../utils/arrayUtils";
+import React from "react";
 
 const QuestionText = styled.div`
   // font: 400 16px Roboto,RobotoDraft,Helvetica,Arial,sans-serif;
@@ -64,17 +64,7 @@ export interface LikertScaleInputCardProps
   extends ConsumableFieldProps<
     LikertScaleFieldDefinition,
     LikertScaleResponseDefinition
-  > {
-  /** Main text rendered on top of the component as a prompt for the user, indicating what they must reply to within this card.
-   * This can be interpreted as a general explanation of the fields below, likely including some sort of description of the nature
-   * of the questions and the meaning of the possible answers.
-   */
-  promptText?: string;
-  /** whether this field is considered required within the overall form (used to display an asterisk) */
-  required?: boolean;
-  /** whether to modify the appearance of this card to reflect that the user tried to submit the form without entering a value for this field */
-  requiredAlert?: boolean;
-} // LikertScaleInputCardProps
+  > {} // LikertScaleInputCardProps
 
 export const LikertScaleInputCard = (
   props: LikertScaleInputCardProps
@@ -83,9 +73,11 @@ export const LikertScaleInputCard = (
     promptText = "",
     requiredAlert,
     required,
-    fieldPayload,
     response,
+    fieldPayload,
+    alertMessage,
     onResponseChanged,
+    ...htmlProps
   } = props;
 
   const { scale, questions, showQuestionsIndex } = fieldPayload;
@@ -100,60 +92,46 @@ export const LikertScaleInputCard = (
     if (!onResponseChanged) return;
 
     onResponseChanged({
-      responses: [
-        ...responses.slice(0, questionIndex),
-        scaleIndex,
-        ...responses.slice(questionIndex + 1),
-      ],
+      responses: { ...responses, [questionIndex]: scaleIndex },
     });
   }; // handleResponseSelected
 
   return (
-    <Root>
-      <CardPanel requiredAlert={requiredAlert}>
-        <PromptText>
-          {promptText}
-          {required && <RequiredAsterisk> *</RequiredAsterisk>}
-        </PromptText>
-        <VerticalSpace />
-        {questions.map((question, qInd) => (
-          <>
-            <QuestionText>
-              {`${showQuestionsIndex ? qInd + 1 + ". " : ""}${question}`}
-              {required && <RequiredAsterisk> *</RequiredAsterisk>}
-            </QuestionText>
-            <LikertScaleContainer>
-              <LikertBand>
-                {scale.map((response, rInd) => (
-                  <LikertResponse
-                    responseText={response}
-                    position={
-                      rInd === 0
-                        ? "first"
-                        : rInd === scale.length - 1
-                        ? "last"
-                        : "middle"
-                    }
-                    key={question}
-                    onResponseSelected={() =>
-                      handleResponseSelected(qInd, rInd)
-                    }
-                    selected={
-                      qInd < responses.length && responses[qInd] === rInd
-                    }
-                  />
-                ))}
-              </LikertBand>
-            </LikertScaleContainer>
-          </>
-        ))}
-        {requiredAlert && (
-          <RequiredQuestionSpan>
-            <RequiredAlertIcon /> This question is required.
-          </RequiredQuestionSpan>
-        )}
-      </CardPanel>
-    </Root>
+    <FormCard
+      promptText={promptText}
+      required={required}
+      requiredAlert={requiredAlert}
+      alertMessage={alertMessage}
+      {...htmlProps}
+    >
+      {questions.map((question, qInd) => (
+        <React.Fragment key={`${qInd}_frag`}>
+          <QuestionText key={`${qInd}_question`}>
+            {`${showQuestionsIndex ? qInd + 1 + ". " : ""}${question}`}
+            {required && <RequiredAsterisk> *</RequiredAsterisk>}
+          </QuestionText>
+          <LikertScaleContainer key={`${qInd}_container`}>
+            <LikertBand>
+              {scale.map((response, rInd) => (
+                <LikertResponse
+                  responseText={response}
+                  position={
+                    rInd === 0
+                      ? "first"
+                      : rInd === scale.length - 1
+                      ? "last"
+                      : "middle"
+                  }
+                  key={`${question}_${rInd}`}
+                  onResponseSelected={() => handleResponseSelected(qInd, rInd)}
+                  selected={responses[qInd] === rInd}
+                />
+              ))}
+            </LikertBand>
+          </LikertScaleContainer>
+        </React.Fragment>
+      ))}
+    </FormCard>
   );
 };
 
@@ -170,11 +148,11 @@ const ScaleConfigContainer = styled.div`
 `;
 
 const ScaleConfigTitle = styled.div`
-  font-size: 1.75rem;
+  font-size: 1.25rem;
   font-weight: 200;
-  color: #ffffff;
+  color: white;
   font-family: ${(props) => props.theme.contentFont};
-  line-height: 115%;
+  line-height: 135%;
 
   width: 100%;
   display: flex;
@@ -204,35 +182,32 @@ const SampleScaleStepContainer = styled.div`
 `;
 
 interface ButtonProps {
-  avaliable: boolean;
+  enabled: boolean;
 }
 
-const AddScaleIcon = styled(Add)<ButtonProps>`
+const scaleIconStyle = css<ButtonProps>`
   height: 1.75em;
   width: 1.75em;
+  cursor: ${(props) => (props.enabled ? "pointer" : "default")};
 
-  cursor: pointer;
   border-radius: 5px;
   border: 1px solid #dadce0;
   background-color: #f8f9fa;
-  opacity: ${(props) => (props.avaliable ? "1" : "0.3")};
+  opacity: ${(props) => (props.enabled ? "1" : "0.3")};
+  ${(props) =>
+    props.enabled &&
+    `
   &:hover {
     background-color: rgba(230, 230, 230, 1);
-  }
+  }`}
+`;
+
+const AddScaleIcon = styled(Add)<ButtonProps>`
+  ${scaleIconStyle}
 `;
 
 const DecreaseScaleIcon = styled(Minus)<ButtonProps>`
-  height: 1.75em;
-  width: 1.75em;
-  cursor: pointer;
-
-  border-radius: 5px;
-  border: 1px solid #dadce0;
-  background-color: #f8f9fa;
-  opacity: ${(props) => (props.avaliable ? "1" : "0.3")};
-  &:hover {
-    background-color: rgba(230, 230, 230, 1);
-  }
+  ${scaleIconStyle}
 `;
 
 /////////////////// Questions
@@ -293,11 +268,18 @@ export const EditableLikertScaleCardContent = (
 
   const { questions, scale, showQuestionsIndex = false } = fieldPayload;
 
+  const canAddScaleItem = scale.length < 7;
+  const canRemoveScaleItem = scale.length > 3;
+
   const handleAddQuestion = () => {
     if (!onPayloadChanged) return;
     onPayloadChanged({
       ...fieldPayload,
-      questions: [...fieldPayload.questions, ""],
+      questions: addItemToArray(
+        questions,
+        `Question ${questions.length + 1}`,
+        questions.length
+      ),
     });
   }; // handleAddQuestion
 
@@ -305,7 +287,7 @@ export const EditableLikertScaleCardContent = (
     if (!onPayloadChanged) return;
     onPayloadChanged({
       ...fieldPayload,
-      questions: fieldPayload.questions.filter((_, i) => i !== index),
+      questions: removeItemFromArrayByIndex(questions, index),
     });
   }; // handleRemoveQuestion
 
@@ -313,11 +295,11 @@ export const EditableLikertScaleCardContent = (
     if (!onPayloadChanged) return;
     onPayloadChanged({
       ...fieldPayload,
-      questions: [
-        ...questions.slice(0, index),
-        newQuestion,
-        ...questions.slice(index + 1),
-      ],
+      questions: transformItemFromArrayByIndex(
+        questions,
+        index,
+        () => newQuestion
+      ),
     });
   }; // handleQuestionChanged
 
@@ -325,25 +307,31 @@ export const EditableLikertScaleCardContent = (
     if (!onPayloadChanged) return;
     onPayloadChanged({
       ...fieldPayload,
-      scale: [
-        ...fieldPayload.scale.slice(0, index),
-        newScaleName,
-        ...fieldPayload.scale.slice(index + 1),
-      ],
+      scale: transformItemFromArrayByIndex(scale, index, () => newScaleName),
     });
   }; // handleScaleEdited
 
-  const handleChangeScaleSteps = (delta: number) => {
+  const handleChangeScaleSteps = (operation: "add" | "remove") => {
     if (!onPayloadChanged) return;
 
-    let resultArray = scale;
-    if (delta === 1 && resultArray.length < 7) resultArray.push("New Value");
-    if (delta === -1 && resultArray.length > 3) resultArray.pop();
-
-    onPayloadChanged({
-      ...fieldPayload,
-      scale: resultArray,
-    });
+    if (operation === "add" && canAddScaleItem) {
+      onPayloadChanged({
+        ...fieldPayload,
+        scale: addItemToArray(
+          fieldPayload.scale,
+          "New value",
+          fieldPayload.scale.length
+        ),
+      });
+    } else if (operation === "remove" && canRemoveScaleItem) {
+      onPayloadChanged({
+        ...fieldPayload,
+        scale: removeItemFromArrayByIndex(
+          fieldPayload.scale,
+          fieldPayload.scale.length - 1
+        ),
+      });
+    }
   }; // handleChangeScaleSteps
 
   return (
@@ -355,8 +343,8 @@ export const EditableLikertScaleCardContent = (
         {/* Configurator for the scale steps */}
         <ScaleConfigLength>
           <DecreaseScaleIcon
-            onMouseDown={() => handleChangeScaleSteps(-1)}
-            avaliable={scale.length > 3}
+            onMouseDown={() => handleChangeScaleSteps("remove")}
+            enabled={canRemoveScaleItem}
           />
           <SampleScaleStepContainer>
             <LikertResponse
@@ -368,8 +356,8 @@ export const EditableLikertScaleCardContent = (
             />
           </SampleScaleStepContainer>
           <AddScaleIcon
-            onMouseDown={() => handleChangeScaleSteps(1)}
-            avaliable={scale.length < 7}
+            onMouseDown={() => handleChangeScaleSteps("add")}
+            enabled={canAddScaleItem}
           />
         </ScaleConfigLength>
 
@@ -398,9 +386,9 @@ export const EditableLikertScaleCardContent = (
         </EditableLikertScaleContainer>
       </ScaleConfigContainer>
 
-      {/* List of questions that the user needs to answer withs the scale given */}
+      {/* List of questions that the user needs to answer with the scale given */}
       {questions.map((question, qInd) => (
-        <>
+        <React.Fragment key={qInd}>
           {/* Question to answer */}
           <QuestionContainer>
             <EditableCheckBoxInput
@@ -439,7 +427,7 @@ export const EditableLikertScaleCardContent = (
               ))}
             </LikertBand>
           </LikertScaleContainer>
-        </>
+        </React.Fragment>
       ))}
 
       {/* Button to add a new question to the form */}

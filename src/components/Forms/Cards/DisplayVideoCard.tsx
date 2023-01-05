@@ -4,7 +4,7 @@ import {
 } from "../../../services/multistageFormActivity.model";
 import { InputText } from "./cardStyles";
 import FormCard from "./FormCard";
-import YouTube, { YouTubeProps } from "react-youtube";
+import ReactPlayer from "react-player/lazy";
 import { EditableFieldProps } from "./EditableFieldCard";
 
 const getVideoID = (link: string) => {
@@ -31,26 +31,20 @@ export const DisplayVideoCard = (props: DisplayVideoCardProps): JSX.Element => {
 
   const { src } = fieldPayload;
 
-  const playerOptions: YouTubeProps["opts"] = {
-    height: "390",
-    width: "640",
-  };
-
-  const onPlayerReady: YouTubeProps["onReady"] = (event) => {
-    event.target.pauseVideo();
-  }; // onPlayerReady
-
   return (
     <FormCard
       promptText={promptText}
       required={required}
       requiredAlert={requiredAlert}
     >
-      <YouTube
-        videoId={getVideoID(src)}
-        opts={playerOptions}
-        onReady={onPlayerReady}
-        style={{ marginLeft: "auto", marginRight: "auto", display: "block" }}
+      <ReactPlayer
+        url={src}
+        style={{
+          marginTop: "1em",
+          marginLeft: "auto",
+          marginRight: "auto",
+          display: "block",
+        }}
       />
     </FormCard>
   );
@@ -69,31 +63,10 @@ export const EditableDisplayVideoCardContent = (
 
   const { src } = fieldPayload;
 
-  const playerOptions: YouTubeProps["opts"] = {
-    height: "390",
-    width: "640",
-  };
-
-  const isValidURL = (link: string) => {
-    var res = link.match(
-      /(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g
-    );
-    return res !== null;
-  }; // isValidURL
-
   const handleEditVideoSource = (link: string) => {
     if (!onPayloadChanged) return;
-
-    let ID = isValidURL(link) ? getVideoID(link) : "";
-    onPayloadChanged({
-      ...fieldPayload,
-      src: link,
-    });
+    onPayloadChanged({ src: link });
   }; // handleEditVideoSource
-
-  const onPlayerReady: YouTubeProps["onReady"] = (event) => {
-    event.target.pauseVideo();
-  }; // onPlayerReady
 
   return (
     <>
@@ -103,14 +76,12 @@ export const EditableDisplayVideoCardContent = (
         textWidth={0.95}
         onChange={(event) => handleEditVideoSource(event.target.value)}
       />
-      <YouTube
-        videoId={getVideoID(src)}
-        opts={playerOptions}
-        onReady={onPlayerReady}
+      <ReactPlayer
+        url={src}
         style={{
+          marginTop: "1em",
           marginLeft: "auto",
           marginRight: "auto",
-          paddingTop: "10px",
           display: "block",
         }}
       />

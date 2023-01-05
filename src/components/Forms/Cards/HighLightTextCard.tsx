@@ -237,6 +237,7 @@ export const HighLightTextCard = (
   } = props;
 
   const { text, highlighters } = fieldPayload;
+  const { highlightedTexts } = response;
 
   // Color that each character of "text" is highlighted with, if a character is not being highlighted, its highlight color is white
   const [characterHighlightColors, setCharacterHighlightColors] = useState<
@@ -331,7 +332,7 @@ export const HighLightTextCard = (
           highlightColor = characterHighlightColors[i];
         }
       }
-    }; 
+    }
 
     // In case the last character is included in the selection, so that this last selection is also included
     if (onTopOfHighlight) {
@@ -380,6 +381,7 @@ export const HighLightTextCard = (
       <TagsContainer>
         {highlighters.map((currentHighlighter, currentHighlighterIndex) => (
           <HighlighterOption
+            key={currentHighlighter.color}
             selected={currentHighlighterIndex === selectedColor}
             onMouseDown={() => setSelectedColor(currentHighlighterIndex)}
           >
@@ -610,7 +612,7 @@ export const EditableHighLightTextCardContent = (
           {/* Grid with the avaliable highlighters */}
           <HighlightersGrid elements={highlighters.length} elementsPerRow={2}>
             {highlighters.map((currentHighlighter, highlighterIndex) => (
-              <GridHighligterContainer>
+              <GridHighligterContainer key={currentHighlighter.color}>
                 <HighlighterContainer>
                   <HighlighterColor color={currentHighlighter.color}>
                     <HighlighterIcon />

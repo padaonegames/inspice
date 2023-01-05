@@ -72,7 +72,7 @@ export const EditableDisplayTextCardContent = (
     <>
       <Root>
         <EditableText
-          placeholder={"descriptionPlaceholder"}
+          placeholder={`Text to display.`}
           value={text}
           onChange={(event) => {
             handleEditText(event.target.value);

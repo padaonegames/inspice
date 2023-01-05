@@ -104,7 +104,7 @@ export const LikertResponse = (props: LikertResponseProps): JSX.Element => {
 
   const handleSelectAnswer = () => {
     if (onResponseSelected) onResponseSelected();
-  };
+  }; // handleSelectAnswer
 
   return (
     <LikertResponseContainer>
@@ -113,7 +113,7 @@ export const LikertResponse = (props: LikertResponseProps): JSX.Element => {
       <LikertInput
         type="radio"
         name={responseText}
-        onChange={(event) => handleSelectAnswer}
+        onChange={handleSelectAnswer}
       />
       <LikertIndicator checked={selected} />
       <VerticalSpace />
@@ -157,12 +157,12 @@ export const EditableLikertResponse = (
 
   return (
     <LikertResponseContainer>
-      <LikertLine visible={position !== "first"} />
-      <LikertLine visible={position !== "last"} />
+      <LikertLine key={`leftLine`} visible={position !== "first"} />
+      <LikertLine key={`rightLine`} visible={position !== "last"} />
       <LikertInput
         type="radio"
         name={responseText}
-        onChange={(event) => handleSelectAnswer}
+        onChange={handleSelectAnswer}
       />
       <LikertIndicator checked={selected} />
       <VerticalSpace />
@@ -172,7 +172,7 @@ export const EditableLikertResponse = (
         defaultValue={responseText}
         maxLength={10}
         onChange={(event) => handleAnswerEdited(event.target.value)}
-      ></LikertInputText>
+      />
     </LikertResponseContainer>
   );
 };

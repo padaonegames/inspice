@@ -311,6 +311,8 @@ const sample_base: EscapeRoomActivityDefinition = {
 //-------------------------------------------------------
 
 export const GenerateNewEscapeRoomActivityScreen = () => {
+  console.log("GenerateNewEscapeRoomActivityScreen");
+
   const generateNewEscapeRoomActivity = async () => {
     return await escapeRoomService.requestNewEscapeRoomActivityDefinition();
   }; // generateNewEscapeRoomActivity
@@ -451,12 +453,12 @@ const EscapeRoomContextWrapper = (
     {
       displayName: "Make a copy",
       iconComponent: <DuplicateActivityIcon />,
-      onActionSelected: props.onActivityDuplicated,
+      onOptionSelected: props.onActivityDuplicated,
     },
     {
       displayName: "Download JSON",
       iconComponent: <DownloadActivityDefinitionIcon />,
-      onActionSelected: props.onDownloadActivityJson,
+      onOptionSelected: props.onDownloadActivityJson,
     },
   ];
 

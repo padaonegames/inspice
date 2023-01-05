@@ -2,10 +2,18 @@ import styled from "styled-components";
 import { StyledIcon } from "styled-icons/types";
 import { UserCircle } from "@styled-icons/boxicons-regular/UserCircle";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useContext } from "react";
-import { AuthContext } from "../../auth/AuthStore";
 import { PowerOff } from "@styled-icons/boxicons-regular/PowerOff";
-import { SessionAuthContext } from "../../auth/SessionAuthStore";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
+import {
+  selectCurrentUser,
+  setCredentials,
+} from "../../store/features/auth/authSlice";
+import React from "react";
+import {
+  selectSessionName,
+  selectSessionUsername,
+  setSession,
+} from "../../store/features/session/sessionSlice";
 
 interface RootProps {
   open: boolean;
@@ -160,21 +168,25 @@ export const SideMenu = (props: SideMenuProps): JSX.Element => {
 
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const { userData, setTokenAndUpdateData } = useContext(AuthContext);
-  const { username, sessionName, setUsernameSessionActivity } =
-    useContext(SessionAuthContext);
+
+  const username = useAppSelector(selectSessionUsername);
+  const sessionName = useAppSelector(selectSessionName);
+  const userData = useAppSelector(selectCurrentUser);
+  const dispatch = useAppDispatch();
 
   const performLogout = () => {
     if (sideMenuMode === "system-user") {
       // Logout from auth context
-      setTokenAndUpdateData(undefined);
+      dispatch(setCredentials({ userData: undefined, accessToken: undefined }));
     } else if (sideMenuMode === "session-user") {
       // Logout from session auth context
-      setUsernameSessionActivity({
-        username: undefined,
-        sessionName: undefined,
-        activityId: undefined,
-      });
+      dispatch(
+        setSession({
+          username: undefined,
+          sessionName: undefined,
+          activityId: undefined,
+        })
+      );
     }
   }; // performLogout
 

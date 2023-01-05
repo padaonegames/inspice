@@ -9,7 +9,6 @@ import { UserService } from "./user.service";
 import { AuthService } from "./auth.service";
 import { GamArtworksService } from "./gamArtworks.service";
 import { MncnArtifactService } from "./mncnArtifact.service";
-import { MultistageFormActivityService } from "./multistageFormActivity.service";
 import { EscapeRoomActivityService } from "./escapeRoomActivity.service";
 import axios from "axios";
 import { ActivityService } from "./activity.service";
@@ -24,7 +23,6 @@ export let gamGameApi: GamGameActivityService;
 export let userService: UserService;
 export let authService: AuthService;
 export let mncnArtifactService: MncnArtifactService;
-export let multistageFormService: MultistageFormActivityService;
 export let escapeRoomService: EscapeRoomActivityService;
 export let activityService: ActivityService;
 
@@ -74,7 +72,6 @@ export const initializeServices = () => {
     process.env.REACT_APP_SERVER_API_URL ||
     "http://testinspice.padaonegames.com/api";
   gamGameApi = new GamGameActivityService(inspiceServerApi);
-  multistageFormService = new MultistageFormActivityService(inspiceServerApi);
   escapeRoomService = new EscapeRoomActivityService(inspiceServerApi);
   userService = new UserService(inspiceServerApi);
   authService = new AuthService(inspiceServerApi);

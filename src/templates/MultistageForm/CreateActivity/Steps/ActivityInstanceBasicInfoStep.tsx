@@ -1,12 +1,15 @@
+import React from "react";
 import styled from "styled-components";
-import CalendarInputCard from "../../../../components/Forms/Cards/CalendarInputCard";
-import EmbedImageLinkCard from "../../../../components/Forms/Cards/EmbedImageLinkCard";
 import LongTextInputCard from "../../../../components/Forms/Cards/LongTextInputCard";
 import ShortTextInputCard from "../../../../components/Forms/Cards/ShortTextInputCard";
 import StepTitleCard from "../../../../components/Forms/Cards/StepTitleCard";
-import TagsInputCard from "../../../../components/Forms/Cards/TagsInputCard";
-import { StepComponentProps } from "../../../../components/Navigation/TypedSteps";
-import { MultistageFormActivityDefinition } from "../../../../services/multistageFormActivity.model";
+import {
+  descriptionChanged,
+  selectDescription,
+  selectTitle,
+  titleChanged,
+} from "../../../../store/features/multistageForm/multistageFormCreationSlice";
+import { useAppDispatch, useAppSelector } from "../../../../store/hooks";
 
 const Root = styled.div`
   display: flex;
@@ -17,11 +20,18 @@ const Root = styled.div`
   align-items: center;
 `;
 
-export const ActivityInstanceBasicInfoStep = (
-  props: StepComponentProps<MultistageFormActivityDefinition>
-): JSX.Element => {
-  const { state, setState } = props;
-  const { beginsOn, endsOn } = state;
+export const ActivityInstanceBasicInfoStep = (): JSX.Element => {
+  const dispatch = useAppDispatch();
+  const title = useAppSelector(selectTitle);
+  const description = useAppSelector(selectDescription);
+
+  const handleDescriptionChanged = (description: string) => {
+    dispatch(descriptionChanged({ description, bufferAction: true }));
+  }; // handleDescriptionChanged
+
+  const handleTitleChanged = (title: string) => {
+    dispatch(titleChanged({ title, bufferAction: true }));
+  }; // handleTitleChanged
 
   return (
     <Root>
@@ -37,25 +47,9 @@ export const ActivityInstanceBasicInfoStep = (
           maxLength: 60,
         }}
         response={{
-          text: state.activityTitle,
+          text: title,
         }}
-        onResponseChanged={(res) =>
-          setState((prev) => ({ ...prev, activityTitle: res.text }))
-        }
-        required
-      />
-      <ShortTextInputCard
-        promptText="Enter the activity's author:"
-        fieldPayload={{
-          placeholder: "Activity author...",
-          maxLength: 30,
-        }}
-        response={{
-          text: state.activityAuthor,
-        }}
-        onResponseChanged={(res) =>
-          setState((prev) => ({ ...prev, activityAuthor: res.text }))
-        }
+        onResponseChanged={(res) => handleTitleChanged(res.text)}
         required
       />
       <LongTextInputCard
@@ -65,46 +59,15 @@ export const ActivityInstanceBasicInfoStep = (
           maxLength: 500,
         }}
         response={{
-          text: state.description ?? "",
+          text: description ?? "",
         }}
-        onResponseChanged={(res) =>
-          setState((prev) => ({ ...prev, description: res.text }))
-        }
-      />
-      <EmbedImageLinkCard
-        promptText="Paste the source url of a thumbnail image:"
-        onChange={(val) => setState((prev) => ({ ...prev, imageSrc: val }))}
-        src={state.imageSrc}
-        required
-      />
-      <TagsInputCard
-        promptText="Add tags to help other users find this activity:"
-        onChange={(val) => setState((prev) => ({ ...prev, tags: val }))}
-        value={state.tags}
+        onResponseChanged={(res) => handleDescriptionChanged(res.text)}
       />
     </Root>
   );
 };
 
-export default ActivityInstanceBasicInfoStep;
-
-/*
-      <CalendarInputCard
-        promptText="Choose a starting date for this activity:"
-        response={{ date: beginsOn }}
-        fieldPayload={{}}
-        onResponseChanged={(res) =>
-          setState((prev) => ({ ...prev, beginsOn: res.date ?? new Date() }))
-        }
-        required
-      />
-      <CalendarInputCard
-        promptText="Choose a closing date for this activity:"
-        response={{ date: endsOn }}
-        fieldPayload={{}}
-        onResponseChanged={(res) =>
-          setState((prev) => ({ ...prev, endsOn: res.date ?? new Date() }))
-        }
-        required
-      />
-*/
+// Este componente no tiene siquiera props, por lo que sólo nos interesa
+// hacer un re-render a partir de su estado (que depende exclusivamente
+// de las keys del slice correspondiente de redux).
+export default React.memo(ActivityInstanceBasicInfoStep);

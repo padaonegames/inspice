@@ -39,6 +39,7 @@ export const ActivityScreen: React.FC<ActivityScreenProps> = ({
     : sessionGuarded
     ? "session-user"
     : "none";
+
   return (
     <>
       <Header

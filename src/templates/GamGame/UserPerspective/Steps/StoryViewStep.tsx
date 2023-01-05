@@ -1,11 +1,12 @@
 import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { SessionAuthContext } from "../../../../auth/SessionAuthStore";
 import LoadingOverlay from "../../../../components/Layout/LoadingOverlay";
 import { gamGameApi } from "../../../../services";
 import { ArtworkData } from "../../../../services/artwork.model";
 import { GamGameStoryDefinitionData } from "../../../../services/gamGameActivity.model";
 import { useAsyncRequest } from "../../../../services/useAsyncRequest";
+import { selectSessionUsername } from "../../../../store/features/session/sessionSlice";
+import { useAppSelector } from "../../../../store/hooks";
 import StoryPartView from "../../components/ArtworkStoriesPanel/StoryPartView";
 import { StepRoot } from "../../components/generalStyles";
 import { GamGameActivityContext } from "../Screen";
@@ -21,7 +22,7 @@ export const StoryViewStep = (): JSX.Element => {
   // fetch id from url
   const { storyId } = useParams() as { storyId: string };
   const { artworks } = useContext(GamGameActivityContext);
-  const { username } = useContext(SessionAuthContext);
+  const username = useAppSelector(selectSessionUsername);
 
   const [liked, setLiked] = useState<boolean>(false);
   const [nextLikedStatus, setNextLikedStatus] =

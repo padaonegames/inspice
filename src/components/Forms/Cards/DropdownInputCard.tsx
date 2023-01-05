@@ -99,8 +99,10 @@ export const DropdownInputCard = (
         <ExpandDropdownIcon />
         {dropdownOpen && (
           <DropdownMenu
-            options={options.map((elem) => ({ displayName: elem }))}
-            onOptionSelected={handleDropdownItemSelected}
+            options={options.map((elem) => ({
+              displayName: elem,
+              onOptionSelected: () => handleDropdownItemSelected(elem),
+            }))}
             onCloseDropdown={() => setDropdownOpen(false)}
           />
         )}

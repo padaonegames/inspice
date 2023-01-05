@@ -8,7 +8,7 @@ import SideMenu, { NavigationWarning, NavMenuElem } from "./SideMenu";
 import { Menu } from "styled-icons/ionicons-solid";
 import { Language } from "@styled-icons/fa-solid/Language";
 import { DotsVerticalRounded } from "@styled-icons/boxicons-regular/DotsVerticalRounded";
-import DropdownMenu from "../Forms/DropdownMenu";
+import DropdownMenu, { DropdownMenuOption } from "../Forms/DropdownMenu";
 
 interface BurgerIconProps {
   open?: boolean;
@@ -103,14 +103,7 @@ const LanguageIcon = styled(Language)`
   margin-right: 1em;
 `;
 
-export interface HeaderAction {
-  /** How to render this option within a list. Defaults to empty string */
-  displayName?: string;
-  /** What component to place next to the display name */
-  iconComponent?: JSX.Element;
-  /** action to perform upon clicking on this action */
-  onActionSelected?: () => void;
-} // HeaderAction
+export type HeaderAction = DropdownMenuOption;
 
 export interface HeaderProps {
   /** Title to display on this header */
@@ -150,13 +143,6 @@ export const Header = (props: HeaderProps) => {
   const [actionsDropdownOpen, setActionsDropdownOpen] =
     useState<boolean>(false);
 
-  const handleOptionSelected = (opt: string) => {
-    const action = headerActions.find((elem) => elem.displayName === opt);
-    if (action && action.onActionSelected) {
-      action.onActionSelected();
-    }
-  }; // handleOptionSelected
-
   return (
     <>
       <Root>
@@ -176,11 +162,7 @@ export const Header = (props: HeaderProps) => {
                 {actionsDropdownOpen && (
                   <DropdownMenu
                     positioning={{ right: "0.75em", top: "2em" }}
-                    options={headerActions.map((action) => ({
-                      displayName: action.displayName,
-                      iconComponent: action.iconComponent,
-                    }))}
-                    onOptionSelected={handleOptionSelected}
+                    options={headerActions}
                     onCloseDropdown={() => setActionsDropdownOpen(false)}
                   />
                 )}

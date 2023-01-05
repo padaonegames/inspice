@@ -1,11 +1,6 @@
-import { useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
-import { SessionAuthContext } from "../../../../auth/SessionAuthStore";
 import { ShortTextInputCard } from "../../../../components/Forms/Cards/ShortTextInputCard";
-import { StepComponentProps } from "../../../../components/Navigation/Steps";
-import { activityService } from "../../../../services";
-import { useAsyncRequest } from "../../../../services/useAsyncRequest";
 import {
   ActionsContainer,
   ButtonAction,
@@ -24,70 +19,47 @@ const Root = styled.div`
   padding: 10px 0;
 `;
 
+interface EnterUsernameStepProps {
+  /** current username as established in parent component. */
+  username: string;
+  /** alert message to display in case there is a problem during session login. */
+  alertMessage?: string;
+  /** callback to notify parent of a change in the current username string. */
+  onUsernameChanged?: (value: string) => void;
+  /** callback to notify parent of back button being pressed to return to previous screen. */
+  onBackPressed?: () => void;
+  /** callback to notify parent of user wishing to trigger a check username-session pair on the server. */
+  onTriggerCheckSessionRequest?: () => void;
+} // EnterUsernameStepProps
+
 export const EnterUsernameStep = (
-  props: StepComponentProps & { activityId: string }
+  props: EnterUsernameStepProps
 ): JSX.Element => {
+  const {
+    username,
+    alertMessage,
+    onUsernameChanged,
+    onBackPressed,
+    onTriggerCheckSessionRequest,
+  } = props;
   const { t } = useTranslation("inspice");
 
-  const { setUsernameSessionActivity } = useContext(SessionAuthContext);
-
-  const { activityId } = props;
-  const username = props.getState<string>("username", "");
-  const sessionName = props.getState<string>("sessionName", "");
-
-  const performLogin = async () => {
-    return await activityService.checkUsernameSessionPairForActivityId(
-      activityId,
-      username,
-      sessionName
-    );
-  }; // performLogin
-
-  const [performLoginRequest, triggerRequest] = useAsyncRequest(
-    performLogin,
-    [],
-    false
-  );
-  const [alertMessage, setAlertMessage] =
-    useState<string | undefined>(undefined);
-
   const handleBackClicked = () => {
-    if (props.hasPrev()) {
-      props.prev();
+    if (onBackPressed) {
+      onBackPressed();
     }
   }; // handleBackClicked
 
   const handleNextClicked = () => {
-    triggerRequest();
+    if (onTriggerCheckSessionRequest) {
+      onTriggerCheckSessionRequest();
+    }
   }; // handleNextClicked
 
-  useEffect(() => {
-    console.log(performLoginRequest);
-    if (performLoginRequest.kind === "success") {
-      if (
-        performLoginRequest.result.kind === "http-error" ||
-        performLoginRequest.result.kind === "axios-error"
-      ) {
-        setAlertMessage(
-          "Entered username does not exist in this session. Please check your credentials and try again."
-        );
-      } else if (
-        performLoginRequest.result.kind === "ok" &&
-        performLoginRequest.result.data
-      ) {
-        setAlertMessage(undefined);
-        setUsernameSessionActivity({ username, sessionName, activityId });
-      } else {
-        setAlertMessage(
-          "Entered username does not exist in this session. Please check your credentials and try again."
-        );
-      }
-    } else if (performLoginRequest.kind === "failure") {
-      setAlertMessage(
-        "Entered username does not exist in this session. Please check your credentials and try again."
-      );
-    }
-  }, [performLoginRequest]);
+  const handleUsernameChanged = (value: string) => {
+    if (!onUsernameChanged) return;
+    onUsernameChanged(value);
+  }; // handleUsernameChanged
 
   return (
     <Root>
@@ -98,11 +70,8 @@ export const EnterUsernameStep = (
         fieldPayload={{
           placeholder: `${t("username")}...`,
         }}
-        response={{ text: username }}
-        onResponseChanged={(res) => {
-          setAlertMessage(undefined);
-          props.setState<string>("username", res.text, "");
-        }}
+        response={{ text: username ?? "" }}
+        onResponseChanged={(res) => handleUsernameChanged(res.text)}
         requiredAlert={!!alertMessage}
         alertMessage={alertMessage}
         onEnterPress={handleNextClicked}

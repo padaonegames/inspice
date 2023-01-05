@@ -3,10 +3,7 @@ import {
   LongTextFieldDefinition,
   LongTextResponseDefinition,
 } from "../../../services/multistageFormActivity.model";
-import {
-  Root,
-  InputArea,
-} from "./cardStyles";
+import { Root, InputArea } from "./cardStyles";
 import { EditableFieldProps } from "./EditableFieldCard";
 import FormCard from "./FormCard";
 
@@ -54,7 +51,7 @@ export const LongTextInputCard = (
         maxLength={maxLength}
         value={text}
         onChange={(event) => {
-          if (onResponseChanged)
+          if (onResponseChanged && !disabled)
             onResponseChanged({ text: event.target.value });
         }}
         onKeyPress={(event) => {

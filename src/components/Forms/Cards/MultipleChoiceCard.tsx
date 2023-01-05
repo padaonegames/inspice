@@ -1,4 +1,9 @@
 import { ConsumableFieldProps } from "../../../services/multistageFormActivity.model";
+import {
+  addItemToArray,
+  removeItemFromArrayByIndex,
+  transformItemFromArrayByIndex,
+} from "../../../utils/arrayUtils";
 import CheckBoxInput from "../CheckBoxInput";
 import EditableCheckBoxInput from "../EditableCheckBoxInput";
 import { CheckboxList, CheckboxOption } from "./cardStyles";
@@ -122,10 +127,11 @@ export const EditableMultipleChoiceCardContent = (
     if (!onPayloadChanged) return;
     onPayloadChanged({
       ...fieldPayload,
-      answers: [
-        ...fieldPayload.answers,
+      answers: addItemToArray(
+        fieldPayload.answers,
         `Option ${fieldPayload.answers.length + 1}`,
-      ],
+        fieldPayload.answers.length
+      ),
     });
   }; // handleAddOption
 
@@ -133,11 +139,11 @@ export const EditableMultipleChoiceCardContent = (
     if (!onPayloadChanged) return;
     onPayloadChanged({
       ...fieldPayload,
-      answers: [
-        ...fieldPayload.answers.slice(0, index),
-        value,
-        ...fieldPayload.answers.slice(index + 1),
-      ],
+      answers: transformItemFromArrayByIndex(
+        fieldPayload.answers,
+        index,
+        () => value
+      ),
     });
   }; // handleEditOption
 
@@ -145,7 +151,7 @@ export const EditableMultipleChoiceCardContent = (
     if (!onPayloadChanged) return;
     onPayloadChanged({
       ...fieldPayload,
-      answers: fieldPayload.answers.filter((_, i) => i !== index),
+      answers: removeItemFromArrayByIndex(fieldPayload.answers, index),
     });
   }; // handleRemoveOption
 

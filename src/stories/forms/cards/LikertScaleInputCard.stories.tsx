@@ -34,7 +34,7 @@ NoneChecked.args = {
       "Very Satisfied",
     ],
   },
-  response: { responses: [undefined, 0, 1, 2, 3] },
+  response: { responses: {} },
   required: false,
   requiredAlert: false,
 };

@@ -3,6 +3,11 @@ import {
   CheckboxGroupResponseDefinition,
   ConsumableFieldProps,
 } from "../../../services/multistageFormActivity.model";
+import {
+  addItemToArray,
+  removeItemFromArrayByIndex,
+  transformItemFromArrayByIndex,
+} from "../../../utils/arrayUtils";
 import CheckBoxInput from "../CheckBoxInput";
 import EditableCheckBoxInput from "../EditableCheckBoxInput";
 import {
@@ -107,23 +112,39 @@ export const EditableCheckBoxGroupCardContent = (
     if (!onPayloadChanged) return;
     onPayloadChanged({
       ...fieldPayload,
-      fields: [...fieldPayload.fields, ""],
+      fields: addItemToArray(
+        fieldPayload.fields,
+        `Option ${fieldPayload.fields.length + 1}`,
+        fieldPayload.fields.length
+      ),
     });
-  };
+  }; // handleAddOption
 
   const handleRemoveOption = (index: number) => {
     if (!onPayloadChanged) return;
     onPayloadChanged({
       ...fieldPayload,
-      fields: fieldPayload.fields.filter((_, i) => i !== index),
+      fields: removeItemFromArrayByIndex(fieldPayload.fields, index),
     });
-  };
+  }; // handleAddOption
+
+  const handleOptionTextChanged = (index: number, value: string) => {
+    if (!onPayloadChanged) return;
+    onPayloadChanged({
+      ...fieldPayload,
+      fields: transformItemFromArrayByIndex(
+        fieldPayload.fields,
+        index,
+        () => value
+      ),
+    });
+  }; // handleOptionTextChanged
 
   return (
     <>
       <CheckboxList>
         {fields.map((elem, i) => (
-          <CheckboxOption key={elem}>
+          <CheckboxOption key={`checkBoxOption${i}`}>
             <EditableCheckBoxInput
               boxContent={{ type: "none" }}
               labelText={elem}
@@ -131,11 +152,13 @@ export const EditableCheckBoxGroupCardContent = (
               boxSize="15px"
               onObjectRemoved={() => handleRemoveOption(i)}
               inputType="text"
+              onLabelTextChanged={(value) => handleOptionTextChanged(i, value)}
             />
           </CheckboxOption>
         ))}
-        <CheckboxOption onClick={handleAddOption} key="addNew">
+        <CheckboxOption onClick={handleAddOption} key="checkBoxOptionAddNew">
           <EditableCheckBoxInput
+            key="editableCheckBoxInputAddNew"
             boxContent={{ type: "none" }}
             labelText=""
             labelTextPlaceholder={addNewOptionLabel}
