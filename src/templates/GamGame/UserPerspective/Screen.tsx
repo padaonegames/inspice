@@ -50,7 +50,7 @@ const Root = styled.div`
 //------------------------------------------------------------------
 export const GamGameUserMenuScreen = () => {
   // fetch id from url
-  let { id } = useParams() as { id: string };
+  let { activityId } = useParams() as { activityId: string };
 
   //-----------------------------------------------
   //          Fetch Activity Definition
@@ -58,7 +58,7 @@ export const GamGameUserMenuScreen = () => {
 
   // Fetch activity definition from server by url params' id
   const fetchActivityDefinition = async () => {
-    return await gamGameApi.getGamGameActivityDefinitionById(id);
+    return await gamGameApi.getGamGameActivityDefinitionById(activityId);
   };
 
   // Make request on first render
@@ -215,8 +215,8 @@ const GamGameUserFlow = ({
             path=""
             element={
               <ActivityScreen
+                availableLanguages={["it", "en"]}
                 sessionGuarded
-                activityId={activityDefinition._id}
                 activityTitle="GAM - GAM Game"
                 navigationEntries={gamGameNavigationConfig}
                 navigationWarnings={gamGameNavigationWarnings}

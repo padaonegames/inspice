@@ -36,7 +36,10 @@ const LoginFlow = (): JSX.Element => {
 
   return (
     <>
-      <Header sideMenuMode="system-user" />
+      <Header
+        sideMenuMode="system-user"
+        availableLanguages={["en", "it", "es"]}
+      />
       <Root>
         <StepTitleCard
           stepTitle={t("logIn")}

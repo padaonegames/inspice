@@ -70,14 +70,11 @@ export const LikertScaleInputCard = (
   props: LikertScaleInputCardProps
 ): JSX.Element => {
   const {
-    promptText = "",
-    requiredAlert,
-    required,
     response,
     fieldPayload,
-    alertMessage,
     onResponseChanged,
-    ...htmlProps
+    disabled = false,
+    ...formProps
   } = props;
 
   const { scale, questions, showQuestionsIndex } = fieldPayload;
@@ -87,6 +84,7 @@ export const LikertScaleInputCard = (
     questionIndex: number,
     scaleIndex: number
   ) => {
+    if (disabled) return;
     if (questionIndex < 0 || questionIndex >= questions.length) return;
     if (scaleIndex < 0 || scaleIndex >= scale.length) return;
     if (!onResponseChanged) return;
@@ -97,24 +95,19 @@ export const LikertScaleInputCard = (
   }; // handleResponseSelected
 
   return (
-    <FormCard
-      promptText={promptText}
-      required={required}
-      requiredAlert={requiredAlert}
-      alertMessage={alertMessage}
-      {...htmlProps}
-    >
+    <FormCard {...formProps}>
       {questions.map((question, qInd) => (
         <React.Fragment key={`${qInd}_frag`}>
           <QuestionText key={`${qInd}_question`}>
             {`${showQuestionsIndex ? qInd + 1 + ". " : ""}${question}`}
-            {required && <RequiredAsterisk> *</RequiredAsterisk>}
+            {formProps.required && <RequiredAsterisk> *</RequiredAsterisk>}
           </QuestionText>
           <LikertScaleContainer key={`${qInd}_container`}>
             <LikertBand>
               {scale.map((response, rInd) => (
                 <LikertResponse
                   responseText={response}
+                  disabled={disabled}
                   position={
                     rInd === 0
                       ? "first"

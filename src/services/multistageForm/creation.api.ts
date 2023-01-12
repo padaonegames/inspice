@@ -9,6 +9,11 @@ export interface UpdateTitleCommandPayload {
   title: string;
 } // UpdateTitleCommandPayload
 
+export interface UpdateThumbnailSrcCommandPayload {
+  /** new thumbnail src to be assigned to the activity. */
+  thumbnailSrc?: string;
+} // UpdateThumbnailSrcCommandPayload
+
 export interface UpdateDescriptionCommandPayload {
   /** new description to be assigned to the activity. */
   description: string;
@@ -98,6 +103,7 @@ export interface MoveStageItemCommandPayload {
 
 export type ActivityCommand =
   | { type: "update-title"; payload: UpdateTitleCommandPayload }
+  | { type: "update-thumbnail-src"; payload: UpdateThumbnailSrcCommandPayload }
   | { type: "update-author"; payload: UpdateAuthorCommandPayload }
   | { type: "update-description"; payload: UpdateDescriptionCommandPayload }
   | { type: "add-new-stage"; payload: AddNewStageCommandPayload }

@@ -28,7 +28,6 @@ export const api = createApi({
         headers.set("inspice-session", sessionData.sessionName);
         headers.set("inspice-username", sessionData.username);
       }
-      console.log(headers);
     },
   }),
   endpoints: () => ({}),

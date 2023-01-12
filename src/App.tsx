@@ -33,6 +33,7 @@ import SessionLoginScreen from "./templates/Auth/SessionLogin/SessionLoginScreen
 import { Provider } from "react-redux";
 import store from "./store/store";
 import ConsumeMultistageFormScreen from "./templates/MultistageForm/ConsumeForm/Screen";
+import ViewMultistageFormResponsesScreen from "./templates/MultistageForm/ViewResponses/Screen";
 
 /**
  * Main entrypoint for our React application within which all other components
@@ -49,14 +50,22 @@ export const App = (): JSX.Element => {
                 <Route
                   path="dashboard"
                   element={
-                    <ActivityScreen activityTitle="InSpice - Dashboard" />
+                    <ActivityScreen
+                      availableLanguages={["en"]}
+                      activityTitle="Dashboard"
+                    />
                   }
                 >
                   <Route path="" element={<TemplateDashboard />} />
                 </Route>
                 <Route
                   path="mncn-collection"
-                  element={<ActivityScreen activityTitle="MNCN - Colección" />}
+                  element={
+                    <ActivityScreen
+                      availableLanguages={["es"]}
+                      activityTitle="MNCN - Colección"
+                    />
+                  }
                 >
                   <Route
                     path="browse"
@@ -69,7 +78,12 @@ export const App = (): JSX.Element => {
                 </Route>
                 <Route
                   path="viewpoints"
-                  element={<ActivityScreen activityTitle="IMMA - Viewpoints" />}
+                  element={
+                    <ActivityScreen
+                      availableLanguages={["en"]}
+                      activityTitle="IMMA - Viewpoints"
+                    />
+                  }
                 >
                   <Route path="consumer">
                     <Route path="browse" element={<HomeComponent />} />
@@ -88,7 +102,10 @@ export const App = (): JSX.Element => {
                 <Route
                   path="find-artwork"
                   element={
-                    <ActivityScreen activityTitle="IMMA - Find Artworks" />
+                    <ActivityScreen
+                      availableLanguages={["en"]}
+                      activityTitle="IMMA - Find Artworks"
+                    />
                   }
                 >
                   <Route path="consumer">
@@ -117,7 +134,7 @@ export const App = (): JSX.Element => {
                 <Route path="gam-game">
                   <Route path="consumer">
                     <Route
-                      path="visit/:id/*"
+                      path="visit/:activityId/*"
                       element={<GamGameUserMenuScreen />}
                     />
                   </Route>
@@ -125,6 +142,8 @@ export const App = (): JSX.Element => {
                     path="curator"
                     element={
                       <ActivityScreen
+                        onHeaderIconClicked={() => window.open("/dashboard")}
+                        availableLanguages={["it", "en"]}
                         /*guarded*/ activityTitle="GAM - GAM Game"
                       />
                     }
@@ -137,7 +156,7 @@ export const App = (): JSX.Element => {
                 </Route>
                 <Route path="escape-room">
                   <Route
-                    path="curator/create/:id"
+                    path="curator/create/:activityId"
                     element={<EditEscapeRoomScreen />}
                   />
                   <Route
@@ -145,6 +164,7 @@ export const App = (): JSX.Element => {
                     element={
                       <ActivityScreen
                         guarded
+                        availableLanguages={["en", "es"]}
                         activityTitle="Escape Room Creation"
                       />
                     }
@@ -158,13 +178,16 @@ export const App = (): JSX.Element => {
                 <Route path="multistage-form">
                   <Route
                     path="consumer"
-                    /** sessionGuarded */
                     element={
-                      <ActivityScreen activityTitle="Multistage Form Consumption" />
+                      <ActivityScreen
+                        sessionGuarded
+                        availableLanguages={["en"]}
+                        activityTitle="Multistage Form Consumption"
+                      />
                     }
                   >
                     <Route
-                      path="view/:id/*"
+                      path="view/:activityId/*"
                       element={<ConsumeMultistageFormScreen />}
                     />
                   </Route>
@@ -173,13 +196,19 @@ export const App = (): JSX.Element => {
                     element={
                       <ActivityScreen
                         guarded
-                        activityTitle="Multistage Form Activity"
+                        availableLanguages={["en"]}
+                        activityTitle="Multistage Form"
+                        onHeaderIconClicked={() => window.open("/dashboard")}
                       />
                     }
                   >
                     <Route
-                      path="create/:id/*"
+                      path="create/:activityId/*"
                       element={<EditMultistageFormActivityScreen />}
+                    />
+                    <Route
+                      path="view-responses/:activityId/*"
+                      element={<ViewMultistageFormResponsesScreen />}
                     />
                     <Route
                       path="new-activity"

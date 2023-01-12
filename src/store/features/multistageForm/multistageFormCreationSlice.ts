@@ -17,6 +17,7 @@ import {
   RemoveItemFromStageCommandPayload,
   DuplicateItemFromStageCommandPayload,
   flushCommandBuffer,
+  UpdateThumbnailSrcCommandPayload,
 } from "../../../services/multistageForm/creation.api";
 import { MultistageFormActivity } from "../../../services/multistageFormActivity.model";
 import { RootState } from "../../store";
@@ -106,6 +107,21 @@ const slice = createSlice({
 
       if (!bufferAction) return;
       bufferCommand(state, { type: "update-title", payload: { title } }, true);
+    },
+    thumbnailSrcChanged(
+      state,
+      {
+        payload: { thumbnailSrc, bufferAction },
+      }: BufferablePayloadAction<UpdateThumbnailSrcCommandPayload>
+    ) {
+      state.activityDefinition.thumbnailSrc = thumbnailSrc;
+
+      if (!bufferAction) return;
+      bufferCommand(
+        state,
+        { type: "update-thumbnail-src", payload: { thumbnailSrc } },
+        true
+      );
     },
     descriptionChanged(
       state,
@@ -420,6 +436,7 @@ export default slice.reducer;
 export const {
   activityChanged,
   titleChanged,
+  thumbnailSrcChanged,
   authorChanged,
   descriptionChanged,
   stageAdded,
@@ -443,6 +460,8 @@ export const selectAuthor = (state: RootState) =>
   state.multistageFormCreation.activityDefinition.author;
 export const selectDescription = (state: RootState) =>
   state.multistageFormCreation.activityDefinition.description;
+export const selectThumbnailSrc = (state: RootState) =>
+  state.multistageFormCreation.activityDefinition.thumbnailSrc;
 export const selectIsBasicInformationCompleted = (state: RootState) => {
   const definition = state.multistageFormCreation.activityDefinition;
   return (

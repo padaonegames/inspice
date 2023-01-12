@@ -1,12 +1,15 @@
 import React from "react";
 import styled from "styled-components";
+import EmbedImageLinkCard from "../../../../components/Forms/Cards/EmbedImageLinkCard";
 import LongTextInputCard from "../../../../components/Forms/Cards/LongTextInputCard";
 import ShortTextInputCard from "../../../../components/Forms/Cards/ShortTextInputCard";
 import StepTitleCard from "../../../../components/Forms/Cards/StepTitleCard";
 import {
   descriptionChanged,
   selectDescription,
+  selectThumbnailSrc,
   selectTitle,
+  thumbnailSrcChanged,
   titleChanged,
 } from "../../../../store/features/multistageForm/multistageFormCreationSlice";
 import { useAppDispatch, useAppSelector } from "../../../../store/hooks";
@@ -24,6 +27,7 @@ export const ActivityInstanceBasicInfoStep = (): JSX.Element => {
   const dispatch = useAppDispatch();
   const title = useAppSelector(selectTitle);
   const description = useAppSelector(selectDescription);
+  const thumbnailSrc = useAppSelector(selectThumbnailSrc);
 
   const handleDescriptionChanged = (description: string) => {
     dispatch(descriptionChanged({ description, bufferAction: true }));
@@ -32,6 +36,10 @@ export const ActivityInstanceBasicInfoStep = (): JSX.Element => {
   const handleTitleChanged = (title: string) => {
     dispatch(titleChanged({ title, bufferAction: true }));
   }; // handleTitleChanged
+
+  const handleThumbnailChanged = (thumbnailSrc: string | undefined) => {
+    dispatch(thumbnailSrcChanged({ thumbnailSrc, bufferAction: true }));
+  }; // handleThumbnailChanged
 
   return (
     <Root>
@@ -62,6 +70,11 @@ export const ActivityInstanceBasicInfoStep = (): JSX.Element => {
           text: description ?? "",
         }}
         onResponseChanged={(res) => handleDescriptionChanged(res.text)}
+      />
+      <EmbedImageLinkCard
+        promptText="Paste the URL of the image you wish to use as thumbnail for this activity:"
+        src={thumbnailSrc}
+        onChange={(res) => handleThumbnailChanged(res)}
       />
     </Root>
   );

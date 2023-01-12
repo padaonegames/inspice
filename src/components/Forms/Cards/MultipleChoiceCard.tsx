@@ -1,4 +1,8 @@
-import { ConsumableFieldProps } from "../../../services/multistageFormActivity.model";
+import {
+  ConsumableFieldProps,
+  MultipleChoiceFieldDefinition,
+  MultipleChoiceResponseDefinition,
+} from "../../../services/multistageFormActivity.model";
 import {
   addItemToArray,
   removeItemFromArrayByIndex,
@@ -10,55 +14,28 @@ import { CheckboxList, CheckboxOption } from "./cardStyles";
 import { EditableFieldProps } from "./EditableFieldCard";
 import FormCard from "./FormCard";
 
-//------------------------
-//  MULTIPLE CHOICE FIELD
-//------------------------
-export interface MultipleChoiceFieldDefinition {
-  /** answers to choose from */
-  answers: string[];
-  /** maximum number of answers to allow */
-  maxAnswers?: number;
-} // MultipleChoiceFieldDefinition
-
-export interface MultipleChoiceResponseDefinition {
-  /**
-   * Responses to the multiple choice question.
-   * This is an array representing the indices of all
-   * selected answers within the list of possible responses.
-   */
-  selectedResponses: number[];
-} // MultipleChoiceResponseDefinition
-
 export interface MultipleChoiceCardProps
   extends ConsumableFieldProps<
     MultipleChoiceFieldDefinition,
     MultipleChoiceResponseDefinition
-  > {
-  /** Prompt for the user to fill in this field */
-  promptText?: string;
-  /** Whether this field should always be filled in by the user */
-  required?: boolean;
-  /** whether to modify the appearance of this card to reflect that the user tried to submit the form without entering a value for this field */
-  requiredAlert?: boolean;
-} // MultipleChoiceCardProps
+  > {} // MultipleChoiceCardProps
 
 export const MultipleChoiceCard = (
   props: MultipleChoiceCardProps
 ): JSX.Element => {
   const {
-    promptText = "",
-    requiredAlert,
-    required,
     fieldPayload,
     response,
     onResponseChanged,
+    disabled = false,
+    ...formProps
   } = props;
 
   const { answers, maxAnswers } = fieldPayload;
   const { selectedResponses } = response;
 
   const handleAnswerToggle = (index: number) => {
-    if (!onResponseChanged || !isAnswerEnabled(index)) return;
+    if (disabled || !onResponseChanged || !isAnswerEnabled(index)) return;
     if (selectedResponses.some((e) => e === index)) {
       // answer was already selected
       onResponseChanged({
@@ -76,18 +53,15 @@ export const MultipleChoiceCard = (
      *  and if maximum number of answer hasn't been reached yet.
      */
     return (
-      selectedResponses.some((e) => e === index) ||
-      maxAnswers === 1 ||
-      selectedResponses.length < (maxAnswers || 1)
+      !disabled &&
+      (selectedResponses.some((e) => e === index) ||
+        maxAnswers === 1 ||
+        selectedResponses.length < (maxAnswers || 1))
     );
   }; // isAnswerEnabled
 
   return (
-    <FormCard
-      promptText={promptText}
-      required={required}
-      requiredAlert={requiredAlert}
-    >
+    <FormCard {...formProps}>
       <CheckboxList>
         {answers.map((elem, i) => (
           <CheckboxOption key={elem}>

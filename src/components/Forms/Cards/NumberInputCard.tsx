@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import {
   ConsumableFieldProps,
   NumberFieldDefinition,
@@ -6,6 +6,8 @@ import {
 } from "../../../services/multistageFormActivity.model";
 import { Root, InputText } from "./cardStyles";
 import { EditableFieldProps } from "./EditableFieldCard";
+import { ChevronLeft } from "@styled-icons/boxicons-regular/ChevronLeft";
+import { ChevronRight } from "@styled-icons/boxicons-regular/ChevronRight";
 import FormCard from "./FormCard";
 
 export interface NumberInputCardProps
@@ -17,7 +19,6 @@ export interface NumberInputCardProps
   width?: number;
   /** Callback to the parent when the "Enter" key is pressed while the component is focused. */
   onEnterPress?: () => void;
-  disabled?: boolean;
 } // NumberInputCardProps
 
 const NumberWithUnitsLine = styled.div`
@@ -31,37 +32,71 @@ const NumberWithUnitsLine = styled.div`
 
 const UnitsText = styled.div`
   margin-left: 0.6em;
-  margin-bottom: -0.35em;
+  margin-bottom: -0.5em;
+`;
+
+interface selectResponseIconProps {
+  disabled?: boolean;
+}
+const selectResponseIcon = css<selectResponseIconProps>`
+  color: ${(props) => props.theme.textColor};
+  height: 2em;
+  width: 2em;
+  padding: 0.3em;
+  margin-top: 10px;
+  margin-left: 10px;
+  margin-right: 10px;
+  border-radius: 50%;
+
+  ${(props) => props.disabled && `opacity: 0.4;`}
+  ${(props) =>
+    !props.disabled &&
+    `
+    cursor: pointer;
+    &:hover {
+      background-color: ${props.theme.hoverAreaColor};
+    }
+  `}
+`;
+
+const PreviousResponseIcon = styled(ChevronLeft)`
+  ${selectResponseIcon}
+`;
+
+const NextResponseIcon = styled(ChevronRight)`
+  ${selectResponseIcon}
 `;
 
 /** Controlled card component to support input for shorter texts. */
 export const NumberInputCard = (props: NumberInputCardProps): JSX.Element => {
   const {
-    promptText = "",
-    required = false,
-    requiredAlert = false,
     onEnterPress,
     width = 0.25,
-    alertMessage,
     fieldPayload,
     response,
     onResponseChanged,
     disabled = false,
-    ...htmlProps
+    ...formProps
   } = props;
 
-  const { isFloat, maxLength, placeholder, units } = fieldPayload;
+  const { isFloat, maxLength, placeholder, units, minValue, maxValue } =
+    fieldPayload;
   const { number } = response;
 
+  const handleChangeValue = (value: number) => {
+    if (onResponseChanged && !disabled) {
+      onResponseChanged({ number: number + value });
+    }
+  }; // handleChangeValue
+
   return (
-    <FormCard
-      {...htmlProps}
-      promptText={promptText}
-      required={required}
-      requiredAlert={requiredAlert}
-      alertMessage={alertMessage}
-    >
+    <FormCard {...formProps}>
       <NumberWithUnitsLine>
+        <PreviousResponseIcon
+          disabled={disabled || (minValue !== undefined && number <= minValue)}
+          onClick={() => handleChangeValue(-1)}
+          title="Previous Response"
+        />
         <InputText
           disabled={disabled}
           textWidth={width}
@@ -82,6 +117,11 @@ export const NumberInputCard = (props: NumberInputCardProps): JSX.Element => {
           }}
         />
         <UnitsText>{units}</UnitsText>
+        <NextResponseIcon
+          disabled={disabled || (maxValue !== undefined && number >= maxValue)}
+          onClick={() => handleChangeValue(1)}
+          title="Next Response"
+        />
       </NumberWithUnitsLine>
     </FormCard>
   );

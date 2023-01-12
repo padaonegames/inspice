@@ -1,35 +1,38 @@
-import { ComponentMeta, ComponentStory } from '@storybook/react/dist/ts3.9/client/preview/types-6-3';
+import {
+  ComponentMeta,
+  ComponentStory,
+} from "@storybook/react/dist/ts3.9/client/preview/types-6-3";
 
-import ActivityCard from '../../templates/TemplateDashboard/components/ActivityCard';
-import { ActivityInstance, SupportedActivity } from '../../services/activity.model';
+import ActivityCard from "../../templates/TemplateDashboard/components/ActivityCard";
+import {
+  ActivityInstance,
+  SupportedActivity,
+} from "../../services/activity.model";
 
 export default {
-  title: 'Template Dashboard/Activity Card',
+  title: "Template Dashboard/Activity Card",
   component: ActivityCard,
-  decorators: [
-    (Story) => (
-      <div style={{ margin: '3em' }}>
-        {Story()}
-      </div>
-    ),
-  ],
+  decorators: [(Story) => <div style={{ margin: "3em" }}>{Story()}</div>],
 } as ComponentMeta<typeof ActivityCard>;
 
-const supAct: SupportedActivity = 'Treasure Hunt';
+const supAct: SupportedActivity = "Treasure Hunt";
 
-const act: ActivityInstance = {
+const activity: ActivityInstance = {
   activityType: supAct,
-  activityTitle: 'Finding treasure',
-  activityAuthor: 'Me, myself and I',
+  activityTitle: "Finding treasure",
+  activityAuthor: "Me, myself and I",
   beginsOn: new Date("09-19-1997"),
   endsOn: new Date(),
-  _id: ''
-}
+  _id: "",
+};
 
-const Template: ComponentStory<typeof ActivityCard> = (args) => <ActivityCard {...args} />;
+const Template: ComponentStory<typeof ActivityCard> = (args) => (
+  <ActivityCard {...args} />
+);
 
 export const card = Template.bind({});
 card.args = {
-  activityTemplate: act
+  title: activity.activityTitle,
+  author: activity.activityAuthor,
+  thumbnailSrc: activity.imageSrc,
 };
-

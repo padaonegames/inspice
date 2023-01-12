@@ -49,6 +49,7 @@ const LikertLine = styled.span<LikertLineProps>`
 
 interface LikertIndicatorProps {
   checked: boolean;
+  disabled?: boolean;
 }
 const LikertIndicator = styled.span<LikertIndicatorProps>`
   display: inline-block;
@@ -64,14 +65,21 @@ const LikertIndicator = styled.span<LikertIndicatorProps>`
   top: 0;
   box-sizing: border-box;
   transition: all linear 200ms;
-  cursor: pointer;
 
+  ${(props) =>
+    !props.disabled &&
+    `
+  cursor: pointer;
   &:hover {
-    background-color: ${(props) => (props.checked ? "#4a90e2" : "darkgray")};
+    background-color: ${props.checked ? "#4a90e2" : "darkgray"};
   }
+  `}
 `;
 
-const LikertInput = styled.input`
+interface LikertInputProps {
+  disabled?: boolean;
+}
+const LikertInput = styled.input<LikertInputProps>`
   position: absolute;
   overflow: hidden;
   clip: rect(0 0 0 0);
@@ -80,7 +88,7 @@ const LikertInput = styled.input`
   margin: -1px;
   padding: 0;
   border: 0;
-  cursor: pointer;
+  ${(props) => !props.disabled && `cursor: pointer;`}
 `;
 
 export interface LikertResponseProps {
@@ -92,6 +100,8 @@ export interface LikertResponseProps {
   onResponseSelected?: () => void;
   /** Relative position of this answer within the list */
   position?: "first" | "middle" | "last";
+  /** whether this response accepts rejects user input */
+  disabled?: boolean;
 }
 
 export const LikertResponse = (props: LikertResponseProps): JSX.Element => {
@@ -100,10 +110,11 @@ export const LikertResponse = (props: LikertResponseProps): JSX.Element => {
     selected = false,
     responseText,
     onResponseSelected,
+    disabled = false,
   } = props;
 
   const handleSelectAnswer = () => {
-    if (onResponseSelected) onResponseSelected();
+    if (!disabled && onResponseSelected) onResponseSelected();
   }; // handleSelectAnswer
 
   return (
@@ -111,11 +122,12 @@ export const LikertResponse = (props: LikertResponseProps): JSX.Element => {
       <LikertLine visible={position !== "first"} />
       <LikertLine visible={position !== "last"} />
       <LikertInput
+        disabled={disabled}
         type="radio"
         name={responseText}
         onChange={handleSelectAnswer}
       />
-      <LikertIndicator checked={selected} />
+      <LikertIndicator checked={selected} disabled={disabled} />
       <VerticalSpace />
       <LikertText>{responseText}</LikertText>
     </LikertResponseContainer>

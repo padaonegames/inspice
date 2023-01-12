@@ -1,4 +1,5 @@
 import { createSlice, Middleware, PayloadAction } from "@reduxjs/toolkit";
+import axios from "axios";
 import { UserData } from "../../../services/user.model";
 import { RootState } from "../../store";
 
@@ -39,6 +40,25 @@ const slice = createSlice({
       // Si cualquiera de los dos campos de autenticación resultara ser
       // nulo, nos aseguramos de borrar el otro (no tiene sentido tener
       // un token sin usuario o viceversa).
+      if (!accessToken || !userData) {
+        state.accessToken = undefined;
+        state.userData = undefined;
+
+        /**
+         * Esto está aquí para que sigan funcionando casos de uso que todavía no
+         * estén implementados usando las store de Redux como el GAM Game o el
+         * Escape Room. En los demás, las APIs ya se encargan automáticamente de
+         * añadir estas cabeceras cuando es necesario.
+         */
+        axios.defaults.headers.common["Authorization"] = null;
+      } else {
+        state.accessToken = accessToken;
+        state.userData = userData;
+
+        axios.defaults.headers.common[
+          "Authorization"
+        ] = `Bearer ${accessToken}`;
+      }
       state.userData = accessToken ? userData : undefined;
       state.accessToken = userData ? accessToken : undefined;
     },

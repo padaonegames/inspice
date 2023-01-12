@@ -10,26 +10,15 @@ const preview_image =
   "https://icons.iconarchive.com/icons/ccard3dev/dynamic-yosemite/512/Preview-icon.png";
 
 export interface DisplayImageCardProps
-  extends ConsumableFieldProps<DisplayImageFieldDefinition, {}> {
-  /** Prompt for the user to fill in this field */
-  promptText?: string;
-  /** Whether this field should always be filled in by the user */
-  required?: boolean;
-  /** whether to modify the appearance of this card to reflect that the user tried to submit the form without entering a value for this field */
-  requiredAlert?: boolean;
-} // DisplayImageCardProps
+  extends ConsumableFieldProps<DisplayImageFieldDefinition, {}> {} // DisplayImageCardProps
 
 export const DisplayImageCard = (props: DisplayImageCardProps): JSX.Element => {
-  const { promptText = "", requiredAlert, required, fieldPayload } = props;
+  const { fieldPayload, ...formProps } = props;
 
   const { src } = fieldPayload;
 
   return (
-    <FormCard
-      promptText={promptText}
-      required={required}
-      requiredAlert={requiredAlert}
-    >
+    <FormCard {...formProps}>
       <ImagePreview src={src} />
     </FormCard>
   );

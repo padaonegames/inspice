@@ -33,5 +33,6 @@ declare module "styled-components" {
     secondaryButtonColor: string;
     smallButtonFont: string;
     frameColor: string;
+    hoverAreaColor: string;
   }
 }

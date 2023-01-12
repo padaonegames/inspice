@@ -1,11 +1,6 @@
 //------------------------------------------
 //          ACTIVITY DEFINITIONS
 //------------------------------------------
-import {
-  MultipleChoiceFieldDefinition,
-  MultipleChoiceResponseDefinition,
-} from "../components/Forms/Cards/MultipleChoiceCard";
-
 export interface MultistageFormField {
   /** object describing the type and payload of the form field definition */
   fieldData: SupportedFormField;
@@ -24,6 +19,8 @@ export interface MultistageFormActivity {
   title: string;
   /** Id of the author of this activity within the system */
   author: string;
+  /** src of the thumbnail to be used to preview this activity */
+  thumbnailSrc?: string;
   /** short description of this activity that will be rendered on the title card */
   description?: string;
   /** list of stages comprising this activity */
@@ -51,10 +48,6 @@ export interface MultistageFormStage {
   forms: MultistageFormField[];
 } // MultistageFormStage
 
-export type MultistageFormResponses = {
-  [itemId: string]: SupportedFormResponse["response"];
-}; // MultistageFormResponses
-
 //---------------------------------------------------------------------------------
 //          GENERIC REACT COMPONENT PROPS FOR EDITING/CONSUMPTION ITEMS
 //---------------------------------------------------------------------------------
@@ -75,6 +68,8 @@ export interface ConsumableFieldProps<FieldPayload, FieldResponse>
   response: FieldResponse;
   /** Callback to notify parent component of a change whithin the current answer to field */
   onResponseChanged?: (response: FieldResponse) => void;
+  /** set to true to prevent user from inputting a response (form disabled or not) */
+  disabled?: boolean;
 } // ConsumableFieldProps<FieldPayload, FieldResponse>
 
 //------------------------------------------
@@ -139,6 +134,25 @@ export type SupportedFormResponse = Extract<
   }
 >; // SupportedFormResponse
 
+//------------------------
+//  MULTIPLE CHOICE FIELD
+//------------------------
+export interface MultipleChoiceFieldDefinition {
+  /** answers to choose from */
+  answers: string[];
+  /** maximum number of answers to allow */
+  maxAnswers?: number;
+} // MultipleChoiceFieldDefinition
+
+export interface MultipleChoiceResponseDefinition {
+  /**
+   * Responses to the multiple choice question.
+   * This is an array representing the indices of all
+   * selected answers within the list of possible responses.
+   */
+  selectedResponses: number[];
+} // MultipleChoiceResponseDefinition
+
 //-------------------
 //  SHORT TEXT FIELD
 //-------------------
@@ -160,6 +174,8 @@ export interface NumberFieldDefinition {
   maxLength?: number;
   isFloat?: boolean;
   units?: string;
+  minValue?: number;
+  maxValue?: number;
 } // NumberFieldDefinition
 
 export interface NumberResponseDefinition {

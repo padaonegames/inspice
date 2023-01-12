@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   SupportedFormField,
   SupportedFormResponse,
@@ -31,6 +30,13 @@ export interface FieldResponseMappingEntry<
   ) => JSX.Element;
   /** Default value for FieldPayload */
   defaultFieldResponse: R["response"];
+  /** Method to check the completion status for given response type under a certain field definition.
+   * Adding the field definition here allows to create completion criteria that depend on the question itself.
+   * Defaults to completed if not provided. */
+  isFieldResponseValid?: (
+    fieldDefinition: F["payload"],
+    response: R["response"]
+  ) => boolean;
 } // FieldResponseMappingEntry
 
 export type FieldResponseMappings<
@@ -52,8 +58,10 @@ export interface ConsumableFieldCardProps {
   >;
   /** Form definition to use to render this field */
   formDefinition: MultistageFormField;
-  /** Response already provided by the user, if any */
-  initialUserResponse?: SupportedFormResponse["response"];
+  /** Response provided by the user. */
+  response: SupportedFormResponse["response"];
+  /** whether card is disabled (user input) */
+  disabled?: boolean;
   /** callback notifying parent of response changing */
   onUserResponseChanged?: (value: SupportedFormResponse["response"]) => void;
 } // ConsumableFieldCardProps
@@ -64,21 +72,15 @@ export const ConsumableFieldCard = (
   const {
     fieldMappings,
     formDefinition,
-    initialUserResponse,
+    disabled = false,
+    response,
     onUserResponseChanged,
   } = props;
-
-  const [response, setResponse] = useState<SupportedFormResponse["response"]>(
-    initialUserResponse ??
-      fieldMappings[formDefinition.fieldData.type].defaultFieldResponse
-  );
 
   const handleResponseChanged = (
     response: SupportedFormResponse["response"]
   ) => {
-    setResponse(response);
-
-    if (onUserResponseChanged) {
+    if (!disabled && onUserResponseChanged) {
       onUserResponseChanged(response);
     }
   }; // handleResponseChanged
@@ -91,9 +93,10 @@ export const ConsumableFieldCard = (
         ...formDefinition,
         promptText: formDefinition.promptText,
         required: formDefinition.required,
-        fieldPayload: formDefinition.fieldData.payload as any,
+        fieldPayload: (formDefinition.fieldData.payload ?? {}) as any,
         response: (response ?? fieldMapping.defaultFieldResponse) as any,
         onResponseChanged: handleResponseChanged,
+        disabled: disabled,
       })}
     </>
   );

@@ -16,7 +16,6 @@ export interface ShortTextInputCardProps
   width?: number;
   /** Callback to the parent when the "Enter" key is pressed while the component is focused. */
   onEnterPress?: () => void;
-  disabled?: boolean;
 } // ShortTextInputCardProps
 
 /** Controlled card component to support input for shorter texts. */
@@ -24,30 +23,24 @@ export const ShortTextInputCard = (
   props: ShortTextInputCardProps
 ): JSX.Element => {
   const {
-    promptText = "",
-    required = false,
-    requiredAlert = false,
-    onEnterPress,
-    width = 0.5,
-    alertMessage,
     fieldPayload,
     response,
     onResponseChanged,
+    onEnterPress,
+    width = 0.5,
     disabled = false,
-    ...htmlProps
+    ...formProps
   } = props;
 
   const { isPassword, maxLength, placeholder } = fieldPayload;
   const { text } = response;
 
+  const handleTextChanged = (value: string) => {
+    if (onResponseChanged && !disabled) onResponseChanged({ text: value });
+  }; // handleTextChanged
+
   return (
-    <FormCard
-      {...htmlProps}
-      promptText={promptText}
-      required={required}
-      requiredAlert={requiredAlert}
-      alertMessage={alertMessage}
-    >
+    <FormCard {...formProps}>
       <InputText
         disabled={disabled}
         textWidth={width}
@@ -55,10 +48,7 @@ export const ShortTextInputCard = (
         placeholder={placeholder}
         maxLength={maxLength}
         value={text}
-        onChange={(event) => {
-          if (onResponseChanged && !disabled)
-            onResponseChanged({ text: event.target.value });
-        }}
+        onChange={(event) => handleTextChanged(event.target.value)}
         onKeyPress={(event) => {
           if (event.key === "Enter" && onEnterPress && !disabled) {
             onEnterPress();

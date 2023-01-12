@@ -6,8 +6,9 @@ import {
   RequiredQuestionSpan,
   RequiredAlertIcon,
   ImagePreview,
-  InputText
+  InputText,
 } from "./cardStyles";
+import FormCard from "./FormCard";
 
 export interface EmbedImageLinkCardProps {
   promptText: string;
@@ -19,44 +20,29 @@ export interface EmbedImageLinkCardProps {
   requiredAlert?: boolean;
 }
 
-export const EmbedImageLinkCard = (props: EmbedImageLinkCardProps): JSX.Element => {
-
-  const {
-    promptText,
-    requiredAlert,
-    required,
-    src,
-    onChange,
-    onEnterPress
-  } = props;
+export const EmbedImageLinkCard = (
+  props: EmbedImageLinkCardProps
+): JSX.Element => {
+  const { src, onChange, onEnterPress, ...formProps } =
+    props;
 
   return (
-    <Root>
-      <CardPanel requiredAlert={requiredAlert}>
-        <PromptText>
-          {promptText}{required && <RequiredAsterisk> *</RequiredAsterisk>}
-        </PromptText>
-        <InputText
-          type='url'
-          placeholder='Paste your image source url here...'
-          value={src}
-          onChange={event => {
-            if (onChange) onChange(event.target.value);
-          }}
-          onKeyPress={(event) => {
-            if (event.key === 'Enter' && onEnterPress) {
-              onEnterPress();
-            }
-          }}
-        />
-        {src && <ImagePreview src={src} />}
-        {requiredAlert && (
-          <RequiredQuestionSpan>
-            <RequiredAlertIcon /> This question is required.
-          </RequiredQuestionSpan>
-        )}
-      </CardPanel>
-    </Root>
+    <FormCard {...formProps}>
+      <InputText
+        type="url"
+        placeholder="Paste your image source url here..."
+        value={src}
+        onChange={(event) => {
+          if (onChange) onChange(event.target.value);
+        }}
+        onKeyPress={(event) => {
+          if (event.key === "Enter" && onEnterPress) {
+            onEnterPress();
+          }
+        }}
+      />
+      {src && <ImagePreview src={src} />}
+    </FormCard>
   );
 };
 

@@ -342,11 +342,13 @@ export const GenerateNewEscapeRoomActivityScreen = () => {
 
 // Fetch initial escape Room activity definition by path id from server
 export const EditEscapeRoomScreen = (): JSX.Element => {
-  const { id } = useParams();
+  const { activityId } = useParams();
 
   const fetchActivityDefinitionById = async () => {
-    if (!id) return Promise.reject();
-    return await escapeRoomService.getEscapeRoomActivityDefinitionById(id);
+    if (!activityId) return Promise.reject();
+    return await escapeRoomService.getEscapeRoomActivityDefinitionById(
+      activityId
+    );
   }; // fetchActivityDefinitionById
 
   // request an activity with given id when loading this component
@@ -468,8 +470,8 @@ const EscapeRoomContextWrapper = (
         path=""
         element={
           <ActivityScreen
+            availableLanguages={["en", "es"]}
             guarded
-            activityId={props.initialActivityDefinition?._id}
             activityTitle="Escape Room Creation"
             navigationEntries={[]}
             navigationWarnings={[]}

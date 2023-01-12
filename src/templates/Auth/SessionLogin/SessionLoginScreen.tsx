@@ -324,7 +324,10 @@ const LoginFlow = (props: LoginFlowProps): JSX.Element => {
 
   return (
     <>
-      <Header sideMenuMode="session-user" />
+      <Header
+        sideMenuMode="session-user"
+        availableLanguages={["en", "it", "es"]}
+      />
       <Root>
         <StepTitleCard
           stepTitle={t("accessActivity")}

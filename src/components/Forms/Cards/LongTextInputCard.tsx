@@ -22,38 +22,29 @@ export const LongTextInputCard = (
   props: LongTextInputCardProps
 ): JSX.Element => {
   const {
-    promptText = "",
-    requiredAlert,
-    required,
     response,
     fieldPayload,
-    alertMessage,
     onResponseChanged,
     onEnterPress,
     disabled = false,
-    ...htmlProps
+    ...formProps
   } = props;
 
   const { text } = response;
   const { maxLength, placeholder } = fieldPayload;
 
+  const handleTextChanged = (value: string) => {
+    if (onResponseChanged && !disabled) onResponseChanged({ text: value });
+  }; // handleTextChanged
+
   return (
-    <FormCard
-      promptText={promptText}
-      required={required}
-      requiredAlert={requiredAlert}
-      alertMessage={alertMessage}
-      {...htmlProps}
-    >
+    <FormCard {...formProps}>
       <InputArea
         disabled={disabled}
         placeholder={placeholder}
         maxLength={maxLength}
         value={text}
-        onChange={(event) => {
-          if (onResponseChanged && !disabled)
-            onResponseChanged({ text: event.target.value });
-        }}
+        onChange={(event) => handleTextChanged(event.target.value)}
         onKeyPress={(event) => {
           if (event.key === "Enter" && onEnterPress) {
             onEnterPress();

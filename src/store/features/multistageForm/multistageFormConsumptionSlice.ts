@@ -8,6 +8,7 @@ import {
   MultistageFormActivity,
   SupportedFormResponse,
 } from "../../../services/multistageFormActivity.model";
+import { fieldMappings } from "../../../templates/MultistageForm/ConsumeForm/Steps/ConsumeFormStageStep";
 import { RootState } from "../../store";
 
 const initialActivityDefinition: MultistageFormActivity = {
@@ -113,7 +114,23 @@ const slice = createSlice({
       .addMatcher(
         getMultistageFormActivityById.matchFulfilled,
         (state, { payload }) => {
+          /** Una vez logramos cargar los datos de la actividad proporcionada, nos
+           * va a interesar inicializar las respuestas en la store de Redux con la información
+           * de respuesta por defecto para cada uno de los campos. Esto nos permite asumir que
+           * partimos siempre de un objeto de respuesta válido en todos los elementos del formulario.
+           */
           state.activityDefinition = payload;
+          if (payload.stages.length > 0)
+            state.selectedStageId = payload.stages[0]._id;
+          payload.stages.forEach((stage) => {
+            stage.forms.forEach((form) => {
+              state.formResponses[form._id] = {
+                type: form.fieldData.type,
+                response:
+                  fieldMappings[form.fieldData.type].defaultFieldResponse,
+              } as any;
+            });
+          });
         }
       )
       .addMatcher(flushResponseBuffer.matchPending, (state, _) => {
@@ -137,9 +154,18 @@ export const selectFormResponseById = (state: RootState, id: string) =>
 export const selectFormStagesCompletionStatus = (state: RootState) => {
   return state.multistageFormConsumption.activityDefinition.stages.map(
     (stage) =>
-      stage.forms.every(
-        (form) => state.multistageFormConsumption.formResponses[form._id]
-      )
+      stage.forms.every((form) => {
+        const fieldMapping = fieldMappings[form.fieldData.type];
+        if (!fieldMapping) return false;
+        if (fieldMapping.isFieldResponseValid === undefined) return true; // no check means we don't care
+
+        const isResponseValid = fieldMapping.isFieldResponseValid(
+          form.fieldData.payload as any,
+          state.multistageFormConsumption.formResponses[form._id]
+            ?.response as any
+        );
+        return isResponseValid;
+      })
   );
 };
 export const selectStageTitles = (state: RootState) =>

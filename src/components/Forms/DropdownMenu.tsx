@@ -7,6 +7,7 @@ interface RootProps {
   right?: string;
   top?: string;
   bottom?: string;
+  width: string;
 }
 const Root = styled.div<RootProps>`
   position: absolute;
@@ -15,7 +16,7 @@ const Root = styled.div<RootProps>`
   ${(props) => props.top && `top: ${props.top};`}
   ${(props) => props.bottom && `bottom: ${props.bottom};`}
   background-color: ${(props) => props.theme.cardBackground};
-  min-width: 160px;
+  min-width: ${(props) => props.width};
   width: 100%;
   box-shadow: rgba(37, 7, 107, 0.35) 0px 2px 4px 0px;
   z-index: 25;
@@ -30,16 +31,17 @@ const DropdownMenuItem = styled.a`
   margin-top: 0.2em;
   margin-bottom: 0.2em;
   text-decoration: none;
-  height: 2.5em;
+  height: 2.35em;
   width: 100%;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: start;
   font-family: ${(props) => props.theme.contentFont};
+  font-size: 0.875em;
 
   &:hover {
-    background-color: #eeeeee;
+    background-color: ${(props) => props.theme.hoverAreaColor};
   }
 `;
 
@@ -64,6 +66,8 @@ export interface DropdownMenuProps {
     top?: string;
     bottom?: string;
   };
+  /** width of the menu. Defaults to 220px */
+  width?: string;
 } // DropdownMenuProps
 
 export const DropdownMenu = (props: DropdownMenuProps): JSX.Element => {
@@ -71,6 +75,7 @@ export const DropdownMenu = (props: DropdownMenuProps): JSX.Element => {
     options,
     onCloseDropdown,
     positioning = { left: "0", top: "2.5em" },
+    width = "220px",
   } = props;
   const wrapperRef = useRef<HTMLDivElement>(null);
   useOutsideAlerter(wrapperRef, () => {
@@ -79,7 +84,7 @@ export const DropdownMenu = (props: DropdownMenuProps): JSX.Element => {
   });
 
   return (
-    <Root ref={wrapperRef} {...positioning}>
+    <Root width={width} ref={wrapperRef} {...positioning}>
       {options.map((elem) => (
         <DropdownMenuItem
           onClick={(event) => {

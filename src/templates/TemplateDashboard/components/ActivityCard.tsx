@@ -1,28 +1,28 @@
 import { useState } from "react";
 import styled, { css } from "styled-components";
 import { ThreeDotsVertical } from "styled-icons/bootstrap";
-import { UserCircle } from "styled-icons/boxicons-regular";
-import { ActivityInstance } from "../../../services/activity.model";
 import { Open } from "@styled-icons/fluentui-system-filled/Open";
 import { Edit } from "@styled-icons/boxicons-regular/Edit";
 import { Duplicate } from "@styled-icons/ionicons-outline/Duplicate";
 import { Delete } from "@styled-icons/fluentui-system-regular/Delete";
 import { UsersCog } from "@styled-icons/fa-solid/UsersCog";
+import DropdownMenu, {
+  DropdownMenuOption,
+} from "../../../components/Forms/DropdownMenu";
 
 const ActivityCardContainer = styled.div`
   display: flex;
   flex-direction: column;
-  height: auto;
-  box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 0.5rem 0px;
+  height: 245px;
   cursor: pointer;
-  width: calc(100% - 1rem);
-  margin: 0.6em;
-  min-width: 290px;
-  max-width: 18rem;
-  border-radius: 0.35rem 0.25rem;
+  margin-bottom: 20px;
+  margin-right: 20px;
+  width: 208px;
+  border-radius: 0.35rem;
+  border: 1px solid #dfe1e5;
 
   &:hover {
-    box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 0.5rem 0px;
+    border: 1px solid ${(props) => props.theme.secondaryButtonColor};
   }
 `;
 
@@ -30,65 +30,46 @@ export const EmptyCard = styled.div`
   display: flex;
   flex-direction: column;
   height: auto;
-  width: calc(100% - 1rem);
-  margin: 0.6em;
-  min-width: 290px;
-  max-width: 18rem;
+  margin-bottom: 20px;
+  margin-right: 20px;
+  width: 208px;
 `;
 
-const ActivityCardImage = styled.img`
-  cursor: pointer;
-  max-height: 200px;
-  width: 100%;
-  object-fit: cover;
-`;
-
-const ActivityImageContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  border-radius: 0.35rem 0.25rem 0 0;
+interface ActivityCardImageProps {
+  imgSrc: string;
+}
+const ActivityImageContainer = styled.div<ActivityCardImageProps>`
+  border-top-left-radius: 0.35em;
+  border-top-right-radius: 0.35em;
+  height: 169px;
+  width: 208px;
   overflow: hidden;
-
-  width: 100%;
   align-self: center;
   margin: 0 auto;
+
+  background-image: url(${(props) => props.imgSrc});
+  background-repeat: no-repeat;
+  background-size: 203px auto;
+  background-position: 50% 50%;
+  border: none;
+  display: block;
   position: relative;
 `;
 
-interface ActivityCardContentProps {
-  hue?: number;
-}
-const ActivityCardContent = styled.div<ActivityCardContentProps>`
-  height: 100%;
-  flex: 1 1 0%;
+const ActivityCardContent = styled.div`
+  border-top: 1px solid #e2e2e2;
+  padding: 16px 8px 14px 16px;
+  position: relative;
+
+  height: 74px;
   display: flex;
   flex-direction: row;
   -moz-box-pack: justify;
   justify-content: space-between;
-  padding: 0.5rem 0.5rem 1rem;
-  min-height: 3.5rem;
-  background-color: ${(props) =>
-    props.hue
-      ? `hsl(${props.hue}, 80%, ${props.theme.textReadableLuminosity}%)`
-      : props.theme.cardBackground};
-  border-radius: 0 0 0.25rem 0.25rem;
+  background-color: ${(props) => props.theme.cardBackground};
+  border-radius: 0 0 0.35rem 0.35rem;
 
-  margin: 0px;
-  padding: 0px;
-  border: 0px none;
   font: inherit;
-
-  backfrop-filter: brightness(300%);
-`;
-
-const ActivityTypeIcon = styled(UserCircle)`
-  margin: auto 0.5rem;
-  color: ${(props) => props.theme.textColor};
-  display: inline-block;
-  height: 2.5rem;
-  width: 2.5rem;
 `;
 
 const ActivityTextContainer = styled.div`
@@ -102,21 +83,22 @@ const ActivityTextContainer = styled.div`
 
 const ActivityTitle = styled.a`
   overflow: hidden;
-  line-height: 1rem;
-  font-weight: 700;
+  line-height: 18px;
+  font-weight: 500;
   color: ${(props) => props.theme.textColor};
   font-family: ${(props) => props.theme.clickableTextFont};
   width: 100%;
   text-overflow: ellipsis;
   align-self: flex-start;
-  font-size: 0.95rem;
+  font-size: 0.75em;
   text-decoration: none;
-  letter-spacing: 0.75px;
+  letter-spacing: 0.15px;
   margin-bottom: 0.1rem;
+  white-space: nowrap;
 `;
 
 const ActivityAuthor = styled.a`
-  display: flex;
+  display: inline-block;
   -moz-box-align: center;
   align-items: center;
   color: ${(props) => props.theme.textColor};
@@ -124,17 +106,22 @@ const ActivityAuthor = styled.a`
   overflow: hidden;
   text-decoration: none;
   font-weight: normal;
-  font-size: 0.75em;
+  font-size: 0.7em;
+  white-space: nowrap;
+  width: 100%;
+  text-overflow: ellipsis;
 `;
 
 const ActivityOptionsIcon = styled(ThreeDotsVertical)`
   color: ${(props) => props.theme.textColor};
-  height: 100%;
-  width: 100%;
+  height: 2em;
+  width: 2em;
   margin: auto;
+  padding: 0.4em;
   cursor: pointer;
+  border-radius: 50%;
   &:hover {
-    transform: scale(1.25);
+    background-color: ${(props) => props.theme.hoverAreaColor};
   }
 `;
 
@@ -144,56 +131,6 @@ const ActivityOptionsContainer = styled.div`
   width: 1.75em;
   margin: auto 10px;
   position: relative;
-`;
-
-interface ActivityTypeSpanProps {
-  hue?: number;
-}
-const ActivityTypeSpan = styled.span<ActivityTypeSpanProps>`
-  font-family: ${(props) => props.theme.clickableTextFont};
-  font-size: 0.625em;
-  font-weight: bold;
-  position: absolute;
-  top: 0px;
-  left: 0px;
-  padding: 0.25rem 0.75rem;
-  display: flex;
-  -moz-box-align: center;
-  align-items: center;
-  color: ${(props) => props.theme.textColor};
-  background-color: ${(props) =>
-    props.hue
-      ? `hsl(${props.hue}, 80%, ${props.theme.textReadableLuminosity}%)`
-      : "#4a90e2"};
-  border-radius: 0 0 0.25rem 0;
-  box-shadow: rgba(37, 7, 107, 0.35) 0px 2px 4px 0px;
-`;
-
-const DropdownMenu = styled.div`
-  position: absolute;
-  right: 0;
-  background-color: ${(props) => props.theme.cardBackground};
-  min-width: 160px;
-  box-shadow: rgba(37, 7, 107, 0.35) 0px 2px 4px 0px;
-  z-index: 25;
-  display: flex;
-  flex-direction: column;
-  border-radius: 0.25rem;
-`;
-
-const DropdownMenuItem = styled.a`
-  color: ${(props) => props.theme.textColor};
-  padding: 12px 16px;
-  text-decoration: none;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: start;
-  font-family: ${(props) => props.theme.contentFont};
-
-  &:hover {
-    background-color: darkgray;
-  }
 `;
 
 const menuItemIcon = css`
@@ -223,7 +160,7 @@ const SessionsActivityIcon = styled(UsersCog)`
   ${menuItemIcon}
 `;
 
-const DateSpan = styled.span`
+const OverlaySpan = styled.span`
   margin: 0.5rem;
   position: absolute;
   right: 0.2rem;
@@ -242,116 +179,62 @@ const DateSpan = styled.span`
 `;
 
 export interface ActivityCardProps {
-  /** Description and features about the activity. */
-  activityTemplate: ActivityInstance;
-  /** Callback to notify the parent when the card has been opened. */
-  onOpenClicked?: () => void;
-  /** Callback to notify the parent when the user wishes to manage the activity's sessions and users */
-  onSessionsClicked?: () => void;
-  /** Callback to notify the parent when the card is going to be edited. */
-  onEditClicked?: () => void;
-  /** Callback to notify the parent when the card is being duplicated. */
-  onDuplicateClicked?: () => void;
-  /** Callback to notify the parent when the card is being deleted. */
-  onDeleteClicked?: () => void;
-}
+  /** Name of the activity. */
+  title: string;
+  /** Activity's author. */
+  author: string;
+  /** Preview image to show as a way to represent the image. */
+  thumbnailSrc?: string;
+  /** List of supported actions for this activity card. */
+  activityActions: DropdownMenuOption[];
+  /** icon component to be placed next to the author when rendering this card. Should be representative of activity type. */
+  activityIcon?: JSX.Element;
+  /** Callback to notify the parent when the card has been clicked. */
+  onCardClicked?: () => void;
+} // ActivityCardProps
 
 export const ActivityCard = (props: ActivityCardProps): JSX.Element => {
   const {
-    activityTemplate,
-    onOpenClicked,
-    onSessionsClicked,
-    onEditClicked,
-    onDuplicateClicked,
-    onDeleteClicked,
+    title,
+    author,
+    thumbnailSrc,
+    activityActions,
+    activityIcon,
+    onCardClicked,
   } = props;
 
   const [openMenu, setOpenMenu] = useState<boolean>(false);
 
-  const hue = intToHue(hashCode(activityTemplate.activityType));
-  const dateOpts: Intl.DateTimeFormatOptions = {
-    month: "short",
-    day: "2-digit",
-  };
-
-  const handleOpenClicked = () => {
-    setOpenMenu(false);
-    if (onOpenClicked) onOpenClicked();
-  }; // handleOpenClicked
-
-  const handleSessionsClicked = () => {
-    setOpenMenu(false);
-    if (onSessionsClicked) onSessionsClicked();
-  }; // handleSessionsClicked
-
-  const handleEditClicked = () => {
-    setOpenMenu(false);
-    if (onEditClicked) onEditClicked();
-  }; // handleEditClicked
-
-  const handleDuplicateClicked = () => {
-    setOpenMenu(false);
-    if (onDuplicateClicked) onDuplicateClicked();
-  }; // handleDuplicateClicked
-
-  const handleDeleteClicked = () => {
-    setOpenMenu(false);
-    if (onDeleteClicked) onDeleteClicked();
-  }; // handleDeleteClicked
+  const handleOptionsClicked = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setOpenMenu((prev) => !prev);
+  }; // handleOptionsClicked
 
   return (
-    <ActivityCardContainer>
-      <ActivityImageContainer>
-        <ActivityCardImage
-          src={
-            activityTemplate.imageSrc ??
-            "https://upload.wikimedia.org/wikipedia/commons/6/65/No-Image-Placeholder.svg"
-          }
-        />
-        <ActivityTypeSpan hue={hue}>
-          {activityTemplate.activityType}
-        </ActivityTypeSpan>
-        <DateSpan>
-          {`${activityTemplate.beginsOn.toLocaleDateString(
-            undefined,
-            dateOpts
-          )} to ${activityTemplate.endsOn.toLocaleDateString(
-            undefined,
-            dateOpts
-          )}`}
-        </DateSpan>
-      </ActivityImageContainer>
-      <ActivityCardContent hue={hue}>
-        <ActivityTypeIcon />
+    <ActivityCardContainer onClick={onCardClicked}>
+      <ActivityImageContainer
+        imgSrc={
+          thumbnailSrc ??
+          "https://upload.wikimedia.org/wikipedia/commons/6/65/No-Image-Placeholder.svg"
+        }
+      ></ActivityImageContainer>
+      <ActivityCardContent>
         <ActivityTextContainer>
-          <ActivityTitle>{activityTemplate.activityTitle}</ActivityTitle>
-          <ActivityAuthor>{activityTemplate.activityAuthor}</ActivityAuthor>
+          <ActivityTitle>{title}</ActivityTitle>
+          <ActivityAuthor>
+            {activityIcon !== undefined && activityIcon}
+            {author}
+          </ActivityAuthor>
         </ActivityTextContainer>
         <ActivityOptionsContainer>
-          <ActivityOptionsIcon onClick={() => setOpenMenu((prev) => !prev)} />
+          <ActivityOptionsIcon onClick={handleOptionsClicked} />
           {openMenu && (
-            <DropdownMenu>
-              <DropdownMenuItem onClick={handleOpenClicked}>
-                <OpenActivityIcon />
-                Open
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={handleSessionsClicked}>
-                <SessionsActivityIcon />
-                Sessions
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={handleEditClicked}>
-                <EditActivityIcon />
-                Edit
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={handleDuplicateClicked}>
-                <DuplicateActivityIcon />
-                Duplicate
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={handleDeleteClicked}>
-                <DeleteActivityIcon />
-                Delete
-              </DropdownMenuItem>
-            </DropdownMenu>
+            <DropdownMenu
+              width="250px"
+              onCloseDropdown={() => setOpenMenu(false)}
+              options={activityActions}
+              positioning={{ bottom: "35px", left: "-100px" }}
+            />
           )}
         </ActivityOptionsContainer>
       </ActivityCardContent>
@@ -360,19 +243,3 @@ export const ActivityCard = (props: ActivityCardProps): JSX.Element => {
 };
 
 export default ActivityCard;
-
-function hashCode(str: string | undefined) {
-  // java String#hashCode
-  if (!str) return 0;
-
-  var hash = 0;
-  for (var i = 0; i < str.length; i++) {
-    hash = str.charCodeAt(i) + ((hash << 4) - hash);
-  }
-  return hash;
-}
-
-function intToHue(i: number) {
-  var h = i % 360;
-  return h;
-}

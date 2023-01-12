@@ -13,7 +13,10 @@ import {
   selectIsBasicInformationCompleted,
 } from "../../../store/features/multistageForm/multistageFormCreationSlice";
 import { debounce } from "lodash";
-import { useRequestNewMultistageFormActivityMutation, useGetMultistageFormActivityByIdQuery } from "../../../services/multistageForm/common.api";
+import {
+  useRequestNewMultistageFormActivityMutation,
+  useGetMultistageFormActivityByIdQuery,
+} from "../../../services/multistageForm/common.api";
 import { useFlushCommandBufferMutation } from "../../../services/multistageForm/creation.api";
 
 const Root = styled.div`
@@ -57,9 +60,9 @@ export const GenerateNewMultistageFormActivityScreen = () => {
 
 // Fetch initial Multistage Form activity definition by path id from server
 export const EditMultistageFormActivityScreen = (): JSX.Element => {
-  const { id } = useParams();
+  const { activityId } = useParams();
   const { data, error, isLoading } = useGetMultistageFormActivityByIdQuery(
-    id ?? ""
+    activityId ?? ""
   );
 
   if (isLoading) {

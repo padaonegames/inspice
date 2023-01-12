@@ -7,36 +7,16 @@ import FormCard from "./FormCard";
 import ReactPlayer from "react-player/lazy";
 import { EditableFieldProps } from "./EditableFieldCard";
 
-const getVideoID = (link: string) => {
-  var regExp =
-    /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-  var match = link.match(regExp);
-
-  if (match && match[2].length == 11) return match[2];
-  else return "";
-}; // getVideoID
-
 export interface DisplayVideoCardProps
-  extends ConsumableFieldProps<DisplayVideoFieldDefinition, {}> {
-  /** Prompt for the user to fill in this field */
-  promptText?: string;
-  /** Whether this field should always be filled in by the user */
-  required?: boolean;
-  /** whether to modify the appearance of this card to reflect that the user tried to submit the form without entering a value for this field */
-  requiredAlert?: boolean;
-} // DisplayVideoCardProps
+  extends ConsumableFieldProps<DisplayVideoFieldDefinition, {}> {} // DisplayVideoCardProps
 
 export const DisplayVideoCard = (props: DisplayVideoCardProps): JSX.Element => {
-  const { promptText = "", requiredAlert, required, fieldPayload } = props;
+  const { fieldPayload, ...formProps } = props;
 
   const { src } = fieldPayload;
 
   return (
-    <FormCard
-      promptText={promptText}
-      required={required}
-      requiredAlert={requiredAlert}
-    >
+    <FormCard {...formProps}>
       <ReactPlayer
         url={src}
         style={{

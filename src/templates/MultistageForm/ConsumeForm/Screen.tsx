@@ -9,13 +9,16 @@ import ActivityCreationStageManager from "../../../components/Navigation/Activit
 import { useGetMultistageFormActivityByIdQuery } from "../../../services/multistageForm/common.api";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import {
+  selectActivityId,
   selectCurrentStageId,
   selectedStageIdChanged,
+  selectFormResponses,
   selectFormStagesCompletionStatus,
   selectStageIds,
   selectStageTitles,
 } from "../../../store/features/multistageForm/multistageFormConsumptionSlice";
 import ConsumeMultistageFormStageStep from "./Steps/ConsumeFormStageStep";
+import { useSubmitUserResponseToActivityMutation } from "../../../services/multistageForm/consumption.api";
 
 const Root = styled.div`
   display: flex;
@@ -28,10 +31,10 @@ const Root = styled.div`
 
 // Fetch initial Multistage Form activity definition by path id from server
 export const ConsumeMultistageFormScreen = (): JSX.Element => {
-  const { id } = useParams();
+  const { activityId } = useParams();
 
   const { data, error, isLoading } = useGetMultistageFormActivityByIdQuery(
-    id ?? ""
+    activityId ?? ""
   );
 
   if (isLoading) {
@@ -54,20 +57,38 @@ export const ConsumeMultistageFormScreen = (): JSX.Element => {
 //-------------------------------------------------------
 
 export const ConsumeMultistageFormScreenComponent = (): JSX.Element => {
+  const activityId = useAppSelector(selectActivityId);
   const stagesCompletionStatus = useAppSelector(
     selectFormStagesCompletionStatus
   );
   const stageTitles = useAppSelector(selectStageTitles);
   const stageIds = useAppSelector(selectStageIds);
   const selectedStageId = useAppSelector(selectCurrentStageId);
+  const formResponses = useAppSelector(selectFormResponses);
+
   const dispatch = useAppDispatch();
+
+  const [triggerSubmitForm, { data, isLoading, isSuccess }] =
+    useSubmitUserResponseToActivityMutation();
 
   const handleStageSelected = (stageIndex: number) => {
     if (stageIndex < 0 || stageIndex >= stageIds.length) return;
     dispatch(selectedStageIdChanged({ stageId: stageIds[stageIndex] }));
   }; // handleStageSelected
 
+  const handleSubmitForm = () => {
+    if (!stagesCompletionStatus.every((elem) => elem)) {
+      return;
+    }
+
+    triggerSubmitForm({ id: activityId, responses: formResponses });
+  }; // handleSubmitForm
+
   const selectedStageIndex = stageIds.findIndex((id) => id === selectedStageId);
+
+  if (isLoading) {
+    return <LoadingOverlay message="Submitting form" />;
+  }
 
   return (
     <Root>
@@ -80,10 +101,11 @@ export const ConsumeMultistageFormScreenComponent = (): JSX.Element => {
         currentStage={selectedStageIndex}
         onStageSelected={handleStageSelected}
         finaItemCaption={"SUBMIT FORM"}
+        onSubmitActivity={handleSubmitForm}
       />
       <ConsumeMultistageFormStageStep />
     </Root>
   );
-}; // CreateMultistageFormActivityScreenComponent
+}; // ConsumeMultistageFormActivityScreenComponent
 
 export default ConsumeMultistageFormScreen;

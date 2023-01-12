@@ -1,7 +1,5 @@
 import { api } from "../../store/api/api";
-import {
-  MultistageFormActivity,
-} from "./../multistageFormActivity.model";
+import { MultistageFormActivity } from "./../multistageFormActivity.model";
 
 /**
  * Support API providing the endpoints required to perform basic CRUD operations

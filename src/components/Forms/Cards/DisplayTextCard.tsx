@@ -22,26 +22,15 @@ export const TextPreview = styled.div`
 `;
 
 export interface DisplayTextCardProps
-  extends ConsumableFieldProps<DisplayTextFieldDefinition, {}> {
-  /** Prompt for the user to fill in this field */
-  promptText?: string;
-  /** Whether this field should always be filled in by the user */
-  required?: boolean;
-  /** whether to modify the appearance of this card to reflect that the user tried to submit the form without entering a value for this field */
-  requiredAlert?: boolean;
-} // DisplayTextCardProps
+  extends ConsumableFieldProps<DisplayTextFieldDefinition, {}> {} // DisplayTextCardProps
 
 export const DisplayTextCard = (props: DisplayTextCardProps): JSX.Element => {
-  const { promptText = "", requiredAlert, required, fieldPayload } = props;
+  const { fieldPayload, ...formProps } = props;
 
   const { text } = fieldPayload;
 
   return (
-    <FormCard
-      promptText={promptText}
-      required={required}
-      requiredAlert={requiredAlert}
-    >
+    <FormCard {...formProps}>
       <TextPreview>{text}</TextPreview>
     </FormCard>
   );

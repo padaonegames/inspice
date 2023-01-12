@@ -4,7 +4,7 @@ import { createGlobalStyle, ThemeProvider } from "styled-components";
 
 export const themes: AvailableThemes = {
   dark: {
-    bodyBackground: "darkgray",
+    bodyBackground: "#808080",
     headerBackground: "#212529",
     title: "#6495ed",
     textColor: "white",
@@ -33,9 +33,10 @@ export const themes: AvailableThemes = {
     secondaryButtonColor: "#c44c49",
     smallButtonFont: "0.8em",
     frameColor: "#c44c49",
+    hoverAreaColor: "darkgray",
   },
   light: {
-    bodyBackground: "#E5E5E5",
+    bodyBackground: "#EFEFEF",
     headerBackground: "#fff",
     title: "#ff6347",
     textColor: "#000",
@@ -64,6 +65,7 @@ export const themes: AvailableThemes = {
     secondaryButtonColor: "#c44c49",
     smallButtonFont: "0.8em",
     frameColor: "#c44c49",
+    hoverAreaColor: "#cdcdcd",
   },
 };
 
