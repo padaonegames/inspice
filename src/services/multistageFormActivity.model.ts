@@ -1,13 +1,7 @@
 //------------------------------------------
 //          ACTIVITY DEFINITIONS
 //------------------------------------------
-import {
-  MultipleChoiceFieldDefinition,
-  MultipleChoiceResponseDefinition,
-} from "../components/Forms/Cards/MultipleChoiceCard";
-import { ActivityInstance } from "./activity.model";
-
-export interface MultistageFormFieldDefinition {
+export interface MultistageFormField {
   /** object describing the type and payload of the form field definition */
   fieldData: SupportedFormField;
   /** Prompt for the user to fill in this field */
@@ -18,10 +12,21 @@ export interface MultistageFormFieldDefinition {
   _id: string;
 } // MultistageFormFieldDefinition
 
-export interface MultistageFormActivityDefinition extends ActivityInstance {
-  activityType: "Multistage Form";
+export interface MultistageFormActivity {
+  /** Unique id of this definition */
+  _id: string;
+  /** short title for this activity that will be rendered on the title card */
+  title: string;
+  /** Id of the author of this activity within the system */
+  author: string;
+  /** src of the thumbnail to be used to preview this activity */
+  thumbnailSrc?: string;
+  /** short description of this activity that will be rendered on the title card */
+  description?: string;
+  /** list of stages comprising this activity */
   stages: MultistageFormStage[];
-  formResponsesDatasetUuid: string;
+  /** whether this activity is valid and can be deployed (no errors in the definition) */
+  isValid: boolean;
 } // MultistageFormActivityDefinition
 
 /**
@@ -40,12 +45,8 @@ export interface MultistageFormStage {
   /**
    * Forms defined within this particular stage
    */
-  forms: MultistageFormFieldDefinition[];
+  forms: MultistageFormField[];
 } // MultistageFormStage
-
-export type MultistageFormResponses = {
-  [itemId: string]: SupportedFormResponse["response"];
-}; // MultistageFormResponses
 
 //---------------------------------------------------------------------------------
 //          GENERIC REACT COMPONENT PROPS FOR EDITING/CONSUMPTION ITEMS
@@ -61,12 +62,14 @@ export interface ConsumableFieldProps<FieldPayload, FieldResponse>
   requiredAlert?: boolean;
   /** Message to display if requiredAlert is set to true */
   alertMessage?: string;
-  /** Definition to be used to render the stateless consumable field component (only the exclusive part of the definition, prompt text and type are edited elsewhere) */
+  /** Definition to be used to render the stateless consumable field component */
   fieldPayload: FieldPayload;
   /** Current response to be rendered by the component */
   response: FieldResponse;
   /** Callback to notify parent component of a change whithin the current answer to field */
   onResponseChanged?: (response: FieldResponse) => void;
+  /** set to true to prevent user from inputting a response (form disabled or not) */
+  disabled?: boolean;
 } // ConsumableFieldProps<FieldPayload, FieldResponse>
 
 //------------------------------------------
@@ -131,6 +134,25 @@ export type SupportedFormResponse = Extract<
   }
 >; // SupportedFormResponse
 
+//------------------------
+//  MULTIPLE CHOICE FIELD
+//------------------------
+export interface MultipleChoiceFieldDefinition {
+  /** answers to choose from */
+  answers: string[];
+  /** maximum number of answers to allow */
+  maxAnswers?: number;
+} // MultipleChoiceFieldDefinition
+
+export interface MultipleChoiceResponseDefinition {
+  /**
+   * Responses to the multiple choice question.
+   * This is an array representing the indices of all
+   * selected answers within the list of possible responses.
+   */
+  selectedResponses: number[];
+} // MultipleChoiceResponseDefinition
+
 //-------------------
 //  SHORT TEXT FIELD
 //-------------------
@@ -143,6 +165,22 @@ export interface ShortTextFieldDefinition {
 export interface ShortTextResponseDefinition {
   text: string;
 } // ShortTextResponseDefinition
+
+//-------------------
+//  NUMBER FIELD
+//-------------------
+export interface NumberFieldDefinition {
+  placeholder?: number;
+  maxLength?: number;
+  isFloat?: boolean;
+  units?: string;
+  minValue?: number;
+  maxValue?: number;
+} // NumberFieldDefinition
+
+export interface NumberResponseDefinition {
+  number: number;
+} // NumberResponseDefinition
 
 //-------------------
 //  LONG TEXT FIELD
@@ -200,7 +238,7 @@ export interface LikertScaleResponseDefinition {
    * Each item in the array represents the index of the selected
    * option within the common scale of the questionaire.
    */
-  responses: (number | undefined)[];
+  responses: { [questionIndex: number]: number };
 } // LikertScaleResponseDefinition
 
 //-------------------

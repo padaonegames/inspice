@@ -11,6 +11,8 @@ export interface ConfigureMultipleChoiceFieldDefinition {
   maxAnswers?: number;
   /** label for adding a new option to the list*/
   addNewAnswerLabel?: string;
+  /** whether to allow the user to specify right answers */
+  rightAnswersEnabled?: boolean;
 } // ConfigureMultipleChoiceFieldDefinition
 
 export interface ConfigureMultipleChoiceResponseDefinition {
@@ -34,11 +36,16 @@ export const ConfigureMultipleChoiceCard = (
     requiredAlert,
     required,
     fieldPayload,
+    alertMessage,
     response,
     onResponseChanged,
   } = props;
 
-  const { addNewAnswerLabel = "Add new answer" } = fieldPayload;
+  const {
+    addNewAnswerLabel = "Add new answer",
+    rightAnswersEnabled,
+    maxAnswers,
+  } = fieldPayload;
   const { answers, correctAnswers } = response;
 
   const handleAddAnswer = () => {
@@ -102,16 +109,19 @@ export const ConfigureMultipleChoiceCard = (
       promptText={promptText}
       required={required}
       requiredAlert={requiredAlert}
+      alertMessage={alertMessage}
     >
       <CheckboxList>
         {answers.map((elem, i) => (
           <CheckboxOption key={`checkBoxAnswer${i}`}>
             <EditableCheckBoxInput
               boxContent={{
-                type: "check",
+                type: rightAnswersEnabled ? "check" : "none",
                 checked: correctAnswers.includes(i),
-                onCheckToggle: () =>
-                  handleSetAnswerCorrectStatus(i, !correctAnswers.includes(i)),
+                onCheckToggle: () => {
+                  if (!rightAnswersEnabled) return;
+                  handleSetAnswerCorrectStatus(i, !correctAnswers.includes(i));
+                },
               }}
               key={`editableCheckBoxInput${i}`}
               labelText={elem}
@@ -119,6 +129,7 @@ export const ConfigureMultipleChoiceCard = (
               boxSize="1.75em"
               onObjectRemoved={() => handleRemoveAnswer(i)}
               onLabelTextChanged={(value) => handleEditAnswer(i, value)}
+              inputType="text"
             />
           </CheckboxOption>
         ))}
@@ -130,7 +141,7 @@ export const ConfigureMultipleChoiceCard = (
             labelTextPlaceholder={addNewAnswerLabel}
             style="radio"
             boxSize="1.75em"
-            enabled={false}
+            inputType="click"
           />
         </CheckboxOption>
       </CheckboxList>

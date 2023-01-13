@@ -95,6 +95,14 @@ export class EscapeRoomActivityService {
     >(url, apiDefinition);
   } // updateEscapeRoomActivityDefinition
 
+  public async duplicateEscapeRoomActivityDefinition(
+    activityId: string
+  ): Promise<ApiResult<EscapeRoomActivityDefinition>> {
+    const url = `${this.apiUrl}/escape-room/duplicate-activity/${activityId}`;
+
+    return postApiResult<{}, EscapeRoomActivityDefinition>(url, {});
+  } // duplicateEscapeRoomActivityDefinition
+
   //----------------------------------------------------
   //                    RESOURCES
   //----------------------------------------------------

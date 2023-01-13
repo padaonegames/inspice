@@ -6,7 +6,9 @@ import { LightMode } from "@styled-icons/material-sharp/LightMode";
 import { DarkMode } from "@styled-icons/material-sharp/DarkMode";
 import SideMenu, { NavigationWarning, NavMenuElem } from "./SideMenu";
 import { Menu } from "styled-icons/ionicons-solid";
-import { Language } from "@styled-icons/fa-solid/Language";
+import { DotsVerticalRounded } from "@styled-icons/boxicons-regular/DotsVerticalRounded";
+import DropdownMenu, { DropdownMenuOption } from "../Forms/DropdownMenu";
+import { DropdownSelector } from "../Forms/DropdownSelector";
 
 interface BurgerIconProps {
   open?: boolean;
@@ -57,17 +59,31 @@ const ThemeSwitch = styled.span`
   align-content: center;
   cursor: pointer;
   margin-left: auto;
+  width: auto;
 `;
 
 const modeStyle = css`
   color: ${(props) => props.theme.textColor};
   cursor: pointer;
-  height: 1.5em;
-  width: 1.5em;
+  height: 2.5em;
+  width: auto;
+  margin: auto 1.25em auto 0;
+  border-radius: 50%;
+  padding: 0.4em;
 
   &:hover {
-    transform: scale(1.2);
+    background-color: ${(props) => props.theme.hoverAreaColor};
   }
+`;
+
+const OpenActionsDropdownButton = styled.span`
+  cursor: pointer;
+  position: relative;
+  ${modeStyle}
+`;
+
+const ActionsIcon = styled(DotsVerticalRounded)`
+  height: 100%;
 `;
 
 const LightModeIcon = styled(LightMode)`
@@ -78,10 +94,16 @@ const DarkModeIcon = styled(DarkMode)`
   ${modeStyle}
 `;
 
-const LanguageIcon = styled(Language)`
-  ${modeStyle}
-  margin-right: 1em;
+interface HeaderLogoProps {
+  disabled?: boolean;
+}
+const HeaderLogo = styled.img<HeaderLogoProps>`
+  height: 50%;
+  margin-left: 1em;
+  ${(props) => !props.disabled && `cursor: pointer;`}
 `;
+
+export type HeaderAction = DropdownMenuOption;
 
 export interface HeaderProps {
   /** Title to display on this header */
@@ -90,6 +112,10 @@ export interface HeaderProps {
   navigationEntries?: NavMenuElem[];
   /** Guards to warn user about a possible loss of progress when transitioning from a given route */
   navigationWarnings?: NavigationWarning[];
+  /** actions that can be performed from the header at all times during the activity */
+  headerActions?: HeaderAction[];
+  /** languages that can be selected by the user during the activity */
+  availableLanguages?: string[];
   /**
    * What sort of user management should be done from this header's side menu.
    * Three modes are currently supported:
@@ -100,6 +126,8 @@ export interface HeaderProps {
    * to perform a logout action.
    */
   sideMenuMode?: "none" | "session-user" | "system-user";
+  /** callback to parent specifying what to do when page icon is clicked */
+  onHeaderIconClicked?: () => void;
 } // HeaderProps
 
 /** Basic Header component with support for theme and localization management, as well as for in-template navigation via side menu */
@@ -108,31 +136,55 @@ export const Header = (props: HeaderProps) => {
     activityTitle = "",
     navigationEntries = [],
     navigationWarnings = [],
+    headerActions = [],
     sideMenuMode = "none",
+    availableLanguages = [],
+    onHeaderIconClicked,
   } = props;
 
   const { i18n } = useTranslation("app");
   const { theme, switchTheme } = useContext(ThemeContext);
 
   const [openMenu, setOpenMenu] = useState<boolean>(false);
+  const [actionsDropdownOpen, setActionsDropdownOpen] =
+    useState<boolean>(false);
 
   return (
     <>
       <Root>
-        <BurgerIcon
-          open={openMenu}
-          onClick={() => setOpenMenu((prev) => !prev)}
+        {navigationEntries.length > 0 ||
+          (sideMenuMode !== "none" && (
+            <BurgerIcon
+              open={openMenu}
+              onClick={() => setOpenMenu((prev) => !prev)}
+            />
+          ))}
+
+        <HeaderLogo
+          src="/spice-logo.png"
+          alt="application icon"
+          onClick={onHeaderIconClicked}
+          disabled={onHeaderIconClicked === undefined}
         />
         <AppName>{`${activityTitle && `${activityTitle}`}`}</AppName>
         <ThemeSwitch>
-          {
-            <LanguageIcon
-              title="Switch language"
-              onClick={() =>
-                i18n.changeLanguage(i18n.language === "en" ? "it" : "en")
-              }
-            />
-          }
+          {headerActions.length > 0 && (
+            <>
+              <OpenActionsDropdownButton>
+                <ActionsIcon
+                  title="More Options"
+                  onClick={() => setActionsDropdownOpen(true)}
+                />
+                {actionsDropdownOpen && (
+                  <DropdownMenu
+                    positioning={{ right: "0.75em", top: "2em" }}
+                    options={headerActions}
+                    onCloseDropdown={() => setActionsDropdownOpen(false)}
+                  />
+                )}
+              </OpenActionsDropdownButton>
+            </>
+          )}
           {theme === "dark" ? (
             <LightModeIcon
               title="Switch to light mode"
@@ -143,6 +195,18 @@ export const Header = (props: HeaderProps) => {
               title="Switch to dark mode"
               onClick={() => switchTheme("dark")}
             />
+          )}
+          {availableLanguages.length > 0 && (
+            <>
+              <DropdownSelector
+                width="3em"
+                options={availableLanguages.map((lang) => ({
+                  displayName: lang.toLocaleUpperCase(),
+                  onOptionSelected: () => i18n.changeLanguage(lang),
+                }))}
+                selectedOption={i18n.language.toLocaleUpperCase()}
+              />
+            </>
           )}
         </ThemeSwitch>
       </Root>

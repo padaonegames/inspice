@@ -4,7 +4,7 @@ import {
 } from "@storybook/react/dist/ts3.9/client/preview/types-6-3";
 import { useState } from "react";
 import { MemoryRouter } from "react-router-dom";
-import { MultistageFormActivityDefinition } from "../../services/multistageFormActivity.model";
+import { MultistageFormActivity } from "../../services/multistageFormActivity.model";
 import { CreateMultistageFormScreenComponent } from "../../templates/MultistageForm/CreateActivity/Screen";
 
 export default {
@@ -17,29 +17,21 @@ export default {
   ],
 } as ComponentMeta<typeof CreateMultistageFormScreenComponent>;
 
-const sample_base: MultistageFormActivityDefinition = {
-  activityType: "Multistage Form",
-  activityTitle: "",
-  activityAuthor: "undefined",
-  beginsOn: new Date(),
-  endsOn: new Date(),
+const sample_base: MultistageFormActivity = {
+  title: "",
+  author: "undefined",
   stages: [],
-  formResponsesDatasetUuid: "",
   _id: "",
+  isValid: false,
 }; // sample_base
 
 const Template: ComponentStory<typeof CreateMultistageFormScreenComponent> = (
   _
 ) => {
   const [activityDefinition, setActivityDefinition] =
-    useState<MultistageFormActivityDefinition>(sample_base);
+    useState<MultistageFormActivity>(sample_base);
 
-  return (
-    <CreateMultistageFormScreenComponent
-      activityDefinition={activityDefinition}
-      setActivityDefinition={setActivityDefinition}
-    />
-  );
+  return <CreateMultistageFormScreenComponent />;
 };
 
 export const Default = Template.bind({});

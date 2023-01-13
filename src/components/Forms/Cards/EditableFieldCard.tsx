@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import styled, { css } from "styled-components";
 import {
   AvailableMultistageFormFieldType,
-  MultistageFormFieldDefinition,
+  MultistageFormField,
   availableMultistageFormItemTypes,
   SupportedFormField,
 } from "../../../services/multistageFormActivity.model";
@@ -22,6 +22,8 @@ import { Delete } from "@styled-icons/fluentui-system-regular/Delete";
 import { ArrowDownSquareFill } from "@styled-icons/bootstrap/ArrowDownSquareFill";
 import { ArrowUpSquareFill } from "@styled-icons/bootstrap/ArrowUpSquareFill";
 import CheckBoxInput from "../CheckBoxInput";
+import React from "react";
+import DropdownMenu from "../DropdownMenu";
 
 /**
  * Recommended styles for an icon being passed to EditableFieldCard
@@ -94,39 +96,6 @@ const HeaderRow = styled.div`
   }
 `;
 
-const DropdownMenu = styled.div`
-  position: absolute;
-  left: 0;
-  top: 2.5em;
-  background-color: ${(props) => props.theme.cardBackground};
-  min-width: 160px;
-  width: 100%;
-  box-shadow: rgba(37, 7, 107, 0.35) 0px 2px 4px 0px;
-  z-index: 25;
-  display: flex;
-  flex-direction: column;
-  border-radius: 0.25rem;
-`;
-
-const DropdownMenuItem = styled.a`
-  color: ${(props) => props.theme.textColor};
-  padding: 0.5em 0.85em;
-  margin-top: 0.2em;
-  margin-bottom: 0.2em;
-  text-decoration: none;
-  height: 2.5em;
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: start;
-  font-family: ${(props) => props.theme.contentFont};
-
-  &:hover {
-    background-color: #eeeeee;
-  }
-`;
-
 export interface EditableFieldProps<FieldPayload> {
   /** Definition to be used to render the stateless editable field component (only the exclusive part of the definition, prompt text and type are edited elsewhere) */
   fieldPayload: FieldPayload;
@@ -136,7 +105,7 @@ export interface EditableFieldProps<FieldPayload> {
 
 export interface FieldMappingEntry<T extends SupportedFormField> {
   /** How to render this option within a list. Defaults to fieldType */
-  displayName?: string;
+  displayName: string;
   /** What component to place next to the display name */
   iconComponent?: JSX.Element;
   /** Generation logic to use to create a form editing component */
@@ -160,7 +129,7 @@ export interface EditableFieldCardProps {
   /** alert message to be displayed when required alert is set to true */
   alertMessage?: string;
   /** What type of question/ field this card is representing (type must be consistent with fieldMappings' name values) */
-  initialFieldDefinition?: MultistageFormFieldDefinition;
+  initialField: MultistageFormField;
   /** What  mappings we are working with in this editiable field card (available field types and how to render them) */
   fieldMappings: FieldMappings<SupportedFormField>;
   /** Boolean that tells wether this card is currently being focused by the user */
@@ -172,7 +141,7 @@ export interface EditableFieldCardProps {
   /** Callback notifying of field type changing to a new format */
   onFieldTypeChanged?: (value: AvailableMultistageFormFieldType) => void;
   /** Callback notifying parent of field changing (including data payload) */
-  onFieldDefinitionChanged?: (value: MultistageFormFieldDefinition) => void;
+  onFieldChanged?: (value: MultistageFormField) => void;
   /** Callback notifying parent component of user wanting to delete this card */
   onCardDeleted?: () => void;
   /** Callback notifying parent component of card getting the focus */
@@ -197,13 +166,13 @@ export const EditableFieldCard = (
     promptTextPlaceholder = "Prompt",
     requiredAlert,
     alertMessage,
-    initialFieldDefinition,
+    initialField,
     fieldMappings,
     isFocused = false,
     firstCard = false,
     lastCard = false,
     onFieldTypeChanged,
-    onFieldDefinitionChanged,
+    onFieldChanged,
     onCardDeleted,
     onCardFocused,
     onCardLostFocus,
@@ -213,33 +182,13 @@ export const EditableFieldCard = (
   } = props;
 
   // managed state for field definition
-  const [fieldDefinition, setFieldDefinition] =
-    useState<MultistageFormFieldDefinition>(
-      initialFieldDefinition ?? {
-        promptText: "",
-        required: false,
-        fieldData: {
-          type: "multiple-choice",
-          payload: fieldMappings["multiple-choice"].defaultFieldPayload,
-        },
-        _id: "",
-      }
-    );
+  const [fieldDefinition, setField] =
+    useState<MultistageFormField>(initialField);
 
   // each time the stages are modified our state will notice it
   useEffect(() => {
-    setFieldDefinition(
-      initialFieldDefinition ?? {
-        promptText: "",
-        required: false,
-        fieldData: {
-          type: "multiple-choice",
-          payload: fieldMappings["multiple-choice"].defaultFieldPayload,
-        },
-        _id: "",
-      }
-    );
-  }, [initialFieldDefinition]);
+    setField(initialField);
+  }, [initialField]);
 
   // whether the field type dropdown is currently open
   const [fieldTypeDropdownOpen, setFieldTypeDropdownOpen] =
@@ -270,7 +219,7 @@ export const EditableFieldCard = (
    */
   const handleFieldTypeSelected = (value: AvailableMultistageFormFieldType) => {
     // create a new field definition that's consistent with both new type and previous information
-    const newFieldDefinition: MultistageFormFieldDefinition = {
+    const newField: MultistageFormField = {
       ...fieldDefinition,
       fieldData: {
         type: value,
@@ -278,13 +227,13 @@ export const EditableFieldCard = (
       } as SupportedFormField,
     };
     // update inner state
-    setFieldDefinition(newFieldDefinition);
+    setField(newField);
     // and notify parent component about the change, if callbacks have been provided for that purpose
     if (onFieldTypeChanged) {
       onFieldTypeChanged(value);
     }
-    if (onFieldDefinitionChanged) {
-      onFieldDefinitionChanged(newFieldDefinition);
+    if (onFieldChanged) {
+      onFieldChanged(newField);
     }
   }; // handleFieldTypeSelected
 
@@ -292,14 +241,14 @@ export const EditableFieldCard = (
    * Manage any change from child fieldForm components over their
    * own field payloads to keep the results consistent with general
    * editing card and notify parent component about the change, assuming that
-   * a fitting onFieldDefinitionChanged callback has been provided.
+   * a fitting onFieldChanged callback has been provided.
    * @param payload New field definition payload after a change within the currently active child form.
    */
   const handleFieldPayloadChanged = (
     payload: SupportedFormField["payload"]
   ) => {
     // create a new field definition that's consistent with both new type and previous information
-    const newFieldDefinition: MultistageFormFieldDefinition = {
+    const newField: MultistageFormField = {
       ...fieldDefinition,
       fieldData: {
         type: fieldDefinition.fieldData.type,
@@ -307,10 +256,10 @@ export const EditableFieldCard = (
       } as SupportedFormField,
     };
     // update inner state
-    setFieldDefinition(newFieldDefinition);
+    setField(newField);
     // and notify parent component about the change, if callbacks have been provided for that purpose
-    if (onFieldDefinitionChanged) {
-      onFieldDefinitionChanged(newFieldDefinition);
+    if (onFieldChanged) {
+      onFieldChanged(newField);
     }
   }; // handleFieldPayloadChanged
 
@@ -320,15 +269,15 @@ export const EditableFieldCard = (
    */
   const handleFieldRequiredChanged = (value: boolean) => {
     // create a new field definition with the new required status
-    const newFieldDefinition: MultistageFormFieldDefinition = {
+    const newField: MultistageFormField = {
       ...fieldDefinition,
       required: value,
     };
     // update inner state
-    setFieldDefinition(newFieldDefinition);
+    setField(newField);
     // and notify parent component about the change, if callbacks have been provided for that purpose
-    if (onFieldDefinitionChanged) {
-      onFieldDefinitionChanged(newFieldDefinition);
+    if (onFieldChanged) {
+      onFieldChanged(newField);
     }
   }; // handleFieldRequiredChanged
 
@@ -338,15 +287,15 @@ export const EditableFieldCard = (
    */
   const handlePromptTextChanged = (value: string) => {
     // create a new field definition with the new required status
-    const newFieldDefinition: MultistageFormFieldDefinition = {
+    const newField: MultistageFormField = {
       ...fieldDefinition,
       promptText: value,
     };
     // update inner state
-    setFieldDefinition(newFieldDefinition);
+    setField(newField);
     // and notify parent component about the change, if callbacks have been provided for that purpose
-    if (onFieldDefinitionChanged) {
-      onFieldDefinitionChanged(newFieldDefinition);
+    if (onFieldChanged) {
+      onFieldChanged(newField);
     }
   }; // handlePromptTextChanged
 
@@ -378,21 +327,17 @@ export const EditableFieldCard = (
             onClick={() => setFieldTypeDropdownOpen((prev) => !prev)}
           >
             {selectedField?.iconComponent}
-            {selectedField?.displayName ??
-              fieldDefinition.fieldData.type ??
-              "Select a field type"}{" "}
+            {selectedField.displayName}
             <ExpandDropdownIcon />
             {fieldTypeDropdownOpen && (
-              <DropdownMenu>
-                {availableMultistageFormItemTypes.map((elem) => (
-                  <DropdownMenuItem
-                    onClick={() => handleFieldTypeSelected(elem)}
-                  >
-                    {fieldMappings[elem].iconComponent}
-                    {fieldMappings[elem].displayName ?? elem}
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenu>
+              <DropdownMenu
+                options={availableMultistageFormItemTypes.map((elem) => ({
+                  iconComponent: fieldMappings[elem].iconComponent,
+                  displayName: fieldMappings[elem].displayName,
+                  onOptionSelected: () => handleFieldTypeSelected(elem),
+                }))}
+                onCloseDropdown={() => setFieldTypeDropdownOpen(false)}
+              />
             )}
           </SelectFieldTypeDropdownButton>
         </HeaderRow>
@@ -428,4 +373,4 @@ export const EditableFieldCard = (
   );
 }; // EditableFieldCard
 
-export default EditableFieldCard;
+export default React.memo(EditableFieldCard);

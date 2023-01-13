@@ -1,59 +1,41 @@
-import { ConsumableFieldProps } from "../../../services/multistageFormActivity.model";
+import {
+  ConsumableFieldProps,
+  MultipleChoiceFieldDefinition,
+  MultipleChoiceResponseDefinition,
+} from "../../../services/multistageFormActivity.model";
+import {
+  addItemToArray,
+  removeItemFromArrayByIndex,
+  transformItemFromArrayByIndex,
+} from "../../../utils/arrayUtils";
 import CheckBoxInput from "../CheckBoxInput";
 import EditableCheckBoxInput from "../EditableCheckBoxInput";
 import { CheckboxList, CheckboxOption } from "./cardStyles";
 import { EditableFieldProps } from "./EditableFieldCard";
 import FormCard from "./FormCard";
 
-//------------------------
-//  MULTIPLE CHOICE FIELD
-//------------------------
-export interface MultipleChoiceFieldDefinition {
-  /** answers to choose from */
-  answers: string[];
-  /** maximum number of answers to allow */
-  maxAnswers?: number;
-} // MultipleChoiceFieldDefinition
-
-export interface MultipleChoiceResponseDefinition {
-  /**
-   * Responses to the multiple choice question.
-   * This is an array representing the indices of all
-   * selected answers within the list of possible responses.
-   */
-  selectedResponses: number[];
-} // MultipleChoiceResponseDefinition
-
 export interface MultipleChoiceCardProps
   extends ConsumableFieldProps<
     MultipleChoiceFieldDefinition,
     MultipleChoiceResponseDefinition
-  > {
-  /** Prompt for the user to fill in this field */
-  promptText?: string;
-  /** Whether this field should always be filled in by the user */
-  required?: boolean;
-  /** whether to modify the appearance of this card to reflect that the user tried to submit the form without entering a value for this field */
-  requiredAlert?: boolean;
-} // MultipleChoiceCardProps
+  > {} // MultipleChoiceCardProps
 
 export const MultipleChoiceCard = (
   props: MultipleChoiceCardProps
 ): JSX.Element => {
   const {
-    promptText = "",
-    requiredAlert,
-    required,
     fieldPayload,
     response,
     onResponseChanged,
+    disabled = false,
+    ...formProps
   } = props;
 
   const { answers, maxAnswers } = fieldPayload;
   const { selectedResponses } = response;
 
   const handleAnswerToggle = (index: number) => {
-    if (!onResponseChanged || !isAnswerEnabled(index)) return;
+    if (disabled || !onResponseChanged || !isAnswerEnabled(index)) return;
     if (selectedResponses.some((e) => e === index)) {
       // answer was already selected
       onResponseChanged({
@@ -71,18 +53,15 @@ export const MultipleChoiceCard = (
      *  and if maximum number of answer hasn't been reached yet.
      */
     return (
-      selectedResponses.some((e) => e === index) ||
-      maxAnswers === 1 ||
-      selectedResponses.length < (maxAnswers || 1)
+      !disabled &&
+      (selectedResponses.some((e) => e === index) ||
+        maxAnswers === 1 ||
+        selectedResponses.length < (maxAnswers || 1))
     );
   }; // isAnswerEnabled
 
   return (
-    <FormCard
-      promptText={promptText}
-      required={required}
-      requiredAlert={requiredAlert}
-    >
+    <FormCard {...formProps}>
       <CheckboxList>
         {answers.map((elem, i) => (
           <CheckboxOption key={elem}>
@@ -122,10 +101,11 @@ export const EditableMultipleChoiceCardContent = (
     if (!onPayloadChanged) return;
     onPayloadChanged({
       ...fieldPayload,
-      answers: [
-        ...fieldPayload.answers,
+      answers: addItemToArray(
+        fieldPayload.answers,
         `Option ${fieldPayload.answers.length + 1}`,
-      ],
+        fieldPayload.answers.length
+      ),
     });
   }; // handleAddOption
 
@@ -133,11 +113,11 @@ export const EditableMultipleChoiceCardContent = (
     if (!onPayloadChanged) return;
     onPayloadChanged({
       ...fieldPayload,
-      answers: [
-        ...fieldPayload.answers.slice(0, index),
-        value,
-        ...fieldPayload.answers.slice(index + 1),
-      ],
+      answers: transformItemFromArrayByIndex(
+        fieldPayload.answers,
+        index,
+        () => value
+      ),
     });
   }; // handleEditOption
 
@@ -145,7 +125,7 @@ export const EditableMultipleChoiceCardContent = (
     if (!onPayloadChanged) return;
     onPayloadChanged({
       ...fieldPayload,
-      answers: fieldPayload.answers.filter((_, i) => i !== index),
+      answers: removeItemFromArrayByIndex(fieldPayload.answers, index),
     });
   }; // handleRemoveOption
 
@@ -160,6 +140,7 @@ export const EditableMultipleChoiceCardContent = (
               labelText={elem}
               style="radio"
               boxSize="15px"
+              inputType="text"
               onObjectRemoved={() => handleRemoveOption(i)}
               onLabelTextChanged={(value) => handleEditOption(i, value)}
             />
@@ -173,7 +154,7 @@ export const EditableMultipleChoiceCardContent = (
             labelTextPlaceholder={addNewOptionLabel}
             style="radio"
             boxSize="15px"
-            enabled={false}
+            inputType="click"
           />
         </CheckboxOption>
       </CheckboxList>

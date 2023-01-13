@@ -3,44 +3,27 @@ import {
   CheckboxGroupResponseDefinition,
   ConsumableFieldProps,
 } from "../../../services/multistageFormActivity.model";
+import {
+  addItemToArray,
+  removeItemFromArrayByIndex,
+  transformItemFromArrayByIndex,
+} from "../../../utils/arrayUtils";
 import CheckBoxInput from "../CheckBoxInput";
 import EditableCheckBoxInput from "../EditableCheckBoxInput";
-import {
-  Root,
-  CardPanel,
-  PromptText,
-  RequiredAsterisk,
-  RequiredQuestionSpan,
-  RequiredAlertIcon,
-  CheckboxList,
-  CheckboxOption,
-} from "./cardStyles";
+import { CheckboxList, CheckboxOption } from "./cardStyles";
 import { EditableFieldProps } from "./EditableFieldCard";
+import FormCard from "./FormCard";
 
 export interface CheckBoxGroupInputCardProps
   extends ConsumableFieldProps<
     CheckboxGroupFieldDefinition,
     CheckboxGroupResponseDefinition
-  > {
-  /** Prompt for the user to fill in this field */
-  promptText?: string;
-  /** Whether this field should always be filled in by the user */
-  required?: boolean;
-  /** whether to modify the appearance of this card to reflect that the user tried to submit the form without entering a value for this field */
-  requiredAlert?: boolean;
-}
+  > {} // CheckBoxGroupInputCardProps
 
 export const CheckBoxGroupInputCard = (
   props: CheckBoxGroupInputCardProps
 ): JSX.Element => {
-  const {
-    promptText,
-    requiredAlert,
-    required,
-    fieldPayload,
-    response,
-    onResponseChanged,
-  } = props;
+  const { fieldPayload, response, onResponseChanged, ...formProps } = props;
   const { fields } = fieldPayload;
   const { selectedFields } = response;
 
@@ -58,31 +41,20 @@ export const CheckBoxGroupInputCard = (
   }; // handleCheckedChange
 
   return (
-    <Root>
-      <CardPanel requiredAlert={requiredAlert}>
-        <PromptText>
-          {promptText}
-          {required && <RequiredAsterisk> *</RequiredAsterisk>}
-        </PromptText>
-        <CheckboxList>
-          {fields.map((elem) => (
-            <CheckboxOption key={elem}>
-              <CheckBoxInput
-                labelText={elem}
-                checked={selectedFields?.some((e) => e === elem)}
-                boxSize="15px"
-                onCheckedChange={(status) => handleCheckedChange(elem, status)}
-              />
-            </CheckboxOption>
-          ))}
-        </CheckboxList>
-        {requiredAlert && (
-          <RequiredQuestionSpan>
-            <RequiredAlertIcon /> This question is required.
-          </RequiredQuestionSpan>
-        )}
-      </CardPanel>
-    </Root>
+    <FormCard {...formProps}>
+      <CheckboxList>
+        {fields.map((elem) => (
+          <CheckboxOption key={elem}>
+            <CheckBoxInput
+              labelText={elem}
+              checked={selectedFields?.some((e) => e === elem)}
+              boxSize="15px"
+              onCheckedChange={(status) => handleCheckedChange(elem, status)}
+            />
+          </CheckboxOption>
+        ))}
+      </CheckboxList>
+    </FormCard>
   );
 };
 
@@ -107,40 +79,59 @@ export const EditableCheckBoxGroupCardContent = (
     if (!onPayloadChanged) return;
     onPayloadChanged({
       ...fieldPayload,
-      fields: [...fieldPayload.fields, ""],
+      fields: addItemToArray(
+        fieldPayload.fields,
+        `Option ${fieldPayload.fields.length + 1}`,
+        fieldPayload.fields.length
+      ),
     });
-  };
+  }; // handleAddOption
 
   const handleRemoveOption = (index: number) => {
     if (!onPayloadChanged) return;
     onPayloadChanged({
       ...fieldPayload,
-      fields: fieldPayload.fields.filter((_, i) => i !== index),
+      fields: removeItemFromArrayByIndex(fieldPayload.fields, index),
     });
-  };
+  }; // handleAddOption
+
+  const handleOptionTextChanged = (index: number, value: string) => {
+    if (!onPayloadChanged) return;
+    onPayloadChanged({
+      ...fieldPayload,
+      fields: transformItemFromArrayByIndex(
+        fieldPayload.fields,
+        index,
+        () => value
+      ),
+    });
+  }; // handleOptionTextChanged
 
   return (
     <>
       <CheckboxList>
         {fields.map((elem, i) => (
-          <CheckboxOption key={elem}>
+          <CheckboxOption key={`checkBoxOption${i}`}>
             <EditableCheckBoxInput
               boxContent={{ type: "none" }}
               labelText={elem}
               style="checkbox"
               boxSize="15px"
               onObjectRemoved={() => handleRemoveOption(i)}
+              inputType="text"
+              onLabelTextChanged={(value) => handleOptionTextChanged(i, value)}
             />
           </CheckboxOption>
         ))}
-        <CheckboxOption onClick={handleAddOption} key="addNew">
+        <CheckboxOption onClick={handleAddOption} key="checkBoxOptionAddNew">
           <EditableCheckBoxInput
+            key="editableCheckBoxInputAddNew"
             boxContent={{ type: "none" }}
             labelText=""
             labelTextPlaceholder={addNewOptionLabel}
             style="checkbox"
             boxSize="15px"
-            enabled={false}
+            inputType="click"
           />
         </CheckboxOption>
       </CheckboxList>

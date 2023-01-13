@@ -68,6 +68,10 @@ const GlobalStyles = createGlobalStyle`
     margin: 0 auto;
   }
 
+  body > #root > div {
+    height: 100%;
+  }
+
   /* Reset anchors to allow components to style */
   a {
     color: inherit;

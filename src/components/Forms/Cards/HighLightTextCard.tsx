@@ -227,27 +227,15 @@ export interface HighlightTextCardProps
 export const HighLightTextCard = (
   props: HighlightTextCardProps
 ): JSX.Element => {
-  const {
-    promptText = "",
-    requiredAlert,
-    required,
-    fieldPayload,
-    response,
-    onResponseChanged,
-  } = props;
+  const { fieldPayload, response, onResponseChanged, ...formProps } = props;
 
   const { text, highlighters } = fieldPayload;
+  const { highlightedTexts } = response;
 
   // Color that each character of "text" is highlighted with, if a character is not being highlighted, its highlight color is white
   const [characterHighlightColors, setCharacterHighlightColors] = useState<
     string[]
   >(new Array(text.length).fill("#ffffff"));
-
-  // List of lists with the text sections that have been highlighted with each of the avaliable colors,
-  // the order of the colors is the exact same one as the highlighters given through props
-  const [highlightedSections, setHighlightedSections] = useState<string[][]>(
-    new Array(highlighters.length).fill(new Array<string>())
-  );
 
   // Color of the highlighter that is currently being used, -1 value is assigned to a white highlighter "eraser"
   const [selectedColor, setSelectedColor] = useState<number>(-1);
@@ -331,7 +319,7 @@ export const HighLightTextCard = (
           highlightColor = characterHighlightColors[i];
         }
       }
-    }; 
+    }
 
     // In case the last character is included in the selection, so that this last selection is also included
     if (onTopOfHighlight) {
@@ -344,18 +332,13 @@ export const HighLightTextCard = (
       ].push(parte);
     }
 
-    // Changes are persisted on the highlighted texts and cominicated to parent component
-    setHighlightedSections(partesCadaColor);
+    // notificamos al componente padre de los cambios realizados en la respuesta
     if (!onResponseChanged) return;
     onResponseChanged({ highlightedTexts: partesCadaColor });
   }; // generateTextsFromHighlightedSections
 
   return (
-    <FormCard
-      promptText={promptText}
-      required={required}
-      requiredAlert={requiredAlert}
-    >
+    <FormCard {...formProps}>
       {/* Text that is going to be highlighted by the user */}
       <TextPreview
         onMouseUp={() => {
@@ -380,6 +363,7 @@ export const HighLightTextCard = (
       <TagsContainer>
         {highlighters.map((currentHighlighter, currentHighlighterIndex) => (
           <HighlighterOption
+            key={currentHighlighter.color}
             selected={currentHighlighterIndex === selectedColor}
             onMouseDown={() => setSelectedColor(currentHighlighterIndex)}
           >
@@ -610,7 +594,7 @@ export const EditableHighLightTextCardContent = (
           {/* Grid with the avaliable highlighters */}
           <HighlightersGrid elements={highlighters.length} elementsPerRow={2}>
             {highlighters.map((currentHighlighter, highlighterIndex) => (
-              <GridHighligterContainer>
+              <GridHighligterContainer key={currentHighlighter.color}>
                 <HighlighterContainer>
                   <HighlighterColor color={currentHighlighter.color}>
                     <HighlighterIcon />

@@ -4,7 +4,7 @@ import {
 } from "@storybook/react/dist/ts3.9/client/preview/types-6-3";
 import { RoomPuzzleSettingsEditor } from "../../templates/EscapeRoomAuthoring/components/items/RoomPuzzleSettingsEditor";
 import { default_puzzle } from "../../services/escapeRoomActivity.model";
-import { multipleChoiceItemFactory } from "../../templates/EscapeRoomAuthoring/components/items/MutipleChoiceItem";
+import { multipleChoiceTestItemFactory } from "../../templates/EscapeRoomAuthoring/components/items/MutipleChoiceTestItem";
 import { qrScanItemFactory } from "../../templates/EscapeRoomAuthoring/components/items/QRScanItem";
 import { arScanItemFactory } from "../../templates/EscapeRoomAuthoring/components/items/ARScanItem";
 import { waitingCodeItemFactory } from "../../templates/EscapeRoomAuthoring/components/items/WaitingCodeItem";
@@ -33,22 +33,22 @@ Default.args = {
   handleSelectedPuzzleChanged() {},
   handlePuzzleDelete() {},
   handlePuzzleDuplicate() {},
-  handlePuzzlePayloadChanged(puzzlePayload) {},
-  handlePuzzleTypeChanged(puzzleNewType) {},
+  handlePuzzlePayloadChanged(_) {},
+  handlePuzzleTypeChanged(_) {},
 };
 
 export const MultipleChoice = Template.bind({});
 MultipleChoice.args = {
   puzzle: {
-    type: "multiple-choice",
-    payload: multipleChoiceItemFactory.defaultDefinition,
+    type: "multiple-choice-test",
+    payload: multipleChoiceTestItemFactory.defaultDefinition,
   },
   index: 1,
   handleSelectedPuzzleChanged() {},
   handlePuzzleDelete() {},
   handlePuzzleDuplicate() {},
-  handlePuzzlePayloadChanged(puzzlePayload) {},
-  handlePuzzleTypeChanged(puzzleNewType) {},
+  handlePuzzlePayloadChanged(_) {},
+  handlePuzzleTypeChanged(_) {},
 };
 
 export const QRScan = Template.bind({});
@@ -58,8 +58,8 @@ QRScan.args = {
   handleSelectedPuzzleChanged() {},
   handlePuzzleDelete() {},
   handlePuzzleDuplicate() {},
-  handlePuzzlePayloadChanged(puzzlePayload) {},
-  handlePuzzleTypeChanged(puzzleNewType) {},
+  handlePuzzlePayloadChanged(_) {},
+  handlePuzzleTypeChanged(_) {},
 };
 
 export const ARScan = Template.bind({});
@@ -69,8 +69,8 @@ ARScan.args = {
   handleSelectedPuzzleChanged() {},
   handlePuzzleDelete() {},
   handlePuzzleDuplicate() {},
-  handlePuzzlePayloadChanged(puzzlePayload) {},
-  handlePuzzleTypeChanged(puzzleNewType) {},
+  handlePuzzlePayloadChanged(_) {},
+  handlePuzzleTypeChanged(_) {},
 };
 
 export const WaitingCodeItem = Template.bind({});
@@ -83,8 +83,8 @@ WaitingCodeItem.args = {
   handleSelectedPuzzleChanged() {},
   handlePuzzleDelete() {},
   handlePuzzleDuplicate() {},
-  handlePuzzlePayloadChanged(puzzlePayload) {},
-  handlePuzzleTypeChanged(puzzleNewType) {},
+  handlePuzzlePayloadChanged(_) {},
+  handlePuzzleTypeChanged(_) {},
 };
 
 export const LoadSceneItem = Template.bind({});
@@ -97,8 +97,8 @@ LoadSceneItem.args = {
   handleSelectedPuzzleChanged() {},
   handlePuzzleDelete() {},
   handlePuzzleDuplicate() {},
-  handlePuzzlePayloadChanged(puzzlePayload) {},
-  handlePuzzleTypeChanged(puzzleNewType) {},
+  handlePuzzlePayloadChanged(_) {},
+  handlePuzzleTypeChanged(_) {},
 };
 
 export const NarrativeItem = Template.bind({});
@@ -111,8 +111,8 @@ NarrativeItem.args = {
   handleSelectedPuzzleChanged() {},
   handlePuzzleDelete() {},
   handlePuzzleDuplicate() {},
-  handlePuzzlePayloadChanged(puzzlePayload) {},
-  handlePuzzleTypeChanged(puzzleNewType) {},
+  handlePuzzlePayloadChanged(_) {},
+  handlePuzzleTypeChanged(_) {},
 };
 
 export const UnlockPasswordItem = Template.bind({});
@@ -125,6 +125,6 @@ UnlockPasswordItem.args = {
   handleSelectedPuzzleChanged() {},
   handlePuzzleDelete() {},
   handlePuzzleDuplicate() {},
-  handlePuzzlePayloadChanged(puzzlePayload) {},
-  handlePuzzleTypeChanged(puzzleNewType) {},
+  handlePuzzlePayloadChanged(_) {},
+  handlePuzzleTypeChanged(_) {},
 };

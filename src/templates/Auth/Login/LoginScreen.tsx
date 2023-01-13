@@ -1,16 +1,17 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Navigate, useLocation } from "react-router-dom";
 import styled from "styled-components";
-import { AuthContext } from "../../../auth/AuthStore";
 import StepTitleCard from "../../../components/Forms/Cards/StepTitleCard";
 import Header from "../../../components/Layout/Header";
 import { State, Step, Steps } from "../../../components/Navigation/Steps";
+import { selectCurrentUser } from "../../../store/features/auth/authSlice";
+import { useAppSelector } from "../../../store/hooks";
 import EnterPasswordStep from "./Steps/EnterPasswordStep";
 import EnterUsernameStep from "./Steps/EnterUsernameStep";
 
 export const LoginScreen = (): JSX.Element => {
-  const { userData } = useContext(AuthContext);
+  const userData = useAppSelector(selectCurrentUser);
   const location = useLocation();
 
   if (userData) {
@@ -35,7 +36,10 @@ const LoginFlow = (): JSX.Element => {
 
   return (
     <>
-      <Header sideMenuMode="system-user" />
+      <Header
+        sideMenuMode="system-user"
+        availableLanguages={["en", "it", "es"]}
+      />
       <Root>
         <StepTitleCard
           stepTitle={t("logIn")}

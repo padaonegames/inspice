@@ -1,9 +1,4 @@
-import { useEffect, useState } from "react";
-import { Question } from "@styled-icons/evil/Question";
-import { multipleChoiceItemFactory } from "./MutipleChoiceItem";
-import { waitingCodeItemFactory } from "./WaitingCodeItem";
-import { qrScanItemFactory } from "./QRScanItem";
-import { arScanItemFactory } from "./ARScanItem";
+import { useState } from "react";
 import {
   escapeRoomPuzzleTypes,
   SupportedPuzzle,

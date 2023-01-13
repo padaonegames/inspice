@@ -65,6 +65,8 @@ const CancelSessionButton = styled.button`
 `;
 
 export interface NewSessionCardProps {
+  /** maximum number of characters allowed for the session name */
+  maxLength?: number;
   /** callback to parent to notify of new session being ready to be submitted to server */
   onSubmitNewSession?: (sessionName: string) => void;
   /** callback to parent to notify of the user wishing to cancel the creation of a new session */
@@ -73,10 +75,13 @@ export interface NewSessionCardProps {
   activitySessionNames: string[];
 } // NewSessionCardProps
 
-/** Controlled card component to edit and manage a set of user generated tags */
 export const NewSessionCard = (props: NewSessionCardProps): JSX.Element => {
-  const { onSubmitNewSession, onCancelSessionCreation, activitySessionNames } =
-    props;
+  const {
+    onSubmitNewSession,
+    onCancelSessionCreation,
+    activitySessionNames,
+    maxLength = 25,
+  } = props;
 
   const [sessionName, setSessionName] = useState<string>("");
 
@@ -106,10 +111,10 @@ export const NewSessionCard = (props: NewSessionCardProps): JSX.Element => {
     <Root>
       <CardPanel requiredAlert={!(nameNonEmpty && nameNotRepeated)}>
         <InputArea
-          title="Enter a session name (max. 25 characters including spaces)"
-          placeholder="Session Name..."
+          title={`Enter a session name (max. ${maxLength} characters including spaces)`}
+          placeholder={`Session Identifier... (max. ${maxLength} characters)`}
           height="2.5em"
-          maxLength={25}
+          maxLength={maxLength}
           width="50%"
           onChange={handleSessionNameChangeEvent}
         />

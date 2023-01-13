@@ -1,110 +1,73 @@
-import { useState } from "react";
 import {
   EditableItemProps,
   ArScanItemDefinition,
 } from "../../../../services/escapeRoomActivity.model";
 import { AbstractActivityItemFactory } from "../ActivityItemFactory";
-import { ResourcesPopUp } from "../ResourcesPopUp";
 
 import styled from "styled-components";
-import { ScanObject } from "styled-icons/fluentui-system-filled";
-
-const ArCodeIcon = styled(ScanObject)`
-  color: ${(props) => props.theme.textColor};
-  height: 1.75em;
-  width: auto;
-  margin-right: 0.5em;
-`;
-
-const Root = styled.div`
-  margin-top: 5px;
-  display: flex;
-  background-color: transparent;
-  flex-direction: column;
-  align-items: center;
-
-  border-bottom: 2px solid #dadce0;
-  padding: 0.75em;
-
-  background-color: #dbdbdb;
-
-  border-radius: 1.25rem;
-  box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
-`;
-
-const ItemTitle = styled.div`
-  font-size: 1em;
-  font-weight: 500;
-  font-family: ${(props) => props.theme.contentFont};
-  line-height: 135%;
-  margin-top: 0.25em;
-  margin-bottom: 0.25em;
-  padding: 0.75em 1.25em;
-  border-top: none;
-  color: black;
-  line-height: 135%;
-  width: fit-content;
-  text-align: center;
-  display: flex;
-  align-items: center;
-  background-color: white;
-  border-radius: 1rem;
-  box-shadow: rgba(0, 0, 0, 0.15) 0px -4px 0px 0px inset;
-`;
-
-const defaultImage =
-  "https://cdn3.vectorstock.com/i/1000x1000/60/67/example-rubber-stamp-vector-12386067.jpg";
+import { Root } from "./generalItemsStyles";
+import { ImageSelectionCard } from "../cards/ImageSelectionCard";
+import NumberInputCard from "../../../../components/Forms/Cards/NumberInputCard";
+import LongTextInputCard from "../../../../components/Forms/Cards/LongTextInputCard";
 
 export const EditableARScanItemContent = (
   props: EditableItemProps<ArScanItemDefinition>
 ): JSX.Element => {
   const { payload, onPayloadChanged } = props;
 
-  const { imageSrc } = payload;
-
-  //State to control wether the pop up should be displayed or not
-  const [showResourcesPopUp, setShowResourcesPopUp] = useState<boolean>(false);
-
-  const handleShowPopUp = (show: boolean) => {
-    setShowResourcesPopUp(show);
-  }; // handleShowPopUp
+  const { imageSrc, trackableSize, trackableHint } = payload;
 
   const handleResourceSelected = (resourceSrc: string) => {
     if (!onPayloadChanged) return;
     onPayloadChanged({
+      ...payload,
       imageSrc: resourceSrc,
     });
-    setShowResourcesPopUp((prev) => !prev);
   }; // handleResourceSelected
 
+  const handleTrackableSizeChanged = (size: number) => {
+    if (!onPayloadChanged) return;
+    onPayloadChanged({
+      ...payload,
+      trackableSize: size,
+    });
+  }; // handleTrackableSizeChanged
+
+  const handleTrackableHintChanged = (hint: string) => {
+    if (!onPayloadChanged) return;
+    onPayloadChanged({
+      ...payload,
+      trackableHint: hint,
+    });
+  }; // handleTrackableHintChanged
+
   return (
-    <>
-      {/* Pop up component to enable image selection from the escape room resources */}
-      {showResourcesPopUp && (
-        <ResourcesPopUp
-          onClosePopUp={() => {
-            handleShowPopUp(false);
-          }}
-          onResourceSelected={handleResourceSelected}
-          popUpTitle="Select an image to scan"
-        />
-      )}
-
-      <Root>
-        {/* Title of the component */}
-        <ItemTitle>
-          <ArCodeIcon
-            onMouseDown={() => {
-              handleShowPopUp(!showResourcesPopUp);
-            }}
-          />
-          Image to Scan
-        </ItemTitle>
-
-        {/* Preview of the image that is going to be scanned */}
-        <img src={imageSrc} width={200} height={200} alt="Image to scan" />
-      </Root>
-    </>
+    <Root>
+      <ImageSelectionCard
+        promptText="Trackable image to look for:"
+        fieldPayload={{}}
+        response={{ imageSrc: imageSrc }}
+        onResponseChanged={(res) => handleResourceSelected(res.imageSrc)}
+        required
+        requiredAlert={!imageSrc}
+        alertMessage={"Please select a valid image."}
+      />
+      <NumberInputCard
+        promptText="Enter the physical width of the trackable, in meters:"
+        required
+        fieldPayload={{ units: "meters." }}
+        response={{ number: trackableSize ?? 1 }}
+        onResponseChanged={(res) => handleTrackableSizeChanged(res.number)}
+      />
+      <LongTextInputCard
+        promptText="Hint to help the player find the trackable:"
+        fieldPayload={{
+          placeholder: "Short description of what the player should look for.",
+        }}
+        response={{ text: trackableHint }}
+        onResponseChanged={(res) => handleTrackableHintChanged(res.text)}
+      />
+    </Root>
   );
 }; // EditableARScanItemContent
 
@@ -153,6 +116,8 @@ export const arScanItemFactory: AbstractActivityItemFactory<ArScanItemDefinition
     ),
     defaultDefinition: {
       imageSrc: "",
+      trackableSize: 1,
+      trackableHint: "",
     },
   }; // ARScanItemFactory
 

@@ -7,6 +7,7 @@ import { useAsyncRequest } from "../../services/useAsyncRequest";
 import {
   CharacterDefinition,
   default_room,
+  DiaryPageDefinition,
   EscapeRoomActivityDefinition,
   SupportedStage,
 } from "../../services/escapeRoomActivity.model";
@@ -16,9 +17,9 @@ import {
 } from "./components/EscapeRoomStageSlidesContainer";
 import EditableStage, { StageMappings } from "./components/EditableStage";
 import {
-  multipleChoiceItemFactory,
-  MultipleChoiceItemStageSlide,
-} from "./components/items/MutipleChoiceItem";
+  multipleChoiceTestItemFactory,
+  MultipleChoiceTestItemStageSlide,
+} from "./components/items/MutipleChoiceTestItem";
 import {
   waitingCodeItemFactory,
   WaitingCodeItemStageSlide,
@@ -62,10 +63,44 @@ import { ScanObject } from "@styled-icons/fluentui-system-filled/ScanObject";
 import { Unity } from "@styled-icons/fa-brands/Unity";
 import { HistoryEdu } from "@styled-icons/material-rounded/HistoryEdu";
 import { Password } from "@styled-icons/fluentui-system-filled/Password";
+import { Layers } from "@styled-icons/entypo/Layers";
 import { EscapeRoomContextProvider } from "./EscapeRoomContext";
-import { Navigate, useParams } from "react-router-dom";
+import { Navigate, Route, Routes, useParams } from "react-router-dom";
 import { escapeRoomService } from "../../services";
 import { LoadingOverlay } from "../../components/Layout/LoadingOverlay";
+import { LogInCircle } from "@styled-icons/boxicons-regular/LogInCircle";
+import { SelectMultiple } from "@styled-icons/boxicons-solid/SelectMultiple";
+import { BookReader } from "@styled-icons/boxicons-regular/BookReader";
+import { BurstNew } from "@styled-icons/foundation/BurstNew";
+import { PuzzleCube } from "@styled-icons/fluentui-system-regular/PuzzleCube";
+import { Copy } from "@styled-icons/boxicons-regular/Copy";
+import { ArrowDownload } from "@styled-icons/fluentui-system-filled/ArrowDownload";
+import {
+  arOverlayItemFactory,
+  AROverlayItemStageSlide,
+} from "./components/items/AROverlayItem";
+import {
+  sessionCodeItemFactory,
+  SessionCodeItemStageSlide,
+} from "./components/items/SessionCodeItem";
+import {
+  multipleChoiceFreeAnswerItemFactory,
+  MultipleChoiceFreeAnswerItemStageSlide,
+} from "./components/items/MutipleChoiceFreeAnswerItem";
+import {
+  diaryPageItemFactory,
+  DiaryPageItemStageSlide,
+} from "./components/items/DiaryPageItem";
+import {
+  objectObtainedItemFactory,
+  ObjectObtainedItemStageSlide,
+} from "./components/items/ObjectObtainedItem";
+import {
+  packPuzzleItemFactory,
+  PackPuzzleItemStageSlide,
+} from "./components/items/PackPuzzleItem";
+import ActivityScreen from "../../screens/ActivityScreen";
+import { HeaderAction } from "../../components/Layout/Header";
 
 const Root = styled.main`
   display: flex;
@@ -79,11 +114,23 @@ const Root = styled.main`
 //                 Stage Mappings
 //-------------------------------------------------------
 
-const MultipleChoiceIcon = styled(Quiz)`
+const MultipleChoiceTestIcon = styled(SelectMultiple)`
+  ${stageTypeIcon}
+`;
+
+const MultipleChoiceFreeAnswerIcon = styled(Quiz)`
   ${stageTypeIcon}
 `;
 
 const RoomIcon = styled(Exit)`
+  ${stageTypeIcon}
+`;
+
+const DiaryIcon = styled(BookReader)`
+  ${stageTypeIcon}
+`;
+
+const PackPuzzleIcon = styled(PuzzleCube)`
   ${stageTypeIcon}
 `;
 
@@ -95,7 +142,15 @@ const QRCodeIcon = styled(QrCode)`
   ${stageTypeIcon}
 `;
 
+const ObjectObtainedIcon = styled(BurstNew)`
+  ${stageTypeIcon}
+`;
+
 const ScanObjectIcon = styled(ScanObject)`
+  ${stageTypeIcon}
+`;
+
+const ArOverlayIcon = styled(Layers)`
   ${stageTypeIcon}
 `;
 
@@ -111,18 +166,55 @@ const UnlockPasswordIcon = styled(Password)`
   ${stageTypeIcon}
 `;
 
+const SessionCodeIcon = styled(LogInCircle)`
+  ${stageTypeIcon}
+`;
+
+const DuplicateActivityIcon = styled(Copy)`
+  ${stageTypeIcon}
+`;
+
+const DownloadActivityDefinitionIcon = styled(ArrowDownload)`
+  ${stageTypeIcon}
+`;
+
 export const stageMappings: StageMappings<SupportedStage> = {
+  "pack-puzzle": {
+    displayName: "Pack Puzzle",
+    iconComponent: <PackPuzzleIcon />,
+    editingComponentProducer: packPuzzleItemFactory.editingComponent,
+    defaultStagePayload: packPuzzleItemFactory.defaultDefinition,
+  },
+  "object-obtained": {
+    displayName: "Object Obtained",
+    iconComponent: <ObjectObtainedIcon />,
+    editingComponentProducer: objectObtainedItemFactory.editingComponent,
+    defaultStagePayload: objectObtainedItemFactory.defaultDefinition,
+  },
+  "diary-page": {
+    displayName: "Diary Page",
+    iconComponent: <DiaryIcon />,
+    editingComponentProducer: diaryPageItemFactory.editingComponent,
+    defaultStagePayload: diaryPageItemFactory.defaultDefinition,
+  },
   room: {
     displayName: "Room",
     iconComponent: <RoomIcon />,
     editingComponentProducer: roomItemFactory.editingComponent,
     defaultStagePayload: roomItemFactory.defaultDefinition,
   },
-  "multiple-choice": {
-    displayName: "Multiple Choice",
-    iconComponent: <MultipleChoiceIcon />,
-    editingComponentProducer: multipleChoiceItemFactory.editingComponent,
-    defaultStagePayload: multipleChoiceItemFactory.defaultDefinition,
+  "multiple-choice-test": {
+    displayName: "Test (Multiple-Choice)",
+    iconComponent: <MultipleChoiceTestIcon />,
+    editingComponentProducer: multipleChoiceTestItemFactory.editingComponent,
+    defaultStagePayload: multipleChoiceTestItemFactory.defaultDefinition,
+  },
+  "multiple-choice-free-answer": {
+    displayName: "Free Answer (Multiple-Choice)",
+    iconComponent: <MultipleChoiceFreeAnswerIcon />,
+    editingComponentProducer:
+      multipleChoiceFreeAnswerItemFactory.editingComponent,
+    defaultStagePayload: multipleChoiceFreeAnswerItemFactory.defaultDefinition,
   },
   "waiting-code": {
     displayName: "Waiting Code",
@@ -160,18 +252,36 @@ export const stageMappings: StageMappings<SupportedStage> = {
     editingComponentProducer: unlockPasswordItemFactory.editingComponent,
     defaultStagePayload: unlockPasswordItemFactory.defaultDefinition,
   },
+  "ar-overlay": {
+    displayName: "AR Overlay",
+    iconComponent: <ArOverlayIcon />,
+    editingComponentProducer: arOverlayItemFactory.editingComponent,
+    defaultStagePayload: arOverlayItemFactory.defaultDefinition,
+  },
+  "session-code": {
+    displayName: "Session Code",
+    iconComponent: <SessionCodeIcon />,
+    editingComponentProducer: sessionCodeItemFactory.editingComponent,
+    defaultStagePayload: sessionCodeItemFactory.defaultDefinition,
+  },
 }; // stageMappings
 
 export const stageSlidesMappings: StageToSlideProducerMapping<SupportedStage> =
   {
+    "pack-puzzle": PackPuzzleItemStageSlide,
+    "object-obtained": ObjectObtainedItemStageSlide,
+    "diary-page": DiaryPageItemStageSlide,
     room: RoomItemStageSlide,
-    "multiple-choice": MultipleChoiceItemStageSlide,
+    "multiple-choice-free-answer": MultipleChoiceFreeAnswerItemStageSlide,
+    "multiple-choice-test": MultipleChoiceTestItemStageSlide,
     "waiting-code": WaitingCodeItemStageSlide,
     "qr-scan": QRScanItemStageSlide,
     "ar-scan": ARScanItemStageSlide,
     "load-scene": LoadSceneItemStageSlide,
     narrative: NarrativeItemStageSlide,
     "unlock-password": UnlockPasswordItemStageSlide,
+    "ar-overlay": AROverlayItemStageSlide,
+    "session-code": SessionCodeItemStageSlide,
   }; // stageSlidesMappings
 
 //-------------------------------------------------------
@@ -189,7 +299,11 @@ const sample_base: EscapeRoomActivityDefinition = {
   authorUsername: "",
   stages: [sample_stage],
   characters: [],
+  diaryPages: [],
   _id: "",
+  applicationIconSrc: "",
+  apkId: "",
+  versionNumber: "",
 }; // sample_base
 
 //-------------------------------------------------------
@@ -197,6 +311,8 @@ const sample_base: EscapeRoomActivityDefinition = {
 //-------------------------------------------------------
 
 export const GenerateNewEscapeRoomActivityScreen = () => {
+  console.log("GenerateNewEscapeRoomActivityScreen");
+
   const generateNewEscapeRoomActivity = async () => {
     return await escapeRoomService.requestNewEscapeRoomActivityDefinition();
   }; // generateNewEscapeRoomActivity
@@ -226,11 +342,13 @@ export const GenerateNewEscapeRoomActivityScreen = () => {
 
 // Fetch initial escape Room activity definition by path id from server
 export const EditEscapeRoomScreen = (): JSX.Element => {
-  const { id } = useParams();
+  const { activityId } = useParams();
 
   const fetchActivityDefinitionById = async () => {
-    if (!id) return Promise.reject();
-    return await escapeRoomService.getEscapeRoomActivityDefinitionById(id);
+    if (!activityId) return Promise.reject();
+    return await escapeRoomService.getEscapeRoomActivityDefinitionById(
+      activityId
+    );
   }; // fetchActivityDefinitionById
 
   // request an activity with given id when loading this component
@@ -273,18 +391,102 @@ const CreateEscapeRoomScreen = (
     );
   }; // updateDefinition
 
+  const duplicateDefinition = async () => {
+    return await escapeRoomService.duplicateEscapeRoomActivityDefinition(
+      initialActivity._id
+    );
+  }; // duplicateDefinition
+
   const [updateDefinitionStatus] = useAsyncRequest(updateDefinition, [
     newActivityDefinition,
   ]);
+  const [duplicateDefinitionStatus, triggerDuplicateDefinition] =
+    useAsyncRequest(duplicateDefinition, [], false);
+
+  useEffect(() => {
+    console.log(duplicateDefinitionStatus);
+    if (duplicateDefinitionStatus.kind !== "success") return;
+    if (duplicateDefinitionStatus.result.kind !== "ok") return;
+    if (!newActivityDefinition) return;
+
+    const win = window.open(
+      window.location.href.replace(
+        newActivityDefinition._id,
+        duplicateDefinitionStatus.result.data._id
+      ),
+      "_blank"
+    );
+    win?.focus();
+  }, [duplicateDefinitionStatus]);
+
+  const handleDownloadJSON = () => {
+    var hiddenElement = document.createElement("a");
+    hiddenElement.href =
+      "data:attachment/text," +
+      encodeURI(JSON.stringify(newActivityDefinition, null, 2));
+    hiddenElement.target = "_blank";
+    hiddenElement.download = `${initialActivity._id}.json`;
+    hiddenElement.click();
+    hiddenElement.remove();
+  }; // handleDownloadJSON
+
   const inSyncWithServer = updateDefinitionStatus.kind === "success";
 
   return (
-    <CreateEscapeRoomScreenComponent
+    <EscapeRoomContextWrapper
       initialActivityDefinition={initialActivity}
       onActivityDefinitionChanged={setNewActivityDefinition}
+      onActivityDuplicated={triggerDuplicateDefinition}
+      onDownloadActivityJson={handleDownloadJSON}
     />
   );
 }; // CreateEscapeRoomScreen
+
+type EscapeRoomContextWrapperProps = CreateEscapeRoomScreenComponentProps & {
+  /** callback to parent specifying that user wishes to create a copy of current activity */
+  onActivityDuplicated?: () => void;
+  /** callback to parent specifying that user wishes to download this activity definition as JSON */
+  onDownloadActivityJson?: () => void;
+}; // EscapeRoomContextWrapperProps
+const EscapeRoomContextWrapper = (
+  props: EscapeRoomContextWrapperProps
+): JSX.Element => {
+  const headerActions: HeaderAction[] = [
+    {
+      displayName: "Make a copy",
+      iconComponent: <DuplicateActivityIcon />,
+      onOptionSelected: props.onActivityDuplicated,
+    },
+    {
+      displayName: "Download JSON",
+      iconComponent: <DownloadActivityDefinitionIcon />,
+      onOptionSelected: props.onDownloadActivityJson,
+    },
+  ];
+
+  return (
+    <Routes>
+      <Route
+        path=""
+        element={
+          <ActivityScreen
+            availableLanguages={["en", "es"]}
+            guarded
+            activityTitle="Escape Room Creation"
+            navigationEntries={[]}
+            navigationWarnings={[]}
+            headerActions={headerActions}
+          />
+        }
+      >
+        <Route
+          path=""
+          element={<CreateEscapeRoomScreenComponent {...props} />}
+        />
+      </Route>
+    </Routes>
+  );
+}; // EscapeRoomContextWrapper
 
 //-------------------------------------------------------
 //                 Escape Room Creation
@@ -332,6 +534,30 @@ export const CreateEscapeRoomScreenComponent = (
     });
   }; // handleEscapeRoomTitleChanged
 
+  const handleApplicationIconSrcChanged = (iconSrc: string) => {
+    setActivityDefinition((prev) => {
+      let next = cloneDeep(prev);
+      next.applicationIconSrc = iconSrc;
+      return next;
+    });
+  }; // handleApplicationIconSrcChanged
+
+  const handleApplicationApkIdChanged = (apkId: string) => {
+    setActivityDefinition((prev) => {
+      let next = cloneDeep(prev);
+      next.apkId = apkId;
+      return next;
+    });
+  }; // handleApplicationApkIdChanged
+
+  const handleApplicationVersionNumberChanged = (versionNumber: string) => {
+    setActivityDefinition((prev) => {
+      let next = cloneDeep(prev);
+      next.versionNumber = versionNumber;
+      return next;
+    });
+  }; // handleApplicationVersionNumberChanged
+
   const handleEscapeRoomDescriptionChanged = (description: string) => {
     setActivityDefinition((prev) => {
       let next = cloneDeep(prev);
@@ -374,13 +600,17 @@ export const CreateEscapeRoomScreenComponent = (
     });
   }; // handleDeleteStage
 
+  // currently selected stage
   const handleDuplicateStage = () => {
     if (!validStageSelected || selectedStage === undefined) return;
     setActivityDefinition((prev) => {
       let next = cloneDeep(prev);
+      let nextStage = { ...next.stages[selectedStage] };
+      delete (nextStage as any)["_id"];
+      // ensure that server assigns a new guid to item
       next.stages = [
         ...next.stages.slice(0, selectedStage),
-        next.stages[selectedStage],
+        nextStage,
         ...next.stages.slice(selectedStage, next.stages.length),
       ];
       return next;
@@ -392,13 +622,15 @@ export const CreateEscapeRoomScreenComponent = (
       ? activityDefinition.stages[selectedStage]
       : undefined;
 
+  // stage by index
   const duplicateStage = (index: number) => {
-    if (!validStageSelected) return;
     setActivityDefinition((prev) => {
       let next = cloneDeep(prev);
+      let nextStage = { ...next.stages[index] };
+      delete (nextStage as any)["_id"];
       next.stages = [
         ...next.stages.slice(0, index),
-        next.stages[index],
+        nextStage,
         ...next.stages.slice(index, next.stages.length),
       ];
       return next;
@@ -425,6 +657,13 @@ export const CreateEscapeRoomScreenComponent = (
       characters: characters,
     }));
   }; // handleCharactersChanged
+
+  const handleDiaryPagesChanged = (diaryPages: DiaryPageDefinition[]) => {
+    setActivityDefinition((prev) => ({
+      ...prev,
+      diaryPages: diaryPages,
+    }));
+  }; // handleDiaryPagesChanged
 
   const handleGoToSettings = () => {
     setShowSettings(true);
@@ -505,10 +744,22 @@ export const CreateEscapeRoomScreenComponent = (
           <EscapeRoomSettings
             escapeRoomTitle={activityDefinition.activityTitle}
             escapeRoomDescription={""}
+            escapeRoomDiaryPages={activityDefinition.diaryPages}
             escapeRoomCharacters={activityDefinition.characters}
+            escapeRoomApplicationIconSrc={activityDefinition.applicationIconSrc}
+            escapeRoomApplicationApkId={activityDefinition.apkId}
+            escapeRoomApplicationVersionNumber={
+              activityDefinition.versionNumber
+            }
             onTitleChanged={handleEscapeRoomTitleChanged}
             onDescriptionChanged={handleEscapeRoomDescriptionChanged}
             onCharactersChanged={handleCharactersChanged}
+            onDiaryPagesChanged={handleDiaryPagesChanged}
+            onApplicationIconSrcChanged={handleApplicationIconSrcChanged}
+            onApplicationApkIdChanged={handleApplicationApkIdChanged}
+            onApplicationVersionNumberChanged={
+              handleApplicationVersionNumberChanged
+            }
           />
         )}
       </EscapeRoomContextProvider>

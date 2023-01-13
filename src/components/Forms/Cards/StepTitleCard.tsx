@@ -13,6 +13,7 @@ import {
 
 import { ThreeDotsVertical } from "@styled-icons/bootstrap/ThreeDotsVertical";
 import { useEffect, useState } from "react";
+import React from "react";
 
 /**
  * Recommended styles for an icon being passed to EditableFieldCard
@@ -313,6 +314,7 @@ export const EditableStepTitleCard = (
           <DropdownMenu>
             {options.map((elem) => (
               <DropdownMenuItem
+                key={elem}
                 onClick={() => {
                   handleOptionSelected(elem);
                 }}

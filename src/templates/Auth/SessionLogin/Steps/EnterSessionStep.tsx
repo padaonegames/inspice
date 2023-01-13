@@ -1,15 +1,10 @@
-import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import { ShortTextInputCard } from "../../../../components/Forms/Cards/ShortTextInputCard";
-import { StepComponentProps } from "../../../../components/Navigation/Steps";
-import { activityService } from "../../../../services";
-import { useAsyncRequest } from "../../../../services/useAsyncRequest";
 import {
   ActionsContainer,
   ButtonAction,
   ButtonActionText,
-  TextActionSpan,
   VerticalSeparator,
 } from "../../components/generalStyles";
 
@@ -22,42 +17,25 @@ const Root = styled.div`
   padding: 10px 0;
 `;
 
-export const EnterSessionStep = (
-  props: StepComponentProps & { activityId: string }
-): JSX.Element => {
-  const { activityId } = props;
+interface EnterSessionStepProps {
+  /** current sessionName as established in parent component. */
+  sessionName: string;
+  /** alert message to display in case there is a problem during session login. */
+  alertMessage?: string;
+  /** callback to notify parent of a change in the current sessionName string. */
+  onSessionNameChanged?: (value: string) => void;
+  /** callback to notify parent of next button being pressed to return to previous screen. */
+  onNextPressed?: () => void;
+} // EnterUsernameStepProps
+export const EnterSessionStep = (props: EnterSessionStepProps): JSX.Element => {
+  const { sessionName, alertMessage, onSessionNameChanged, onNextPressed } =
+    props;
   const { t } = useTranslation("inspice");
 
-  const sessionName = props.getState<string>("sessionName", "");
-
-  const checkValidSession = async () => {
-    return await activityService.checkSessionNameInUse(activityId, sessionName);
-  }; // checkValidSession
-
-  const [validSessionRequest, triggerRequest] = useAsyncRequest(
-    checkValidSession,
-    [],
-    false
-  );
-  const [alertMessage, setAlertMessage] =
-    useState<string | undefined>(undefined);
-
-  const handleNextClicked = () => {
-    triggerRequest();
-  }; // handleNextClicked
-
-  useEffect(() => {
-    if (
-      validSessionRequest.kind === "success" &&
-      validSessionRequest.result.kind === "ok"
-    ) {
-      if (!validSessionRequest.result.data) {
-        setAlertMessage("Session not found");
-      } else if (props.hasNext()) {
-        props.next();
-      }
-    }
-  }, [validSessionRequest]);
+  const handleSessionNameChanged = (value: string) => {
+    if (!onSessionNameChanged) return;
+    onSessionNameChanged(value);
+  }; // handleSessionNameChanged
 
   return (
     <Root>
@@ -68,18 +46,16 @@ export const EnterSessionStep = (
           placeholder: `${t("sessionName")}...`,
         }}
         response={{ text: sessionName }}
-        onResponseChanged={(res) =>
-          props.setState<string>("sessionName", res.text, "")
-        }
+        onResponseChanged={(res) => handleSessionNameChanged(res.text)}
         requiredAlert={!!alertMessage}
         alertMessage={alertMessage}
-        onEnterPress={handleNextClicked}
+        onEnterPress={onNextPressed}
       />
       <VerticalSeparator />
       <VerticalSeparator />
       <ActionsContainer>
         <div />
-        <ButtonAction onClick={handleNextClicked}>
+        <ButtonAction onClick={onNextPressed}>
           <ButtonActionText>{t("Next")}</ButtonActionText>
         </ButtonAction>
       </ActionsContainer>

@@ -15,27 +15,14 @@ import FormCard from "./FormCard";
 
 export interface CalendarInputCardProps
   extends ConsumableFieldProps<{}, CalendarResponseDefinition> {
-  /** Prompt for the user to fill in this field */
-  promptText?: string;
-  /** Whether this field should always be filled in by the user */
-  required?: boolean;
   /** Callback to notify the parent when the enter key is pressed while the component is focused. */
   onEnterPress?: () => void;
-  /* True if user tried to submit the form without filling a required field */
-  requiredAlert?: boolean;
 } // CalendarInputCardProps
 
 export const CalendarInputCard = (
   props: CalendarInputCardProps
 ): JSX.Element => {
-  const {
-    promptText = "",
-    requiredAlert,
-    required,
-    response,
-    onResponseChanged,
-    onEnterPress,
-  } = props;
+  const { response, onResponseChanged, onEnterPress, ...formProps } = props;
 
   const { date } = response;
   const [day, month, year] = [
@@ -79,9 +66,8 @@ export const CalendarInputCard = (
 
   return (
     <FormCard
-      promptText={promptText}
-      required={required}
-      requiredAlert={requiredAlert || !isValidDate()}
+      {...formProps}
+      requiredAlert={formProps.requiredAlert || !isValidDate()}
       alertMessage={!isValidDate() ? "Invalid date." : undefined}
     >
       <DateContainer>

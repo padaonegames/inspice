@@ -1,8 +1,6 @@
 import { CharacterDefinition } from "../../../../services/escapeRoomActivity.model";
-import { PromptField } from "./PromptField";
 
 import styled, { css } from "styled-components";
-import { AlertCircle } from "@styled-icons/evaicons-solid/AlertCircle";
 import { Save } from "@styled-icons/boxicons-solid/Save";
 import { Edit } from "@styled-icons/fluentui-system-regular/Edit";
 

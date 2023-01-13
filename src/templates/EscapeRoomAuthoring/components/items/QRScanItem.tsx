@@ -9,6 +9,8 @@ import styled, { css } from "styled-components";
 import { ArrowDownload } from "@styled-icons/fluentui-system-filled/ArrowDownload";
 import ShortTextInputCard from "../../../../components/Forms/Cards/ShortTextInputCard";
 import FormCard from "../../../../components/Forms/Cards/FormCard";
+import { Root } from "./generalItemsStyles";
+import LongTextInputCard from "../../../../components/Forms/Cards/LongTextInputCard";
 
 export const fieldTypeIcon = css`
   color: ${(props) => props.theme.textColor};
@@ -44,15 +46,6 @@ const QrCanvasContainer = styled.div`
   justify-content: center;
 `;
 
-const Root = styled.div`
-  margin-top: 5px;
-  display: flex;
-  background-color: transparent;
-  flex-direction: column;
-  align-items: center;
-  padding: 0.75em;
-`;
-
 export const isQrScanItemValid = (item: QrScanItemDefinition): boolean => {
   return item.encodedText.length > 0;
 }; // isQrScanItemValid
@@ -61,7 +54,7 @@ export const EditableQRScanItemContent = (
   props: EditableItemProps<QrScanItemDefinition>
 ): JSX.Element => {
   const { payload, onPayloadChanged } = props;
-  const { encodedText } = payload;
+  const { encodedText, codeHint } = payload;
 
   const handleEditcode = (value: string) => {
     if (!onPayloadChanged) return;
@@ -70,6 +63,14 @@ export const EditableQRScanItemContent = (
       encodedText: value,
     });
   }; // handleEditcode
+
+  const handleCodeHintChanged = (hint: string) => {
+    if (!onPayloadChanged) return;
+    onPayloadChanged({
+      ...payload,
+      codeHint: hint,
+    });
+  }; // handleCodeHintChanged
 
   const downloadQR = () => {
     if (encodedText === "") return;
@@ -134,6 +135,14 @@ export const EditableQRScanItemContent = (
           </QrCanvasContainer>
         )}
       </FormCard>
+      <LongTextInputCard
+        promptText="Hint to help the player find the trackable:"
+        fieldPayload={{
+          placeholder: "Short description of what the player should look for.",
+        }}
+        response={{ text: codeHint }}
+        onResponseChanged={(res) => handleCodeHintChanged(res.text)}
+      />
     </Root>
   );
 }; // EditableQRScanItemContent
@@ -199,6 +208,7 @@ export const qrScanItemFactory: AbstractActivityItemFactory<QrScanItemDefinition
     ),
     defaultDefinition: {
       encodedText: "",
+      codeHint: "",
     },
   }; // QRScanItemFactory
 

@@ -1,11 +1,15 @@
-import { CharacterDefinition } from "../../../../services/escapeRoomActivity.model";
+import {
+  CharacterDefinition,
+  DiaryPageDefinition,
+} from "../../../../services/escapeRoomActivity.model";
 
 import styled from "styled-components";
 
 import StepTitleCard from "../../../../components/Forms/Cards/StepTitleCard";
 import ShortTextInputCard from "../../../../components/Forms/Cards/ShortTextInputCard";
-import LongTextInputCard from "../../../../components/Forms/Cards/LongTextInputCard";
 import CharacterDefinitionsCard from "../cards/CharacterDefinitionsCard";
+import DiaryDefinitionCard from "../cards/DiaryDefinitionCard";
+import { ImageSelectionCard } from "../cards/ImageSelectionCard";
 
 const Wrapper = styled.main`
   display: flex;
@@ -72,14 +76,30 @@ export interface EscapeRoomSettingsProps {
   escapeRoomTitle: string;
   /** Description of the current escape room that the user is editing */
   escapeRoomDescription: string;
-  /** Characters involver in the current escape room that the user is editing */
+  /** Characters involved in the current escape room that the user is editing */
   escapeRoomCharacters: CharacterDefinition[];
-  /** Callback to parent component to notigy any changes made to the escape room's title */
+  /** Diary pages featured in the current escape room that the user is editing */
+  escapeRoomDiaryPages: DiaryPageDefinition[];
+  /** Image to use as this activity's application icon */
+  escapeRoomApplicationIconSrc: string;
+  /** This activity's application version number (e.g. "1.0.13") */
+  escapeRoomApplicationVersionNumber: string;
+  /** This activity's application apk id */
+  escapeRoomApplicationApkId: string;
+  /** Callback to parent component to notify any changes made to the escape room's title */
   onTitleChanged?: (title: string) => void;
-  /** Callback to parent component to notigy any changes made to the escape room's description */
+  /** Callback to parent component to notify any changes made to the escape room's description */
   onDescriptionChanged?: (title: string) => void;
-  /** Callback to parent component to notigy any changes made to the escape room's characters */
+  /** Callback to parent component to notify any changes made to the escape room's characters */
   onCharactersChanged?: (characters: CharacterDefinition[]) => void;
+  /** Callback to parent component to notify of any changes made to the escape room's diary pages */
+  onDiaryPagesChanged?: (diaryPages: DiaryPageDefinition[]) => void;
+  /** Callback to parent component to notify of any changes made to the escape room's application icon src */
+  onApplicationIconSrcChanged?: (iconSrc: string) => void;
+  /** Callback to parent component to notify of any changes made to the escape room's application version number */
+  onApplicationVersionNumberChanged?: (versionNumber: string) => void;
+  /** Callback to parent component to notify of any changes made to the escape room's application apk id */
+  onApplicationApkIdChanged?: (apkId: string) => void;
 } // EscapeRoomSettingsProps
 
 export const EscapeRoomSettings = (
@@ -89,9 +109,17 @@ export const EscapeRoomSettings = (
     escapeRoomTitle,
     escapeRoomCharacters,
     escapeRoomDescription,
+    escapeRoomDiaryPages,
+    escapeRoomApplicationApkId,
+    escapeRoomApplicationIconSrc,
+    escapeRoomApplicationVersionNumber,
     onTitleChanged,
     onDescriptionChanged,
     onCharactersChanged,
+    onDiaryPagesChanged,
+    onApplicationApkIdChanged,
+    onApplicationIconSrcChanged,
+    onApplicationVersionNumberChanged,
   } = props;
 
   const handleEditTitle = (value: string) => {
@@ -109,6 +137,26 @@ export const EscapeRoomSettings = (
     onCharactersChanged(value);
   }; // handleEditCharacters
 
+  const handleEditDiaryPages = (value: DiaryPageDefinition[]) => {
+    if (!onDiaryPagesChanged) return;
+    onDiaryPagesChanged(value);
+  }; // handleEditCharacters
+
+  const handleEditApplicationApkId = (value: string) => {
+    if (!onApplicationApkIdChanged) return;
+    onApplicationApkIdChanged(value);
+  }; // handleEditApplicationApkId
+
+  const handleEditApplicationIconSrc = (value: string) => {
+    if (!onApplicationIconSrcChanged) return;
+    onApplicationIconSrcChanged(value);
+  }; // handleEditApplicationIconSrc
+
+  const handleEditApplicationVersionNumber = (value: string) => {
+    if (!onApplicationVersionNumberChanged) return;
+    onApplicationVersionNumberChanged(value);
+  }; // handleEditApplicationVersionNumber
+
   return (
     <Wrapper>
       <StepTitleCard
@@ -116,24 +164,61 @@ export const EscapeRoomSettings = (
         stepDescription="Below, enter a title and a description for your escape room activity, and use the Characters tool to configure which characters you would like to use for your activity's dialogues"
       />
       <ShortTextInputCard
-        promptText="Activity Title:"
+        promptText="Activity Title (used as application name):"
         required
         fieldPayload={{ placeholder: "Activity Title" }}
         response={{ text: escapeRoomTitle }}
         onResponseChanged={(value) => handleEditTitle(value.text)}
       />
+      {/*
       <LongTextInputCard
         promptText="ActivityDescription:"
         response={{ text: "" }}
         fieldPayload={{ placeholder: "Activity Description" }}
         onResponseChanged={(value) => handleEditDescription(value.text)}
       />
+      */}
+      <ShortTextInputCard
+        promptText="App APK ID:"
+        required
+        fieldPayload={{ placeholder: "App apk id" }}
+        response={{ text: escapeRoomApplicationApkId }}
+        onResponseChanged={(value) => handleEditApplicationApkId(value.text)}
+      />
+
+      <ShortTextInputCard
+        promptText="App Version Number:"
+        required
+        fieldPayload={{ placeholder: "App version number" }}
+        response={{ text: escapeRoomApplicationVersionNumber }}
+        onResponseChanged={(value) =>
+          handleEditApplicationVersionNumber(value.text)
+        }
+      />
+
+      <ImageSelectionCard
+        promptText="App Icon:"
+        fieldPayload={{}}
+        response={{ imageSrc: escapeRoomApplicationIconSrc }}
+        onResponseChanged={(res) => handleEditApplicationIconSrc(res.imageSrc)}
+        required
+        requiredAlert={!escapeRoomApplicationIconSrc}
+        alertMessage={"Please select a valid image."}
+      />
+
       <CharacterDefinitionsCard
         promptText="Characters:"
         required
         response={{ characters: escapeRoomCharacters }}
         fieldPayload={{}}
         onResponseChanged={(value) => handleEditCharacters(value.characters)}
+      />
+      <DiaryDefinitionCard
+        promptText="Diary Pages:"
+        required
+        response={{ diaryPages: escapeRoomDiaryPages }}
+        fieldPayload={{}}
+        onResponseChanged={(value) => handleEditDiaryPages(value.diaryPages)}
       />
     </Wrapper>
   );
