@@ -9,6 +9,7 @@ import { Menu } from "styled-icons/ionicons-solid";
 import { DotsVerticalRounded } from "@styled-icons/boxicons-regular/DotsVerticalRounded";
 import DropdownMenu, { DropdownMenuOption } from "../Forms/DropdownMenu";
 import { DropdownSelector } from "../Forms/DropdownSelector";
+import SpiceLogo from "./spice-logo.png";
 
 interface BurgerIconProps {
   open?: boolean;
@@ -161,7 +162,7 @@ export const Header = (props: HeaderProps) => {
           ))}
 
         <HeaderLogo
-          src="/spice-logo.png"
+          src={SpiceLogo}
           alt="application icon"
           onClick={onHeaderIconClicked}
           disabled={onHeaderIconClicked === undefined}
