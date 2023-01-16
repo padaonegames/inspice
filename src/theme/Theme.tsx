@@ -108,6 +108,9 @@ const GlobalStyle = createGlobalStyle`
 
 //  color: #3f3c2d;
 
+interface ThemeProps {
+  children?: React.ReactNode;
+} // ThemeProps
 /**
  * This component uses a parent ThemeContext provider that includes
  * information relative to the theme currently being used by the application
@@ -115,7 +118,7 @@ const GlobalStyle = createGlobalStyle`
  * access themes directly from styled-components without having to make explicit
  * use of the useContext hook (instead, from a styled component, use props.theme)
  */
-const Theme: React.FC = ({ children }) => {
+const Theme = ({ children }: ThemeProps): JSX.Element => {
   const { theme } = useContext(ThemeContext);
   return (
     <ThemeProvider theme={themes[theme]}>

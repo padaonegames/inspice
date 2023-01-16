@@ -1,5 +1,5 @@
 import React from 'react';
-import { ComponentMeta, ComponentStory } from '@storybook/react/dist/ts3.9/client/preview/types-6-3';
+import { ComponentStory, ComponentMeta } from '@storybook/react';
 
 import { Button } from './Button';
 

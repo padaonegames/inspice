@@ -1,13 +1,13 @@
-import React from 'react';
-import styled from 'styled-components';
-import { Artwork } from '../../services/viewpointsArtwork.model';
+import React from "react";
+import styled from "styled-components";
+import { Artwork } from "../../services/viewpointsArtwork.model";
 
 const Root = styled.div`
   display: flex;
   flex-direction: row;
-  background-color: ${props => props.theme.cardBackground};
+  background-color: ${(props) => props.theme.cardBackground};
 
-  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
   padding: 16px;
   width: 85%;
   max-width: 1200px;
@@ -79,22 +79,22 @@ const ArtworkNotes = styled.p`
 
 interface ArtworkDisplayProps {
   backgroundImage: string;
-};
+}
 
 const ArtworkDisplay = styled.div<ArtworkDisplayProps>`
   width: 50%;
-  background-image: ${props => `url(${props.backgroundImage})`};
+  background-image: ${(props) => `url(${props.backgroundImage})`};
   overflow: hidden;
   background-position: 50% 50%;
   background-repeat: no-repeat;
   background-size: auto 100%;
-  background-color: ${props => props.theme.artworkDisplayBackground};
+  background-color: ${(props) => props.theme.artworkDisplayBackground};
 `;
 
 const ClickableText = styled.p`
   font-size: 0.9em;
   font-weight: 400;
-  color: ${props => props.theme.clickableTextFontColor};
+  color: ${(props) => props.theme.clickableTextFontColor};
   margin-bottom: 15px;
   margin-top: 5px;
   text-decoration: underline;
@@ -103,36 +103,36 @@ const ClickableText = styled.p`
 
 export interface ArtworkDetailProps {
   artworkData: Artwork;
-};
+}
 
 /**
  * <img src="media://ArtworkDetail.PNG" alt="ArtworkDetail">
  */
-export const ArtworkDetail: React.FC<ArtworkDetailProps> = ({ artworkData }) => {
-
+export const ArtworkDetail = ({
+  artworkData,
+}: ArtworkDetailProps): JSX.Element => {
   return (
     <Root>
       <SelectionPanel>
-        <ArtworkTitle>
-          {artworkData.name}
-        </ArtworkTitle>
-        <ArtworkAuthor>
-          {artworkData.artist}
-        </ArtworkAuthor>
-        <ArtworkDate>
-          {artworkData.date}
-        </ArtworkDate>
+        <ArtworkTitle>{artworkData.name}</ArtworkTitle>
+        <ArtworkAuthor>{artworkData.artist}</ArtworkAuthor>
+        <ArtworkDate>{artworkData.date.toDateString()}</ArtworkDate>
         <ArtworkListDottedLine />
-        {artworkData.audio.length && <audio controls>
-          <source src={`${process.env.PUBLIC_URL}/audio/${artworkData.audio}`} type='audio/mp4' />
-          Your browser does not support audio.
-        </audio>}
+        {artworkData.audio.length && (
+          <audio controls>
+            <source
+              src={`${process.env.PUBLIC_URL}/audio/${artworkData.audio}`}
+              type="audio/mp4"
+            />
+            Your browser does not support audio.
+          </audio>
+        )}
         <ArtworkDataContainer>
-          <ArtworkDescription dangerouslySetInnerHTML={{ __html: artworkData.description }} />
+          <ArtworkDescription
+            dangerouslySetInnerHTML={{ __html: artworkData.description }}
+          />
         </ArtworkDataContainer>
-        <ArtworkNotes>
-          {artworkData.notes}
-        </ArtworkNotes>
+        <ArtworkNotes>{artworkData.notes}</ArtworkNotes>
         <ClickableText onClick={() => window.open(artworkData.URL)}>
           Find this work in the IMMA Collection
         </ClickableText>
@@ -141,7 +141,6 @@ export const ArtworkDetail: React.FC<ArtworkDetailProps> = ({ artworkData }) => 
         backgroundImage={`https://spice.kmi.open.ac.uk/demos/imma_api/main.php?action=artworkimage&filename=${artworkData.image}`}
       />
     </Root>
-
   );
 };
 
