@@ -10,7 +10,7 @@ import styled, { css } from "styled-components";
 import { DeleteForever } from "@styled-icons/material-twotone/DeleteForever";
 import { Copy } from "@styled-icons/boxicons-regular/Copy";
 import { ChevronDown } from "@styled-icons/boxicons-regular/ChevronDown";
-import { Puzzle } from "@styled-icons/heroicons-outline/Puzzle";
+import { ExtensionPuzzle } from "@styled-icons/ionicons-outline/ExtensionPuzzle";
 import { DownArrowAlt } from "@styled-icons/boxicons-regular/DownArrowAlt";
 import { UpArrowAlt } from "@styled-icons/boxicons-regular/UpArrowAlt";
 
@@ -57,7 +57,7 @@ const DownArrowIcon = styled(DownArrowAlt)<ButtonProps>`
   }
 `;
 
-const PuzzleIcon = styled(Puzzle)`
+const PuzzleIcon = styled(ExtensionPuzzle)`
   color: ${(props) => props.theme.textColor};
   height: 1.75em;
   width: 1.75em;

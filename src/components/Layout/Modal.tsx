@@ -1,6 +1,6 @@
-import React from 'react';
-import { createPortal } from 'react-dom';
-import styled from 'styled-components';
+import React from "react";
+import { createPortal } from "react-dom";
+import styled from "styled-components";
 
 const Wrapper = styled.div`
   position: absolute;
@@ -15,18 +15,19 @@ const Wrapper = styled.div`
 `;
 
 export type Props = {
-    modalOpen: boolean;
+  modalOpen: boolean;
+  children?: React.ReactNode;
 };
 
-export const Modal: React.FC<Props> = ({ modalOpen, children }) => {
-    if (!modalOpen) return null;
+export const Modal = ({ modalOpen, children }: Props): JSX.Element => {
+  if (!modalOpen) return <></>;
 
-    return createPortal(
-        <Wrapper>
-            <div>{children}</div>
-        </Wrapper>,
-        document.body
-    );
+  return createPortal(
+    <Wrapper>
+      <div>{children}</div>
+    </Wrapper>,
+    document.body
+  );
 };
 
 export default Modal;

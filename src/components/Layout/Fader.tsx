@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import styled, { keyframes } from 'styled-components';
+import React, { useEffect, useState } from "react";
+import styled, { keyframes } from "styled-components";
 
 const fadeIn = keyframes`
   from {
@@ -24,20 +24,26 @@ interface FaderContainerProps {
   show: boolean;
   /** Value which indicates how long will take for the content to fade away. Value in seconds. */
   transitionTime: number;
-};
+}
 
 const FaderContainer = styled.div<FaderContainerProps>`
-  animation: ${props => props.show ? fadeIn : fadeOut} ${props => props.transitionTime}s ease;
+  animation: ${(props) => (props.show ? fadeIn : fadeOut)}
+    ${(props) => props.transitionTime}s ease;
 `;
 
 export interface FaderProps {
   show: boolean;
   transitionTime: number;
   onAnimationCompleted?: () => void;
-};
+  children?: React.ReactNode;
+}
 
-export const Fader: React.FC<FaderProps> = ({ show, transitionTime, onAnimationCompleted, children }) => {
-
+export const Fader = ({
+  show,
+  transitionTime,
+  onAnimationCompleted,
+  children,
+}: FaderProps): JSX.Element => {
   const [shouldRender, setShouldRender] = useState<boolean>(show);
 
   useEffect(() => {
@@ -55,17 +61,17 @@ export const Fader: React.FC<FaderProps> = ({ show, transitionTime, onAnimationC
     }
   };
 
-  return (
-    shouldRender ? (
-      <FaderContainer
-        transitionTime={transitionTime}
-        show={show}
-        onAnimationEnd={onAnimationEnd}
-      >
-        {children}
-      </FaderContainer>
-    ) : null
+  return shouldRender ? (
+    <FaderContainer
+      transitionTime={transitionTime}
+      show={show}
+      onAnimationEnd={onAnimationEnd}
+    >
+      {children}
+    </FaderContainer>
+  ) : (
+    <></>
   );
-}
+};
 
 export default Fader;

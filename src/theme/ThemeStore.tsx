@@ -4,7 +4,7 @@ import { DefaultTheme } from "styled-components";
 export interface AvailableThemes {
   light: DefaultTheme;
   dark: DefaultTheme;
-};
+}
 
 /**
  * This component provides access to a wrapping context that
@@ -19,16 +19,21 @@ interface IThemeContext {
   switchTheme: (theme: keyof AvailableThemes) => void;
 }
 const ThemeContext = React.createContext<IThemeContext>({
-  theme: 'light',
+  theme: "light",
   switchTheme: () => {},
 });
 
-const ThemeStore: React.FC = ({ children }) => {
-  const [theme, setTheme] = useState<keyof AvailableThemes>(localStorage.getItem('theme') as keyof AvailableThemes || 'light');
+interface ThemeStoreProps {
+  children?: React.ReactNode;
+} // ThemeProps
+const ThemeStore = ({ children }: ThemeStoreProps): JSX.Element => {
+  const [theme, setTheme] = useState<keyof AvailableThemes>(
+    (localStorage.getItem("theme") as keyof AvailableThemes) || "light"
+  );
 
   const switchTheme = (theme: keyof AvailableThemes) => {
     setTheme(theme);
-    localStorage.setItem('theme', theme);
+    localStorage.setItem("theme", theme);
   };
 
   return (
