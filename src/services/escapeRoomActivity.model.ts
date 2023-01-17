@@ -48,15 +48,19 @@ export type SupportedStage = Extract<
 >; // SupportedStage
 
 export const escapeRoomPuzzleTypes = [
+  "pack-puzzle",
+  "object-obtained",
+  "diary-page",
   "multiple-choice-test",
   "multiple-choice-free-answer",
   "waiting-code",
   "qr-scan",
   "ar-scan",
+  "ar-overlay",
   "load-scene",
   "narrative",
   "unlock-password",
-  "ar-overlay",
+  "session-code",
 ] as const; // escapeRoomPuzzleTypes
 
 export type AvailableEscapeRoomPuzzleType =
@@ -168,7 +172,9 @@ export interface RoomDefinition {
   exitBlock: RoomBlock;
   /** maximum time (in minutes) that will be allocated to complete the current room's searches and puzzles */
   availableTime: number;
-}
+  /** whether exit block should be blocked until completing all other room sections */
+  lockExitBlockUntilMainBlocksCompleted: boolean;
+} // RoomDefinition
 
 export const default_room: RoomDefinition = {
   hints: [],
@@ -179,6 +185,7 @@ export const default_room: RoomDefinition = {
     blockDescription: "",
     puzzles: [],
   },
+  lockExitBlockUntilMainBlocksCompleted: true,
 }; // default_room
 
 export interface RoomBlock {

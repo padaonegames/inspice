@@ -40,6 +40,19 @@ import {
   multipleChoiceFreeAnswerItemFactory,
   MultipleChoiceFreeAnswerItemStageSlide,
 } from "./MutipleChoiceFreeAnswerItem";
+import { diaryPageItemFactory, DiaryPageItemStageSlide } from "./DiaryPageItem";
+import {
+  objectObtainedItemFactory,
+  ObjectObtainedItemStageSlide,
+} from "./ObjectObtainedItem";
+import {
+  packPuzzleItemFactory,
+  PackPuzzleItemStageSlide,
+} from "./PackPuzzleItem";
+import {
+  sessionCodeItemFactory,
+  SessionCodeItemStageSlide,
+} from "./SessionCodeItem";
 
 const ExitIcon = styled(ConferenceRoom)`
   color: ${(props) => props.theme.frameColor};
@@ -52,15 +65,19 @@ const ExitIcon = styled(ConferenceRoom)`
 
 export const puzzleToSlidesMappings: ItemToSlideProducerMapping<SupportedPuzzle> =
   {
-    "multiple-choice-test": MultipleChoiceTestItemStageSlide,
+    "pack-puzzle": PackPuzzleItemStageSlide,
+    "object-obtained": ObjectObtainedItemStageSlide,
+    "diary-page": DiaryPageItemStageSlide,
     "multiple-choice-free-answer": MultipleChoiceFreeAnswerItemStageSlide,
+    "multiple-choice-test": MultipleChoiceTestItemStageSlide,
     "waiting-code": WaitingCodeItemStageSlide,
     "qr-scan": QRScanItemStageSlide,
     "ar-scan": ARScanItemStageSlide,
-    "ar-overlay": AROverlayItemStageSlide,
     "load-scene": LoadSceneItemStageSlide,
     narrative: NarrativeItemStageSlide,
     "unlock-password": UnlockPasswordItemStageSlide,
+    "ar-overlay": AROverlayItemStageSlide,
+    "session-code": SessionCodeItemStageSlide,
   }; // puzzleToSlidesMappings
 
 export type PuzzleToEditorProducerMapping<T extends SupportedPuzzle> = {
@@ -77,6 +94,18 @@ export type PuzzleToEditorProducerMapping<T extends SupportedPuzzle> = {
 
 export const puzzleToEditorsMappings: PuzzleToEditorProducerMapping<SupportedPuzzle> =
   {
+    "pack-puzzle": {
+      editingComponentProducer: packPuzzleItemFactory.editingComponent,
+      defaultStagePayload: packPuzzleItemFactory.defaultDefinition,
+    },
+    "object-obtained": {
+      editingComponentProducer: objectObtainedItemFactory.editingComponent,
+      defaultStagePayload: objectObtainedItemFactory.defaultDefinition,
+    },
+    "diary-page": {
+      editingComponentProducer: diaryPageItemFactory.editingComponent,
+      defaultStagePayload: diaryPageItemFactory.defaultDefinition,
+    },
     "multiple-choice-test": {
       editingComponentProducer: multipleChoiceTestItemFactory.editingComponent,
       defaultStagePayload: multipleChoiceTestItemFactory.defaultDefinition,
@@ -99,10 +128,6 @@ export const puzzleToEditorsMappings: PuzzleToEditorProducerMapping<SupportedPuz
       editingComponentProducer: arScanItemFactory.editingComponent,
       defaultStagePayload: arScanItemFactory.defaultDefinition,
     },
-    "ar-overlay": {
-      editingComponentProducer: arOverlayItemFactory.editingComponent,
-      defaultStagePayload: arOverlayItemFactory.defaultDefinition,
-    },
     "load-scene": {
       editingComponentProducer: loadSceneItemFactory.editingComponent,
       defaultStagePayload: loadSceneItemFactory.defaultDefinition,
@@ -115,6 +140,14 @@ export const puzzleToEditorsMappings: PuzzleToEditorProducerMapping<SupportedPuz
       editingComponentProducer: unlockPasswordItemFactory.editingComponent,
       defaultStagePayload: unlockPasswordItemFactory.defaultDefinition,
     },
+    "ar-overlay": {
+      editingComponentProducer: arOverlayItemFactory.editingComponent,
+      defaultStagePayload: arOverlayItemFactory.defaultDefinition,
+    },
+    "session-code": {
+      editingComponentProducer: sessionCodeItemFactory.editingComponent,
+      defaultStagePayload: sessionCodeItemFactory.defaultDefinition,
+    },
   }; // puzzleToEditorsMappings
 
 export interface EditableRoomItemContentProps
@@ -125,7 +158,8 @@ export const EditableRoomItemContent = (
 ): JSX.Element => {
   const { payload, onPayloadChanged } = props;
 
-  const { exitBlock, blocks, hints } = payload;
+  const { exitBlock, blocks, hints, lockExitBlockUntilMainBlocksCompleted } =
+    payload;
 
   const [selectedBlock, setSelectedBlock] =
     useState<number | "room-settings" | "exit-block">("room-settings");
@@ -200,6 +234,17 @@ export const EditableRoomItemContent = (
     });
   }; // handleHintsChanged
 
+  // Method to upload changes from the room settings
+  const handleLockExitBlockUntilMainBlocksCompletedChanged = (
+    value: boolean
+  ) => {
+    if (!onPayloadChanged) return;
+    onPayloadChanged({
+      ...payload,
+      lockExitBlockUntilMainBlocksCompleted: value,
+    });
+  }; // handleLockExitBlockUntilMainBlocksCompletedChanged
+
   const currentBlock =
     selectedBlock !== "room-settings" && selectedBlock !== "exit-block"
       ? blocks[selectedBlock]
@@ -225,7 +270,16 @@ export const EditableRoomItemContent = (
       {/* Body of the screen with the editor of the specifcc block thar we are editing  */}
       {/* Editor for the room specific settings */}
       {selectedBlock === "room-settings" && (
-        <RoomSettingsEditor hints={hints} onHintsChanged={handleHintsChanged} />
+        <RoomSettingsEditor
+          hints={hints}
+          onHintsChanged={handleHintsChanged}
+          lockExitBlockUntilMainBlocksCompleted={
+            lockExitBlockUntilMainBlocksCompleted
+          }
+          onLockExitBlockUntilMainBlocksCompletedChanged={
+            handleLockExitBlockUntilMainBlocksCompletedChanged
+          }
+        />
       )}
 
       {/* Editor for the room's exit block */}
