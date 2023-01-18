@@ -21,9 +21,7 @@ import {
 import HighLightTextCard from "../../../../components/Forms/Cards/HighLightTextCard";
 import StepTitleCard from "../../../../components/Forms/Cards/StepTitleCard";
 import React from "react";
-import {
-  FormResponseMap,
-} from "../../../../store/features/multistageForm/multistageFormConsumptionSlice";
+import { FormResponseMap } from "../../../../store/features/multistageForm/multistageFormConsumptionSlice";
 import { FormResponse } from "../../../../services/multistageForm/consumption.api";
 
 const StageRoot = styled.div`
@@ -57,29 +55,22 @@ export const fieldMappings: FieldResponseMappings<
   "short-text": {
     consumptionComponentProducer: ShortTextInputCard,
     defaultFieldResponse: { text: "" },
-    isFieldResponseValid: (_, res) => res.text.length > 0,
   },
   "long-text": {
     consumptionComponentProducer: LongTextInputCard,
     defaultFieldResponse: { text: "" },
-    isFieldResponseValid: (_, res) => res.text.length > 0,
   },
   "multiple-choice": {
     consumptionComponentProducer: MultipleChoiceCard,
     defaultFieldResponse: { selectedResponses: [] },
-    isFieldResponseValid: (form, res) =>
-      res.selectedResponses.length > 0 &&
-      (!form.maxAnswers || res.selectedResponses.length < form.maxAnswers),
   },
   checkbox: {
     consumptionComponentProducer: CheckBoxGroupInputCard,
     defaultFieldResponse: { selectedFields: [] },
-    isFieldResponseValid: (_, res) => res.selectedFields.length > 0,
   },
   calendar: {
     consumptionComponentProducer: CalendarInputCard,
     defaultFieldResponse: { date: new Date() },
-    isFieldResponseValid: (_, res) => !!res.date,
   },
   "display-image": {
     consumptionComponentProducer: DisplayImageCard,
@@ -88,23 +79,18 @@ export const fieldMappings: FieldResponseMappings<
   "display-video": {
     consumptionComponentProducer: DisplayVideoCard,
     defaultFieldResponse: {},
-    isFieldResponseValid: (_, __) => true,
   },
   "display-text": {
     consumptionComponentProducer: DisplayTextCard,
     defaultFieldResponse: {},
-    isFieldResponseValid: (_, __) => true,
   },
   "likert-scale": {
     consumptionComponentProducer: LikertScaleInputCard,
     defaultFieldResponse: { responses: {} },
-    isFieldResponseValid: (form, res) =>
-      form.questions.every((_, ind) => res.responses[ind] !== undefined),
   },
   "highlight-text": {
     consumptionComponentProducer: HighLightTextCard,
     defaultFieldResponse: { highlightedTexts: [] },
-    isFieldResponseValid: (_, res) => res.highlightedTexts.length > 0,
   },
 }; // fieldMappings
 

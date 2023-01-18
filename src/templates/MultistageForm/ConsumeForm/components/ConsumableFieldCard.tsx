@@ -5,6 +5,9 @@ import {
   MultistageFormField,
 } from "../../../../services/multistageFormActivity.model";
 
+
+type ResponseValidResult = { type: "valid" } | { type: "invalid"; reason: string } // ResponseValidResult
+
 /**
  * Interfaz destinada a representar una entrada en un "diccionario de mappings" entre
  * tipos de formularios disponibles en la actividad y componentes de respuesta en React
@@ -36,7 +39,7 @@ export interface FieldResponseMappingEntry<
   isFieldResponseValid?: (
     fieldDefinition: F["payload"],
     response: R["response"]
-  ) => boolean;
+  ) => ResponseValidResult;
 } // FieldResponseMappingEntry
 
 export type FieldResponseMappings<
@@ -68,6 +71,10 @@ export interface ConsumableFieldCardProps {
   requiredAlert?: boolean;
   /** Message to display if requiredAlert is set to true */
   alertMessage?: string;
+  /** True if field response is invalid*/
+  invalidAlert?: boolean;
+  /** Message to display if invalidAlert is set to true */
+  invalidMessage?: string;
 } // ConsumableFieldCardProps
 
 export const ConsumableFieldCard = (
@@ -80,6 +87,8 @@ export const ConsumableFieldCard = (
     response,
     requiredAlert = false,
     alertMessage,
+    invalidAlert,
+    invalidMessage,
     onUserResponseChanged,
   } = props;
 
@@ -93,6 +102,13 @@ export const ConsumableFieldCard = (
 
   const fieldMapping = fieldMappings[formDefinition.fieldData.type];
 
+  const formResponse = (response ?? fieldMapping.defaultFieldResponse) as any;
+  const formPayload = (formDefinition.fieldData.payload ?? {}) as any;
+  const responseValid: ResponseValidResult =
+    fieldMapping.isFieldResponseValid === undefined
+      ? { type: "valid" }
+      : fieldMapping.isFieldResponseValid(formPayload, formResponse);
+
   return (
     <>
       {fieldMapping.consumptionComponentProducer({
@@ -101,8 +117,10 @@ export const ConsumableFieldCard = (
         required: formDefinition.required,
         requiredAlert: requiredAlert && formDefinition.required,
         alertMessage: alertMessage,
-        fieldPayload: (formDefinition.fieldData.payload ?? {}) as any,
-        response: (response ?? fieldMapping.defaultFieldResponse) as any,
+        invalidAlert: invalidAlert && responseValid.type === "invalid",
+        invalidMessage: responseValid.type === "invalid" ? responseValid.reason : invalidMessage,
+        fieldPayload: formPayload,
+        response: formResponse,
         onResponseChanged: handleResponseChanged,
         disabled: disabled,
       })}

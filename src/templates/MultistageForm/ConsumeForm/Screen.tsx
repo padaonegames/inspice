@@ -20,7 +20,7 @@ import {
   FormResponse,
   useSubmitUserResponseToActivityMutation,
 } from "../../../services/multistageForm/consumption.api";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   selectDescription,
   selectTitle,
@@ -28,6 +28,7 @@ import {
 import { selectSessionUsername } from "../../../store/features/session/sessionSlice";
 import { NavigationButton } from "../../../components/Forms/Cards/cardStyles";
 import FormCard from "../../../components/Forms/Cards/FormCard";
+import StepTitleCard from "../../../components/Forms/Cards/StepTitleCard";
 
 const Root = styled.div`
   display: flex;
@@ -38,6 +39,17 @@ const NavigationButtonsContainer = styled.div`
   display: flex;
   flex-direction: column;
   margin-bottom: 4.5vh;
+  justify-content: center;
+  align-items: center;
+
+  position: relative;
+  width: auto;
+`;
+
+const FormSubmittedCardContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-top: 4.5vh;
   justify-content: center;
   align-items: center;
 
@@ -98,6 +110,14 @@ export const ConsumeMultistageFormScreenComponent = (): JSX.Element => {
   const selectedStage = useAppSelector(
     selectStageById(stageIds[currentStageIndex])
   );
+
+  useEffect(() => {
+    console.log(data);
+    console.log(isSuccess);
+    if (isSuccess && data) {
+      setStatus("form-submitted");
+    }
+  }, [data, isSuccess]);
 
   const handleSelectNextStage = () => {
     const nextValue = currentStageIndex + 1;
@@ -166,6 +186,19 @@ export const ConsumeMultistageFormScreenComponent = (): JSX.Element => {
             </FormCard>
           </NavigationButtonsContainer>
         </>
+      )}
+
+      {status === "form-submitted" && (
+        <FormSubmittedCardContainer>
+          <StepTitleCard
+            stepDescription="Your response has been registered."
+            stepTitle={activityTitle}
+          >
+            <NavigationButton onClick={() => window.location.reload()} colorMode="primary">
+              Send another response
+            </NavigationButton>
+          </StepTitleCard>
+        </FormSubmittedCardContainer>
       )}
     </Root>
   );
