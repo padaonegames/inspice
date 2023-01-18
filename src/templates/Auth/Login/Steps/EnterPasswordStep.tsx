@@ -54,6 +54,7 @@ export const EnterPasswordStep = (props: StepComponentProps): JSX.Element => {
         setAlertMessage(undefined);
         dispatch(setCredentials(loginResult.data));
         console.log(`Your token: ${loginResult.data.accessToken}`);
+        console.log(loginResult.data.userData);
       } else {
         // no access token, reset credentials
         setAlertMessage(

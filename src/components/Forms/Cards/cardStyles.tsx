@@ -20,6 +20,44 @@ export const InputFile = styled.input`
   display: none;
 `;
 
+interface NavigationButtonProps {
+  colorMode?: "primary" | "secondary";
+}
+export const NavigationButton = styled.label<NavigationButtonProps>`
+  font-size: 0.95em;
+  font-weight: 500;
+  font-family: ${(props) => props.theme.contentFont};
+  line-height: 135%;
+  margin-top: 10px;
+  cursor: pointer;
+  color: ${(props) =>
+    props.colorMode === "secondary" ? props.theme.textColor : "white"};
+
+  height: 2.5em;
+  width: fit-content;
+  padding: 0.25em 1.75em;
+  margin-right: 1em;
+
+  background-color: ${(props) =>
+    props.colorMode === "primary"
+      ? props.theme.secondaryButtonColor
+      : props.theme.cardBackground};
+  border-radius: 0.35rem;
+  box-shadow: 0 2px 1px -1px rgba(0, 0, 0, 0.2),
+    0 1px 1px 0 rgba(0, 0, 0, 0.141), 0 1px 3px 0 rgba(0, 0, 0, 0.122);
+  border: 1px solid #dfe1e5;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    border: 1px solid ${(props) => props.theme.secondaryButtonColor};
+  }
+`;
+NavigationButton.defaultProps = { colorMode: "secondary" };
+
 export const InputFileButton = styled.label`
   font-size: 0.9em;
   font-weight: 200;
@@ -64,7 +102,8 @@ export const InputText = styled.input<InputTextProps>`
   font-weight: 200;
   font-family: ${(props) => props.theme.contentFont};
   line-height: 135%;
-  width: ${(props) => (props.textWidth ? props.textWidth * 100 : 50)}%;
+  width: ${(props) =>
+    props.textWidth !== undefined ? props.textWidth * 100 : 50}%;
   margin-top: 10px;
   color: ${(props) => props.theme.textColor};
   border: none;
@@ -72,6 +111,10 @@ export const InputText = styled.input<InputTextProps>`
   outline: none;
   padding: 2px 0;
   background-color: transparent;
+
+  @media (max-width: 768px) {
+    width: 100%;
+  }
 
   &:focus {
     border-bottom: 3px solid #c44c49;
@@ -212,13 +255,16 @@ interface CardPanelProps {
   addPadding?: boolean;
   /** whether to add a focus effect to left border (true by default) */
   addFocusEffect?: boolean;
+  /** whether this card should be a visible container or just provide layout */
+  showCardBackground?: boolean;
 }
 export const CardPanel = styled.div<CardPanelProps>`
   position: relative;
   ${(props) =>
     (props.addPadding === undefined || props.addPadding) &&
     `padding: 16px 16px 24px 16px`};
-  background-color: ${(props) => props.theme.cardBackground};
+  background-color: ${(props) =>
+    props.showCardBackground ? props.theme.cardBackground : "transparent"};
   ${(props) => !props.requiredAlert && "border: 1px solid #dadce0;"}
   ${(props) => props.requiredAlert && "border: 1px solid #c44c49;"}
 
@@ -241,7 +287,21 @@ export const CardPanel = styled.div<CardPanelProps>`
   word-wrap: break-word;
   display: flex;
   flex-direction: column;
+
+  ${(props) => !props.showCardBackground && `border: none;`}
 `;
+CardPanel.defaultProps = { showCardBackground: true };
+
+interface CardChildrenContainerProps {
+  layout?: "column" | "row";
+}
+export const CardChildrenContainer = styled.div<CardChildrenContainerProps>`
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: ${(props) => props.layout};
+`;
+CardChildrenContainer.defaultProps = { layout: "column" };
 
 export const Root = styled.div`
   min-width: 250px;
@@ -376,8 +436,10 @@ export const EditableText = styled.textarea`
   }
 `;
 
-export const ImagePreview = styled.img`
-  max-height: 250px;
+interface ImagePreviewProps {
+  sizing?: "small" | "medium" | "large";
+}
+export const ImagePreview = styled.img<ImagePreviewProps>`
   object-fit: cover;
   align-self: center;
   margin-top: 10px;
@@ -387,9 +449,16 @@ export const ImagePreview = styled.img`
   }
 
   @media (min-width: 768px) {
-    width: 40%;
+    width: ${(props) =>
+      props.sizing === "small"
+        ? "40%"
+        : props.sizing === "medium"
+        ? "57.5%"
+        : "72.5%"};
   }
 `;
+
+ImagePreview.defaultProps = { sizing: "medium" };
 
 export const TagsContainer = styled.div`
   line-height: 135%;
@@ -544,17 +613,21 @@ export const NewTagText = styled.span`
   padding: 3px;
 `;
 
-export const CheckboxList = styled.div`
+interface CheckboxListProps {
+  layout?: "column" | "row";
+}
+export const CheckboxList = styled.div<CheckboxListProps>`
   margin-top: 5px;
   display: flex;
   background-color: transparent;
-  flex-direction: column;
+  flex-direction: ${(props) => props.layout};
   align-items: left;
 
   border-bottom: 2px solid #dadce0;
   padding: 5px 0;
   background-color: transparent;
 `;
+CheckboxList.defaultProps = { layout: "column" };
 
 export const CheckboxOption = styled.div`
   margin-top: 0.1em;

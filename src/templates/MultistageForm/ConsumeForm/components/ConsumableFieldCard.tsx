@@ -64,6 +64,10 @@ export interface ConsumableFieldCardProps {
   disabled?: boolean;
   /** callback notifying parent of response changing */
   onUserResponseChanged?: (value: SupportedFormResponse["response"]) => void;
+  /** True if user tried to submit the form without filling a required field */
+  requiredAlert?: boolean;
+  /** Message to display if requiredAlert is set to true */
+  alertMessage?: string;
 } // ConsumableFieldCardProps
 
 export const ConsumableFieldCard = (
@@ -74,6 +78,8 @@ export const ConsumableFieldCard = (
     formDefinition,
     disabled = false,
     response,
+    requiredAlert = false,
+    alertMessage,
     onUserResponseChanged,
   } = props;
 
@@ -93,6 +99,8 @@ export const ConsumableFieldCard = (
         ...formDefinition,
         promptText: formDefinition.promptText,
         required: formDefinition.required,
+        requiredAlert: requiredAlert && formDefinition.required,
+        alertMessage: alertMessage,
         fieldPayload: (formDefinition.fieldData.payload ?? {}) as any,
         response: (response ?? fieldMapping.defaultFieldResponse) as any,
         onResponseChanged: handleResponseChanged,

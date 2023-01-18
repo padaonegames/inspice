@@ -174,6 +174,7 @@ export const fieldMappings: FieldMappings<SupportedFormField> = {
     editingComponentProducer: EditableDisplayImageCardContent,
     defaultFieldPayload: {
       src: "",
+      sizing: "medium",
     },
   },
   "display-video": {
@@ -216,7 +217,6 @@ export const fieldMappings: FieldMappings<SupportedFormField> = {
 export const DefineMultistageFormStep = (): JSX.Element => {
   const dispatch = useAppDispatch();
   const stages = useAppSelector(selectStages);
-
   // which card is currently selected (useful for knowing where to place new cards)
   const [selectedItemIndex, setSelectedItemIndex] = useState<number>(0);
   // index to determine the stage we are currently working on

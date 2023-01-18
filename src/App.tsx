@@ -51,6 +51,7 @@ export const App = (): JSX.Element => {
                   path="dashboard"
                   element={
                     <ActivityScreen
+                      guarded
                       availableLanguages={["en"]}
                       activityTitle="Dashboard"
                     />

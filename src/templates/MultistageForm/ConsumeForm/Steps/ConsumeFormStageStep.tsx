@@ -1,7 +1,7 @@
 import MultipleChoiceCard from "../../../../components/Forms/Cards/MultipleChoiceCard";
 import ShortTextInputCard from "../../../../components/Forms/Cards/ShortTextInputCard";
 import {
-  ConsumableFieldProps,
+  MultistageFormStage,
   SupportedFormField,
   SupportedFormResponse,
 } from "../../../../services/multistageFormActivity.model";
@@ -21,12 +21,10 @@ import {
 import HighLightTextCard from "../../../../components/Forms/Cards/HighLightTextCard";
 import StepTitleCard from "../../../../components/Forms/Cards/StepTitleCard";
 import React from "react";
-import { useAppDispatch, useAppSelector } from "../../../../store/hooks";
 import {
-  formResponseChanged,
-  selectCurrentStage,
-  selectFormResponses,
+  FormResponseMap,
 } from "../../../../store/features/multistageForm/multistageFormConsumptionSlice";
+import { FormResponse } from "../../../../services/multistageForm/consumption.api";
 
 const StageRoot = styled.div`
   display: flex;
@@ -110,34 +108,48 @@ export const fieldMappings: FieldResponseMappings<
   },
 }; // fieldMappings
 
-export const ConsumeMultistageFormStageStep = (): JSX.Element => {
-  const dispatch = useAppDispatch();
-  const currentStage = useAppSelector(selectCurrentStage);
-  const formResponses = useAppSelector(selectFormResponses);
+interface ConsumeMultistageFormStageStepProps {
+  title: string;
+  description: string;
+  stageData: MultistageFormStage;
+  formResponses: FormResponseMap;
+  onFormResponseChanged?: (response: FormResponse) => void;
+  displayRequiredAlerts: boolean;
+}
+export const ConsumeMultistageFormStageStep = (
+  props: ConsumeMultistageFormStageStepProps
+): JSX.Element => {
+  const {
+    title,
+    description,
+    stageData,
+    formResponses,
+    onFormResponseChanged,
+    displayRequiredAlerts,
+  } = props;
 
   const handleResponseChanged = (
     formId: string,
     response: SupportedFormResponse
   ) => {
-    dispatch(
-      formResponseChanged({ formId, data: response, bufferAction: true })
-    );
+    if (!onFormResponseChanged) return;
+    onFormResponseChanged({ formId, data: response });
   }; // handleResponseChanged
-
-  if (!currentStage) return <></>;
 
   return (
     <StageRoot>
+      <StepTitleCard stepTitle={title} stepDescription={description} />
       <StepTitleCard
-        stepTitle={currentStage.title ?? `Stage`}
-        stepDescription={currentStage.description}
+        stepTitle={stageData.title ?? `Stage`}
+        stepDescription={stageData.description}
       />
-      {currentStage.forms.map((form) => (
+      {stageData.forms.map((form) => (
         <React.Fragment key={form._id}>
           <ConsumableFieldCard
             fieldMappings={fieldMappings}
             formDefinition={form}
             response={formResponses[form._id]?.response}
+            requiredAlert={displayRequiredAlerts}
             onUserResponseChanged={(res) =>
               handleResponseChanged(form._id, {
                 response: res,
