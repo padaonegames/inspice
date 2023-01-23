@@ -15,7 +15,9 @@ import {
   selectStageById,
   selectStageIds,
 } from "../../../store/features/multistageForm/multistageFormConsumptionSlice";
-import ConsumeMultistageFormStageStep from "./Steps/ConsumeFormStageStep";
+import ConsumeMultistageFormStageStep, {
+  fieldMappings,
+} from "./Steps/ConsumeFormStageStep";
 import {
   FormResponse,
   useSubmitUserResponseToActivityMutation,
@@ -107,13 +109,13 @@ export const ConsumeMultistageFormScreenComponent = (): JSX.Element => {
 
   const [currentStageIndex, setCurrentStageIndex] = useState<number>(0);
 
+  const [requiredAlerts, setRequiredAlerts] = useState<boolean>(false);
+
   const selectedStage = useAppSelector(
     selectStageById(stageIds[currentStageIndex])
   );
 
   useEffect(() => {
-    console.log(data);
-    console.log(isSuccess);
     if (isSuccess && data) {
       setStatus("form-submitted");
     }
@@ -121,7 +123,20 @@ export const ConsumeMultistageFormScreenComponent = (): JSX.Element => {
 
   const handleSelectNextStage = () => {
     const nextValue = currentStageIndex + 1;
-    if (nextValue < 0 || nextValue >= stageIds.length) return;
+    if (nextValue < 0 || nextValue >= stageIds.length || !selectedStage) return;
+
+    // comprobar primero si todos los elementos de la sección actual son válidos
+    // antes de avanzar a la siguiente fase. Si no lo fueran, lanzar las alarmas
+    // hasta que el usuario
+    selectedStage.forms.every((form) => {
+      const mapping = fieldMappings[form.fieldData.type];
+      /*
+      .isFieldResponseEmpty(
+        form.fieldData.payload as any,
+        formResponses[form._id] as any
+      )
+      */
+    });
     setCurrentStageIndex(nextValue);
   }; // handleSelectNextStage
 
@@ -161,7 +176,7 @@ export const ConsumeMultistageFormScreenComponent = (): JSX.Element => {
             }
             formResponses={formResponses}
             onFormResponseChanged={handleFormResponseChanged}
-            displayRequiredAlerts={true}
+            displayRequiredAlerts={requiredAlerts}
           />
           <NavigationButtonsContainer>
             <FormCard showCardBackground={false} childrenLayout="row">
@@ -194,7 +209,10 @@ export const ConsumeMultistageFormScreenComponent = (): JSX.Element => {
             stepDescription="Your response has been registered."
             stepTitle={activityTitle}
           >
-            <NavigationButton onClick={() => window.location.reload()} colorMode="primary">
+            <NavigationButton
+              onClick={() => window.location.reload()}
+              colorMode="primary"
+            >
               Send another response
             </NavigationButton>
           </StepTitleCard>

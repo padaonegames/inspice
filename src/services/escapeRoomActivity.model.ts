@@ -347,6 +347,8 @@ export interface UnlockPasswordItemDefinition {
   password: number[];
   /** Description to help give context to solve the password */
   description: string;
+  /** whether to display this lock in hour format (00:00). Defaults to false. */
+  hoursEnabled?: boolean;
 } // UnlockPasswordItemDefinition
 
 export interface Dialogue {

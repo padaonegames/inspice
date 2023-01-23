@@ -55,10 +55,16 @@ export const fieldMappings: FieldResponseMappings<
   "short-text": {
     consumptionComponentProducer: ShortTextInputCard,
     defaultFieldResponse: { text: "" },
+    isFieldResponseEmpty(_, response) {
+      return response.text === undefined || response.text.length === 0
+    },
   },
   "long-text": {
     consumptionComponentProducer: LongTextInputCard,
     defaultFieldResponse: { text: "" },
+    isFieldResponseEmpty(_, response) {
+      return response.text === undefined || response.text.length === 0
+    },
   },
   "multiple-choice": {
     consumptionComponentProducer: MultipleChoiceCard,
@@ -136,6 +142,7 @@ export const ConsumeMultistageFormStageStep = (
             formDefinition={form}
             response={formResponses[form._id]?.response}
             requiredAlert={displayRequiredAlerts}
+            alertMessage="This question is required."
             onUserResponseChanged={(res) =>
               handleResponseChanged(form._id, {
                 response: res,

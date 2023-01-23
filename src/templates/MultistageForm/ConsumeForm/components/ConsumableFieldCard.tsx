@@ -5,8 +5,9 @@ import {
   MultistageFormField,
 } from "../../../../services/multistageFormActivity.model";
 
-
-type ResponseValidResult = { type: "valid" } | { type: "invalid"; reason: string } // ResponseValidResult
+type ResponseValidResult =
+  | { type: "valid" }
+  | { type: "invalid"; reason: string }; // ResponseValidResult
 
 /**
  * Interfaz destinada a representar una entrada en un "diccionario de mappings" entre
@@ -33,13 +34,18 @@ export interface FieldResponseMappingEntry<
   ) => JSX.Element;
   /** Default value for FieldPayload */
   defaultFieldResponse: R["response"];
-  /** Method to check the completion status for given response type under a certain field definition.
-   * Adding the field definition here allows to create completion criteria that depend on the question itself.
-   * Defaults to completed if not provided. */
+  /** Function to check the validity status for given response type under a certain field definition.
+   * Adding the field definition here allows to create validity criteria that depend on the question itself.
+   * Defaults to valid if not provided. */
   isFieldResponseValid?: (
     fieldDefinition: F["payload"],
     response: R["response"]
   ) => ResponseValidResult;
+  /** Function to check whether a field response is empty or not. Defaults to false if not provided. */
+  isFieldResponseEmpty?: (
+    fieldDefinition: F["payload"],
+    response: R["response"]
+  ) => boolean;
 } // FieldResponseMappingEntry
 
 export type FieldResponseMappings<
@@ -109,16 +115,24 @@ export const ConsumableFieldCard = (
       ? { type: "valid" }
       : fieldMapping.isFieldResponseValid(formPayload, formResponse);
 
+  const responseEmpty: boolean =
+    fieldMapping.isFieldResponseEmpty === undefined
+      ? false
+      : fieldMapping.isFieldResponseEmpty(formPayload, formResponse);
+
   return (
     <>
       {fieldMapping.consumptionComponentProducer({
         ...formDefinition,
         promptText: formDefinition.promptText,
         required: formDefinition.required,
-        requiredAlert: requiredAlert && formDefinition.required,
+        requiredAlert: requiredAlert && formDefinition.required && responseEmpty,
         alertMessage: alertMessage,
         invalidAlert: invalidAlert && responseValid.type === "invalid",
-        invalidMessage: responseValid.type === "invalid" ? responseValid.reason : invalidMessage,
+        invalidMessage:
+          responseValid.type === "invalid"
+            ? responseValid.reason
+            : invalidMessage,
         fieldPayload: formPayload,
         response: formResponse,
         onResponseChanged: handleResponseChanged,

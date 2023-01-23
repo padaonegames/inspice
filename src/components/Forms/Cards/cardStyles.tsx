@@ -12,8 +12,9 @@ export const PromptText = styled.div`
   font-weight: 400;
   color: ${(props) => props.theme.textColor};
   font-family: ${(props) => props.theme.contentFont};
-  line-height: 135%;
+  line-height: 150%;
   width: 100%;
+  white-space: pre-wrap;
 `;
 
 export const InputFile = styled.input`
@@ -282,7 +283,8 @@ export const CardPanel = styled.div<CardPanelProps>`
     `}
 
   border-radius: 8px;
-  width: 100%;
+  width: fit-content;
+  min-width: 100%;
   height: fit-content;
   word-wrap: break-word;
   display: flex;

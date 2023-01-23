@@ -19,8 +19,6 @@ import {
 import { Delete } from "@styled-icons/fluentui-system-regular/Delete";
 import { Cancel } from "@styled-icons/material-outlined/Cancel";
 import { ImageAdd } from "@styled-icons/boxicons-regular/ImageAdd";
-import ShortTextInputCard from "../../../../components/Forms/Cards/ShortTextInputCard";
-import LongTextInputCard from "../../../../components/Forms/Cards/LongTextInputCard";
 import NumberInputCard from "../../../../components/Forms/Cards/NumberInputCard";
 import TagsInputCard from "../../../../components/Forms/Cards/TagsInputCard";
 

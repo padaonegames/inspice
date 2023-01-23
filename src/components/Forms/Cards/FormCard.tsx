@@ -48,6 +48,11 @@ export const FormCard = (props: FormCardProps): JSX.Element => {
     children,
   } = props;
 
+  const splitByLineBreaks = promptText ? promptText.split("\n") : [];
+  const renderedText = splitByLineBreaks.flatMap((text, i) =>
+    i + 1 < splitByLineBreaks.length ? [text, <br />] : [text]
+  );
+
   return (
     <Root {...props}>
       <CardPanel
@@ -56,24 +61,23 @@ export const FormCard = (props: FormCardProps): JSX.Element => {
         addFocusEffect={addFocusEffect}
         addPadding={addPadding}
       >
-        {promptText !== undefined && (
+        {
           <PromptText>
-            {promptText}
+            {renderedText}
             {required && <RequiredAsterisk> *</RequiredAsterisk>}
           </PromptText>
-        )}
+        }
         <CardChildrenContainer layout={childrenLayout}>
           {children}
         </CardChildrenContainer>
-        {requiredAlert ||
-          (invalidAlert && (
-            <RequiredQuestionSpan>
-              <RequiredAlertIcon />{" "}
-              {requiredAlert
-                ? alertMessage ?? "This item is required."
-                : invalidMessage ?? "Please provide a valid response."}
-            </RequiredQuestionSpan>
-          ))}
+        {(requiredAlert || invalidAlert) && (
+          <RequiredQuestionSpan>
+            <RequiredAlertIcon />{" "}
+            {requiredAlert
+              ? alertMessage ?? "This item is required."
+              : invalidMessage ?? "Please provide a valid response."}
+          </RequiredQuestionSpan>
+        )}
       </CardPanel>
     </Root>
   );
