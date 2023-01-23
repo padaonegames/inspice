@@ -111,7 +111,7 @@ export const EditableUnlockPasswordItemContent = (
       <LongTextInputCard
         promptText="Enter some feedback for the user after introducing a WRONG password:"
         fieldPayload={{ placeholder: "Start typing your feedback" }}
-        response={{ text: description }}
+        response={{ text: wrongAnswerFeedback }}
         onResponseChanged={(res) => handleEditFeedback(res.text)}
         required
       />
