@@ -349,6 +349,8 @@ export interface UnlockPasswordItemDefinition {
   description: string;
   /** whether to display this lock in hour format (00:00). Defaults to false. */
   hoursEnabled?: boolean;
+  /** feedback to be provided to the user after inputting a wrong combination */
+  wrongAnswerFeedback?: string;
 } // UnlockPasswordItemDefinition
 
 export interface Dialogue {

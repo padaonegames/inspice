@@ -50,7 +50,12 @@ export const EditableUnlockPasswordItemContent = (
 ): JSX.Element => {
   const { payload, onPayloadChanged } = props;
 
-  const { description, password, hoursEnabled } = payload;
+  const {
+    description,
+    password,
+    hoursEnabled,
+    wrongAnswerFeedback = "",
+  } = payload;
 
   const handleEditDescription = (value: string) => {
     if (!onPayloadChanged) return;
@@ -59,6 +64,14 @@ export const EditableUnlockPasswordItemContent = (
       description: value,
     });
   }; // handleEditDescription
+
+  const handleEditFeedback = (value: string) => {
+    if (!onPayloadChanged) return;
+    onPayloadChanged({
+      ...payload,
+      wrongAnswerFeedback: value,
+    });
+  }; // handleEditFeedback
 
   const handleEditPassword = (value: number[]) => {
     if (!onPayloadChanged) return;
@@ -93,6 +106,13 @@ export const EditableUnlockPasswordItemContent = (
         response={{ password }}
         fieldPayload={{ hoursEnabled }}
         onResponseChanged={(res) => handleEditPassword(res.password)}
+        required
+      />
+      <LongTextInputCard
+        promptText="Enter some feedback for the user after introducing a WRONG password:"
+        fieldPayload={{ placeholder: "Start typing your feedback" }}
+        response={{ text: description }}
+        onResponseChanged={(res) => handleEditFeedback(res.text)}
         required
       />
       <CheckBoxGroupInputCard
