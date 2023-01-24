@@ -152,17 +152,15 @@ export const Header = (props: HeaderProps) => {
     useState<boolean>(false);
 
   const isTabletOrMobile = useMediaQuery({ query: "(max-width: 1224px)" });
-
   return (
     <>
       <Root>
-        {navigationEntries.length > 0 ||
-          (sideMenuMode !== "none" && (
-            <BurgerIcon
-              open={openMenu}
-              onClick={() => setOpenMenu((prev) => !prev)}
-            />
-          ))}
+        {(navigationEntries.length > 0 || sideMenuMode !== "none") && (
+          <BurgerIcon
+            open={openMenu}
+            onClick={() => setOpenMenu((prev) => !prev)}
+          />
+        )}
 
         <HeaderLogo
           src={SpiceLogo}
