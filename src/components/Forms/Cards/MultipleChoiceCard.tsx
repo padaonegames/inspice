@@ -31,7 +31,7 @@ export const MultipleChoiceCard = (
     ...formProps
   } = props;
 
-  const { answers, maxAnswers } = fieldPayload;
+  const { answers, maxAnswers = answers.length } = fieldPayload;
   const { selectedResponses } = response;
 
   const handleAnswerToggle = (index: number) => {
@@ -42,8 +42,12 @@ export const MultipleChoiceCard = (
         selectedResponses: selectedResponses.filter((e) => e !== index),
       });
     } else {
-      // answer not present => add to list
-      onResponseChanged({ selectedResponses: [...selectedResponses, index] });
+      // answer not present => add to list if maxAnswers > 1
+      if (maxAnswers > 1) {
+        onResponseChanged({ selectedResponses: [...selectedResponses, index] });
+      } else {
+        onResponseChanged({ selectedResponses: [index] });
+      }
     }
   }; // handleAnswerToggle
 

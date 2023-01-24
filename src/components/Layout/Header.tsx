@@ -10,6 +10,7 @@ import { DotsVerticalRounded } from "@styled-icons/boxicons-regular/DotsVertical
 import DropdownMenu, { DropdownMenuOption } from "../Forms/DropdownMenu";
 import { DropdownSelector } from "../Forms/DropdownSelector";
 import SpiceLogo from "./spice-logo.png";
+import { useMediaQuery } from "react-responsive";
 
 interface BurgerIconProps {
   open?: boolean;
@@ -150,16 +151,16 @@ export const Header = (props: HeaderProps) => {
   const [actionsDropdownOpen, setActionsDropdownOpen] =
     useState<boolean>(false);
 
+  const isTabletOrMobile = useMediaQuery({ query: "(max-width: 1224px)" });
   return (
     <>
       <Root>
-        {navigationEntries.length > 0 ||
-          (sideMenuMode !== "none" && (
-            <BurgerIcon
-              open={openMenu}
-              onClick={() => setOpenMenu((prev) => !prev)}
-            />
-          ))}
+        {(navigationEntries.length > 0 || sideMenuMode !== "none") && (
+          <BurgerIcon
+            open={openMenu}
+            onClick={() => setOpenMenu((prev) => !prev)}
+          />
+        )}
 
         <HeaderLogo
           src={SpiceLogo}
@@ -167,7 +168,10 @@ export const Header = (props: HeaderProps) => {
           onClick={onHeaderIconClicked}
           disabled={onHeaderIconClicked === undefined}
         />
-        <AppName>{`${activityTitle && `${activityTitle}`}`}</AppName>
+        {!isTabletOrMobile && (
+          <AppName>{`${activityTitle && `${activityTitle}`}`}</AppName>
+        )}
+
         <ThemeSwitch>
           {headerActions.length > 0 && (
             <>

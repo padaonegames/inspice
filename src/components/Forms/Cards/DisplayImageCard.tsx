@@ -1,10 +1,19 @@
 import {
   DisplayImageFieldDefinition,
   ConsumableFieldProps,
+  DisplayImageSizing,
+  availableImageSizings,
 } from "../../../services/multistageFormActivity.model";
-import { ImagePreview, InputText } from "./cardStyles";
+import CheckBoxInput from "../CheckBoxInput";
+import {
+  CheckboxList,
+  CheckboxOption,
+  ImagePreview,
+  InputText,
+} from "./cardStyles";
 import { EditableFieldProps } from "./EditableFieldCard";
 import FormCard from "./FormCard";
+import MultipleChoiceCard from "./MultipleChoiceCard";
 
 const preview_image =
   "https://icons.iconarchive.com/icons/ccard3dev/dynamic-yosemite/512/Preview-icon.png";
@@ -15,11 +24,11 @@ export interface DisplayImageCardProps
 export const DisplayImageCard = (props: DisplayImageCardProps): JSX.Element => {
   const { fieldPayload, ...formProps } = props;
 
-  const { src } = fieldPayload;
+  const { src, sizing } = fieldPayload;
 
   return (
     <FormCard {...formProps}>
-      <ImagePreview src={src} />
+      <ImagePreview src={src} sizing={sizing} />
     </FormCard>
   );
 }; // DisplayImageCard
@@ -35,7 +44,7 @@ export const EditableDisplayImageCardContent = (
 ): JSX.Element => {
   const { fieldPayload, onPayloadChanged } = props;
 
-  const { src } = fieldPayload;
+  const { src, sizing = "medium" } = fieldPayload;
 
   const handleEditImageSource = (value: string) => {
     if (!onPayloadChanged) return;
@@ -44,6 +53,14 @@ export const EditableDisplayImageCardContent = (
       src: value,
     });
   }; // handleEditImageSource
+
+  const handleEditImageSizing = (value: DisplayImageSizing) => {
+    if (!onPayloadChanged) return;
+    onPayloadChanged({
+      ...fieldPayload,
+      sizing: value,
+    });
+  }; // handleEditImageSizing
 
   const isValidURL = (link: string) => {
     var res = link.match(
@@ -62,7 +79,29 @@ export const EditableDisplayImageCardContent = (
         value={src}
         onChange={(event) => handleEditImageSource(event.target.value)}
       />
-      <ImagePreview src={isValidURL(src) ? src : preview_image} />
+      <ImagePreview
+        src={isValidURL(src) ? src : preview_image}
+        sizing={sizing}
+      />
+      {isValidURL(src) && (
+        <MultipleChoiceCard
+          promptText="Select a size for this image:"
+          required
+          fieldPayload={{ answers: [...availableImageSizings], maxAnswers: 1 }}
+          response={{
+            selectedResponses: [
+              sizing === "small" ? 0 : sizing === "medium" ? 1 : 2,
+            ],
+          }}
+          onResponseChanged={(res) =>
+            handleEditImageSizing(
+              res.selectedResponses.length > 0
+                ? availableImageSizings[res.selectedResponses[0]]
+                : "medium"
+            )
+          }
+        />
+      )}
     </>
   );
 }; // EditableDisplayImageCardContent

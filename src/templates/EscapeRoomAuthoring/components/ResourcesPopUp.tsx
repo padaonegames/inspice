@@ -252,13 +252,13 @@ export interface ResourcesPopUpProps {
 
 export const ResourcesPopUp = (props: ResourcesPopUpProps): JSX.Element => {
   // TODO: This is not the cleanest solution.
-  const { id } = useParams();
+  const { activityId } = useParams();
 
-  if (!id) {
+  if (!activityId) {
     return <>No id found</>;
   }
 
-  return <ResourcesPopUpLogicWrapper {...props} id={id} />;
+  return <ResourcesPopUpLogicWrapper {...props} id={activityId} />;
 }; // ResourcesPopUp
 
 interface ResourcesPopUpLogicWrapperProps extends ResourcesPopUpProps {

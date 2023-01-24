@@ -48,7 +48,6 @@ export const multistageFormActivityConsumptionApi = api.injectEndpoints({
         method: "POST",
         body: responses,
       }),
-      transformResponse: (response: { data: any }) => response.data,
     }),
     /** GET all activity definitions. */
     getMultistageFormResponsesToActivity: builder.query<

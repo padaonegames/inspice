@@ -62,6 +62,10 @@ export interface ConsumableFieldProps<FieldPayload, FieldResponse>
   requiredAlert?: boolean;
   /** Message to display if requiredAlert is set to true */
   alertMessage?: string;
+  /** True if field response is invalid*/
+  invalidAlert?: boolean;
+  /** Message to display if invalidAlert is set to true */
+  invalidMessage?: string;
   /** Definition to be used to render the stateless consumable field component */
   fieldPayload: FieldPayload;
   /** Current response to be rendered by the component */
@@ -282,9 +286,15 @@ export interface TagsResponseDefinition {
 //-------------------------
 //    DISPLAY IMAGE FIELD
 //-------------------------
+
+export const availableImageSizings = ["small", "medium", "large"] as const; // availableImageSizings
+
+export type DisplayImageSizing = typeof availableImageSizings[number];
 export interface DisplayImageFieldDefinition {
   /** source of the image to display */
   src: string;
+  /** sizing of the image */
+  sizing?: DisplayImageSizing;
 } // DisplayImageFieldDefinition
 
 //-------------------------

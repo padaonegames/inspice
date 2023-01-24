@@ -30,15 +30,12 @@ interface MultistageFormConsumptionSliceState {
   formResponses: FormResponseMap;
   /** array to buffer the responses applied on the active form before server update batches. */
   responseBuffer: FormResponse[];
-  /** currently selected stage. */
-  selectedStageId: string | undefined;
 } // MultistageFormConsumptionSliceState
 
 const initialState: MultistageFormConsumptionSliceState = {
   activityDefinition: initialActivityDefinition,
   formResponses: {},
   responseBuffer: [],
-  selectedStageId: undefined,
 };
 
 interface BufferablePayload {
@@ -91,12 +88,6 @@ const slice = createSlice({
       if (!bufferAction) return;
       bufferResponse(state, { formId, data });
     },
-    selectedStageIdChanged(
-      state,
-      { payload: { stageId } }: PayloadAction<{ stageId: string | undefined }>
-    ) {
-      state.selectedStageId = stageId;
-    },
   },
   extraReducers: (builder) => {
     /**
@@ -120,8 +111,6 @@ const slice = createSlice({
            * partimos siempre de un objeto de respuesta válido en todos los elementos del formulario.
            */
           state.activityDefinition = payload;
-          if (payload.stages.length > 0)
-            state.selectedStageId = payload.stages[0]._id;
           payload.stages.forEach((stage) => {
             stage.forms.forEach((form) => {
               state.formResponses[form._id] = {
@@ -141,7 +130,7 @@ const slice = createSlice({
 
 export default slice.reducer;
 
-export const { formResponseChanged, selectedStageIdChanged } = slice.actions;
+export const { formResponseChanged } = slice.actions;
 
 export const selectActivityId = (state: RootState) =>
   state.multistageFormConsumption.activityDefinition._id;
@@ -176,9 +165,7 @@ export const selectStageIds = (state: RootState) =>
   state.multistageFormConsumption.activityDefinition.stages.map(
     (stage) => stage._id
   );
-export const selectCurrentStage = (state: RootState) =>
+export const selectStageById = (id: string) => (state: RootState) =>
   state.multistageFormConsumption.activityDefinition.stages.find(
-    (stage) => stage._id === state.multistageFormConsumption.selectedStageId
+    (stage) => stage._id === id
   );
-export const selectCurrentStageId = (state: RootState) =>
-  state.multistageFormConsumption.selectedStageId;

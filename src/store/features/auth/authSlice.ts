@@ -23,6 +23,11 @@ const initialState: AuthState = storedState
       userData: undefined,
       accessToken: undefined,
     };
+if (storedState) {
+  axios.defaults.headers.common[
+    "Authorization"
+  ] = `Bearer ${initialState.accessToken}`;
+}
 
 const slice = createSlice({
   name: "auth",
@@ -59,8 +64,6 @@ const slice = createSlice({
           "Authorization"
         ] = `Bearer ${accessToken}`;
       }
-      state.userData = accessToken ? userData : undefined;
-      state.accessToken = userData ? accessToken : undefined;
     },
   },
 });

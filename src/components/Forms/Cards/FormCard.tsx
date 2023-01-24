@@ -5,6 +5,7 @@ import {
   RequiredAsterisk,
   RequiredQuestionSpan,
   RequiredAlertIcon,
+  CardChildrenContainer,
 } from "./cardStyles";
 
 export interface FormCardProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -16,10 +17,18 @@ export interface FormCardProps extends React.HTMLAttributes<HTMLDivElement> {
   requiredAlert?: boolean;
   /** alert message to be displayed when required alert is set to true */
   alertMessage?: string;
+  /** True if field response is invalid*/
+  invalidAlert?: boolean;
+  /** Message to display if invalidAlert is set to true */
+  invalidMessage?: string;
   /** whether to add padding to this card */
   addPadding?: boolean;
   /** whether to add a focus effect to the side of the card when being interacted with */
   addFocusEffect?: boolean;
+  /** whether this card should be a visible container or just provide layout */
+  showCardBackground?: boolean;
+  /** layout for the card children */
+  childrenLayout?: "column" | "row";
   /** what to render within this card */
   children?: React.ReactNode;
 }
@@ -30,28 +39,43 @@ export const FormCard = (props: FormCardProps): JSX.Element => {
     requiredAlert,
     required,
     alertMessage,
+    invalidAlert,
+    invalidMessage,
     addPadding,
     addFocusEffect,
+    showCardBackground = true,
+    childrenLayout = "column",
     children,
   } = props;
+
+  const splitByLineBreaks = promptText ? promptText.split("\n") : [];
+  const renderedText = splitByLineBreaks.flatMap((text, i) =>
+    i + 1 < splitByLineBreaks.length ? [text, <br />] : [text]
+  );
 
   return (
     <Root {...props}>
       <CardPanel
-        requiredAlert={requiredAlert}
+        showCardBackground={showCardBackground}
+        requiredAlert={requiredAlert || invalidAlert}
         addFocusEffect={addFocusEffect}
         addPadding={addPadding}
       >
-        {promptText !== undefined && (
+        {
           <PromptText>
-            {promptText}
+            {renderedText}
             {required && <RequiredAsterisk> *</RequiredAsterisk>}
           </PromptText>
-        )}
-        {children}
-        {requiredAlert && (
+        }
+        <CardChildrenContainer layout={childrenLayout}>
+          {children}
+        </CardChildrenContainer>
+        {(requiredAlert || invalidAlert) && (
           <RequiredQuestionSpan>
-            <RequiredAlertIcon /> {alertMessage ?? "This item is required."}
+            <RequiredAlertIcon />{" "}
+            {requiredAlert
+              ? alertMessage ?? "This item is required."
+              : invalidMessage ?? "Please provide a valid response."}
           </RequiredQuestionSpan>
         )}
       </CardPanel>
