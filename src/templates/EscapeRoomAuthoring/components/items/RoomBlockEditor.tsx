@@ -141,7 +141,7 @@ export const RoomBlockEditor = (props: RoomBlockEditorProps): JSX.Element => {
     if (missingIdFound) {
       onPayloadChanged({ ...block, puzzles: blockCopyPuzzles });
     }
-  }, []);
+  }, [block]);
 
   // -----------------------------------------------------
   //      Methods to manipulate the entire block data
