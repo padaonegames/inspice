@@ -101,6 +101,7 @@ import {
 } from "./components/items/PackPuzzleItem";
 import ActivityScreen from "../../screens/ActivityScreen";
 import { HeaderAction } from "../../components/Layout/Header";
+import { ObjectID } from "bson";
 
 const Root = styled.main`
   display: flex;
@@ -288,23 +289,24 @@ export const stageSlidesMappings: StageToSlideProducerMapping<SupportedStage> =
 //                    Defaults
 //-------------------------------------------------------
 
-const sample_stage: SupportedStage = {
+const createNewStage = (): SupportedStage => ({
   type: "room",
   payload: default_room,
-}; // sample_stage
+  _id: new ObjectID().toString(),
+}); // createNewStage
 
-const sample_base: EscapeRoomActivityDefinition = {
+const createNewActivity = (): EscapeRoomActivityDefinition => ({
   activityTitle: "",
   authorId: "",
   authorUsername: "",
-  stages: [sample_stage],
+  stages: [createNewStage()],
   characters: [],
   diaryPages: [],
   _id: "",
   applicationIconSrc: "",
   apkId: "",
   versionNumber: "",
-}; // sample_base
+}); // createNewActivity
 
 //-------------------------------------------------------
 //                 State Definition
@@ -510,8 +512,8 @@ export const CreateEscapeRoomScreenComponent = (
   const [activityDefinition, setActivityDefinition] =
     useState<EscapeRoomActivityDefinition>(
       initialActivityDefinition
-        ? { ...sample_base, ...initialActivityDefinition }
-        : { ...sample_base }
+        ? { ...createNewActivity(), ...initialActivityDefinition }
+        : { ...createNewActivity() }
     );
 
   // currently selected stage from activityDefinition.stages
@@ -569,7 +571,7 @@ export const CreateEscapeRoomScreenComponent = (
   const handleAddStage = () => {
     setActivityDefinition((prev) => {
       let next = cloneDeep(prev);
-      next.stages = [...next.stages, sample_stage];
+      next.stages = [...next.stages, createNewStage()];
       return next;
     });
   }; // handleAddStage

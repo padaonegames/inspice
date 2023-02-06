@@ -1,7 +1,7 @@
 import { useState } from "react";
 import {
   default_room,
-  default_room_block,
+  createNewRoomBlock,
   EditableItemProps,
   RoomBlock,
   RoomDefinition,
@@ -171,7 +171,7 @@ export const EditableRoomItemContent = (
     if (!onPayloadChanged) return;
     onPayloadChanged({
       ...payload,
-      blocks: [...blocks, default_room_block],
+      blocks: [...blocks, createNewRoomBlock()],
     });
   }; // handleAddBlock
 

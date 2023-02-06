@@ -2,7 +2,9 @@
 //           ITEM DEFINITIONS (STAGES + PUZZLES)
 // ---------------------------------------------------------------
 
-export type ItemDefinition =
+import { ObjectID } from "bson";
+
+export type ItemDefinition = { _id: string } & (
   | { type: "pack-puzzle"; payload: PackPuzzleItemDefinition }
   | { type: "object-obtained"; payload: ObjectObtainedItemDefinition }
   | { type: "diary-page"; payload: DiaryPageItemDefinition }
@@ -19,7 +21,8 @@ export type ItemDefinition =
   | { type: "load-scene"; payload: LoadSceneDefinition }
   | { type: "narrative"; payload: NarrativeItemDefinition }
   | { type: "session-code"; payload: SessionCodeDefinition }
-  | { type: "unlock-password"; payload: UnlockPasswordItemDefinition }; // ItemDefinition
+  | { type: "unlock-password"; payload: UnlockPasswordItemDefinition }
+); // ItemDefinition
 
 export const escapeRoomStageTypes = [
   "pack-puzzle",
@@ -74,8 +77,9 @@ export type SupportedPuzzle = Extract<
 >; // SupportedPuzzle
 
 /** Default puzzle definition */
-export const default_puzzle: SupportedPuzzle = {
+export const createNewPuzzle = (): SupportedPuzzle => ({
   type: "multiple-choice-test",
+  _id: new ObjectID().toString(),
   payload: {
     prompt: "",
     correctAnswers: [0],
@@ -83,7 +87,7 @@ export const default_puzzle: SupportedPuzzle = {
     minAnswers: 1,
     maxAnswers: 1,
   },
-}; // default_puzzle
+}); // default_puzzle
 
 // ---------------------------------------------------------------
 //                    ACTIVITY DEFINITIONS
@@ -198,11 +202,11 @@ export interface RoomBlock {
 } // RoomBlock
 
 /** Default definition for a Room Block */
-export const default_room_block: RoomBlock = {
+export const createNewRoomBlock = (): RoomBlock => ({
   blockName: "Default Name",
   blockDescription: "Default Description",
-  puzzles: [default_puzzle],
-}; // default_room_block
+  puzzles: [createNewPuzzle()],
+}); // default_room_block
 
 // ---------------------------------------------------------------
 //                            UTILS
