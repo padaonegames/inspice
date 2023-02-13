@@ -187,6 +187,8 @@ export const default_room: RoomDefinition = {
   exitBlock: {
     blockName: "Solve Room",
     blockDescription: "",
+    blockClueImageSrc: "",
+    blockClueTextSrc: "",
     puzzles: [],
   },
   lockExitBlockUntilMainBlocksCompleted: true,
@@ -197,14 +199,20 @@ export interface RoomBlock {
   blockName: string;
   /** description that will be shown to the user before actually playing the block itself (with contents of the block and general hints) */
   blockDescription: string;
+  /** link to the image that will be displayed as the block "clue" after completing its puzzles. */
+  blockClueImageSrc: string;
+  /** text to be displayed along with the clue image after completing this block. */
+  blockClueTextSrc: string;
   /** Sequence of (ordered) puzzles and items to be displayed after selecting this room block */
   puzzles: SupportedPuzzle[];
-} // RoomBlock
+}
 
 /** Default definition for a Room Block */
 export const createNewRoomBlock = (): RoomBlock => ({
   blockName: "Default Name",
   blockDescription: "Default Description",
+  blockClueImageSrc: "",
+  blockClueTextSrc: "",
   puzzles: [createNewPuzzle()],
 }); // default_room_block
 

@@ -15,6 +15,7 @@ import ShortTextInputCard from "../../../../components/Forms/Cards/ShortTextInpu
 import LongTextInputCard from "../../../../components/Forms/Cards/LongTextInputCard";
 import { ObjectID } from "bson";
 import { cloneDeep } from "lodash";
+import { ImageSelectionCard } from "../cards/ImageSelectionCard";
 
 const Root = styled.div`
   position: relative;
@@ -162,6 +163,22 @@ export const RoomBlockEditor = (props: RoomBlockEditorProps): JSX.Element => {
     });
   }; // handleChangeBlockDescription
 
+  const handleChangeBlockClueImageSrc = (imageSrc: string) => {
+    if (!onPayloadChanged) return;
+    onPayloadChanged({
+      ...block,
+      blockClueImageSrc: imageSrc,
+    });
+  }; // handleChangeBlockClueImageSrc
+
+  const handleChangeBlockClueText = (text: string) => {
+    if (!onPayloadChanged) return;
+    onPayloadChanged({
+      ...block,
+      blockClueTextSrc: text,
+    });
+  }; // handleChangeBlockClueText
+
   // -----------------------------------------------------
   //  Methods to manipulate the puzzles inside this block
   // -----------------------------------------------------
@@ -298,6 +315,21 @@ export const RoomBlockEditor = (props: RoomBlockEditorProps): JSX.Element => {
         promptText="Block Description:"
         response={{ text: block.blockDescription }}
         onResponseChanged={(res) => handleChangeBlockDescription(res.text)}
+        onMouseEnter={() => {
+          setSelectedPuzzleIndex(-1);
+        }}
+      />
+      <ImageSelectionCard
+        promptText="Image to display as a clue obtained after completing this block:"
+        fieldPayload={{}}
+        response={{ imageSrc: block.blockClueImageSrc }}
+        onResponseChanged={(res) => handleChangeBlockClueImageSrc(res.imageSrc)}
+      />
+      <ShortTextInputCard
+        fieldPayload={{ placeholder: "Give this block a text clue" }}
+        promptText="Text to display as a clue obtained after completing this block (alongside image):"
+        response={{ text: block.blockClueTextSrc }}
+        onResponseChanged={(res) => handleChangeBlockClueText(res.text)}
         onMouseEnter={() => {
           setSelectedPuzzleIndex(-1);
         }}
