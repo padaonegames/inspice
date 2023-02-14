@@ -171,6 +171,14 @@ export const RoomBlockEditor = (props: RoomBlockEditorProps): JSX.Element => {
     });
   }; // handleChangeBlockClueImageSrc
 
+  const handleChangeBlockImageSrc = (imageSrc: string) => {
+    if (!onPayloadChanged) return;
+    onPayloadChanged({
+      ...block,
+      blockImageSrc: imageSrc,
+    });
+  }; // handleChangeBlockImageSrc
+
   const handleChangeBlockClueText = (text: string) => {
     if (!onPayloadChanged) return;
     onPayloadChanged({
@@ -309,6 +317,12 @@ export const RoomBlockEditor = (props: RoomBlockEditorProps): JSX.Element => {
         onMouseEnter={() => {
           setSelectedPuzzleIndex(-1);
         }}
+      />
+      <ImageSelectionCard
+        promptText="Image to represent this block before being played:"
+        fieldPayload={{}}
+        response={{ imageSrc: block.blockImageSrc }}
+        onResponseChanged={(res) => handleChangeBlockImageSrc(res.imageSrc)}
       />
       <LongTextInputCard
         fieldPayload={{ placeholder: "Enter a description for this block" }}

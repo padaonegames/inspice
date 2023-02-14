@@ -178,6 +178,8 @@ export interface RoomDefinition {
   availableTime: number;
   /** whether exit block should be blocked until completing all other room sections */
   lockExitBlockUntilMainBlocksCompleted: boolean;
+  /** whether to randomize the order in which blocks are displayed in the application */
+  randomizeOrder: boolean;
 } // RoomDefinition
 
 export const default_room: RoomDefinition = {
@@ -186,17 +188,21 @@ export const default_room: RoomDefinition = {
   availableTime: 20,
   exitBlock: {
     blockName: "Solve Room",
+    blockImageSrc: "",
     blockDescription: "",
     blockClueImageSrc: "",
     blockClueTextSrc: "",
     puzzles: [],
   },
   lockExitBlockUntilMainBlocksCompleted: true,
+  randomizeOrder: true,
 }; // default_room
 
 export interface RoomBlock {
   /**display name for a room block (name that will be rendered when choosing what block to play next by the user) */
   blockName: string;
+  /** link to the image that will be displayed to represent a block before playing it. */
+  blockImageSrc: string;
   /** description that will be shown to the user before actually playing the block itself (with contents of the block and general hints) */
   blockDescription: string;
   /** link to the image that will be displayed as the block "clue" after completing its puzzles. */
@@ -211,6 +217,7 @@ export interface RoomBlock {
 export const createNewRoomBlock = (): RoomBlock => ({
   blockName: "Default Name",
   blockDescription: "Default Description",
+  blockImageSrc: "",
   blockClueImageSrc: "",
   blockClueTextSrc: "",
   puzzles: [createNewPuzzle()],
