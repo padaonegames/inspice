@@ -1,6 +1,6 @@
 {
   "basicInformation": "Basic Information",
-  "welcomeToGamGame": "Welcome to GAM Game!\nIf you are visiting the museum in person, you can click on \"scan QR\" when you find a work you find interesting in the exhibition to learn more about it, create related stories, and explore the stories created by other users.\nIf you are using this application from outside the museum, or you simply want to explore every artwork included without having to use a QR code, you can click on \"Collection\" to access a full list of pieces that are part of this game.\nLastly, you can click on \"My Stories\" to browse the content that you have generated from this application.",
+  "welcomeToGamGame": "<text>Welcome to the GAM Game!<br/>With this app, you can <createStoriesLink>Create Stories</createStoriesLink> using the artworks in the GAM Collection and see other people’s stories.<br/>Click on <collectionLink>Collection</collectionLink> to access the full list of pieces that are part of the game and explore the stories created by the other users.<br/>You can click on <myStoriesLink>My Stories</myStoriesLink> to browse your stories.</text>",
   "home": "Home",
   "collection": "Collection",
   "scanQr": "Scan QR",
@@ -19,7 +19,7 @@
   "username": "Username",
   "logInDescription": "Log in to your InSpice account to create your own content and interact with the museum's artworks.",
   "exploreTheCollection": "Explore the Collection",
-  "exploreTheCollectionDescription": "Here you can find the works included in this activity. Click on any of them to access its information page or interact with its stories.",
+  "exploreTheCollectionDescription": "Click on an artwork to access its information page and interact with its stories.",
   "searchArtworksByTitleOrAuthor": "Search artworks by title or author",
   "scanQrDescription": "Use your device's camera to take a picture of the QR code next to any artwork in this activityand select it from here.",
   "fetchingActivityArtworks": "Fetching activity artworks",
@@ -67,5 +67,8 @@
   "fetchingRecommendedStories": "Fetching recommended stories",
   "exploreSimilarStories": "Explore stories triggering similar emotions",
   "exploreOppositeStories": "Explore stories triggering opposite emotions",
-  "likeThisStory": "Like this story"
+  "likeThisStory": "Like this story",
+  "stories": "Stories",
+  "details": "Details",
+  "youAreAboutToDeleteStory": "You are about to delete your story '{{title}}'.\nProceed with this deletion?"
 }

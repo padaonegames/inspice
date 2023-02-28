@@ -392,6 +392,7 @@ export const StepDescription = styled.div`
   width: 100%;
   margin-top: 5px;
   color: ${(props) => props.theme.textColor};
+  white-space: pre-line;
 `;
 
 export const EditableStepDescription = styled.textarea`

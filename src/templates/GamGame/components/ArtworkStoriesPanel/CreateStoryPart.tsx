@@ -66,7 +66,7 @@ interface TemplateSelectorProps {
 const TemplateSelector = styled.button<TemplateSelectorProps>`
   border-radius: 15px;
   background-color: ${(props) =>
-    props.enabled ? "rgb(196, 76, 73)" : "#cd6764"};
+    props.enabled ? "rgb(196, 76, 73)" : "#e1a5a3"};
   color: ${(props) => (props.enabled ? "white" : "rgb(230, 230, 230)")};
   font-weight: 500;
   font-size: 0.8em;

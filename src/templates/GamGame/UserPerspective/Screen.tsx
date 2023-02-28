@@ -181,11 +181,13 @@ const GamGameUserFlow = ({
       to: "collection",
       icon: Gallery,
     },
+    /*
     {
       title: t("scanQr"),
       to: "scan-qr",
       icon: QrCode,
     },
+    */
     {
       title: t("createStory"),
       to: "stories/create",

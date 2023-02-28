@@ -60,10 +60,10 @@ const ExploreStoriesContainer = styled.div`
 
 const SimilarOppositeOverlayStyle = css`
   position: absolute;
-  bottom: 2.5%;
-  right: -0.2em;
-  height: 0.85em;
-  width: 0.85em;
+  bottom: -0.2em;
+  right: -0.4em;
+  height: 1.2em;
+  width: 1.2em;
   color: ${(props) => props.theme.textColor};
   background-color: ${(props) => props.theme.cardBackground};
   border-radius: 50%;
