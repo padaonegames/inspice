@@ -17,6 +17,9 @@ export interface RoomSettingsEditorProps {
   hints: string[];
   /** callback to parent component notifying of a change in the list of hints (this includes adding, removing or editing a hint) */
   onHintsChanged?: (hints: string[]) => void;
+  /** whether to randomize the order in which room block are displayed in the application */
+  randomizeOrder: boolean;
+  onRandomizeOrderChanged?: (value: boolean) => void;
   /** whether exit block should be locked until all other blocks have been completed */
   lockExitBlockUntilMainBlocksCompleted: boolean;
   onLockExitBlockUntilMainBlocksCompletedChanged?: (value: boolean) => void;
@@ -28,6 +31,8 @@ export const RoomSettingsEditor = (
   const {
     hints,
     onHintsChanged,
+    randomizeOrder,
+    onRandomizeOrderChanged,
     lockExitBlockUntilMainBlocksCompleted,
     onLockExitBlockUntilMainBlocksCompletedChanged,
   } = props;
@@ -44,8 +49,38 @@ export const RoomSettingsEditor = (
     onLockExitBlockUntilMainBlocksCompletedChanged(newValue);
   }; // handlelockExitBlockUntilMainBlocksCompletedChanged
 
+  const handleRandomizeOrderChanged = (newValue: boolean) => {
+    if (!onRandomizeOrderChanged) return;
+    onRandomizeOrderChanged(newValue);
+  }; // handleRandomizeOrderChanged
+
   const exitBlockLockedUntilMainBlocksCompletedKey =
     "Lock exit block until all other blocks are completed.";
+  const randomizeOrderKey =
+    "Randomize order in which room blocks are displayed in Unity.";
+
+  let selectedFields: string[] = [];
+  if (lockExitBlockUntilMainBlocksCompleted)
+    selectedFields.push(exitBlockLockedUntilMainBlocksCompletedKey);
+  if (randomizeOrder) selectedFields.push(randomizeOrderKey);
+
+  const handleAdditionalSettingsChanged = (value: string[]) => {
+    const lockChecked = value.includes(
+      exitBlockLockedUntilMainBlocksCompletedKey
+    );
+    if (lockExitBlockUntilMainBlocksCompleted && !lockChecked) {
+      handleLockExitBlockUntilMainBlocksCompletedChanged(false);
+    } else if (!lockExitBlockUntilMainBlocksCompleted && lockChecked) {
+      handleLockExitBlockUntilMainBlocksCompletedChanged(true);
+    }
+
+    const randomizeOrderChecked = value.includes(randomizeOrderKey);
+    if (randomizeOrder && !randomizeOrderChecked) {
+      handleRandomizeOrderChanged(false);
+    } else if (!randomizeOrder && randomizeOrderChecked) {
+      handleRandomizeOrderChanged(true);
+    }
+  }; // handleAdditionalSettingsChanged
 
   return (
     <Wrapper>
@@ -64,18 +99,17 @@ export const RoomSettingsEditor = (
       />
       <CheckBoxGroupInputCard
         promptText="Additional settings:"
-        fieldPayload={{ fields: [exitBlockLockedUntilMainBlocksCompletedKey] }}
-        response={{
-          selectedFields: lockExitBlockUntilMainBlocksCompleted
-            ? [exitBlockLockedUntilMainBlocksCompletedKey]
-            : [],
+        fieldPayload={{
+          fields: [
+            randomizeOrderKey,
+            exitBlockLockedUntilMainBlocksCompletedKey,
+          ],
         }}
-        onResponseChanged={(value) =>
-          handleLockExitBlockUntilMainBlocksCompletedChanged(
-            value.selectedFields.includes(
-              exitBlockLockedUntilMainBlocksCompletedKey
-            )
-          )
+        response={{
+          selectedFields: selectedFields,
+        }}
+        onResponseChanged={(res) =>
+          handleAdditionalSettingsChanged(res.selectedFields)
         }
       />
     </Wrapper>

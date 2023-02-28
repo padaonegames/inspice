@@ -12,7 +12,7 @@ import {
 } from "./cardStyles";
 
 import { ThreeDotsVertical } from "@styled-icons/bootstrap/ThreeDotsVertical";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import React from "react";
 
 /**
@@ -198,8 +198,6 @@ export const StepTitleCard = (props: StepTitleCardProps): JSX.Element => {
     onActionCliked,
     children,
   } = props;
-
-  useEffect(() => {}, []); // useEffect
 
   return (
     <Root {...props}>

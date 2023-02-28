@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import styled, { css } from "styled-components";
 import {
-  default_puzzle,
+  createNewPuzzle,
   RoomBlock,
   SupportedPuzzle,
 } from "../../../../services/escapeRoomActivity.model";
@@ -13,6 +13,9 @@ import { SlideAdd } from "@styled-icons/fluentui-system-filled/SlideAdd";
 import StepTitleCard from "../../../../components/Forms/Cards/StepTitleCard";
 import ShortTextInputCard from "../../../../components/Forms/Cards/ShortTextInputCard";
 import LongTextInputCard from "../../../../components/Forms/Cards/LongTextInputCard";
+import { ObjectID } from "bson";
+import { cloneDeep } from "lodash";
+import { ImageSelectionCard } from "../cards/ImageSelectionCard";
 
 const Root = styled.div`
   position: relative;
@@ -125,6 +128,22 @@ export const RoomBlockEditor = (props: RoomBlockEditorProps): JSX.Element => {
   const { block, onPayloadChanged } = props;
   const [selectedPuzzleIndex, setSelectedPuzzleIndex] = useState<number>(-1);
 
+  // ÑAPA para que todo tenga _id (por no regenerar toda la base de datos de nuevo)
+  useEffect(() => {
+    let missingIdFound: boolean = false;
+    const blockCopyPuzzles = cloneDeep(block).puzzles.map((p) => {
+      if (!p._id) {
+        missingIdFound = true;
+        return { ...p, _id: new ObjectID().toString() };
+      }
+      return p;
+    });
+
+    if (missingIdFound) {
+      onPayloadChanged({ ...block, puzzles: blockCopyPuzzles });
+    }
+  }, [block]);
+
   // -----------------------------------------------------
   //      Methods to manipulate the entire block data
   // -----------------------------------------------------
@@ -144,6 +163,30 @@ export const RoomBlockEditor = (props: RoomBlockEditorProps): JSX.Element => {
     });
   }; // handleChangeBlockDescription
 
+  const handleChangeBlockClueImageSrc = (imageSrc: string) => {
+    if (!onPayloadChanged) return;
+    onPayloadChanged({
+      ...block,
+      blockClueImageSrc: imageSrc,
+    });
+  }; // handleChangeBlockClueImageSrc
+
+  const handleChangeBlockImageSrc = (imageSrc: string) => {
+    if (!onPayloadChanged) return;
+    onPayloadChanged({
+      ...block,
+      blockImageSrc: imageSrc,
+    });
+  }; // handleChangeBlockImageSrc
+
+  const handleChangeBlockClueText = (text: string) => {
+    if (!onPayloadChanged) return;
+    onPayloadChanged({
+      ...block,
+      blockClueTextSrc: text,
+    });
+  }; // handleChangeBlockClueText
+
   // -----------------------------------------------------
   //  Methods to manipulate the puzzles inside this block
   // -----------------------------------------------------
@@ -153,7 +196,7 @@ export const RoomBlockEditor = (props: RoomBlockEditorProps): JSX.Element => {
       ...block,
       puzzles: [
         ...block.puzzles.slice(0, puzzleIndex + 1),
-        block.puzzles[puzzleIndex],
+        { ...block.puzzles[puzzleIndex], _id: new ObjectID().toString() },
         ...block.puzzles.slice(puzzleIndex + 1, block.puzzles.length),
       ],
     });
@@ -217,7 +260,7 @@ export const RoomBlockEditor = (props: RoomBlockEditorProps): JSX.Element => {
       ...block,
       puzzles: [
         ...block.puzzles.slice(0, puzzleIndex + 1),
-        default_puzzle,
+        createNewPuzzle(),
         ...block.puzzles.slice(puzzleIndex + 1, block.puzzles.length),
       ],
     });
@@ -275,11 +318,32 @@ export const RoomBlockEditor = (props: RoomBlockEditorProps): JSX.Element => {
           setSelectedPuzzleIndex(-1);
         }}
       />
+      <ImageSelectionCard
+        promptText="Image to represent this block before being played:"
+        fieldPayload={{}}
+        response={{ imageSrc: block.blockImageSrc }}
+        onResponseChanged={(res) => handleChangeBlockImageSrc(res.imageSrc)}
+      />
       <LongTextInputCard
         fieldPayload={{ placeholder: "Enter a description for this block" }}
         promptText="Block Description:"
         response={{ text: block.blockDescription }}
         onResponseChanged={(res) => handleChangeBlockDescription(res.text)}
+        onMouseEnter={() => {
+          setSelectedPuzzleIndex(-1);
+        }}
+      />
+      <ImageSelectionCard
+        promptText="Image to display as a clue obtained after completing this block:"
+        fieldPayload={{}}
+        response={{ imageSrc: block.blockClueImageSrc }}
+        onResponseChanged={(res) => handleChangeBlockClueImageSrc(res.imageSrc)}
+      />
+      <ShortTextInputCard
+        fieldPayload={{ placeholder: "Give this block a text clue" }}
+        promptText="Text to display as a clue obtained after completing this block (alongside image):"
+        response={{ text: block.blockClueTextSrc }}
+        onResponseChanged={(res) => handleChangeBlockClueText(res.text)}
         onMouseEnter={() => {
           setSelectedPuzzleIndex(-1);
         }}
@@ -303,7 +367,7 @@ export const RoomBlockEditor = (props: RoomBlockEditorProps): JSX.Element => {
       {block.puzzles.map((puzzle, i) => (
         <>
           <RoomPuzzleSettingsEditor
-            key={puzzle.type + "_" + i}
+            key={puzzle._id ?? puzzle.type + "_" + i}
             puzzle={puzzle}
             deletionEnabled={block.puzzles.length > 1}
             index={i}

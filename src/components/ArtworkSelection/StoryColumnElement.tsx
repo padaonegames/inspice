@@ -10,6 +10,7 @@ import {
 } from "./generalStyles";
 import { Delete } from "@styled-icons/fluentui-system-regular/Delete";
 import styled, { css } from "styled-components";
+import { useTranslation } from "react-i18next";
 
 export const fieldTypeIcon = css`
   color: ${(props) => props.theme.textColor};
@@ -50,12 +51,14 @@ export const StoryListDisplay = (props: StoryListDisplayProps): JSX.Element => {
     onDeleteStory,
   } = props;
 
+  const { t } = useTranslation("gamGame");
+
   const handleDeleteClicked = (
     event: React.MouseEvent<SVGSVGElement, MouseEvent>
   ) => {
     event.stopPropagation();
     const shouldDelete = window.confirm(
-      `You are about to delete your story "${storyData.title}"\nProceed with this deletion?`
+      t("youAreAboutToDeleteStory", { title: storyData.title })
     );
 
     if (shouldDelete && onDeleteStory) {

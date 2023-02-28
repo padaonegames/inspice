@@ -15,6 +15,7 @@ import {
 import StoriesList from "./StoriesList";
 import { GamGameStoryDefinitionData } from "../../../../services/gamGameActivity.model";
 import { ArtworkData } from "../../../../services/artwork.model";
+import { useTranslation } from "react-i18next";
 
 const DetailsIcon = styled(Image)`
   color: ${(props) => props.theme.textColor};
@@ -89,6 +90,8 @@ export const ArtworkStoriesList = (
     onGalleryClicked,
   } = props;
 
+  const { t } = useTranslation("gamGame");
+
   return (
     <ContainerCard upperDecorator>
       <AddStoryButton title="Add a new story" onClick={onCreateStoryClicked}>
@@ -103,10 +106,10 @@ export const ArtworkStoriesList = (
         </DetailMainInfoPanel>
         <DetailActionPanel>
           <DetailsIcon onClick={onShowDetailsClicked} />
-          Details
+          {t("details")}
           <VerticalSpace />
           <GalleryIcon onClick={onGalleryClicked} />
-          Gallery
+          {t("collection")}
         </DetailActionPanel>
       </DetailUpperPanel>
 

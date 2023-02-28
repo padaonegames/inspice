@@ -9,7 +9,7 @@ import { Type } from "@styled-icons/bootstrap/Type";
 import { Sticker } from "@styled-icons/fluentui-system-filled/Sticker";
 import { Delete } from "@styled-icons/fluentui-system-regular/Delete";
 import Draggable, { Position } from "./Draggable";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DetailArtworkDisplay } from "../generalStyles";
 import { useTranslation } from "react-i18next";
 import { ArrowCircleRight } from "@styled-icons/evaicons-solid/ArrowCircleRight";
@@ -226,6 +226,12 @@ export const ArtworkDecorationPanel = (
   const [imageContainerRef, setImageContainerRef] =
     useState<HTMLDivElement | null>(null);
 
+  useEffect(() => {
+    if (!tagsOpen && newTag.length > 0) {
+      handleCreateTag();
+    }
+  }, [tagsOpen]);
+  
   //-----------------------------
   //      BUTTONS MANAGEMENT
   //-----------------------------

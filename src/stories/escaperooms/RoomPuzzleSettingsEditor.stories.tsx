@@ -3,7 +3,7 @@ import {
   ComponentStory,
 } from "@storybook/react/dist/ts3.9/client/preview/types-6-3";
 import { RoomPuzzleSettingsEditor } from "../../templates/EscapeRoomAuthoring/components/items/RoomPuzzleSettingsEditor";
-import { default_puzzle } from "../../services/escapeRoomActivity.model";
+import { createNewPuzzle } from "../../services/escapeRoomActivity.model";
 import { multipleChoiceTestItemFactory } from "../../templates/EscapeRoomAuthoring/components/items/MutipleChoiceTestItem";
 import { qrScanItemFactory } from "../../templates/EscapeRoomAuthoring/components/items/QRScanItem";
 import { arScanItemFactory } from "../../templates/EscapeRoomAuthoring/components/items/ARScanItem";
@@ -11,6 +11,7 @@ import { waitingCodeItemFactory } from "../../templates/EscapeRoomAuthoring/comp
 import { loadSceneItemFactory } from "../../templates/EscapeRoomAuthoring/components/items/LoadSceneItem";
 import { narrativeItemFactory } from "../../templates/EscapeRoomAuthoring/components/items/NarrativeItem";
 import { unlockPasswordItemFactory } from "../../templates/EscapeRoomAuthoring/components/items/UnlockPasswordtem";
+import { ObjectID } from "bson";
 
 export default {
   title: "Escape Rooms/Room Puzzle Settings Editor",
@@ -28,7 +29,7 @@ const Template: ComponentStory<typeof RoomPuzzleSettingsEditor> = (args) => (
 
 export const Default = Template.bind({});
 Default.args = {
-  puzzle: default_puzzle,
+  puzzle: createNewPuzzle(),
   index: 0,
   handleSelectedPuzzleChanged() {},
   handlePuzzleDelete() {},
@@ -40,6 +41,7 @@ Default.args = {
 export const MultipleChoice = Template.bind({});
 MultipleChoice.args = {
   puzzle: {
+    _id: new ObjectID().toString(),
     type: "multiple-choice-test",
     payload: multipleChoiceTestItemFactory.defaultDefinition,
   },
@@ -53,7 +55,11 @@ MultipleChoice.args = {
 
 export const QRScan = Template.bind({});
 QRScan.args = {
-  puzzle: { type: "qr-scan", payload: qrScanItemFactory.defaultDefinition },
+  puzzle: {
+    _id: new ObjectID().toString(),
+    type: "qr-scan",
+    payload: qrScanItemFactory.defaultDefinition,
+  },
   index: 2,
   handleSelectedPuzzleChanged() {},
   handlePuzzleDelete() {},
@@ -64,7 +70,11 @@ QRScan.args = {
 
 export const ARScan = Template.bind({});
 ARScan.args = {
-  puzzle: { type: "ar-scan", payload: arScanItemFactory.defaultDefinition },
+  puzzle: {
+    _id: new ObjectID().toString(),
+    type: "ar-scan",
+    payload: arScanItemFactory.defaultDefinition,
+  },
   index: 3,
   handleSelectedPuzzleChanged() {},
   handlePuzzleDelete() {},
@@ -76,6 +86,7 @@ ARScan.args = {
 export const WaitingCodeItem = Template.bind({});
 WaitingCodeItem.args = {
   puzzle: {
+    _id: new ObjectID().toString(),
     type: "waiting-code",
     payload: waitingCodeItemFactory.defaultDefinition,
   },
@@ -90,6 +101,7 @@ WaitingCodeItem.args = {
 export const LoadSceneItem = Template.bind({});
 LoadSceneItem.args = {
   puzzle: {
+    _id: new ObjectID().toString(),
     type: "load-scene",
     payload: loadSceneItemFactory.defaultDefinition,
   },
@@ -104,6 +116,7 @@ LoadSceneItem.args = {
 export const NarrativeItem = Template.bind({});
 NarrativeItem.args = {
   puzzle: {
+    _id: new ObjectID().toString(),
     type: "narrative",
     payload: narrativeItemFactory.defaultDefinition,
   },
@@ -118,6 +131,7 @@ NarrativeItem.args = {
 export const UnlockPasswordItem = Template.bind({});
 UnlockPasswordItem.args = {
   puzzle: {
+    _id: new ObjectID().toString(),
     type: "unlock-password",
     payload: unlockPasswordItemFactory.defaultDefinition,
   },

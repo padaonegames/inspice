@@ -18,6 +18,7 @@ import {
   DetailMainInfoPanel,
   DetailUpperPanel,
 } from "./generalStyles";
+import { useTranslation } from "react-i18next";
 
 const StoryIcon = styled(FeatherAlt)`
   color: ${(props) => props.theme.textColor};
@@ -49,6 +50,7 @@ export const GeneralArtworkDetail = (
   const navigate = useNavigate();
 
   const artworkData = artworks.find((elem) => elem.id === artworkId);
+  const { t } = useTranslation("gamGame");
 
   if (!artworkData) {
     return <>No artwork found.</>;
@@ -64,10 +66,10 @@ export const GeneralArtworkDetail = (
         </DetailMainInfoPanel>
         <DetailActionPanel>
           <StoryIcon onClick={() => navigate("../stories")} />
-          Stories
+          {t("stories")}
           <VerticalSpace />
           <GalleryIcon onClick={() => navigate("./../../")} />
-          Gallery
+          {t("collection")}
         </DetailActionPanel>
       </DetailUpperPanel>
 

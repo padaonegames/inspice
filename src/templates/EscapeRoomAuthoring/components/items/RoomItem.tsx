@@ -1,7 +1,7 @@
 import { useState } from "react";
 import {
   default_room,
-  default_room_block,
+  createNewRoomBlock,
   EditableItemProps,
   RoomBlock,
   RoomDefinition,
@@ -158,8 +158,13 @@ export const EditableRoomItemContent = (
 ): JSX.Element => {
   const { payload, onPayloadChanged } = props;
 
-  const { exitBlock, blocks, hints, lockExitBlockUntilMainBlocksCompleted } =
-    payload;
+  const {
+    exitBlock,
+    blocks,
+    hints,
+    randomizeOrder,
+    lockExitBlockUntilMainBlocksCompleted,
+  } = payload;
 
   const [selectedBlock, setSelectedBlock] =
     useState<number | "room-settings" | "exit-block">("room-settings");
@@ -171,7 +176,7 @@ export const EditableRoomItemContent = (
     if (!onPayloadChanged) return;
     onPayloadChanged({
       ...payload,
-      blocks: [...blocks, default_room_block],
+      blocks: [...blocks, createNewRoomBlock()],
     });
   }; // handleAddBlock
 
@@ -245,6 +250,14 @@ export const EditableRoomItemContent = (
     });
   }; // handleLockExitBlockUntilMainBlocksCompletedChanged
 
+  const handleRandomizeOrderChanged = (value: boolean) => {
+    if (!onPayloadChanged) return;
+    onPayloadChanged({
+      ...payload,
+      randomizeOrder: value,
+    });
+  }; // handleRandomizeOrderChanged
+
   const currentBlock =
     selectedBlock !== "room-settings" && selectedBlock !== "exit-block"
       ? blocks[selectedBlock]
@@ -273,6 +286,8 @@ export const EditableRoomItemContent = (
         <RoomSettingsEditor
           hints={hints}
           onHintsChanged={handleHintsChanged}
+          randomizeOrder={randomizeOrder}
+          onRandomizeOrderChanged={handleRandomizeOrderChanged}
           lockExitBlockUntilMainBlocksCompleted={
             lockExitBlockUntilMainBlocksCompleted
           }
