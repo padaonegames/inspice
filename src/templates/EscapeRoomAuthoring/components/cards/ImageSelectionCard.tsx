@@ -55,7 +55,7 @@ const actionButtonStyle = css<ButtonProps>`
   `}
 `;
 
-const SelectCharacterButton = styled.button`
+const SelectResourceButton = styled.button`
   ${actionButtonStyle}
   background-color: ${(props) => props.theme.secondaryButtonColor};
   margin: 1em 0;
@@ -104,10 +104,10 @@ export const ImageSelectionCard = (
     setShowResourcesPopUp(show);
   }; // handleShowPopUp
 
-  const handleResourceSelected = (resourceSrc: string) => {
+  const handleResourceSelected = (resourceSrc: string | undefined) => {
     if (!onResponseChanged) return;
     onResponseChanged({
-      imageSrc: resourceSrc,
+      imageSrc: resourceSrc || "",
     });
     setShowResourcesPopUp((prev) => !prev);
   }; // handleResourceSelected
@@ -121,7 +121,7 @@ export const ImageSelectionCard = (
             handleShowPopUp(false);
           }}
           onResourceSelected={handleResourceSelected}
-          popUpTitle="Select an image to scan"
+          popUpTitle="Select an image"
         />
       )}
       <FormCard
@@ -133,14 +133,14 @@ export const ImageSelectionCard = (
       >
         <CharacterPreviewContainer src={imageSrc}>
           {/* Image */}
-          <SelectCharacterButton
+          <SelectResourceButton
             onClick={() => {
               setShowResourcesPopUp(true);
             }}
           >
             <AddImageIcon />
             Select Image
-          </SelectCharacterButton>
+          </SelectResourceButton>
         </CharacterPreviewContainer>
       </FormCard>
     </>

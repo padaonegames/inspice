@@ -236,8 +236,8 @@ export const EscapeRoomCharacterCard = (
     if (onToggleCharacterEditMode) onToggleCharacterEditMode();
   }; // handleEnterEditCharacterMode
 
-  const handleResourceSelected = (resourceSrc: string) => {
-    setCharacterData({ ...characterData, imageSrc: resourceSrc });
+  const handleResourceSelected = (resourceSrc: string | undefined) => {
+    setCharacterData({ ...characterData, imageSrc: resourceSrc ?? "" });
     setShowResourcesPopUp((prev) => !prev);
   }; // handleResourceSelected
 
