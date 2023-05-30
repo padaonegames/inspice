@@ -233,8 +233,11 @@ export const PackPuzzlePieceDefinitionCard = (
     if (onTogglePackPuzzlePieceEditMode) onTogglePackPuzzlePieceEditMode();
   }; // handleToggleEditPackPuzzlePieceMode
 
-  const handleResourceSelected = (resourceSrc: string) => {
-    setPackPuzzlePieceData({ ...packPuzzlePieceData, imageSrc: resourceSrc });
+  const handleResourceSelected = (resourceSrc: string | undefined) => {
+    setPackPuzzlePieceData({
+      ...packPuzzlePieceData,
+      imageSrc: resourceSrc ?? "",
+    });
     setShowResourcesPopUp((prev) => !prev);
   }; // handleResourceSelected
 

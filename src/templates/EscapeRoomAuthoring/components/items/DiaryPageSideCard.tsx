@@ -42,9 +42,12 @@ export const DiaryPageSideCard = (
     onDiarySideChanged([...slots, { type: "text", text: "" }]);
   }; // handleAddTextSlot
 
-  const handleAddImageSlot = (imageSrc: string) => {
+  const handleAddImageSlot = (imageSrc: string | undefined) => {
     if (!onDiarySideChanged) return;
-    onDiarySideChanged([...slots, { type: "sprite", spriteSrc: imageSrc }]);
+    onDiarySideChanged([
+      ...slots,
+      { type: "sprite", spriteSrc: imageSrc ?? "" },
+    ]);
     setShowResourcesPopUp(false);
   }; // handleAddImageSlot
 

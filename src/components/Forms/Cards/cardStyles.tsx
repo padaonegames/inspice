@@ -283,8 +283,8 @@ export const CardPanel = styled.div<CardPanelProps>`
     `}
 
   border-radius: 8px;
-  width: fit-content;
-  min-width: 100%;
+  min-width: fit-content;
+  width: 100%;
   height: fit-content;
   word-wrap: break-word;
   display: flex;

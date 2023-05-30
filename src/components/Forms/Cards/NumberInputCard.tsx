@@ -19,6 +19,8 @@ export interface NumberInputCardProps
   width?: number;
   /** Callback to the parent when the "Enter" key is pressed while the component is focused. */
   onEnterPress?: () => void;
+  /** whether to enable increasing/ decreasing this input's value through additional side buttons. */
+  sideButtonsEnabled?: boolean;
 } // NumberInputCardProps
 
 const NumberWithUnitsLine = styled.div`
@@ -67,7 +69,6 @@ const NextResponseIcon = styled(ChevronRight)`
   ${selectResponseIcon}
 `;
 
-/** Controlled card component to support input for shorter texts. */
 export const NumberInputCard = (props: NumberInputCardProps): JSX.Element => {
   const {
     onEnterPress,
@@ -76,6 +77,7 @@ export const NumberInputCard = (props: NumberInputCardProps): JSX.Element => {
     response,
     onResponseChanged,
     disabled = false,
+    sideButtonsEnabled = false,
     ...formProps
   } = props;
 
@@ -92,11 +94,16 @@ export const NumberInputCard = (props: NumberInputCardProps): JSX.Element => {
   return (
     <FormCard {...formProps}>
       <NumberWithUnitsLine>
-        <PreviousResponseIcon
-          disabled={disabled || (minValue !== undefined && number <= minValue)}
-          onClick={() => handleChangeValue(-1)}
-          title="Previous Response"
-        />
+        {sideButtonsEnabled && (
+          <PreviousResponseIcon
+            disabled={
+              disabled || (minValue !== undefined && number <= minValue)
+            }
+            onClick={() => handleChangeValue(-1)}
+            title="Previous Response"
+          />
+        )}
+
         <InputText
           disabled={disabled}
           textWidth={width}
@@ -117,11 +124,15 @@ export const NumberInputCard = (props: NumberInputCardProps): JSX.Element => {
           }}
         />
         <UnitsText>{units}</UnitsText>
-        <NextResponseIcon
-          disabled={disabled || (maxValue !== undefined && number >= maxValue)}
-          onClick={() => handleChangeValue(1)}
-          title="Next Response"
-        />
+        {sideButtonsEnabled && (
+          <NextResponseIcon
+            disabled={
+              disabled || (maxValue !== undefined && number >= maxValue)
+            }
+            onClick={() => handleChangeValue(1)}
+            title="Next Response"
+          />
+        )}
       </NumberWithUnitsLine>
     </FormCard>
   );
